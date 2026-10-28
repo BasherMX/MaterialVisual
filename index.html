@@ -216,189 +216,91 @@
         font-size: 0.85rem;
       }
 
-      .btn-launch {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        width: 100%;
-        padding: 10px 14px;
-        border-radius: 6px;
-        text-decoration: none;
-        font: 700 0.85rem/1 "Courier New", Courier, monospace;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
-        transition: all 0.2s ease;
-      }
-
-      .btn-avl {
+      /* ==========================================================
+         SISTEMA MODULAR DE 6 TEMAS CROMÁTICOS REUTILIZABLES
+         ========================================================== */
+      /* 1. Cyan (Estructura Dinámica / Búsquedas) */
+      .theme-cyan .badge-theme { color: var(--cyan); background: rgba(0, 255, 255, 0.08); }
+      .theme-cyan.module-card::before { background: linear-gradient(90deg, #0080ff, #00ffff); }
+      .theme-cyan .btn-theme {
         background: linear-gradient(135deg, #0080ff, #00ffff);
         color: #0b1021;
         box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
       }
-
-      .btn-avl:hover {
+      .theme-cyan .btn-theme:hover {
         background: linear-gradient(135deg, #00ffff, #0080ff);
         box-shadow: 0 0 24px rgba(0, 255, 255, 0.6);
         color: #000;
-        transform: scale(1.02);
       }
 
-      .btn-bfs {
-        background: linear-gradient(135deg, #ff006e, #ffd700);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(255, 0, 110, 0.3);
-      }
-
-      .btn-bfs:hover {
-        background: linear-gradient(135deg, #ffd700, #ff006e);
-        box-shadow: 0 0 24px rgba(255, 215, 0, 0.6);
-        color: #000;
-        transform: scale(1.02);
-      }
-
-      .badge-bigo {
-        color: #00ffaa;
-        background: rgba(0, 255, 170, 0.08);
-      }
-
-      .btn-bigo {
-        background: linear-gradient(135deg, #00ffaa, #00ffff);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(0, 255, 170, 0.3);
-      }
-
-      .btn-bigo:hover {
-        background: linear-gradient(135deg, #00ffff, #00ffaa);
-        box-shadow: 0 0 24px rgba(0, 255, 170, 0.6);
-        color: #000;
-        transform: scale(1.02);
-      }
-
-      .badge-paradigms {
-        color: #ffd700;
-        background: rgba(255, 215, 0, 0.08);
-      }
-
-      .btn-paradigms {
-        background: linear-gradient(135deg, #ffd700, #ff006e);
+      /* 2. Gold (Grafos / Algoritmos) */
+      .theme-gold .badge-theme { color: var(--gold); background: rgba(255, 215, 0, 0.08); }
+      .theme-gold.module-card::before { background: linear-gradient(90deg, #ffd700, #ff9100); }
+      .theme-gold .btn-theme {
+        background: linear-gradient(135deg, #ffd700, #ff9100);
         color: #0b1021;
         box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
       }
-
-      .btn-paradigms:hover {
-        background: linear-gradient(135deg, #ff006e, #ffd700);
+      .theme-gold .btn-theme:hover {
+        background: linear-gradient(135deg, #ff9100, #ffd700);
         box-shadow: 0 0 24px rgba(255, 215, 0, 0.6);
         color: #000;
-        transform: scale(1.02);
       }
 
-      .badge-poo {
-        color: #b185ff;
-        background: rgba(177, 133, 255, 0.08);
-      }
-
-      .btn-poo {
-        background: linear-gradient(135deg, #b185ff, #00ffff);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(177, 133, 255, 0.3);
-      }
-
-      .btn-poo:hover {
-        background: linear-gradient(135deg, #00ffff, #b185ff);
-        box-shadow: 0 0 24px rgba(177, 133, 255, 0.6);
-        color: #000;
-        transform: scale(1.02);
-      }
-
-      .badge-uiux {
-        color: #ff9100;
-        background: rgba(255, 145, 0, 0.08);
-      }
-
-      .btn-uiux {
-        background: linear-gradient(135deg, #ffd700, #ff9100);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(255, 145, 0, 0.3);
-      }
-
-      .btn-uiux:hover {
-        background: linear-gradient(135deg, #ff9100, #ffd700);
-        box-shadow: 0 0 24px rgba(255, 145, 0, 0.6);
-        color: #000;
-        transform: scale(1.02);
-      }
-
-      .badge-erd {
-        color: #00ffff;
-        background: rgba(0, 255, 255, 0.08);
-      }
-
-      .btn-erd {
-        background: linear-gradient(135deg, #00ffff, #0080ff);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
-      }
-
-      .btn-erd:hover {
-        background: linear-gradient(135deg, #0080ff, #00ffff);
-        box-shadow: 0 0 24px rgba(0, 255, 255, 0.6);
-        color: #fff;
-        transform: scale(1.02);
-      }
-
-      .badge-norm {
-        color: #00ffaa;
-        background: rgba(0, 255, 170, 0.08);
-      }
-
-      .btn-norm {
+      /* 3. Green (Rendimiento / Optimización / Codd) */
+      .theme-green .badge-theme { color: var(--green); background: rgba(0, 255, 170, 0.08); }
+      .theme-green.module-card::before { background: linear-gradient(90deg, #00ffaa, #0080ff); }
+      .theme-green .btn-theme {
         background: linear-gradient(135deg, #00ffaa, #0080ff);
         color: #0b1021;
         box-shadow: 0 0 16px rgba(0, 255, 170, 0.3);
       }
-
-      .btn-norm:hover {
+      .theme-green .btn-theme:hover {
         background: linear-gradient(135deg, #0080ff, #00ffaa);
         box-shadow: 0 0 24px rgba(0, 255, 170, 0.6);
         color: #fff;
-        transform: scale(1.02);
       }
 
-      .badge-iron {
-        color: #ffd700;
-        background: rgba(255, 215, 0, 0.08);
-      }
-
-      .btn-iron {
-        background: linear-gradient(135deg, #ffd700, #ff006e);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
-      }
-
-      .btn-iron:hover {
+      /* 4. Coral (Estrategias / Decisiones / Paradigmas) */
+      .theme-coral .badge-theme { color: var(--coral); background: rgba(255, 0, 110, 0.08); }
+      .theme-coral.module-card::before { background: linear-gradient(90deg, #ff006e, #ffd700); }
+      .theme-coral .btn-theme {
         background: linear-gradient(135deg, #ff006e, #ffd700);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(255, 0, 110, 0.3);
+      }
+      .theme-coral .btn-theme:hover {
+        background: linear-gradient(135deg, #ffd700, #ff006e);
         box-shadow: 0 0 24px rgba(255, 0, 110, 0.6);
-        color: #fff;
-        transform: scale(1.02);
+        color: #000;
       }
 
-      .badge-wbs {
-        color: #b185ff;
-        background: rgba(177, 133, 255, 0.08);
-      }
-
-      .btn-wbs {
-        background: linear-gradient(135deg, #7928ca, #0080ff);
+      /* 5. Purple (POO / WBS / Arquitectura) */
+      .theme-purple .badge-theme { color: #b185ff; background: rgba(177, 133, 255, 0.08); }
+      .theme-purple.module-card::before { background: linear-gradient(90deg, #7928ca, #00ffff); }
+      .theme-purple .btn-theme {
+        background: linear-gradient(135deg, #7928ca, #00ffff);
         color: #ffffff;
         box-shadow: 0 0 16px rgba(121, 40, 202, 0.3);
       }
-
-      .btn-wbs:hover {
-        background: linear-gradient(135deg, #0080ff, #7928ca);
+      .theme-purple .btn-theme:hover {
+        background: linear-gradient(135deg, #00ffff, #7928ca);
         box-shadow: 0 0 24px rgba(121, 40, 202, 0.6);
+        color: #000;
+      }
+
+      /* 6. Amber (Diseño UI/UX / Usabilidad) */
+      .theme-amber .badge-theme { color: #ff9100; background: rgba(255, 145, 0, 0.08); }
+      .theme-amber.module-card::before { background: linear-gradient(90deg, #ff9100, #ff006e); }
+      .theme-amber .btn-theme {
+        background: linear-gradient(135deg, #ff9100, #ff006e);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(255, 145, 0, 0.3);
+      }
+      .theme-amber .btn-theme:hover {
+        background: linear-gradient(135deg, #ff006e, #ff9100);
+        box-shadow: 0 0 24px rgba(255, 145, 0, 0.6);
         color: #fff;
-        transform: scale(1.02);
       }
 
       footer {
@@ -437,15 +339,15 @@
         <p class="eyebrow">Visualizadores Interactivos</p>
         <h1>Índice de Material Visual</h1>
         <p class="intro">
-          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos, diseño de software y gestión de proyectos paso a paso con retroalimentación visual en tiempo real.
+          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos, diseño de software, bases de datos y gestión de proyectos paso a paso con retroalimentación visual en tiempo real.
         </p>
       </header>
 
       <section class="modules-grid" aria-label="Módulos de visualización">
-        <!-- Tarjeta 1: Árboles AVL -->
-        <article class="module-card">
+        <!-- Tarjeta 1: Árboles AVL [Color 1: Cyan] -->
+        <article class="module-card theme-cyan">
           <div>
-            <span class="badge badge-tree">01 · Estructura Dinámica</span>
+            <span class="badge badge-theme">01 · Estructura Dinámica</span>
             <h2 class="module-title">Árboles AVL: Equilibrio en Movimiento</h2>
             <p class="module-desc">
               Simulador interactivo de inserción y autobalanceo en árboles binarios de búsqueda auto-balanceados.
@@ -458,7 +360,7 @@
           </div>
           <a
             href="modulos/01-arboles-avl-autobalanceo.html"
-            class="btn-launch btn-avl"
+            class="btn-launch btn-theme"
             id="btn-goto-avl"
             aria-label="Abrir simulador de Árboles AVL"
           >
@@ -466,10 +368,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 2: BFS y DFS -->
-        <article class="module-card">
+        <!-- Tarjeta 2: BFS y DFS [Color 2: Gold] -->
+        <article class="module-card theme-gold">
           <div>
-            <span class="badge badge-graph">02 · Algoritmos de Recorrido</span>
+            <span class="badge badge-theme">02 · Algoritmos de Recorrido</span>
             <h2 class="module-title">Explorador de Grafos: BFS vs DFS</h2>
             <p class="module-desc">
               Visualización comparativa de algoritmos de búsqueda en anchura (Cola) y profundidad (Pila) sobre una misma red topológica.
@@ -482,7 +384,7 @@
           </div>
           <a
             href="modulos/02-bfs-dfs-recorridos-interactivos.html"
-            class="btn-launch btn-bfs"
+            class="btn-launch btn-theme"
             id="btn-goto-bfs"
             aria-label="Abrir explorador de BFS y DFS"
           >
@@ -490,10 +392,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 3: Complejidades Computacionales -->
-        <article class="module-card">
+        <!-- Tarjeta 3: Complejidades Computacionales [Color 3: Green] -->
+        <article class="module-card theme-green">
           <div>
-            <span class="badge badge-bigo">03 · Teoría y Rendimiento</span>
+            <span class="badge badge-theme">03 · Teoría y Rendimiento</span>
             <h2 class="module-title">Complejidad Computacional: Big O</h2>
             <p class="module-desc">
               Laboratorio interactivo de las complejidades fundamentales O(1), O(log n), O(n), O(n log n) y O(n²) con simulaciones en vivo.
@@ -506,7 +408,7 @@
           </div>
           <a
             href="modulos/03-complejidades-computacionales.html"
-            class="btn-launch btn-bigo"
+            class="btn-launch btn-theme"
             id="btn-goto-bigo"
             aria-label="Abrir módulo de Complejidad Computacional Big O"
           >
@@ -514,10 +416,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 4: Paradigmas Algorítmicos (Greedy vs D&C) -->
-        <article class="module-card">
+        <!-- Tarjeta 4: Paradigmas Algorítmicos [Color 4: Coral] -->
+        <article class="module-card theme-coral">
           <div>
-            <span class="badge badge-paradigms">04 · Estrategias de Diseño</span>
+            <span class="badge badge-theme">04 · Estrategias de Diseño</span>
             <h2 class="module-title">Greedy vs Divide & Conquer</h2>
             <p class="module-desc">
               Comparativa detallada entre decisiones locales irrevocables (Devorador) y descomposición recursiva con combinación (Divide y Vencerás).
@@ -530,7 +432,7 @@
           </div>
           <a
             href="modulos/04-algoritmos-greedy-divide-venceras.html"
-            class="btn-launch btn-paradigms"
+            class="btn-launch btn-theme"
             id="btn-goto-paradigms"
             aria-label="Abrir módulo de Greedy vs Divide y Vencerás"
           >
@@ -538,10 +440,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 5: Programación Orientada a Objetos (POO) -->
-        <article class="module-card">
+        <!-- Tarjeta 5: Programación Orientada a Objetos [Color 5: Purple] -->
+        <article class="module-card theme-purple">
           <div>
-            <span class="badge badge-poo">05 · Paradigma Central</span>
+            <span class="badge badge-theme">05 · Paradigma Central</span>
             <h2 class="module-title">Programación Orientada a Objetos (POO)</h2>
             <p class="module-desc">
               Laboratorio interactivo de los cuatro pilares fundamentales: Clases/Objetos, Encapsulamiento, Abstracción, Herencia y Polimorfismo.
@@ -554,7 +456,7 @@
           </div>
           <a
             href="modulos/05-programacion-orientada-objetos.html"
-            class="btn-launch btn-poo"
+            class="btn-launch btn-theme"
             id="btn-goto-poo"
             aria-label="Abrir módulo de Programación Orientada a Objetos"
           >
@@ -562,10 +464,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 6: Reglas de Oro de Theo Mandel (UI/UX) -->
-        <article class="module-card">
+        <!-- Tarjeta 6: Reglas de Oro de Theo Mandel [Color 6: Amber] -->
+        <article class="module-card theme-amber">
           <div>
-            <span class="badge badge-uiux">06 · Diseño UI / UX</span>
+            <span class="badge badge-theme">06 · Diseño UI / UX</span>
             <h2 class="module-title">Las 3 Reglas de Oro de Theo Mandel</h2>
             <p class="module-desc">
               Doctrina de Roger Pressman para el diseño centrado en el usuario: Control, Reducción de carga de memoria y Consistencia de interfaz.
@@ -578,7 +480,7 @@
           </div>
           <a
             href="modulos/06-reglas-oro-theo-mandel-ui-ux.html"
-            class="btn-launch btn-uiux"
+            class="btn-launch btn-theme"
             id="btn-goto-uiux"
             aria-label="Abrir módulo de las 3 Reglas de Oro de Theo Mandel"
           >
@@ -586,10 +488,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 7: Modelado Conceptual ERD y Notaciones -->
-        <article class="module-card">
+        <!-- Tarjeta 7: Modelado Conceptual ERD [Reutiliza Color 1: Cyan] -->
+        <article class="module-card theme-cyan">
           <div>
-            <span class="badge badge-erd">07 · Bases de Datos / Modelado</span>
+            <span class="badge badge-theme">07 · Bases de Datos / Modelado</span>
             <h2 class="module-title">Modelado Conceptual ERD y Notaciones</h2>
             <p class="module-desc">
               Comparativa gráfica de diagramas entidad-relación: Peter Chen, Information Engineering (Pata de Gallo), IDEF1X y diagramas de clases UML.
@@ -602,7 +504,7 @@
           </div>
           <a
             href="modulos/07-modelado-conceptual-erd-diagramas.html"
-            class="btn-launch btn-erd"
+            class="btn-launch btn-theme"
             id="btn-goto-erd"
             aria-label="Abrir módulo de Modelado Conceptual ERD"
           >
@@ -610,10 +512,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 8: Normalización de Bases de Datos -->
-        <article class="module-card">
+        <!-- Tarjeta 8: Normalización de Bases de Datos [Reutiliza Color 3: Green] -->
+        <article class="module-card theme-green">
           <div>
-            <span class="badge badge-norm">08 · Diseño Lógico / Codd</span>
+            <span class="badge badge-theme">08 · Diseño Lógico / Codd</span>
             <h2 class="module-title">Normalización de Bases de Datos (1FN - BCNF)</h2>
             <p class="module-desc">
               Metodología de diseño lógico relacional para eliminar anomalías de inserción, eliminación y actualización según Codd, Oppel y Marqués.
@@ -626,7 +528,7 @@
           </div>
           <a
             href="modulos/08-normalizacion-bases-datos.html"
-            class="btn-launch btn-norm"
+            class="btn-launch btn-theme"
             id="btn-goto-norm"
             aria-label="Abrir módulo de Normalización de Bases de Datos"
           >
@@ -634,10 +536,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 9: El Triángulo de Hierro (Triple Restricción) -->
-        <article class="module-card">
+        <!-- Tarjeta 9: El Triángulo de Hierro [Reutiliza Color 2: Gold] -->
+        <article class="module-card theme-gold">
           <div>
-            <span class="badge badge-iron">09 · Gestión de Proyectos</span>
+            <span class="badge badge-theme">09 · Gestión de Proyectos</span>
             <h2 class="module-title">El Triángulo de Hierro: Triple Restricción</h2>
             <p class="module-desc">
               Dinámica de equilibrio entre Alcance, Tiempo y Costo con impacto directo en la Calidad según Sommerville y Pressman.
@@ -650,7 +552,7 @@
           </div>
           <a
             href="modulos/09-triangulo-de-hierro-gestion-proyectos.html"
-            class="btn-launch btn-iron"
+            class="btn-launch btn-theme"
             id="btn-goto-iron"
             aria-label="Abrir módulo del Triángulo de Hierro"
           >
@@ -658,10 +560,10 @@
           </a>
         </article>
 
-        <!-- Tarjeta 10: EDT / WBS (Marion E. Haynes) -->
-        <article class="module-card">
+        <!-- Tarjeta 10: EDT / WBS [Reutiliza Color 5: Purple] -->
+        <article class="module-card theme-purple">
           <div>
-            <span class="badge badge-wbs">10 · Planificación / Haynes</span>
+            <span class="badge badge-theme">10 · Planificación / Haynes</span>
             <h2 class="module-title">EDT / WBS: Descomposición del Trabajo</h2>
             <p class="module-desc">
               Estructura de Descomposición del Trabajo según Marion E. Haynes: paquetes de trabajo (Work Packages), regla del 100% y diccionario de la EDT.
@@ -674,7 +576,7 @@
           </div>
           <a
             href="modulos/10-edt-wbs-descomposicion-trabajo.html"
-            class="btn-launch btn-wbs"
+            class="btn-launch btn-theme"
             id="btn-goto-wbs"
             aria-label="Abrir módulo de la EDT / WBS"
           >
