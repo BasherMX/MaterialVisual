@@ -1,0 +1,1319 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3 Reglas de Oro de Theo Mandel | Diseño UI/UX Interactivo</title>
+    <meta
+      name="description"
+      content="Laboratorio interactivo de las 3 Reglas de Oro de Theo Mandel para el diseño de interfaces de usuario (UI/UX) según Pressman: Control al usuario, Reducción de carga de memoria y Consistencia de interfaz."
+    />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --panel-dark: #121124;
+        --line: rgba(0, 255, 255, 0.28);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --purple: #5d34d0;
+        --gold: #ffd700;
+        --green: #00ffaa;
+        --amber: #ff9100;
+        --shadow: 0 0 24px rgba(0, 128, 255, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(
+            circle at 50% -10%,
+            rgba(255, 145, 0, 0.32),
+            transparent 40%
+          ),
+          var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.02) 0,
+          rgba(255, 255, 255, 0.02) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+        opacity: 0.45;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(
+            rgba(255, 145, 0, 0.04) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(255, 145, 0, 0.04) 1px, transparent 1px);
+        background-size: 40px 40px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: var(--amber);
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(255, 145, 0, 0.15);
+      }
+
+      .btn-back-index:hover {
+        background: rgba(255, 145, 0, 0.15);
+        border-color: var(--amber);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(255, 145, 0, 0.35);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--amber);
+        font: 700 0.76rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(255, 145, 0, 0.7);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 840px;
+        font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+        line-height: 1;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+
+      .intro {
+        max-width: 480px;
+        margin: 0 0 4px;
+        color: var(--muted);
+        font: 0.95rem/1.55 Verdana, sans-serif;
+      }
+
+      /* Tabla Teórica y Resumen de Principios */
+      .matrix-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+
+      .matrix-card h2 {
+        margin: 0 0 14px;
+        color: var(--amber);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table.compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font: 0.85rem/1.45 Verdana, sans-serif;
+      }
+
+      table.compare-table th {
+        color: var(--amber);
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px;
+        font-family: "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        font-size: 0.92rem;
+      }
+
+      table.compare-table td {
+        padding: 14px 14px;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+        color: var(--ink);
+        vertical-align: top;
+      }
+
+      table.compare-table tr:hover {
+        background: rgba(255, 145, 0, 0.05);
+      }
+
+      .badge-rule {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+      }
+
+      .badge-r1 { color: var(--green); border: 1px solid var(--green); background: rgba(0, 255, 170, 0.1); }
+      .badge-r2 { color: var(--cyan); border: 1px solid var(--cyan); background: rgba(0, 255, 255, 0.1); }
+      .badge-r3 { color: var(--amber); border: 1px solid var(--amber); background: rgba(255, 145, 0, 0.1); }
+
+      /* Barra de Pestañas de las 3 Reglas */
+      .tabs-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .tab-btn {
+        flex: 1 1 240px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 18px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.7);
+        color: var(--muted);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .tab-btn .tab-badge {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--ink);
+      }
+
+      .tab-btn .tab-name {
+        font-size: 0.76rem;
+        font-family: Verdana, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .tab-btn:hover {
+        background: rgba(34, 33, 61, 0.95);
+        border-color: var(--amber);
+        transform: translateY(-2px);
+      }
+
+      .tab-btn.active {
+        background: rgba(255, 145, 0, 0.15);
+        border-color: var(--amber);
+        box-shadow: 0 0 20px rgba(255, 145, 0, 0.25);
+      }
+
+      .tab-btn.active .tab-badge {
+        color: var(--amber);
+      }
+
+      /* Paneles de Simulación */
+      .sim-panel {
+        display: none;
+      }
+
+      .sim-panel.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .lab-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+        gap: 22px;
+        align-items: start;
+      }
+
+      .sim-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+      }
+
+      .sim-card h3 {
+        margin: 0 0 10px;
+        color: var(--cyan);
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sim-card p.sim-desc {
+        color: var(--muted);
+        font: 0.86rem/1.55 Verdana, sans-serif;
+        margin: 0 0 16px;
+      }
+
+      /* Control Box y UI interactiva */
+      .interactive-box {
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.18);
+        border-radius: 8px;
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+
+      .interactive-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+      }
+
+      .interactive-header h4 {
+        margin: 0;
+        font-size: 0.92rem;
+        color: var(--amber);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .ctrl-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 15px;
+        border-radius: 6px;
+        font: 700 0.8rem "Courier New", Courier, monospace;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.18s ease;
+      }
+
+      .btn-action:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      .btn-green {
+        background: linear-gradient(135deg, #00ffaa, #0080ff);
+        color: #0b1021;
+        box-shadow: 0 0 12px rgba(0, 255, 170, 0.25);
+      }
+
+      .btn-green:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(0, 255, 170, 0.5);
+      }
+
+      .btn-cyan {
+        background: linear-gradient(135deg, #00ffff, #0080ff);
+        color: #0b1021;
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
+      }
+
+      .btn-cyan:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(0, 255, 255, 0.5);
+      }
+
+      .btn-amber {
+        background: linear-gradient(135deg, #ffd700, #ff9100);
+        color: #0b1021;
+        box-shadow: 0 0 12px rgba(255, 145, 0, 0.25);
+      }
+
+      .btn-amber:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(255, 145, 0, 0.5);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff006e, #ff4757);
+        color: #ffffff;
+        box-shadow: 0 0 12px rgba(255, 0, 110, 0.25);
+      }
+
+      .btn-danger:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(255, 0, 110, 0.5);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border-color: var(--line);
+        color: var(--ink);
+      }
+
+      .btn-outline:not(:disabled):hover {
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+
+      /* Elementos visuales específicos para la Regla 1: Undo/Redo & Canvas */
+      .canvas-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        min-height: 80px;
+        background: rgba(16, 16, 33, 0.6);
+        border: 1px dashed var(--line);
+        border-radius: 6px;
+        padding: 12px;
+        align-items: center;
+      }
+
+      .canvas-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font: 700 0.8rem "Courier New", Courier, monospace;
+        animation: popIn 0.2s ease;
+      }
+
+      @keyframes popIn {
+        from { transform: scale(0.7); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+
+      .tag-node { background: rgba(0, 255, 255, 0.15); border: 1px solid var(--cyan); color: #fff; }
+      .tag-del-btn {
+        background: none;
+        border: none;
+        color: var(--coral);
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 0 2px;
+      }
+
+      /* Modal de confirmación para acción destructiva */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 10, 20, 0.85);
+        backdrop-filter: blur(4px);
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-backdrop.active {
+        display: flex;
+      }
+
+      .modal-box {
+        background: #22213d;
+        border: 2px solid var(--coral);
+        border-radius: 10px;
+        padding: 24px;
+        width: min(440px, calc(100% - 32px));
+        box-shadow: 0 0 35px rgba(255, 0, 110, 0.4);
+      }
+
+      .modal-box h4 {
+        margin: 0 0 10px;
+        color: var(--coral);
+        font-size: 1.15rem;
+      }
+
+      .modal-box p {
+        margin: 0 0 20px;
+        color: var(--ink);
+        font: 0.86rem/1.5 Verdana, sans-serif;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+
+      /* Elementos visuales específicos para la Regla 2: Memoria */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-group label {
+        color: var(--muted);
+        font: 0.78rem Verdana, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .form-input, select.form-input {
+        background: #101021;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.85rem;
+      }
+
+      .form-input:focus {
+        border-color: var(--cyan);
+        outline: none;
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+      }
+
+      .helper-text {
+        font-size: 0.72rem;
+        color: var(--cyan);
+        font-family: Verdana, sans-serif;
+      }
+
+      .metaphor-dock {
+        display: flex;
+        gap: 12px;
+        background: rgba(16, 16, 33, 0.7);
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        margin-top: 14px;
+        justify-content: center;
+      }
+
+      .metaphor-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+      }
+
+      .metaphor-item:hover {
+        background: rgba(0, 255, 255, 0.1);
+        border-color: var(--cyan);
+        transform: translateY(-2px);
+      }
+
+      .metaphor-icon {
+        font-size: 1.6rem;
+      }
+
+      .metaphor-label {
+        font: 700 0.72rem "Courier New", Courier, monospace;
+        color: var(--ink);
+      }
+
+      /* Elementos visuales específicos para la Regla 3: Consistencia */
+      .consistency-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .consistency-column {
+        background: rgba(16, 16, 33, 0.65);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 14px;
+      }
+
+      .consistency-column.bad {
+        border-color: rgba(255, 0, 110, 0.4);
+      }
+
+      .consistency-column.good {
+        border-color: rgba(0, 255, 170, 0.4);
+      }
+
+      .col-header-badge {
+        font: 700 0.75rem/1.2 Verdana, sans-serif;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+
+      .col-header-badge.bad {
+        background: rgba(255, 0, 110, 0.15);
+        color: var(--coral);
+        border: 1px solid var(--coral);
+      }
+
+      .col-header-badge.good {
+        background: rgba(0, 255, 170, 0.15);
+        color: var(--green);
+        border: 1px solid var(--green);
+      }
+
+      .ui-sample-card {
+        background: #22213d;
+        border-radius: 6px;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      /* Consola y Explicador Teórico Lateral */
+      .sidebar-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+      }
+
+      .sidebar-card h3 {
+        margin: 0 0 12px;
+        color: var(--amber);
+        font-size: 1.15rem;
+      }
+
+      .rules-breakdown {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px;
+      }
+
+      .rules-breakdown li {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        font: 0.82rem/1.5 Verdana, sans-serif;
+        color: var(--muted);
+      }
+
+      .rules-breakdown li:last-child {
+        border-bottom: none;
+      }
+
+      .rules-breakdown strong {
+        color: #ffffff;
+        display: block;
+        margin-bottom: 3px;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .log-box {
+        max-height: 220px;
+        overflow-y: auto;
+        padding: 8px 0;
+        list-style: none;
+        margin: 0;
+      }
+
+      .log-box li {
+        padding: 6px 0;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        font: 0.74rem/1.45 "Courier New", Courier, monospace;
+        color: var(--muted);
+      }
+
+      .log-box li:last-child {
+        border-bottom: none;
+      }
+
+      .log-box li b {
+        color: var(--cyan);
+      }
+
+      .log-box li.alert {
+        color: var(--coral);
+      }
+
+      .log-box li.success {
+        color: var(--green);
+      }
+
+      .log-box li.warning {
+        color: var(--amber);
+      }
+
+      footer {
+        margin-top: 50px;
+        text-align: center;
+        border-top: 1px solid var(--line);
+        padding-top: 24px;
+        color: var(--muted);
+        font: 0.78rem/1.5 Verdana, sans-serif;
+      }
+
+      @media (max-width: 960px) {
+        header { display: block; }
+        .intro { margin-top: 14px; }
+        .lab-layout { grid-template-columns: 1fr; }
+        .consistency-grid { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 600px) {
+        .page {
+          width: calc(100% - 20px);
+          padding-top: 20px;
+        }
+        h1 {
+          font-size: 1.85rem;
+          line-height: 1.1;
+          word-break: break-word;
+        }
+        .intro {
+          font-size: 0.9rem;
+        }
+        .matrix-card,
+        .sim-card,
+        .sidebar-card {
+          padding: 14px 12px;
+        }
+        .matrix-card {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        table.compare-table {
+          min-width: 520px;
+        }
+        .tab-btn {
+          flex: 1 1 100%;
+        }
+        .ctrl-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .ctrl-row > * {
+          width: 100%;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .metaphor-dock {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
+        <span>←</span> Volver al Índice
+      </a>
+
+      <header>
+        <div>
+          <p class="eyebrow">Ingeniería de Software / Interacción Humano-Computadora</p>
+          <h1>Las 3 Reglas de Oro<br />de Theo Mandel (UI/UX)</h1>
+        </div>
+        <p class="intro">
+          Fundamentos esenciales del diseño de interfaz de usuario según la doctrina de Pressman. Experimenta cómo el control del usuario, la reducción de carga cognitiva y la consistencia operativa transforman una interfaz ordinaria en un sistema profesional.
+        </p>
+      </header>
+
+      <!-- Tabla Comparativa de las 3 Reglas -->
+      <section class="matrix-card" aria-label="Resumen de las 3 Reglas de Oro de Theo Mandel">
+        <h2><span>🏆</span> Doctrina de Theo Mandel y Roger Pressman</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Regla de Oro</th>
+              <th style="width: 25%;">Principio Central</th>
+              <th style="width: 28%;">Directrices Clave de Diseño</th>
+              <th style="width: 22%;">Impacto en la Experiencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge-rule badge-r1">1. Dar el control al usuario</span><br /><small style="color:var(--muted);">Place user in control</small></td>
+              <td>El usuario es el piloto: no forzar secuencias inflexibles ni caminos sin retorno.</td>
+              <td>
+                • Permitir deshacer (<em>undo</em>) y rehacer (<em>redo</em>).<br />
+                • Evitar secuencias modales rígidas.<br />
+                • Confirmar antes de acciones destructivas.<br />
+                • Permitir pausar o interrumpir procesos.
+              </td>
+              <td>Otorga libertad, elimina la frustración y disipa el temor a cometer errores irreparables.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-rule badge-r2">2. Reducir carga de memoria</span><br /><small style="color:var(--muted);">Reduce memory load</small></td>
+              <td>No obligar al usuario a memorizar datos entre pantallas o pasos previos.</td>
+              <td>
+                • Ofrecer valores por defecto razonables.<br />
+                • Reconocimiento sobre recuerdo (metáforas del mundo real).<br />
+                • Relleno automático y atajos intuitivos.<br />
+                • Divulgación progresiva de información compleja.
+              </td>
+              <td>Acelera la toma de decisiones y mantiene despejada la memoria de trabajo cognitiva.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-rule badge-r3">3. Hacer la interfaz consistente</span><br /><small style="color:var(--muted);">Make interface consistent</small></td>
+              <td>Uniformidad estructural, estética y operativa a lo largo de todo el sistema.</td>
+              <td>
+                • Misma terminología y posicionamiento de botones.<br />
+                • Respuestas y atajos idénticos ante acciones similares.<br />
+                • Jerarquía cromática y tipográfica estandarizada.<br />
+                • Patrones de navegación unificados.
+              </td>
+              <td>Facilita la transferencia de aprendizaje; dominar una pantalla es dominar todo el sistema.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Selector de Pestañas Interactivas -->
+      <nav class="tabs-bar" aria-label="Seleccionar regla interactiva">
+        <button class="tab-btn active" data-rule="r1" id="tab-btn-r1">
+          <span class="tab-badge">01. Control al Usuario</span>
+          <span class="tab-name">Place the user in control</span>
+        </button>
+        <button class="tab-btn" data-rule="r2" id="tab-btn-r2">
+          <span class="tab-badge">02. Carga de Memoria</span>
+          <span class="tab-name">Reduce user's memory load</span>
+        </button>
+        <button class="tab-btn" data-rule="r3" id="tab-btn-r3">
+          <span class="tab-badge">03. Consistencia Total</span>
+          <span class="tab-name">Make interface consistent</span>
+        </button>
+      </nav>
+
+      <div class="lab-layout">
+        <!-- ÁREA INTERACTIVA PRINCIPAL -->
+        <section aria-label="Espacio de Laboratorio Interactivo">
+          
+          <!-- PANEL 1: CONTROL AL USUARIO -->
+          <div class="sim-panel active" id="panel-r1">
+            <article class="sim-card">
+              <h3><span>🕹️</span> Demostrador de Control: Pila Undo/Redo y Acción Destructiva</h3>
+              <p class="sim-desc">
+                Crea tareas, deshaz o rehaz operaciones dinámicamente y experimenta la protección obligatoria ante acciones destructivas irreversibles (como el vaciado completo).
+              </p>
+
+              <div class="interactive-box">
+                <div class="interactive-header">
+                  <h4>Gestión de Objetos en Memoria de Trabajo</h4>
+                  <span id="r1-counter" style="color:var(--cyan); font-weight:700; font-size:0.85rem;">Objetos activos: 3</span>
+                </div>
+
+                <div class="ctrl-row">
+                  <button class="btn-action btn-green" id="btn-add-item">+ Crear Módulo</button>
+                  <button class="btn-action btn-outline" id="btn-undo" disabled>⤺ Deshacer (Undo)</button>
+                  <button class="btn-action btn-outline" id="btn-redo" disabled>⤻ Rehacer (Redo)</button>
+                  <button class="btn-action btn-danger" id="btn-destructive">⚠️ Purgar Todo (Destructivo)</button>
+                </div>
+
+                <div class="canvas-items" id="canvas-items-container">
+                  <!-- Elementos inyectados por JS -->
+                </div>
+              </div>
+
+              <!-- Simulación de Proceso de Larga Duración Cancelable -->
+              <div class="interactive-box">
+                <div class="interactive-header">
+                  <h4>Operación de Flujo: Interrupción y Cancelación Inmediata</h4>
+                  <span id="process-status" style="color:var(--muted); font-size:0.8rem;">En espera</span>
+                </div>
+                <p style="font: 0.8rem/1.5 Verdana, sans-serif; color:var(--muted); margin:0 0 10px;">
+                  El usuario nunca debe quedar atrapado en una pantalla de bloqueo durante una operación prolongada.
+                </p>
+                <div style="background:#0b1021; border-radius:6px; height:12px; overflow:hidden; margin-bottom:12px;">
+                  <div id="progress-bar-fill" style="width:0%; height:100%; background:linear-gradient(90deg, var(--cyan), var(--green)); transition:width 0.15s ease;"></div>
+                </div>
+                <div class="ctrl-row">
+                  <button class="btn-action btn-cyan" id="btn-start-process">▶ Iniciar Proceso Pesado</button>
+                  <button class="btn-action btn-outline" id="btn-cancel-process" disabled style="color:var(--coral); border-color:var(--coral);">⏹ Interrumpir / Cancelar</button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- PANEL 2: REDUCCIÓN DE CARGA DE MEMORIA -->
+          <div class="sim-panel" id="panel-r2">
+            <article class="sim-card">
+              <h3><span>🧠</span> Reducción de Carga de Memoria: Metáforas y Valores por Defecto</h3>
+              <p class="sim-desc">
+                Comprueba la diferencia entre obligar al usuario a recordar códigos crípticos vs. ofrecer <strong>valores predeterminados inteligentes</strong>, <strong>autocompletado contextual</strong> y <strong>metáforas del mundo real</strong> (Reconocimiento en vez de recuerdo).
+              </p>
+
+              <!-- Metáforas conocidas del mundo real -->
+              <div class="interactive-box">
+                <div class="interactive-header">
+                  <h4>Metáforas del Mundo Real (Reconocimiento visual inmediato)</h4>
+                </div>
+                <p style="font: 0.8rem/1.5 Verdana, sans-serif; color:var(--muted); margin:0 0 8px;">
+                  Haz clic en cualquiera de las herramientas analógicas universales:
+                </p>
+                <div class="metaphor-dock">
+                  <div class="metaphor-item" data-tool="carpetas">
+                    <span class="metaphor-icon">📁</span>
+                    <span class="metaphor-label">Archivador</span>
+                  </div>
+                  <div class="metaphor-item" data-tool="guardar">
+                    <span class="metaphor-icon">💾</span>
+                    <span class="metaphor-label">Disquete (Guardar)</span>
+                  </div>
+                  <div class="metaphor-item" data-tool="papelera">
+                    <span class="metaphor-icon">🗑️</span>
+                    <span class="metaphor-label">Papelera</span>
+                  </div>
+                  <div class="metaphor-item" data-tool="correo">
+                    <span class="metaphor-icon">✉️</span>
+                    <span class="metaphor-label">Buzón de Correo</span>
+                  </div>
+                  <div class="metaphor-item" data-tool="lupa">
+                    <span class="metaphor-icon">🔍</span>
+                    <span class="metaphor-label">Lupa (Buscar)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Formulario con y sin valores por defecto -->
+              <div class="interactive-box">
+                <div class="interactive-header">
+                  <h4>Formulario Asistido: Valores por Defecto y Asistencia en Línea</h4>
+                  <button class="btn-action btn-outline" id="btn-toggle-defaults" style="padding:4px 10px; font-size:0.75rem;">Alternar Modo Asistido</button>
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="input-region">Región / Sede</label>
+                    <select class="form-input" id="input-region">
+                      <option value="centro">Sede Central (Predeterminada)</option>
+                      <option value="norte">Región Norte</option>
+                      <option value="sur">Región Sur</option>
+                      <option value="occidente">Región Occidente</option>
+                    </select>
+                    <span class="helper-text" id="help-region">✓ Selección automática según tu geolocalización previa</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="input-currency">Moneda de Facturación</label>
+                    <select class="form-input" id="input-currency">
+                      <option value="mxn">MXN - Peso Mexicano (Estándar)</option>
+                      <option value="usd">USD - Dólar Estadounidense</option>
+                      <option value="eur">EUR - Euro</option>
+                    </select>
+                    <span class="helper-text" id="help-currency">✓ Configurada por convención nacional</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="input-protocol">Protocolo de Red</label>
+                    <input type="text" class="form-input" id="input-protocol" value="HTTPS / Port 443" />
+                    <span class="helper-text" id="help-protocol">✓ Parámetro técnico seguro auto-completado</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="input-timeout">Tiempo de Espera (Timeout)</label>
+                    <input type="text" class="form-input" id="input-timeout" value="30 segundos" />
+                    <span class="helper-text" id="help-timeout">✓ Recomendado para redes estables</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- PANEL 3: CONSISTENCIA DE INTERFAZ -->
+          <div class="sim-panel" id="panel-r3">
+            <article class="sim-card">
+              <h3><span>📐</span> Consistencia Total: Estándar Visual, Estructural y Operativo</h3>
+              <p class="sim-desc">
+                Observa cómo la consistencia operativa y cromática reduce radicalmente el tiempo de procesamiento mental frente a interfaces caprichosas donde cada pantalla inventa sus propios códigos.
+              </p>
+
+              <div class="consistency-grid">
+                <!-- Columna Inconsistente -->
+                <div class="consistency-column bad">
+                  <span class="col-header-badge bad">✕ Interfaz Inconsistente (Inflexible)</span>
+                  <p style="font: 0.78rem/1.45 Verdana, sans-serif; color:var(--muted); margin:0 0 10px;">
+                    Botones con colores invertidos, vocabulario dispar y posiciones que cambian en cada paso:
+                  </p>
+                  
+                  <div class="ui-sample-card">
+                    <span style="font-size:0.8rem; font-weight:700;">Módulo Ventas</span>
+                    <button class="btn-action" style="background:#00ffaa; color:#000; font-size:0.7rem; padding:6px 10px;" onclick="logConsistency('inconsistent', 'Ventas: Borrar con botón verde inesperado')">Borrar</button>
+                  </div>
+
+                  <div class="ui-sample-card">
+                    <span style="font-size:0.8rem; font-weight:700;">Módulo Nóminas</span>
+                    <button class="btn-action" style="background:#ff006e; color:#fff; font-size:0.7rem; padding:6px 10px;" onclick="logConsistency('inconsistent', 'Nóminas: Guardar con botón rojo alarmante')">Guardar</button>
+                  </div>
+
+                  <div class="ui-sample-card">
+                    <span style="font-size:0.8rem; font-weight:700;">Módulo Clientes</span>
+                    <button class="btn-action" style="background:#ffd700; color:#000; font-size:0.7rem; padding:6px 10px;" onclick="logConsistency('inconsistent', 'Clientes: Continuar con botón amarillo ambiguo')">Siguiente >>></button>
+                  </div>
+                </div>
+
+                <!-- Columna Consistente -->
+                <div class="consistency-column good">
+                  <span class="col-header-badge good">✓ Interfaz Consistente (Estándar Pressman)</span>
+                  <p style="font: 0.78rem/1.45 Verdana, sans-serif; color:var(--muted); margin:0 0 10px;">
+                    Código de color unificado: Verde = Acción positiva; Rojo = Borrado; Azul/Cyan = Navegación:
+                  </p>
+
+                  <div class="ui-sample-card">
+                    <span style="font-size:0.8rem; font-weight:700;">Módulo Ventas</span>
+                    <button class="btn-action btn-danger" style="font-size:0.7rem; padding:6px 10px;" onclick="logConsistency('consistent', 'Ventas: Borrar con semántica roja uniforme')">Eliminar</button>
+                  </div>
+
+                  <div class="ui-sample-card">
+                    <span style="font-size:0.8rem; font-weight:700;">Módulo Nóminas</span>
+                    <button class="btn-action btn-green" style="font-size:0.7rem; padding:6px 10px;" onclick="logConsistency('consistent', 'Nóminas: Guardar con semántica verde estándar')">Guardar</button>
+                  </div>
+
+                  <div class="ui-sample-card">
+                    <span style="font-size:0.8rem; font-weight:700;">Módulo Clientes</span>
+                    <button class="btn-action btn-cyan" style="font-size:0.7rem; padding:6px 10px;" onclick="logConsistency('consistent', 'Clientes: Siguiente con semántica cyan consistente')">Siguiente →</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- PANEL LATERAL: EXPLICADOR TEÓRICO Y CONSOLA DE AUDITORÍA -->
+        <aside class="sidebar-card" aria-label="Auditoría de Usabilidad y Principios">
+          <h3><span>📋</span> Auditoría de Principios UI</h3>
+
+          <ul class="rules-breakdown">
+            <li>
+              <strong>1. Place user in control</strong>
+              El software debe obedecer el ritmo humano: botones de deshacer, flujos flexibles y confirmación explícita para evitar pérdidas catastróficas.
+            </li>
+            <li>
+              <strong>2. Reduce user's memory load</strong>
+              La regla de los 7±2 elementos de Miller demuestra que la mente se satura fácilmente. Deja que la máquina recuerde los datos y el usuario reconozca opciones.
+            </li>
+            <li>
+              <strong>3. Make interface consistent</strong>
+              La ley del menor esfuerzo cognitivo: si una acción se ejecuta de cierta manera aquí, debe ejecutarse idénticamente en todo el ecosistema.
+            </li>
+          </ul>
+
+          <div style="border-top:1px solid var(--line); padding-top:14px; margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; font-size:0.82rem; color:var(--amber);">Registro de Eventos UI:</span>
+              <button class="btn-action btn-outline" id="btn-clear-logs" style="padding:2px 8px; font-size:0.7rem;">Limpiar</button>
+            </div>
+            <ul class="log-box" id="ui-event-log">
+              <li class="success"><b>SISTEMA</b> · Módulo inicializado en modo interactivo.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Modal de Confirmación Destructiva -->
+      <div class="modal-backdrop" id="modal-confirm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-box">
+          <h4 id="modal-title">⚠️ Acción Destructiva Irreversible</h4>
+          <p>
+            ¿Estás absolutamente seguro de purgar todos los módulos de trabajo? Esta acción no se puede deshacer mediante el historial estándar.
+          </p>
+          <div class="modal-actions">
+            <button class="btn-action btn-outline" id="btn-modal-cancel">Cancelar (Seguro)</button>
+            <button class="btn-action btn-danger" id="btn-modal-confirm">Confirmar Purgado</button>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        Material Didáctico e Interactivo para Diseño de Interfaz de Usuario (UI/UX) · Basado en Roger Pressman y Theo Mandel
+      </footer>
+    </main>
+
+    <script>
+      // ==========================================
+      // ESTADO GLOBAL Y HISTORIAL (REGLA 1: CONTROL)
+      // ==========================================
+      let canvasItems = ["Módulo Alpha", "Módulo Beta", "Módulo Gamma"];
+      let undoStack = [];
+      let redoStack = [];
+      let processInterval = null;
+      let processProgress = 0;
+      let isAssistedMode = true;
+
+      // Logger
+      function logEvent(type, message) {
+        const logBox = document.getElementById("ui-event-log");
+        const li = document.createElement("li");
+        if (type === "alert") li.className = "alert";
+        else if (type === "success") li.className = "success";
+        else if (type === "warning") li.className = "warning";
+
+        const time = new Date().toLocaleTimeString().split(" ")[0];
+        li.innerHTML = `<b>${time}</b> · ${message}`;
+        logBox.insertBefore(li, logBox.firstChild);
+      }
+
+      function updateCanvasUI() {
+        const container = document.getElementById("canvas-items-container");
+        container.innerHTML = "";
+
+        if (canvasItems.length === 0) {
+          container.innerHTML = '<span style="color:var(--muted); font-size:0.82rem; font-style:italic;">El espacio de trabajo está vacío. Crea un módulo para comenzar.</span>';
+        } else {
+          canvasItems.forEach((item, index) => {
+            const tag = document.createElement("div");
+            tag.className = "canvas-tag tag-node";
+            tag.innerHTML = `
+              <span>${item}</span>
+              <button class="tag-del-btn" aria-label="Eliminar ${item}" onclick="deleteItemByIndex(${index})">✕</button>
+            `;
+            container.appendChild(tag);
+          });
+        }
+
+        document.getElementById("r1-counter").textContent = `Objetos activos: ${canvasItems.length}`;
+        document.getElementById("btn-undo").disabled = undoStack.length === 0;
+        document.getElementById("btn-redo").disabled = redoStack.length === 0;
+      }
+
+      function saveStateForUndo() {
+        undoStack.push([...canvasItems]);
+        redoStack = []; // Se limpia redo al iniciar una bifurcación nueva
+      }
+
+      function addItem() {
+        saveStateForUndo();
+        const id = Math.floor(100 + Math.random() * 900);
+        const newItem = `Módulo #${id}`;
+        canvasItems.push(newItem);
+        updateCanvasUI();
+        logEvent("success", `[Control] Usuario agregó nuevo objeto "${newItem}".`);
+      }
+
+      function deleteItemByIndex(idx) {
+        saveStateForUndo();
+        const removed = canvasItems.splice(idx, 1);
+        updateCanvasUI();
+        logEvent("warning", `[Control] Usuario eliminó "${removed[0]}". Acción reversible con Undo.`);
+      }
+
+      function performUndo() {
+        if (undoStack.length === 0) return;
+        redoStack.push([...canvasItems]);
+        canvasItems = undoStack.pop();
+        updateCanvasUI();
+        logEvent("success", `[Control] ⤺ Undo ejecutado con éxito. Estado previo restaurado.`);
+      }
+
+      function performRedo() {
+        if (redoStack.length === 0) return;
+        undoStack.push([...canvasItems]);
+        canvasItems = redoStack.pop();
+        updateCanvasUI();
+        logEvent("success", `[Control] ⤻ Redo ejecutado con éxito.`);
+      }
+
+      // Proceso de larga duración cancelable
+      function startLongProcess() {
+        if (processInterval) clearInterval(processInterval);
+        processProgress = 0;
+        document.getElementById("btn-start-process").disabled = true;
+        document.getElementById("btn-cancel-process").disabled = false;
+        document.getElementById("process-status").textContent = "Procesando...";
+        document.getElementById("process-status").style.color = "var(--cyan)";
+        logEvent("warning", "[Control] Operación prolongada iniciada. El usuario conserva botón de parada.");
+
+        processInterval = setInterval(() => {
+          processProgress += 4;
+          document.getElementById("progress-bar-fill").style.width = processProgress + "%";
+          if (processProgress >= 100) {
+            clearInterval(processInterval);
+            processInterval = null;
+            document.getElementById("btn-start-process").disabled = false;
+            document.getElementById("btn-cancel-process").disabled = true;
+            document.getElementById("process-status").textContent = "✓ Completado exitosamente";
+            document.getElementById("process-status").style.color = "var(--green)";
+            logEvent("success", "[Control] Operación completada.");
+          }
+        }, 120);
+      }
+
+      function cancelLongProcess() {
+        if (processInterval) {
+          clearInterval(processInterval);
+          processInterval = null;
+          processProgress = 0;
+          document.getElementById("progress-bar-fill").style.width = "0%";
+          document.getElementById("btn-start-process").disabled = false;
+          document.getElementById("btn-cancel-process").disabled = true;
+          document.getElementById("process-status").textContent = "⏹ Interrumpido por el usuario";
+          document.getElementById("process-status").style.color = "var(--coral)";
+          logEvent("alert", "[Control] Interrupción de flujo: Usuario canceló la tarea en progreso sin consecuencias.");
+        }
+      }
+
+      // Modal destructivo
+      function showDestructiveModal() {
+        document.getElementById("modal-confirm").classList.add("active");
+        logEvent("warning", "[Control] Acción destructiva interceptada: Solicitando confirmación explícita.");
+      }
+
+      function closeModal() {
+        document.getElementById("modal-confirm").classList.remove("active");
+      }
+
+      function confirmDestructiveAction() {
+        closeModal();
+        undoStack = [];
+        redoStack = [];
+        canvasItems = [];
+        updateCanvasUI();
+        logEvent("alert", "[Control] Purgado confirmado por el usuario. Espacio en blanco restablecido.");
+      }
+
+      // ==========================================
+      // REGLA 2: MEMORIA & METÁFORAS
+      // ==========================================
+      function setupMetaphors() {
+        const items = document.querySelectorAll(".metaphor-item");
+        items.forEach(el => {
+          el.addEventListener("click", () => {
+            const tool = el.getAttribute("data-tool");
+            const label = el.querySelector(".metaphor-label").textContent;
+            logEvent("success", `[Memoria] Metáfora del mundo real reconocida: "${label}". No requiere memorización técnica.`);
+          });
+        });
+
+        document.getElementById("btn-toggle-defaults").addEventListener("click", () => {
+          isAssistedMode = !isAssistedMode;
+          const helpElements = document.querySelectorAll(".helper-text");
+          helpElements.forEach(span => {
+            span.style.display = isAssistedMode ? "block" : "none";
+          });
+
+          if (!isAssistedMode) {
+            document.getElementById("input-protocol").value = "";
+            document.getElementById("input-timeout").value = "";
+            logEvent("warning", "[Memoria] Modo Asistido DESACTIVADO: El usuario ahora debe recordar y escribir cada valor.");
+          } else {
+            document.getElementById("input-protocol").value = "HTTPS / Port 443";
+            document.getElementById("input-timeout").value = "30 segundos";
+            logEvent("success", "[Memoria] Modo Asistido ACTIVADO: Valores por defecto reducen la memoria de trabajo.");
+          }
+        });
+      }
+
+      // ==========================================
+      // REGLA 3: CONSISTENCIA
+      // ==========================================
+      window.logConsistency = function(type, desc) {
+        if (type === "inconsistent") {
+          logEvent("alert", `[Inconsistencia] Violación de expectativa: ${desc}`);
+        } else {
+          logEvent("success", `[Consistencia] Patrón respetado: ${desc}`);
+        }
+      };
+
+      // ==========================================
+      // TABS Y EVENTOS GENERALES
+      // ==========================================
+      document.addEventListener("DOMContentLoaded", () => {
+        // Inicializar canvas
+        updateCanvasUI();
+        setupMetaphors();
+
+        // Control buttons
+        document.getElementById("btn-add-item").addEventListener("click", addItem);
+        document.getElementById("btn-undo").addEventListener("click", performUndo);
+        document.getElementById("btn-redo").addEventListener("click", performRedo);
+        document.getElementById("btn-destructive").addEventListener("click", showDestructiveModal);
+        document.getElementById("btn-modal-cancel").addEventListener("click", closeModal);
+        document.getElementById("btn-modal-confirm").addEventListener("click", confirmDestructiveAction);
+
+        document.getElementById("btn-start-process").addEventListener("click", startLongProcess);
+        document.getElementById("btn-cancel-process").addEventListener("click", cancelLongProcess);
+        document.getElementById("btn-clear-logs").addEventListener("click", () => {
+          document.getElementById("ui-event-log").innerHTML = '<li class="success"><b>SISTEMA</b> · Registro reiniciado.</li>';
+        });
+
+        // Pestañas
+        const tabBtns = document.querySelectorAll(".tab-btn");
+        const panels = document.querySelectorAll(".sim-panel");
+
+        tabBtns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const rule = btn.getAttribute("data-rule");
+            tabBtns.forEach(b => b.classList.remove("active"));
+            panels.forEach(p => p.classList.remove("active"));
+
+            btn.classList.add("active");
+            document.getElementById(`panel-${rule}`).classList.add("active");
+
+            logEvent("success", `[Navegación] Inspeccionando ${btn.querySelector(".tab-badge").textContent}`);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

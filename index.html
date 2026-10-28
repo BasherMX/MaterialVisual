@@ -311,6 +311,24 @@
         transform: scale(1.02);
       }
 
+      .badge-uiux {
+        color: #ff9100;
+        background: rgba(255, 145, 0, 0.08);
+      }
+
+      .btn-uiux {
+        background: linear-gradient(135deg, #ffd700, #ff9100);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(255, 145, 0, 0.3);
+      }
+
+      .btn-uiux:hover {
+        background: linear-gradient(135deg, #ff9100, #ffd700);
+        box-shadow: 0 0 24px rgba(255, 145, 0, 0.6);
+        color: #000;
+        transform: scale(1.02);
+      }
+
       footer {
         margin-top: 50px;
         text-align: center;
@@ -347,7 +365,7 @@
         <p class="eyebrow">Visualizadores Interactivos</p>
         <h1>Índice de Material Visual</h1>
         <p class="intro">
-          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos y algoritmos paso a paso con retroalimentación visual en tiempo real.
+          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos y diseño de software paso a paso con retroalimentación visual en tiempo real.
         </p>
       </header>
 
@@ -471,10 +489,34 @@
             Abrir Módulo POO <span>→</span>
           </a>
         </article>
+
+        <!-- Tarjeta 6: Reglas de Oro de Theo Mandel (UI/UX) -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-uiux">06 · Diseño UI / UX</span>
+            <h2 class="module-title">Las 3 Reglas de Oro de Theo Mandel</h2>
+            <p class="module-desc">
+              Doctrina de Roger Pressman para el diseño centrado en el usuario: Control, Reducción de carga de memoria y Consistencia de interfaz.
+            </p>
+            <ul class="feature-list">
+              <li>Pila de Undo/Redo y confirmación previa ante acciones destructivas</li>
+              <li>Valores predeterminados inteligentes y metáforas analógicas</li>
+              <li>Matriz de consistencia visual, posicional y operativa estándar</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/06-reglas-oro-theo-mandel-ui-ux.html"
+            class="btn-launch btn-uiux"
+            id="btn-goto-uiux"
+            aria-label="Abrir módulo de las 3 Reglas de Oro de Theo Mandel"
+          >
+            Abrir Módulo UI/UX <span>→</span>
+          </a>
+        </article>
       </section>
 
       <footer>
-        Material Didáctico e Interactivo para Estructuras de Datos y Algoritmos
+        Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos y Diseño de Software
       </footer>
     </main>
   </body>
