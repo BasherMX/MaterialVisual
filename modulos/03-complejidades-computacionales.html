@@ -648,6 +648,62 @@
         }
       }
 
+      @media (max-width: 600px) {
+        .page {
+          width: calc(100% - 20px);
+          padding-top: 20px;
+        }
+        h1 {
+          font-size: 1.85rem;
+          line-height: 1.1;
+          word-break: break-word;
+        }
+        .intro {
+          font-size: 0.9rem;
+        }
+        .matrix-card,
+        .rules-card,
+        .chart-card,
+        .sim-card,
+        .card {
+          padding: 14px 12px;
+        }
+        .matrix-card {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        table.big-o-table {
+          min-width: 480px;
+        }
+        .eclipsing-table-wrap {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        table.eclipsing-table {
+          min-width: 440px;
+        }
+        .rules-grid {
+          grid-template-columns: 1fr;
+        }
+        .tab-btn {
+          flex: 1 1 100%;
+        }
+        .ctrl-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .ctrl-row > * {
+          width: 100%;
+        }
+        .sim-btn-group {
+          flex-direction: column;
+          width: 100%;
+        }
+        .sim-btn-group button {
+          width: 100%;
+        }
+      }
+
       /* Sección Reglas de Simplificación Big O */
       .rules-card {
         border: 1px solid var(--line);

@@ -518,20 +518,38 @@
       }
       @media (max-width: 600px) {
         .page {
-          width: min(100% - 24px, 1440px);
-          padding-top: 24px;
+          width: calc(100% - 20px);
+          padding-top: 20px;
+        }
+        h1 {
+          font-size: 1.85rem;
+          line-height: 1.1;
+          word-break: break-word;
+        }
+        .intro {
+          font-size: 0.9rem;
         }
         .workspace {
-          padding: 13px;
+          padding: 12px;
+        }
+        .toolbar {
+          gap: 8px;
+          padding-bottom: 12px;
         }
         .toolbar > * {
-          flex: 1 1 auto;
+          flex: 1 1 100%;
         }
         .input-wrap {
           justify-content: space-between;
+          width: 100%;
         }
         input {
-          width: 75px;
+          width: 100%;
+          min-width: 60px;
+        }
+        button {
+          padding: 10px 12px;
+          font-size: 0.74rem;
         }
         .tree-header {
           display: block;

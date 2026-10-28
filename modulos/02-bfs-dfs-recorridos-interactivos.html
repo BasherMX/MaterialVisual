@@ -544,14 +544,33 @@
       }
       @media (max-width: 600px) {
         .page {
-          width: calc(100% - 24px);
-          padding-top: 23px;
+          width: calc(100% - 20px);
+          padding-top: 20px;
+        }
+        h1 {
+          font-size: 1.85rem;
+          line-height: 1.1;
+          word-break: break-word;
+        }
+        .intro {
+          font-size: 0.9rem;
         }
         .workspace {
-          padding: 13px;
+          padding: 12px;
+        }
+        .control-bar {
+          gap: 8px;
+        }
+        .mode-button,
+        .outline-button,
+        .primary-button {
+          padding: 8px 10px;
+          font-size: 0.72rem;
         }
         .speed-control {
           margin-left: 0;
+          width: 100%;
+          justify-content: space-between;
         }
         .graph-heading {
           display: block;
@@ -561,6 +580,7 @@
         }
         .metrics {
           grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
         }
         .sidebar {
           display: block;

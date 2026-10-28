@@ -688,6 +688,53 @@
         .examples-grid { grid-template-columns: 1fr; }
       }
 
+      @media (max-width: 600px) {
+        .page {
+          width: calc(100% - 20px);
+          padding-top: 20px;
+        }
+        h1 {
+          font-size: 1.85rem;
+          line-height: 1.1;
+          word-break: break-word;
+        }
+        .intro {
+          font-size: 0.9rem;
+        }
+        .matrix-card,
+        .sim-card,
+        .card {
+          padding: 14px 12px;
+        }
+        .matrix-card {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        table.compare-table {
+          min-width: 520px;
+        }
+        .tab-btn {
+          flex: 1 1 100%;
+        }
+        .ctrl-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .ctrl-row > * {
+          width: 100%;
+        }
+        .sim-btn-group {
+          flex-direction: column;
+          width: 100%;
+        }
+        .sim-btn-group button {
+          width: 100%;
+        }
+        .graph-svg-wrap {
+          height: 300px;
+        }
+      }
+
       /* Estilos para el Grafo Interactivo de Dijkstra */
       .graph-svg-wrap {
         width: 100%;
