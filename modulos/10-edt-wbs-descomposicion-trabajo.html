@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDT / WBS: Estructura de Descomposición del Trabajo | Marion E. Haynes</title>
+    <meta
+      name="description"
+      content="Simulador y laboratorio interactivo de la EDT / WBS (Work Breakdown Structure) según Marion E. Haynes: descomposición jerárquica orientada a entregables, paquetes de trabajo (Work Packages), la regla del 100%, estimaciones y diccionario de la EDT."
+    />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --panel-dark: #121124;
+        --line: rgba(0, 255, 255, 0.28);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --purple: #7928ca;
+        --gold: #ffd700;
+        --green: #00ffaa;
+        --shadow: 0 0 24px rgba(0, 128, 255, 0.16);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(circle at 50% -10%, rgba(121, 40, 202, 0.35), transparent 45%), var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
+        opacity: 0.45;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(rgba(121, 40, 202, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(121, 40, 202, 0.05) 1px, transparent 1px);
+        background-size: 38px 38px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: #b185ff;
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(121, 40, 202, 0.2);
+      }
+
+      .btn-back-index:hover {
+        background: rgba(121, 40, 202, 0.2);
+        border-color: #b185ff;
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(121, 40, 202, 0.4);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: #b185ff;
+        font: 700 0.76rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(121, 40, 202, 0.7);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 860px;
+        font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+        line-height: 1;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+
+      .intro {
+        max-width: 500px;
+        margin: 0 0 4px;
+        color: var(--muted);
+        font: 0.95rem/1.55 Verdana, sans-serif;
+      }
+
+      /* Tabla Conceptual */
+      .matrix-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+
+      .matrix-card h2 {
+        margin: 0 0 14px;
+        color: #b185ff;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table.compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font: 0.85rem/1.45 Verdana, sans-serif;
+      }
+
+      table.compare-table th {
+        color: #b185ff;
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px;
+        font-family: "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        font-size: 0.92rem;
+      }
+
+      table.compare-table td {
+        padding: 14px 14px;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+        color: var(--ink);
+        vertical-align: top;
+      }
+
+      table.compare-table tr:hover {
+        background: rgba(121, 40, 202, 0.05);
+      }
+
+      /* Pestañas */
+      .tabs-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .tab-btn {
+        flex: 1 1 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.7);
+        color: var(--muted);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .tab-btn .tab-badge {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--ink);
+      }
+
+      .tab-btn .tab-name {
+        font-size: 0.75rem;
+        font-family: Verdana, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .tab-btn:hover {
+        background: rgba(34, 33, 61, 0.95);
+        border-color: #b185ff;
+        transform: translateY(-2px);
+      }
+
+      .tab-btn.active {
+        background: rgba(121, 40, 202, 0.2);
+        border-color: #b185ff;
+        box-shadow: 0 0 20px rgba(121, 40, 202, 0.3);
+      }
+
+      .tab-btn.active .tab-badge { color: #b185ff; }
+
+      /* Layout */
+      .lab-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
+        gap: 22px;
+        align-items: start;
+      }
+
+      .sim-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+      }
+
+      .sim-card h3 {
+        margin: 0 0 10px;
+        color: #b185ff;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sim-desc {
+        color: var(--muted);
+        font: 0.86rem/1.55 Verdana, sans-serif;
+        margin: 0 0 16px;
+      }
+
+      /* Árbol Jerárquico Visual */
+      .wbs-tree-viewport {
+        background: var(--panel-dark);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .wbs-level {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .wbs-node {
+        background: rgba(34, 33, 61, 0.95);
+        border: 2px solid var(--cyan);
+        border-radius: 6px;
+        padding: 10px 14px;
+        min-width: 140px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .wbs-node:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 255, 255, 0.3);
+      }
+
+      .wbs-node.selected {
+        border-color: var(--gold);
+        background: rgba(255, 215, 0, 0.15);
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
+      }
+
+      .wbs-node.level-1 { border-color: #b185ff; }
+      .wbs-node.level-2 { border-color: var(--cyan); }
+      .wbs-node.level-3 { border-color: var(--green); }
+
+      .wbs-code {
+        display: block;
+        font-size: 0.72rem;
+        color: var(--gold);
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+
+      .wbs-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .wbs-pct {
+        font-size: 0.68rem;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      /* Inspector y Diccionario */
+      .sidebar-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+      }
+
+      .sidebar-card h3 {
+        margin: 0 0 12px;
+        color: #b185ff;
+        font-size: 1.15rem;
+      }
+
+      .haynes-box {
+        background: rgba(121, 40, 202, 0.12);
+        border-left: 3px solid #b185ff;
+        padding: 12px;
+        border-radius: 0 6px 6px 0;
+        margin-bottom: 16px;
+        font: 0.84rem/1.5 Verdana, sans-serif;
+        color: var(--ink);
+      }
+
+      .dictionary-card {
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 6px;
+        padding: 14px;
+        margin-bottom: 14px;
+      }
+      .dictionary-card h4 { margin: 0 0 6px; color: var(--gold); font-size: 0.92rem; }
+      .dictionary-card p { margin: 0 0 6px; font: 0.78rem/1.5 Verdana, sans-serif; color: var(--muted); }
+
+      .rule-pill {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font: 700 0.78rem "Courier New", Courier, monospace;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.18s ease;
+      }
+      .btn-purple {
+        background: linear-gradient(135deg, #7928ca, #0080ff);
+        color: #ffffff;
+      }
+      .btn-purple:hover { transform: translateY(-2px); box-shadow: 0 0 16px rgba(121, 40, 202, 0.4); }
+
+      .btn-outline {
+        background: transparent;
+        border-color: var(--line);
+        color: var(--ink);
+      }
+
+      footer {
+        margin-top: 50px;
+        text-align: center;
+        border-top: 1px solid var(--line);
+        padding-top: 24px;
+        color: var(--muted);
+        font: 0.78rem/1.5 Verdana, sans-serif;
+      }
+
+      @media (max-width: 960px) {
+        header { display: block; }
+        .intro { margin-top: 14px; }
+        .lab-layout { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 600px) {
+        .page { width: calc(100% - 20px); padding-top: 20px; }
+        h1 { font-size: 1.85rem; line-height: 1.1; word-break: break-word; }
+        .intro { font-size: 0.9rem; }
+        .matrix-card, .sim-card, .sidebar-card { padding: 14px 12px; }
+        .matrix-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table.compare-table { min-width: 520px; }
+        .tab-btn { flex: 1 1 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
+        <span>←</span> Volver al Índice
+      </a>
+
+      <header>
+        <div>
+          <p class="eyebrow">Gestión de Proyectos · Doctrina de Marion E. Haynes</p>
+          <h1>Estructura de Descomposición<br />del Trabajo (EDT / WBS)</h1>
+        </div>
+        <p class="intro">
+          Domina la herramienta fundamental para planificar y controlar el alcance de cualquier proyecto. Según <strong>Marion E. Haynes</strong> (*Project Management*), la EDT/WBS descompone sistemáticamente metas gigantescas en entregables medibles, paquetes de trabajo independientes y responsabilidades claras.
+        </p>
+      </header>
+
+      <!-- Tabla Doctrinal de Haynes -->
+      <section class="matrix-card" aria-label="Principios de la EDT según Marion E. Haynes">
+        <h2><span>🏗️</span> Fundamentos y Propósito de la EDT/WBS (Marion E. Haynes)</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Concepto Clave</th>
+              <th>¿Qué es?</th>
+              <th>¿Para qué sirve en la gestión?</th>
+              <th>Regla de Oro de Haynes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--gold); font-weight:700;">Orientación a Entregables</td>
+              <td>Descomposición basada en productos o resultados tangibles (sustantivos), no en simples listas de actividades o tareas sueltas.</td>
+              <td>Garantiza que el cliente y el equipo entiendan qué se va a entregar exactamente al final de cada fase.</td>
+              <td><em>"Si no produce un entregable verificable, no es un elemento de la EDT."</em></td>
+            </tr>
+            <tr>
+              <td style="color:var(--green); font-weight:700;">Paquete de Trabajo (Work Package)</td>
+              <td>Nivel más bajo de la descomposición de la EDT. Unidad indivisible asignable a un único responsable.</td>
+              <td>Permite estimar tiempo con precisión (días/horas), asignar presupuesto exacto y monitorear avance real.</td>
+              <td><strong>Regla del 8/80:</strong> Ni menos de 8 horas ni más de 80 horas de esfuerzo continuo.</td>
+            </tr>
+            <tr>
+              <td style="color:var(--cyan); font-weight:700;">La Regla del 100%</td>
+              <td>La EDT debe incluir el 100% del trabajo definido en el alcance y nada más que el 100% (cero omisiones, cero trabajo fantasma).</td>
+              <td>Evita el <em>Scope Creep</em> (corrimiento de alcance) y asegura que la suma de los niveles inferiores totalice el nivel superior.</td>
+              <td><em>"Lo que no esté en la EDT, no existe en el proyecto."</em></td>
+            </tr>
+            <tr>
+              <td style="color:#b185ff; font-weight:700;">Diccionario de la EDT</td>
+              <td>Documento complementario que detalla la descripción técnica, criterios de aceptación y recursos de cada código WBS.</td>
+              <td>Elimina la ambigüedad y previene malentendidos entre desarrolladores, diseñadores y clientes.</td>
+              <td>El diccionario convierte un cuadro abstracto en un contrato técnico operativo.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Pestañas de Proyectos Ejemplo -->
+      <nav class="tabs-bar" aria-label="Seleccionar proyecto de ejemplo">
+        <button class="tab-btn active" data-project="software" id="tab-soft">
+          <span class="tab-badge">01. Sistema de Software</span>
+          <span class="tab-name">App Móvil E-Commerce</span>
+        </button>
+        <button class="tab-btn" data-project="database" id="tab-db">
+          <span class="tab-badge">02. Proyecto de Base de Datos</span>
+          <span class="tab-name">Migración y Modelado</span>
+        </button>
+        <button class="tab-btn" data-project="event" id="tab-event">
+          <span class="tab-badge">03. Evento / Seminario TI</span>
+          <span class="tab-name">Logística y Despliegue</span>
+        </button>
+      </nav>
+
+      <div class="lab-layout">
+        <!-- ÁREA INTERACTIVA PRINCIPAL: ÁRBOL JERÁRQUICO -->
+        <section class="sim-card" aria-label="Árbol Jerárquico Interactivo">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 id="wbs-project-title"><span>🌳</span> Árbol Jerárquico EDT: Sistema E-Commerce</h3>
+            <span style="font-size:0.75rem; color:var(--cyan);">Haz clic en cualquier nodo para abrir su ficha</span>
+          </div>
+          <p class="sim-desc" id="wbs-project-desc">
+            Nivel 1: Proyecto global (100%). Nivel 2: Fases o entregables principales. Nivel 3: Paquetes de trabajo (Work Packages) ejecutables.
+          </p>
+
+          <div class="wbs-tree-viewport" id="wbs-tree-container">
+            <!-- Nodos inyectados por JavaScript -->
+          </div>
+
+          <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="font-size:0.8rem; color:var(--muted);">
+              Suma del esfuerzo de paquetes hijos: <strong id="rule-100-sum" style="color:var(--green);">100%</strong>
+            </div>
+            <button class="btn-action btn-purple" id="btn-expand-all">Expandir / Colapsar Todo</button>
+          </div>
+        </section>
+
+        <!-- PANEL LATERAL: DICCIONARIO DE LA EDT Y DOCTRINA HAYNES -->
+        <aside class="sidebar-card" aria-label="Ficha del Diccionario de la EDT">
+          <h3><span>📖</span> Diccionario de la EDT</h3>
+
+          <div class="haynes-box" id="haynes-quote">
+            <strong>Consejo de Marion E. Haynes:</strong><br />
+            "Descompón el proyecto hasta que el paquete de trabajo pueda ser asignado a una sola persona con una fecha clara y un costo determinable."
+          </div>
+
+          <!-- FICHA DETALLADA DEL NODO SELECCIONADO -->
+          <div class="dictionary-card" id="dict-card">
+            <h4 id="dict-code-title">WBS 1.0: Sistema E-Commerce</h4>
+            <p><strong>Nivel Jerárquico:</strong> <span id="dict-level" class="rule-pill" style="background:rgba(121,40,202,0.2); color:#b185ff;">Nivel 1 (Proyecto)</span></p>
+            <p><strong>Responsable:</strong> <span id="dict-owner">Líder de Proyecto General</span></p>
+            <p><strong>Entregable Tangible:</strong> <span id="dict-deliverable">Aplicación completa en producción</span></p>
+            <p><strong>Estimación de Esfuerzo:</strong> <span id="dict-duration">6 meses (~800 horas)</span></p>
+            <p><strong>Criterio de Aceptación (Doctrina):</strong> <span id="dict-criteria">Aprobación por parte de los patrocinadores en el entorno productivo.</span></p>
+          </div>
+
+          <div class="dictionary-card" style="border-left:3px solid var(--gold);">
+            <h4 style="color:var(--gold);">Guía Práctica para armar una EDT:</h4>
+            <ul style="margin:4px 0 0 16px; padding:0; font-size:0.75rem; color:var(--muted); line-height:1.6;">
+              <li>Usa <strong>sustantivos</strong> ("Módulo de Pagos"), no verbos ("Programar pagos").</li>
+              <li>Aplica numeración de esquema: <code>1.0</code>, <code>1.1</code>, <code>1.1.1</code>.</li>
+              <li>Cada paquete debe tener <strong>un solo dueño</strong> (responsabilidad única).</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <footer>
+        Material Didáctico e Interactivo para Gestión de Proyectos de Software · Basado en Marion E. Haynes
+      </footer>
+    </main>
+
+    <script>
+      // ==========================================
+      // DATOS DE PROYECTOS WBS
+      // ==========================================
+      const wbsProjects = {
+        software: {
+          title: "Sistema de Software E-Commerce",
+          desc: "Descomposición orientada a entregables de una aplicación de compras en línea según Haynes.",
+          root: {
+            code: "1.0",
+            name: "Sistema E-Commerce",
+            level: 1,
+            pct: "100%",
+            owner: "Project Manager (Líder)",
+            deliverable: "Plataforma web/móvil completa y operativa",
+            duration: "6 meses (~800 horas)",
+            criteria: "Pruebas de aceptación firmadas por el cliente.",
+            children: [
+              {
+                code: "1.1",
+                name: "Arquitectura y Diseño",
+                level: 2,
+                pct: "25%",
+                owner: "Arquitecto de Software",
+                deliverable: "Documento de arquitectura y prototipos UX",
+                duration: "4 semanas",
+                criteria: "Validación de modelos de datos y wireframes aprobados.",
+                children: [
+                  { code: "1.1.1", name: "Modelo de Datos ERD", level: 3, pct: "10%", owner: "Diseñador de BD", deliverable: "Esquema relacional en 3FN", duration: "40 horas", criteria: "Esquema validado contra transacciones." },
+                  { code: "1.1.2", name: "Prototipos UI / UX", level: 3, pct: "15%", owner: "Especialista UI", deliverable: "Wireframes interactivos de alta fidelidad", duration: "60 horas", criteria: "Pruebas con usuarios según reglas de Mandel." }
+                ]
+              },
+              {
+                code: "1.2",
+                name: "Motor de Transacciones",
+                level: 2,
+                pct: "45%",
+                owner: "Tech Lead Backend",
+                deliverable: "Módulos de catálogo, carrito y pagos seguros",
+                duration: "8 semanas",
+                criteria: "APIs REST documentadas con 95% de tests pasando.",
+                children: [
+                  { code: "1.2.1", name: "Módulo Catálogo", level: 3, pct: "20%", owner: "Dev Backend Sr", deliverable: "Servicio de búsqueda y filtrado de productos", duration: "80 horas", criteria: "Tiempos de respuesta < 200ms." },
+                  { code: "1.2.2", name: "Pasarela de Pagos", level: 3, pct: "25%", owner: "Dev Seguridad", deliverable: "Integración con tarjeta/Stripe", duration: "75 horas", criteria: "Cumplimiento con certificación PCI-DSS." }
+                ]
+              },
+              {
+                code: "1.3",
+                name: "Despliegue y Pruebas",
+                level: 2,
+                pct: "30%",
+                owner: "DevOps & QA Lead",
+                deliverable: "Infraestructura cloud y suite de pruebas",
+                duration: "6 semanas",
+                criteria: "Pase a producción sin vulnerabilidades críticas.",
+                children: [
+                  { code: "1.3.1", name: "Pipeline CI/CD", level: 3, pct: "15%", owner: "Ingeniero DevOps", deliverable: "Pipeline automatizado de compilación y despliegue", duration: "45 horas", criteria: "Despliegue automático a staging." },
+                  { code: "1.3.2", name: "Pruebas de Carga", level: 3, pct: "15%", owner: "QA Engineer", deliverable: "Informe de estrés y estabilidad", duration: "50 horas", criteria: "Soporte de 1,000 usuarios concurrentes sin fallos." }
+                ]
+              }
+            ]
+          }
+        },
+        database: {
+          title: "Proyecto de Base de Datos y Migración",
+          desc: "Descomposición para el rediseño y normalización de un sistema transaccional corporativo.",
+          root: {
+            code: "1.0",
+            name: "Modernización de Base de Datos",
+            level: 1,
+            pct: "100%",
+            owner: "Administrador de Datos (DBA)",
+            deliverable: "Base de datos relacional normalizada y migrada",
+            duration: "4 meses (~520 horas)",
+            criteria: "Migración de datos históricos con 0% de pérdidas.",
+            children: [
+              {
+                code: "1.1",
+                name: "Levantamiento Conceptual",
+                level: 2,
+                pct: "30%",
+                owner: "Modelador de Datos",
+                deliverable: "Diagramas ERD y especificación de requisitos",
+                duration: "3 semanas",
+                criteria: "Catálogo de entidades y atributos aprobado.",
+                children: [
+                  { code: "1.1.1", name: "Análisis de Ficheros", level: 3, pct: "15%", owner: "Analista de Datos", deliverable: "Auditoría de datos legados", duration: "40 horas", criteria: "Mapeo completo de campos existentes." },
+                  { code: "1.1.2", name: "ERD Conceptual (Chen)", level: 3, pct: "15%", owner: "Modelador de Datos", deliverable: "Diagrama conceptual validado", duration: "45 horas", criteria: "Cardinalidades mínimas y máximas definidas." }
+                ]
+              },
+              {
+                code: "1.2",
+                name: "Normalización Lógica",
+                level: 2,
+                pct: "40%",
+                owner: "Especialista Relacional",
+                deliverable: "Esquema lógico en Tercera Forma Normal (3FN)",
+                duration: "4 semanas",
+                criteria: "Eliminación de anomalías de inserción y borrado.",
+                children: [
+                  { code: "1.2.1", name: "Descomposición 1FN/2FN", level: 3, pct: "20%", owner: "Diseñador Lógico", deliverable: "Tablas sin grupos repetitivos", duration: "50 horas", criteria: "Claves compuestas analizadas." },
+                  { code: "1.2.2", name: "Aislamiento 3FN / BCNF", level: 3, pct: "20%", owner: "Diseñador Lógico", deliverable: "Tablas sin dependencias transitivas", duration: "50 horas", criteria: "Verificación de claves candidatas." }
+                ]
+              },
+              {
+                code: "1.3",
+                name: "Implementación Física DDL",
+                level: 2,
+                pct: "30%",
+                owner: "DBA de Producción",
+                deliverable: "Scripts SQL de tablas, índices y vistas",
+                duration: "3 semanas",
+                criteria: "Scripts probados en ambiente de staging.",
+                children: [
+                  { code: "1.3.1", name: "Scripts DDL & Constraints", level: 3, pct: "15%", owner: "DBA Jr", deliverable: "Sentencias CREATE TABLE y FKs", duration: "40 horas", criteria: "Integridad referencial y CHECK activas." },
+                  { code: "1.3.2", name: "Estrategia de Índices", level: 3, pct: "15%", owner: "Tuning Specialist", deliverable: "Índices B+ y tablas de búsqueda", duration: "35 horas", criteria: "Pruebas de Explain Plan satisfactorias." }
+                ]
+              }
+            ]
+          }
+        },
+        event: {
+          title: "Seminario de Tecnología de la Información",
+          desc: "Ejemplo de proyecto logístico para ilustrar que la EDT aplica a cualquier tipo de proyecto.",
+          root: {
+            code: "1.0",
+            name: "Seminario Anual TI",
+            level: 1,
+            pct: "100%",
+            owner: "Coordinador de Eventos",
+            deliverable: "Seminario ejecutado para 500 asistentes",
+            duration: "3 meses",
+            criteria: "Encuesta de satisfacción superior al 90%.",
+            children: [
+              {
+                code: "1.1",
+                name: "Programa y Ponentes",
+                level: 2,
+                pct: "35%",
+                owner: "Comité Académico",
+                deliverable: "Agenda confirmada con 8 conferencistas",
+                duration: "4 semanas",
+                criteria: "Contratos de conferencias firmados.",
+                children: [
+                  { code: "1.1.1", name: "Selección de Keynotes", level: 3, pct: "20%", owner: "Líder de Contenido", deliverable: "Invitaciones y confirmaciones de ponentes", duration: "30 horas", criteria: "100% de cartas compromiso recibidas." },
+                  { code: "1.1.2", name: "Estructura de Talleres", level: 3, pct: "15%", owner: "Facilitador Técnico", deliverable: "Laboratorios prácticos y guías", duration: "25 horas", criteria: "Material didáctico revisado." }
+                ]
+              },
+              {
+                code: "1.2",
+                name: "Logística y Sede",
+                level: 2,
+                pct: "40%",
+                owner: "Jefe de Operaciones",
+                deliverable: "Auditorio, streaming y acreditaciones listas",
+                duration: "6 semanas",
+                criteria: "Pruebas de audio/video y catering aprobado.",
+                children: [
+                  { code: "1.2.1", name: "Infraestructura Técnica", level: 3, pct: "25%", owner: "Líder Audiovisual", deliverable: "Red Wi-Fi dedicada y proyección", duration: "40 horas", criteria: "Ancho de banda garantizado para 500 disp." },
+                  { code: "1.2.2", name: "Kit de Bienvenida", level: 3, pct: "15%", owner: "Coordinador Logístico", deliverable: "Gafetes, cuadernos y acreditaciones", duration: "20 horas", criteria: "500 paquetes armados 48h antes." }
+                ]
+              },
+              {
+                code: "1.3",
+                name: "Difusión y Registro",
+                level: 2,
+                pct: "25%",
+                owner: "Líder de Marketing",
+                deliverable: "Portal de registro con cupo lleno",
+                duration: "4 semanas",
+                criteria: "500 boletos reservados en plataforma.",
+                children: [
+                  { code: "1.3.1", name: "Landing Page de Registro", level: 3, pct: "15%", owner: "Desarrollador Web", deliverable: "Sitio web para venta de boletos", duration: "35 horas", criteria: "Pasarela de pagos en línea funcionando." },
+                  { code: "1.3.2", name: "Campaña en Redes", level: 3, pct: "10%", owner: "Community Manager", deliverable: "Alcance publicitario de 50,000 vistas", duration: "20 horas", criteria: "Tasa de conversión esperada lograda." }
+                ]
+              }
+            ]
+          }
+        }
+      };
+
+      let activeProject = "software";
+
+      function selectNode(node) {
+        document.querySelectorAll(".wbs-node").forEach(n => n.classList.remove("selected"));
+        const el = document.getElementById(`node-${node.code.replace(/\./g, '_')}`);
+        if (el) el.classList.add("selected");
+
+        document.getElementById("dict-code-title").textContent = `WBS ${node.code}: ${node.name}`;
+        document.getElementById("dict-level").textContent = `Nivel ${node.level} (${node.level === 1 ? 'Proyecto' : node.level === 2 ? 'Entregable' : 'Paquete de Trabajo'})`;
+        document.getElementById("dict-owner").textContent = node.owner || "Por asignar";
+        document.getElementById("dict-deliverable").textContent = node.deliverable || "Sin definir";
+        document.getElementById("dict-duration").textContent = node.duration || "N/A";
+        document.getElementById("dict-criteria").textContent = node.criteria || "N/A";
+      }
+
+      function renderTree() {
+        const proj = wbsProjects[activeProject];
+        document.getElementById("wbs-project-title").innerHTML = `<span>🌳</span> EDT: ${proj.title}`;
+        document.getElementById("wbs-project-desc").textContent = proj.desc;
+
+        const container = document.getElementById("wbs-tree-container");
+        container.innerHTML = "";
+
+        // Nivel 1
+        const lvl1 = document.createElement("div");
+        lvl1.className = "wbs-level";
+        const rootNode = proj.root;
+        lvl1.innerHTML = `
+          <div class="wbs-node level-1 selected" id="node-${rootNode.code.replace(/\./g, '_')}" onclick='handleNodeClick("${rootNode.code}")'>
+            <span class="wbs-code">WBS ${rootNode.code}</span>
+            <span class="wbs-title">${rootNode.name}</span>
+            <div class="wbs-pct">${rootNode.pct} del Alcance Total</div>
+          </div>
+        `;
+        container.appendChild(lvl1);
+
+        // Nivel 2
+        const lvl2 = document.createElement("div");
+        lvl2.className = "wbs-level";
+        rootNode.children.forEach(c2 => {
+          lvl2.innerHTML += `
+            <div class="wbs-node level-2" id="node-${c2.code.replace(/\./g, '_')}" onclick='handleNodeClick("${c2.code}")'>
+              <span class="wbs-code">WBS ${c2.code}</span>
+              <span class="wbs-title">${c2.name}</span>
+              <div class="wbs-pct">${c2.pct} del Proyecto</div>
+            </div>
+          `;
+        });
+        container.appendChild(lvl2);
+
+        // Nivel 3 (Paquetes de trabajo)
+        const lvl3 = document.createElement("div");
+        lvl3.className = "wbs-level";
+        rootNode.children.forEach(c2 => {
+          if (c2.children) {
+            c2.children.forEach(c3 => {
+              lvl3.innerHTML += `
+                <div class="wbs-node level-3" id="node-${c3.code.replace(/\./g, '_')}" onclick='handleNodeClick("${c3.code}")'>
+                  <span class="wbs-code">WP ${c3.code}</span>
+                  <span class="wbs-title">${c3.name}</span>
+                  <div class="wbs-pct">${c3.pct} · ${c3.duration}</div>
+                </div>
+              `;
+            });
+          }
+        });
+        container.appendChild(lvl3);
+
+        selectNode(rootNode);
+      }
+
+      function findNodeByCode(code, curr) {
+        if (curr.code === code) return curr;
+        if (curr.children) {
+          for (let c of curr.children) {
+            const res = findNodeByCode(code, c);
+            if (res) return res;
+          }
+        }
+        return null;
+      }
+
+      window.handleNodeClick = function(code) {
+        const node = findNodeByCode(code, wbsProjects[activeProject].root);
+        if (node) selectNode(node);
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderTree();
+
+        const tabs = document.querySelectorAll(".tab-btn");
+        tabs.forEach(btn => {
+          btn.addEventListener("click", () => {
+            tabs.forEach(t => t.classList.remove("active"));
+            btn.classList.add("active");
+            activeProject = btn.getAttribute("data-project");
+            renderTree();
+          });
+        });
+
+        document.getElementById("btn-expand-all").addEventListener("click", () => {
+          alert("La EDT de Marion E. Haynes muestra toda la jerarquía activa para garantizar la visibilidad del 100% del alcance.");
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -383,6 +383,24 @@
         transform: scale(1.02);
       }
 
+      .badge-wbs {
+        color: #b185ff;
+        background: rgba(177, 133, 255, 0.08);
+      }
+
+      .btn-wbs {
+        background: linear-gradient(135deg, #7928ca, #0080ff);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(121, 40, 202, 0.3);
+      }
+
+      .btn-wbs:hover {
+        background: linear-gradient(135deg, #0080ff, #7928ca);
+        box-shadow: 0 0 24px rgba(121, 40, 202, 0.6);
+        color: #fff;
+        transform: scale(1.02);
+      }
+
       footer {
         margin-top: 50px;
         text-align: center;
@@ -637,6 +655,30 @@
             aria-label="Abrir módulo del Triángulo de Hierro"
           >
             Abrir Módulo Triángulo de Hierro <span>→</span>
+          </a>
+        </article>
+
+        <!-- Tarjeta 10: EDT / WBS (Marion E. Haynes) -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-wbs">10 · Planificación / Haynes</span>
+            <h2 class="module-title">EDT / WBS: Descomposición del Trabajo</h2>
+            <p class="module-desc">
+              Estructura de Descomposición del Trabajo según Marion E. Haynes: paquetes de trabajo (Work Packages), regla del 100% y diccionario de la EDT.
+            </p>
+            <ul class="feature-list">
+              <li>Árbol jerárquico interactivo multinivel (Proyecto, Entregables y Paquetes de Trabajo)</li>
+              <li>Diccionario de la EDT dinámico: responsables, criterios de aceptación y esfuerzo</li>
+              <li>Proyectos preestablecidos: App E-Commerce, Modernización de BD y Seminario TI</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/10-edt-wbs-descomposicion-trabajo.html"
+            class="btn-launch btn-wbs"
+            id="btn-goto-wbs"
+            aria-label="Abrir módulo de la EDT / WBS"
+          >
+            Abrir Módulo EDT / WBS <span>→</span>
           </a>
         </article>
       </section>

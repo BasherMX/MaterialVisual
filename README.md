@@ -12,3 +12,4 @@ Visualizadores y simuladores interactivos de estructuras de datos, algoritmos, d
 - 07. Modelado Conceptual ERD y Notaciones de Diagramas (Chen, Pata de Gallo, IDEF1X, UML)
 - 08. Diseño Lógico Relacional y Normalización (1FN, 2FN, 3FN, BCNF y Desnormalización)
 - 09. El Triángulo de Hierro: Triple Restricción de Proyectos (Sommerville & Pressman)
+- 10. EDT / WBS: Estructura de Descomposición del Trabajo (Marion E. Haynes)
