@@ -329,6 +329,42 @@
         transform: scale(1.02);
       }
 
+      .badge-erd {
+        color: #00ffff;
+        background: rgba(0, 255, 255, 0.08);
+      }
+
+      .btn-erd {
+        background: linear-gradient(135deg, #00ffff, #0080ff);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
+      }
+
+      .btn-erd:hover {
+        background: linear-gradient(135deg, #0080ff, #00ffff);
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.6);
+        color: #fff;
+        transform: scale(1.02);
+      }
+
+      .badge-norm {
+        color: #00ffaa;
+        background: rgba(0, 255, 170, 0.08);
+      }
+
+      .btn-norm {
+        background: linear-gradient(135deg, #00ffaa, #0080ff);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.3);
+      }
+
+      .btn-norm:hover {
+        background: linear-gradient(135deg, #0080ff, #00ffaa);
+        box-shadow: 0 0 24px rgba(0, 255, 170, 0.6);
+        color: #fff;
+        transform: scale(1.02);
+      }
+
       footer {
         margin-top: 50px;
         text-align: center;
@@ -365,7 +401,7 @@
         <p class="eyebrow">Visualizadores Interactivos</p>
         <h1>Índice de Material Visual</h1>
         <p class="intro">
-          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos y diseño de software paso a paso con retroalimentación visual en tiempo real.
+          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos, diseño de software y bases de datos paso a paso con retroalimentación visual en tiempo real.
         </p>
       </header>
 
@@ -513,10 +549,58 @@
             Abrir Módulo UI/UX <span>→</span>
           </a>
         </article>
+
+        <!-- Tarjeta 7: Modelado Conceptual ERD y Notaciones -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-erd">07 · Bases de Datos / Modelado</span>
+            <h2 class="module-title">Modelado Conceptual ERD y Notaciones</h2>
+            <p class="module-desc">
+              Comparativa gráfica de diagramas entidad-relación: Peter Chen, Information Engineering (Pata de Gallo), IDEF1X y diagramas de clases UML.
+            </p>
+            <ul class="feature-list">
+              <li>Entidades fuertes, entidades débiles dependientes e identificadores</li>
+              <li>Conexiones y cardinalidades mínimas/máximas (uno a uno, uno a varios, varios a varios)</li>
+              <li>Jerarquías de generalización (supertipos/subtipos) y Matriz CRUD</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/07-modelado-conceptual-erd-diagramas.html"
+            class="btn-launch btn-erd"
+            id="btn-goto-erd"
+            aria-label="Abrir módulo de Modelado Conceptual ERD"
+          >
+            Abrir Módulo ERD <span>→</span>
+          </a>
+        </article>
+
+        <!-- Tarjeta 8: Normalización de Bases de Datos -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-norm">08 · Diseño Lógico / Codd</span>
+            <h2 class="module-title">Normalización de Bases de Datos (1FN - BCNF)</h2>
+            <p class="module-desc">
+              Metodología de diseño lógico relacional para eliminar anomalías de inserción, eliminación y actualización según Codd, Oppel y Marqués.
+            </p>
+            <ul class="feature-list">
+              <li>Paso a paso interactivo: De factura no normalizada hasta 1FN, 2FN y 3FN</li>
+              <li>Detección de dependencias funcionales parciales y transitivas</li>
+              <li>Simulador en vivo de anomalías y criterios de desnormalización controlada</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/08-normalizacion-bases-datos.html"
+            class="btn-launch btn-norm"
+            id="btn-goto-norm"
+            aria-label="Abrir módulo de Normalización de Bases de Datos"
+          >
+            Abrir Módulo Normalización <span>→</span>
+          </a>
+        </article>
       </section>
 
       <footer>
-        Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos y Diseño de Software
+        Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software y Bases de Datos
       </footer>
     </main>
   </body>

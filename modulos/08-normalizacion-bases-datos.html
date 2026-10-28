@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Normalización de Bases de Datos | Laboratorio Interactivo</title>
+    <meta
+      name="description"
+      content="Simulador interactivo del proceso de normalización de bases de datos: 1FN (valores atómicos y grupos repetitivos), 2FN (dependencias parciales), 3FN (dependencias transitivas), BCNF, desnormalización controlada y anomalías de datos."
+    />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --panel-dark: #121124;
+        --line: rgba(0, 255, 255, 0.28);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --purple: #7928ca;
+        --gold: #ffd700;
+        --green: #00ffaa;
+        --shadow: 0 0 24px rgba(0, 128, 255, 0.16);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(circle at 50% -10%, rgba(0, 255, 170, 0.25), transparent 45%), var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
+        opacity: 0.45;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(rgba(0, 255, 170, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 170, 0.04) 1px, transparent 1px);
+        background-size: 38px 38px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: var(--green);
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(0, 255, 170, 0.15);
+      }
+
+      .btn-back-index:hover {
+        background: rgba(0, 255, 170, 0.15);
+        border-color: var(--green);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.35);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--green);
+        font: 700 0.76rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(0, 255, 170, 0.7);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 860px;
+        font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+        line-height: 1;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+
+      .intro {
+        max-width: 500px;
+        margin: 0 0 4px;
+        color: var(--muted);
+        font: 0.95rem/1.55 Verdana, sans-serif;
+      }
+
+      .matrix-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+
+      .matrix-card h2 {
+        margin: 0 0 14px;
+        color: var(--green);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table.compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font: 0.85rem/1.45 Verdana, sans-serif;
+      }
+
+      table.compare-table th {
+        color: var(--green);
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px;
+        font-family: "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        font-size: 0.92rem;
+      }
+
+      table.compare-table td {
+        padding: 14px 14px;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+        color: var(--ink);
+        vertical-align: top;
+      }
+
+      table.compare-table tr:hover {
+        background: rgba(0, 255, 170, 0.04);
+      }
+
+      /* Stepper / Pestañas */
+      .tabs-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+      }
+
+      .tab-btn {
+        flex: 1 1 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.7);
+        color: var(--muted);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .tab-btn .tab-badge {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--ink);
+      }
+
+      .tab-btn .tab-name {
+        font-size: 0.75rem;
+        font-family: Verdana, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .tab-btn:hover {
+        background: rgba(34, 33, 61, 0.95);
+        border-color: var(--green);
+        transform: translateY(-2px);
+      }
+
+      .tab-btn.active {
+        background: rgba(0, 255, 170, 0.15);
+        border-color: var(--green);
+        box-shadow: 0 0 20px rgba(0, 255, 170, 0.25);
+      }
+
+      .tab-btn.active .tab-badge { color: var(--green); }
+
+      /* Paneles */
+      .sim-panel { display: none; }
+      .sim-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .lab-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.85fr);
+        gap: 22px;
+        align-items: start;
+      }
+
+      .sim-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+      }
+
+      .sim-card h3 {
+        margin: 0 0 10px;
+        color: var(--green);
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sim-card p.sim-desc {
+        color: var(--muted);
+        font: 0.86rem/1.55 Verdana, sans-serif;
+        margin: 0 0 16px;
+      }
+
+      .interactive-box {
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.18);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .interactive-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+        padding-bottom: 8px;
+      }
+
+      .interactive-header h4 {
+        margin: 0;
+        font-size: 0.92rem;
+        color: var(--green);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .data-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 14px;
+      }
+
+      .demo-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8rem;
+      }
+
+      .demo-table th {
+        background: rgba(0, 255, 255, 0.08);
+        color: var(--cyan);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        padding: 8px 10px;
+        white-space: nowrap;
+      }
+
+      .demo-table td {
+        border: 1px solid rgba(0, 255, 255, 0.12);
+        padding: 8px 10px;
+        color: var(--ink);
+      }
+
+      .demo-table tr.highlight-anomaly {
+        background: rgba(255, 0, 110, 0.18);
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        margin: 2px;
+      }
+      .pill-pk { background: rgba(255, 215, 0, 0.2); color: var(--gold); border: 1px solid var(--gold); }
+      .pill-fk { background: rgba(0, 255, 255, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
+      .pill-warn { background: rgba(255, 0, 110, 0.2); color: var(--coral); border: 1px solid var(--coral); }
+
+      .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 15px;
+        border-radius: 6px;
+        font: 700 0.8rem "Courier New", Courier, monospace;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.18s ease;
+      }
+
+      .btn-green {
+        background: linear-gradient(135deg, #00ffaa, #0080ff);
+        color: #0b1021;
+        box-shadow: 0 0 12px rgba(0, 255, 170, 0.25);
+      }
+      .btn-green:hover { transform: translateY(-2px); box-shadow: 0 0 18px rgba(0, 255, 170, 0.5); }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff006e, #ff4757);
+        color: #ffffff;
+      }
+
+      .btn-outline {
+        background: transparent;
+        border-color: var(--line);
+        color: var(--ink);
+      }
+
+      /* Sidebar */
+      .sidebar-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+      }
+
+      .sidebar-card h3 {
+        margin: 0 0 12px;
+        color: var(--green);
+        font-size: 1.15rem;
+      }
+
+      .mnemonic-box {
+        background: rgba(255, 215, 0, 0.08);
+        border: 1px solid var(--gold);
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 16px;
+        font-size: 0.82rem;
+        line-height: 1.5;
+        color: var(--gold);
+      }
+
+      .anomaly-card {
+        background: var(--panel-dark);
+        border-left: 3px solid var(--coral);
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        border-radius: 0 6px 6px 0;
+      }
+      .anomaly-card h5 { margin: 0 0 4px; color: var(--coral); font-size: 0.82rem; }
+      .anomaly-card p { margin: 0; font: 0.76rem/1.45 Verdana, sans-serif; color: var(--muted); }
+
+      footer {
+        margin-top: 50px;
+        text-align: center;
+        border-top: 1px solid var(--line);
+        padding-top: 24px;
+        color: var(--muted);
+        font: 0.78rem/1.5 Verdana, sans-serif;
+      }
+
+      @media (max-width: 960px) {
+        header { display: block; }
+        .intro { margin-top: 14px; }
+        .lab-layout { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 600px) {
+        .page { width: calc(100% - 20px); padding-top: 20px; }
+        h1 { font-size: 1.85rem; line-height: 1.1; word-break: break-word; }
+        .intro { font-size: 0.9rem; }
+        .matrix-card, .sim-card, .sidebar-card { padding: 14px 12px; }
+        .matrix-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table.compare-table { min-width: 520px; }
+        .tab-btn { flex: 1 1 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
+        <span>←</span> Volver al Índice
+      </a>
+
+      <header>
+        <div>
+          <p class="eyebrow">Diseño Lógico Relacional · Teoría de Codd & Oppel</p>
+          <h1>Diseño y Normalización<br />de Bases de Datos</h1>
+        </div>
+        <p class="intro">
+          Aprende el proceso sistemático de transformación relacional: desde una vista desnormalizada llena de anomalías hasta la Tercera Forma Normal (3FN) y Boyce-Codd (BCNF). Entiende dependencias funcionales, claves sustitutas y reglas de desnormalización.
+        </p>
+      </header>
+
+      <!-- Tabla Comparativa de Formas Normales -->
+      <section class="matrix-card" aria-label="Matriz de Formas Normales">
+        <h2><span>⚡</span> Las Formas Normales Esenciales y las Anomalías que Eliminan</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Forma Normal</th>
+              <th>Regla Fundamental</th>
+              <th>Anomalía Resuelta</th>
+              <th>Acción Correctiva</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="pill pill-pk">1FN (Primera FN)</span></td>
+              <td>Valores atómicos; eliminación de atributos multievaluados y grupos repetitivos.</td>
+              <td>Incapacidad de indexar y buscar directamente en celdas compuestas.</td>
+              <td>Mover el grupo repetitivo a una nueva tabla; la nueva clave es la combinación de la PK original + atributo repetido.</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-fk">2FN (Segunda FN)</span></td>
+              <td>Estar en 1FN y que ningún atributo no clave dependa parcialmente de una PK compuesta.</td>
+              <td>Anomalía de actualización y duplicidad cuando se repiten atributos del producto en facturas.</td>
+              <td>Extraer los atributos que dependen solo de parte de la clave hacia su propia tabla con su determinante.</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-warn">3FN (Tercera FN)</span></td>
+              <td>Estar en 2FN y que ningún atributo no clave dependa transitivamente de otro no clave (X → Y → Z).</td>
+              <td>Pérdida de datos del cliente al borrar una factura (anomalía de eliminación) o redundancia de dirección.</td>
+              <td>Trasladar los atributos transitivos a una tabla independiente, dejando el determinante como Clave Externa (FK).</td>
+            </tr>
+            <tr>
+              <td><span class="pill" style="border:1px solid #7928ca; color:#b185ff;">BCNF (Boyce-Codd)</span></td>
+              <td>Todo determinante debe ser estrictamente una clave candidata (elimina dependencias en PKs solapadas).</td>
+              <td>Anomalías en asignaciones complejas de múltiples especialistas/líneas de producto.</td>
+              <td>Descomponer en tablas independientes donde cada determinante sea clave primaria o candidata.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Pestañas de Paso a Paso -->
+      <nav class="tabs-bar" aria-label="Seleccionar fase de normalización">
+        <button class="tab-btn active" data-step="0">
+          <span class="tab-badge">00. No Normalizada</span>
+          <span class="tab-name">Factura Cruda (Anomalías)</span>
+        </button>
+        <button class="tab-btn" data-step="1">
+          <span class="tab-badge">01. Primera FN</span>
+          <span class="tab-name">Eliminar Grupos Repetidos</span>
+        </button>
+        <button class="tab-btn" data-step="2">
+          <span class="tab-badge">02. Segunda FN</span>
+          <span class="tab-name">Eliminar Dep. Parciales</span>
+        </button>
+        <button class="tab-btn" data-step="3">
+          <span class="tab-badge">03. Tercera FN</span>
+          <span class="tab-name">Eliminar Dep. Transitivas</span>
+        </button>
+        <button class="tab-btn" data-step="4">
+          <span class="tab-badge">04. Desnormalización</span>
+          <span class="tab-name">Prestaciones vs Integridad</span>
+        </button>
+      </nav>
+
+      <div class="lab-layout">
+        <!-- ÁREA INTERACTIVA PRINCIPAL -->
+        <section class="sim-card" aria-label="Simulador de Descomposición">
+          <h3 id="step-title"><span>📝</span> Vista de Usuario Original: Factura de Industrias Acme</h3>
+          <p class="sim-desc" id="step-desc">
+            Todos los datos residen en una sola tabla de archivo simple. Observa cómo los productos forman un grupo repetitivo en cada factura y los datos del cliente se duplican.
+          </p>
+
+          <div class="interactive-box" id="step-content">
+            <!-- Inyección de contenido dinámico -->
+          </div>
+
+          <div class="ctrl-row" style="margin-top:16px;">
+            <button class="btn-action btn-green" id="btn-next-step">Siguiente Forma Normal →</button>
+            <button class="btn-action btn-outline" id="btn-simulate-anomaly">Simular Anomalía de Actualización</button>
+          </div>
+        </section>
+
+        <!-- PANEL LATERAL: ANOMALÍAS Y DOCTRINA CODD -->
+        <aside class="sidebar-card" aria-label="Glosario de Anomalías">
+          <h3><span>🛡️</span> Regla Mnemotécnica de Codd</h3>
+          <div class="mnemonic-box">
+            <strong>"Cada atributo no clave debe depender de la clave, de toda la clave, y de nada más que de la clave... ¡que Codd me ayude!"</strong><br />
+            <small style="color:var(--ink);">— Máxima clásica del diseño de bases de datos relacionales.</small>
+          </div>
+
+          <h4 style="color:var(--cyan); margin:0 0 10px; font-size:0.92rem;">Las 3 Grandes Anomalías:</h4>
+          
+          <div class="anomaly-card">
+            <h5>1. Anomalía de Inserción</h5>
+            <p>No se puede registrar una nueva entidad (ej. un cliente o un producto) hasta que participe artificialmente en una transacción (ej. haga una compra).</p>
+          </div>
+
+          <div class="anomaly-card">
+            <h5>2. Anomalía de Eliminación</h5>
+            <p>Al borrar una factura o un pedido, se destruyen inadvertidamente los datos del cliente o del producto porque estaban mezclados en la misma tupla.</p>
+          </div>
+
+          <div class="anomaly-card">
+            <h5>3. Anomalía de Actualización</h5>
+            <p>Si el cliente cambia de dirección, hay que modificar docenas de filas repetidas. Si una se pasa por alto, los datos quedan inconsistentes.</p>
+          </div>
+        </aside>
+      </div>
+
+      <footer>
+        Material Didáctico e Interactivo para Diseño y Normalización de Bases de Datos · Basado en Oppel (Cap. 6) y Marqués (Cap. 7)
+      </footer>
+    </main>
+
+    <script>
+      let currentStep = 0;
+
+      const stepsData = [
+        {
+          title: "00. Relación No Normalizada (Vista de Factura)",
+          desc: "Los artículos forman un grupo repetitivo de valores múltiples. Los datos del cliente se repiten en cada ítem.",
+          html: `
+            <div class="data-table-wrap">
+              <table class="demo-table" id="table-raw">
+                <thead>
+                  <tr>
+                    <th>Nº Factura</th>
+                    <th>Nº Cliente</th>
+                    <th>Nombre Cliente</th>
+                    <th>Ciudad</th>
+                    <th>Artículos (Grupo Repetido)</th>
+                    <th>Total Factura</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="pill pill-pk">101</span></td>
+                    <td>1454</td>
+                    <td class="client-name">W. Coyote</td>
+                    <td>Rocas</td>
+                    <td>[SPR-2290: Resortes (2), STR-67: Sujetadores (2)]</td>
+                    <td>$53.00</td>
+                  </tr>
+                  <tr>
+                    <td><span class="pill pill-pk">102</span></td>
+                    <td>1454</td>
+                    <td class="client-name">W. Coyote</td>
+                    <td>Rocas</td>
+                    <td>[SFR-1: Combustible cohete (1)]</td>
+                    <td>$128,200.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:0.78rem; color:var(--coral);">⚠️ <strong>Problema:</strong> Las columnas de artículos contienen múltiples valores y si W. Coyote cambia de nombre, hay que actualizar múltiples registros.</p>
+          `
+        },
+        {
+          title: "01. Primera Forma Normal (1FN): Valores Atómicos",
+          desc: "Se eliminan grupos repetitivos extrayendo LINEA_FACTURA a su propia tabla. La clave primaria es compuesta: (Nº_Factura + Nº_Producto).",
+          html: `
+            <div class="data-table-wrap">
+              <h5 style="color:var(--cyan); margin:0 0 6px;">Tabla FACTURA (1FN)</h5>
+              <table class="demo-table">
+                <thead>
+                  <tr><th>Nº Factura (CP)</th><th>Nº Cliente</th><th>Nombre Cliente</th><th>Ciudad</th><th>Fecha</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="pill pill-pk">101</span></td><td>1454</td><td>W. Coyote</td><td>Rocas</td><td>01/12/2008</td></tr>
+                  <tr><td><span class="pill pill-pk">102</span></td><td>1454</td><td>W. Coyote</td><td>Rocas</td><td>05/12/2008</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-wrap" style="margin-top:12px;">
+              <h5 style="color:var(--green); margin:0 0 6px;">Tabla LINEA_FACTURA (1FN)</h5>
+              <table class="demo-table">
+                <thead>
+                  <tr><th>Nº Factura (CP, CE)</th><th>Nº Producto (CP)</th><th>Descripción</th><th>Cantidad</th><th>Precio Unitario</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="pill pill-pk">101</span></td><td><span class="pill pill-pk">SPR-2290</span></td><td>Resortes</td><td>2</td><td>$24.00</td></tr>
+                  <tr><td><span class="pill pill-pk">101</span></td><td><span class="pill pill-pk">STR-67</span></td><td>Sujetadores</td><td>2</td><td>$2.50</td></tr>
+                  <tr><td><span class="pill pill-pk">102</span></td><td><span class="pill pill-pk">SFR-1</span></td><td>Combustible</td><td>1</td><td>$128,200.00</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:0.78rem; color:var(--gold);">⚠️ <strong>Atención:</strong> En LINEA_FACTURA, 'Descripción' depende sólo de 'Nº Producto', violando la 2FN (dependencia parcial).</p>
+          `
+        },
+        {
+          title: "02. Segunda Forma Normal (2FN): Eliminar Dependencias Parciales",
+          desc: "Se crea la tabla PRODUCTO. 'Descripción' y 'Precio Lista' ahora dependen únicamente de la clave completa de PRODUCTO.",
+          html: `
+            <div class="data-table-wrap">
+              <h5 style="color:var(--gold); margin:0 0 6px;">Tabla PRODUCTO (2FN)</h5>
+              <table class="demo-table">
+                <thead>
+                  <tr><th>Nº Producto (CP)</th><th>Descripción</th><th>Precio Lista</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="pill pill-pk">SPR-2290</span></td><td>Resortes superextensibles</td><td>$24.00</td></tr>
+                  <tr><td><span class="pill pill-pk">STR-67</span></td><td>Sujetadores de pies</td><td>$2.50</td></tr>
+                  <tr><td><span class="pill pill-pk">SFR-1</span></td><td>Combustible cohetes</td><td>$128,200.00</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-wrap" style="margin-top:10px;">
+              <h5 style="color:var(--green); margin:0 0 6px;">Tabla LINEA_FACTURA (2FN - Intersección M:N pura)</h5>
+              <table class="demo-table">
+                <thead>
+                  <tr><th>Nº Factura (CP, CE1)</th><th>Nº Producto (CP, CE2)</th><th>Cantidad</th><th>Precio Venta</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>101</td><td>SPR-2290</td><td>2</td><td>$24.00</td></tr>
+                  <tr><td>101</td><td>STR-67</td><td>2</td><td>$2.50</td></tr>
+                  <tr><td>102</td><td>SFR-1</td><td>1</td><td>$128,200.00</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:0.78rem; color:var(--coral);">⚠️ <strong>Pendiente:</strong> En FACTURA, Nombre Cliente depende de Nº Cliente (dependencia transitiva de la PK).</p>
+          `
+        },
+        {
+          title: "03. Tercera Forma Normal (3FN): Eliminar Dependencias Transitivas",
+          desc: "Se extrae la tabla CLIENTE. En FACTURA sólo queda 'Nº Cliente' como clave externa (FK). Cada atributo no clave depende SOLO de la PK.",
+          html: `
+            <div class="data-table-wrap">
+              <h5 style="color:var(--cyan); margin:0 0 6px;">Tabla CLIENTE (3FN)</h5>
+              <table class="demo-table">
+                <thead>
+                  <tr><th>Nº Cliente (CP)</th><th>Nombre</th><th>Dirección</th><th>Ciudad</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="pill pill-pk">1454</span></td><td>W. Coyote</td><td>Entregas Rocas</td><td>Sonora</td></tr>
+                  <tr><td><span class="pill pill-pk">2810</span></td><td>Correcaminos</td><td>Desierto Km 12</td><td>Sonora</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-wrap" style="margin-top:10px;">
+              <h5 style="color:var(--green); margin:0 0 6px;">Tabla FACTURA (3FN)</h5>
+              <table class="demo-table">
+                <thead>
+                  <tr><th>Nº Factura (CP)</th><th>Nº Cliente (CE)</th><th>Fecha Pedido</th><th>Método Envío</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="pill pill-pk">101</span></td><td>1454</td><td>01/12/2008</td><td>USPS</td></tr>
+                  <tr><td><span class="pill pill-pk">102</span></td><td>1454</td><td>05/12/2008</td><td>USPS</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:0.82rem; color:var(--green);">✓ <strong>¡Base de Datos Normalizada!</strong> Desaparecen las 3 anomalías. Si se borra la factura 101, el cliente 1454 y los productos permanecen intactos.</p>
+          `
+        },
+        {
+          title: "04. Desnormalización Controlada (Prestaciones vs Integridad)",
+          desc: "Según Oppel (Cap. 8) y Marqués (Cap. 7), en sistemas OLAP o de alto rendimiento se reintroducen datos calculados o tablas combinadas de forma controlada.",
+          html: `
+            <div class="data-table-wrap">
+              <h5 style="color:var(--gold); margin:0 0 6px;">Desnormalización en Data Warehouses / Reporting</h5>
+              <table class="demo-table">
+                <thead>
+                  <tr><th>Técnica</th><th>Propósito</th><th>Riesgo / Coste</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Reintroducir Atributos Derivados</strong></td>
+                    <td>Guardar 'Total_Factura' para evitar recalcular con SUM() en millones de transacciones.</td>
+                    <td>Requiere triggers o código para mantener sincronizado el total si cambian los ítems.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Combinación de Tablas 1:1</strong></td>
+                    <td>Unir tablas como VEHÍCULO y EMPLEADO si siempre se consultan juntas.</td>
+                    <td>Pérdida de flexibilidad y aumento del número de columnas por fila.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Esquema en Estrella (OLAP)</strong></td>
+                    <td>Tabla de hechos central rodeada de dimensiones desnormalizadas (tiempo, cliente).</td>
+                    <td>Específico para análisis histórico, no para transacciones en vivo (OLTP).</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          `
+        }
+      ];
+
+      function renderStep(idx) {
+        currentStep = idx;
+        const step = stepsData[idx];
+        document.getElementById("step-title").innerHTML = `<span>📝</span> ${step.title}`;
+        document.getElementById("step-desc").textContent = step.desc;
+        document.getElementById("step-content").innerHTML = step.html;
+
+        const btns = document.querySelectorAll(".tab-btn");
+        btns.forEach((b, i) => {
+          b.classList.toggle("active", i === idx);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderStep(0);
+
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const stepIdx = parseInt(btn.getAttribute("data-step"), 10);
+            renderStep(stepIdx);
+          });
+        });
+
+        document.getElementById("btn-next-step").addEventListener("click", () => {
+          const next = (currentStep + 1) % stepsData.length;
+          renderStep(next);
+        });
+
+        document.getElementById("btn-simulate-anomaly").addEventListener("click", () => {
+          if (currentStep === 0) {
+            const table = document.getElementById("table-raw");
+            const rows = table.querySelectorAll("tbody tr");
+            rows.forEach((r, i) => {
+              r.classList.add("highlight-anomaly");
+              const nameTd = r.querySelector(".client-name");
+              if (i === 0) nameTd.textContent = "W. Coyote (Actualizado)";
+              if (i === 1) nameTd.textContent = "W. Coyote (DESFASADO)";
+            });
+            alert("¡Anomalía de Actualización simulada! El cliente W. Coyote cambió de nombre en la fila 1, pero la fila 2 quedó desfasada porque los datos estaban repetidos en cada factura.");
+          } else {
+            alert("En esta etapa normalizada, el nombre del cliente se almacena en un único lugar (tabla CLIENTE), por lo que es imposible que ocurra una anomalía de actualización.");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
