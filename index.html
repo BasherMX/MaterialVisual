@@ -365,6 +365,24 @@
         transform: scale(1.02);
       }
 
+      .badge-iron {
+        color: #ffd700;
+        background: rgba(255, 215, 0, 0.08);
+      }
+
+      .btn-iron {
+        background: linear-gradient(135deg, #ffd700, #ff006e);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
+      }
+
+      .btn-iron:hover {
+        background: linear-gradient(135deg, #ff006e, #ffd700);
+        box-shadow: 0 0 24px rgba(255, 0, 110, 0.6);
+        color: #fff;
+        transform: scale(1.02);
+      }
+
       footer {
         margin-top: 50px;
         text-align: center;
@@ -401,7 +419,7 @@
         <p class="eyebrow">Visualizadores Interactivos</p>
         <h1>Índice de Material Visual</h1>
         <p class="intro">
-          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos, diseño de software y bases de datos paso a paso con retroalimentación visual en tiempo real.
+          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos, diseño de software y gestión de proyectos paso a paso con retroalimentación visual en tiempo real.
         </p>
       </header>
 
@@ -597,10 +615,34 @@
             Abrir Módulo Normalización <span>→</span>
           </a>
         </article>
+
+        <!-- Tarjeta 9: El Triángulo de Hierro (Triple Restricción) -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-iron">09 · Gestión de Proyectos</span>
+            <h2 class="module-title">El Triángulo de Hierro: Triple Restricción</h2>
+            <p class="module-desc">
+              Dinámica de equilibrio entre Alcance, Tiempo y Costo con impacto directo en la Calidad según Sommerville y Pressman.
+            </p>
+            <ul class="feature-list">
+              <li>Simulador vectorial del triángulo con cálculo dinámico de calidad</li>
+              <li>Casos preestablecidos: Crash urgencia, Scope Creep, recortes y MVP</li>
+              <li>Máxima de los dos de tres, Ley de Brooks y gestión de deuda técnica</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/09-triangulo-de-hierro-gestion-proyectos.html"
+            class="btn-launch btn-iron"
+            id="btn-goto-iron"
+            aria-label="Abrir módulo del Triángulo de Hierro"
+          >
+            Abrir Módulo Triángulo de Hierro <span>→</span>
+          </a>
+        </article>
       </section>
 
       <footer>
-        Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software y Bases de Datos
+        Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software, Bases de Datos y Gestión de Proyectos
       </footer>
     </main>
   </body>
