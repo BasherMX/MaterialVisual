@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BFS y DFS | Explorador de grafos</title>
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --line: rgba(0, 255, 255, 0.32);
+        --teal: #0080ff;
+        --teal-dark: #00ffff;
+        --teal-soft: #30286d;
+        --coral: #ff006e;
+        --gold: #ffd700;
+        --purple: #5d34d0;
+        --shadow: 0 0 24px rgba(0, 128, 255, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(circle at 50% -10%, rgba(93, 52, 208, 0.44), transparent 38%), var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0, rgba(255, 255, 255, 0.025) 1px, transparent 1px, transparent 4px);
+        opacity: 0.48;
+      }
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(to bottom, black, transparent 78%);
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1450px, calc(100% - 42px));
+        margin: 0 auto;
+        padding: 34px 0 48px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: var(--teal-dark);
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(0, 128, 255, 0.12);
+      }
+      .btn-back-index:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: var(--teal-dark);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.35);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: end;
+        margin-bottom: 26px;
+      }
+      .eyebrow {
+        margin: 0 0 9px;
+        color: var(--teal-dark);
+        font:
+          700 0.74rem Verdana,
+          sans-serif;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+      }
+      h1 {
+        margin: 0;
+        max-width: 700px;
+        font-size: clamp(2.5rem, 5vw, 4.7rem);
+        line-height: 0.94;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+      .intro {
+        max-width: 440px;
+        margin: 0 0 3px;
+        color: var(--muted);
+        font:
+          0.96rem/1.55 Verdana,
+          sans-serif;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 335px;
+        gap: 19px;
+        align-items: start;
+      }
+      .workspace,
+      .card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.92);
+        box-shadow: var(--shadow);
+      }
+      .workspace {
+        min-width: 0;
+        padding: 19px;
+        border-radius: 8px;
+        box-shadow: 0 0 26px rgba(0, 128, 255, 0.16), inset 0 0 30px rgba(93, 52, 208, 0.08);
+      }
+      .card {
+        padding: 19px;
+        border-radius: 8px;
+      }
+      .card + .card {
+        margin-top: 15px;
+      }
+      .control-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 9px;
+        padding-bottom: 17px;
+        border-bottom: 1px solid var(--line);
+      }
+      .mode-switch {
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        border-radius: 8px;
+        background: #101021;
+        border: 1px solid var(--line);
+      }
+      .mode-button,
+      .outline-button,
+      .primary-button {
+        border: 0;
+        border-radius: 6px;
+        padding: 10px 13px;
+        font:
+          700 0.73rem Verdana,
+          sans-serif;
+        transition: 160ms ease;
+      }
+      .mode-button {
+        color: var(--muted);
+        background: transparent;
+      }
+      .mode-button.active {
+        color: var(--ink);
+        background: var(--teal);
+        box-shadow: 0 0 12px rgba(0, 128, 255, 0.4);
+      }
+      .primary-button {
+        color: var(--ink);
+        background: var(--teal-dark);
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+      }
+      .outline-button {
+        color: var(--teal-dark);
+        border: 1px solid var(--teal-dark);
+        background: transparent;
+      }
+      .control-bar button:hover {
+        transform: translateY(-2px);
+      }
+      .start-control,
+      .speed-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font:
+          0.72rem Verdana,
+          sans-serif;
+      }
+      .start-control select {
+        min-width: 72px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 9px;
+        color: var(--ink);
+        color: var(--ink);
+        background: #101021;
+        font-weight: 700;
+      }
+      .speed-control {
+        margin-left: auto;
+      }
+      input[type="range"] {
+        accent-color: var(--teal);
+        width: 90px;
+      }
+      .graph-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 15px;
+        margin: 17px 0 10px;
+      }
+      .graph-heading h2,
+      .card h2 {
+        margin: 0;
+        font-size: 1.16rem;
+        font-weight: 600;
+      }
+      .graph-heading p {
+        margin: 0;
+        color: var(--muted);
+        font:
+          0.72rem Verdana,
+          sans-serif;
+      }
+      .graph-shell {
+        overflow: auto;
+        min-height: 445px;
+        border: 1px solid var(--teal-dark);
+        border-radius: 10px;
+        background: rgba(16, 16, 33, 0.82);
+        box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.05), 0 0 16px rgba(0, 255, 255, 0.12);
+      }
+      svg {
+        display: block;
+        min-width: 760px;
+        min-height: 445px;
+      }
+      .edge {
+        stroke: rgba(0, 255, 255, 0.42);
+        stroke-width: 3;
+        transition:
+          stroke 500ms ease,
+          stroke-width 500ms ease;
+      }
+      .edge.active {
+        stroke: var(--coral);
+        filter: drop-shadow(0 0 5px rgba(255, 0, 110, 0.7));
+        stroke-width: 5;
+      }
+      .node-group {
+        cursor: pointer;
+        transition: transform 850ms cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+      .node-circle {
+        fill: #30286d;
+        stroke: var(--teal);
+        stroke-width: 4;
+        transition:
+          fill 350ms ease,
+          stroke 350ms ease,
+          r 350ms ease;
+      }
+      .node-group.frontier .node-circle {
+        fill: var(--gold);
+        stroke: #fff0a6;
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.55));
+      }
+      .node-group.visited .node-circle {
+        fill: var(--teal-soft);
+      }
+      .node-group.current .node-circle {
+        fill: var(--coral);
+        stroke: var(--coral);
+        stroke-width: 6;
+        animation: currentPulse 1s ease-in-out infinite;
+      }
+      .node-label {
+        fill: var(--ink);
+        font:
+          700 17px Verdana,
+          sans-serif;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        pointer-events: none;
+      }
+      .node-group.current .node-label,
+      .node-group.frontier .node-label {
+        fill: white;
+      }
+      .empty-state {
+        fill: var(--muted);
+        font:
+          16px Verdana,
+          sans-serif;
+        text-anchor: middle;
+      }
+      @keyframes currentPulse {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 0 rgba(231, 111, 81, 0));
+        }
+        50% {
+          filter: drop-shadow(0 0 13px rgba(231, 111, 81, 0.65));
+        }
+      }
+      .status {
+        min-height: 42px;
+        margin: 12px 0 0;
+        color: var(--teal-dark);
+        text-shadow: 0 0 7px rgba(0, 255, 255, 0.35);
+        font:
+          700 0.8rem/1.45 Verdana,
+          sans-serif;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .metric {
+        padding: 11px;
+        border-top: 3px solid var(--teal);
+        background: rgba(0, 128, 255, 0.1);
+      }
+      .metric strong {
+        display: block;
+        font-size: 1.35rem;
+      }
+      .metric span {
+        color: var(--muted);
+        font:
+          0.64rem Verdana,
+          sans-serif;
+      }
+      .memory-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 11px;
+        margin-top: 14px;
+      }
+      .memory {
+        min-height: 96px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: rgba(16, 16, 33, 0.78);
+        box-shadow: inset 0 0 18px rgba(0, 255, 255, 0.04);
+      }
+      .memory header {
+        display: flex;
+        align-items: center;
+        margin: 0 0 9px;
+      }
+      .memory h3 {
+        margin: 0;
+        font-size: 0.94rem;
+      }
+      .memory small {
+        margin-left: auto;
+        color: var(--muted);
+        font:
+          0.64rem Verdana,
+          sans-serif;
+      }
+      .items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 30px;
+      }
+      .memory-item {
+        padding: 6px 9px;
+        border-radius: 5px;
+        color: var(--teal-dark);
+        background: var(--teal-soft);
+        font:
+          700 0.75rem Verdana,
+          sans-serif;
+      }
+      .memory-item.next {
+        color: white;
+        background: var(--coral);
+      }
+      .card h2 {
+        margin-bottom: 13px;
+      }
+      .card p,
+      .card li {
+        color: var(--muted);
+        font:
+          0.8rem/1.55 Verdana,
+          sans-serif;
+      }
+      .card p {
+        margin: 0 0 11px;
+      }
+      .card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+      .formula {
+        margin: 12px 0;
+        padding: 11px;
+        border-left: 3px solid var(--coral);
+        background: rgba(255, 0, 110, 0.1);
+        color: var(--ink);
+        font:
+          700 0.93rem Georgia,
+          serif;
+      }
+      .algorithm-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+      .algorithm {
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: rgba(0, 128, 255, 0.08);
+      }
+      .algorithm strong {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--teal-dark);
+        font-size: 1rem;
+      }
+      .algorithm span {
+        color: var(--muted);
+        font:
+          0.68rem/1.35 Verdana,
+          sans-serif;
+      }
+      .legend {
+        display: grid;
+        gap: 8px;
+      }
+      .legend-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font:
+          0.72rem Verdana,
+          sans-serif;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #30286d;
+        border: 3px solid var(--teal);
+      }
+      .dot.gold {
+        background: var(--gold);
+        border-color: #fff0a6;
+      }
+      .dot.coral {
+        background: var(--coral);
+        border-color: var(--coral);
+      }
+      .step-log {
+        max-height: 205px;
+        overflow: auto;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .step-log li {
+        padding: 8px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font:
+          0.7rem/1.4 Verdana,
+          sans-serif;
+      }
+      .step-log li:first-child {
+        padding-top: 0;
+        border-top: 0;
+      }
+      .step-log b {
+        color: var(--teal-dark);
+      }
+      svg text,
+      button,
+      input,
+      select {
+        font-family: "Courier New", Courier, monospace;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      @media (max-width: 900px) {
+        header {
+          display: block;
+        }
+        .intro {
+          margin-top: 17px;
+        }
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+        }
+        .card + .card {
+          margin-top: 0;
+        }
+      }
+      @media (max-width: 600px) {
+        .page {
+          width: calc(100% - 24px);
+          padding-top: 23px;
+        }
+        .workspace {
+          padding: 13px;
+        }
+        .speed-control {
+          margin-left: 0;
+        }
+        .graph-heading {
+          display: block;
+        }
+        .graph-heading p {
+          margin-top: 5px;
+        }
+        .metrics {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .sidebar {
+          display: block;
+        }
+        .card + .card {
+          margin-top: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
+        <span>←</span> Volver al Índice
+      </a>
+      <header>
+        <div>
+          <p class="eyebrow">Laboratorio de algoritmos</p>
+          <h1>Dos maneras de<br />explorar un grafo</h1>
+        </div>
+        <p class="intro">
+          Cambia entre BFS y DFS, mira cómo cambia la estructura auxiliar y
+          sigue cada decisión del recorrido sobre la misma red.
+        </p>
+      </header>
+
+      <section class="layout">
+        <section
+          class="workspace"
+          aria-label="Explorador interactivo de grafos"
+        >
+          <div class="control-bar">
+            <div class="mode-switch" aria-label="Algoritmo">
+              <button class="mode-button active" data-algorithm="bfs">
+                BFS · Anchura
+              </button>
+              <button class="mode-button" data-algorithm="dfs">
+                DFS · Profundidad
+              </button>
+            </div>
+            <label class="start-control"
+              >Inicio
+              <select id="startSelect" aria-label="Nodo inicial"></select
+            ></label>
+            <button class="primary-button" id="runButton">
+              Iniciar recorrido
+            </button>
+            <button class="outline-button" id="stepButton">
+              Siguiente paso
+            </button>
+            <button class="outline-button" id="resetButton">Reiniciar</button>
+            <label class="speed-control"
+              >Velocidad
+              <input
+                id="speedInput"
+                type="range"
+                min="1"
+                max="5"
+                value="3"
+                aria-label="Velocidad de animación"
+            /></label>
+          </div>
+
+          <div class="graph-heading">
+            <h2>Red de conexiones</h2>
+            <p>Haz clic en cualquier nodo para elegirlo como inicio</p>
+          </div>
+          <div class="graph-shell">
+            <svg
+              id="graphSvg"
+              role="img"
+              aria-label="Grafo para recorrer con BFS o DFS"
+            ></svg>
+          </div>
+          <p class="status" id="status" aria-live="polite">
+            Elige BFS o DFS y comienza desde cualquier nodo.
+          </p>
+          <div class="metrics">
+            <div class="metric">
+              <strong id="visitedCount">0</strong><span>VISITADOS</span>
+            </div>
+            <div class="metric">
+              <strong id="stepCount">0</strong><span>PASOS</span>
+            </div>
+            <div class="metric">
+              <strong id="frontierCount">0</strong><span>EN ESTRUCTURA</span>
+            </div>
+            <div class="metric">
+              <strong id="edgeCount">0</strong><span>ARISTAS EXAMINADAS</span>
+            </div>
+          </div>
+          <div class="memory-row">
+            <section class="memory" aria-label="Estructura auxiliar">
+              <header>
+                <h3 id="memoryTitle">Cola FIFO</h3>
+                <small id="memoryHint">entra por la derecha</small>
+              </header>
+              <div class="items" id="memoryItems">
+                <span class="memory-item">vacía</span>
+              </div>
+            </section>
+            <section class="memory" aria-label="Orden del recorrido">
+              <header>
+                <h3>Orden de visita</h3>
+                <small>salida</small>
+              </header>
+              <div class="items" id="visitItems">
+                <span class="memory-item">aún no hay nodos</span>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <section class="card">
+            <h2>La diferencia esencial</h2>
+            <div class="algorithm-card">
+              <div class="algorithm">
+                <strong>BFS</strong
+                ><span
+                  >Explora nivel por nivel. Usa una Cola: el primero en entrar
+                  es el primero en salir.</span
+                >
+              </div>
+              <div class="algorithm">
+                <strong>DFS</strong
+                ><span
+                  >Avanza por una rama. Usa una Pila: el último en entrar es el
+                  primero en salir.</span
+                >
+              </div>
+            </div>
+            <div class="formula">Tiempo de ambos: O(V + E)</div>
+            <p>
+              V representa los vértices y E las aristas. Cada vértice y cada
+              arista se revisa como máximo una cantidad constante de veces.
+            </p>
+          </section>
+          <section class="card">
+            <h2>Qué estás viendo</h2>
+            <div class="legend">
+              <div class="legend-row">
+                <i class="dot"></i> Nodo aún no descubierto
+              </div>
+              <div class="legend-row">
+                <i class="dot gold"></i> En Cola o Pila, esperando
+              </div>
+              <div class="legend-row">
+                <i class="dot coral"></i> Nodo que se procesa ahora
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <h2>Registro del algoritmo</h2>
+            <ul class="step-log" id="stepLog">
+              <li>Los pasos aparecerán aquí.</li>
+            </ul>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const graph = {
+        A: ["B", "C"],
+        B: ["A", "D", "E"],
+        C: ["A", "F"],
+        D: ["B", "G"],
+        E: ["B", "F", "G"],
+        F: ["C", "E", "H"],
+        G: ["D", "E", "H"],
+        H: ["F", "G"],
+      };
+      const positions = {
+        A: { x: 100, y: 220 },
+        B: { x: 260, y: 105 },
+        C: { x: 260, y: 335 },
+        D: { x: 455, y: 70 },
+        E: { x: 455, y: 220 },
+        F: { x: 455, y: 370 },
+        G: { x: 650, y: 135 },
+        H: { x: 650, y: 320 },
+      };
+      let algorithm = "bfs";
+      let startNode = "A";
+      let frontier = [];
+      let discovered = new Set();
+      let processed = new Set();
+      let visitOrder = [];
+      let currentNode = null;
+      let examinedEdges = 0;
+      let isRunning = false;
+      let timer = null;
+
+      const graphSvg = document.getElementById("graphSvg");
+      const status = document.getElementById("status");
+      const memoryTitle = document.getElementById("memoryTitle");
+      const memoryHint = document.getElementById("memoryHint");
+      const memoryItems = document.getElementById("memoryItems");
+      const visitItems = document.getElementById("visitItems");
+      const stepLog = document.getElementById("stepLog");
+      const startSelect = document.getElementById("startSelect");
+      const controls = [
+        document.getElementById("runButton"),
+        document.getElementById("stepButton"),
+        document.getElementById("resetButton"),
+        ...document.querySelectorAll(".mode-button"),
+      ];
+
+      function sleep(milliseconds) {
+        return new Promise((resolve) => setTimeout(resolve, milliseconds));
+      }
+      function neighbors(node) {
+        return graph[node] || [];
+      }
+
+      function makeGraph() {
+        graphSvg.setAttribute("viewBox", "0 0 760 445");
+        const edgeMarkup = [];
+        const seenEdges = new Set();
+        Object.entries(graph).forEach(([node, list]) =>
+          list.forEach((neighbor) => {
+            const key = [node, neighbor].sort().join("-");
+            if (seenEdges.has(key)) return;
+            seenEdges.add(key);
+            edgeMarkup.push(
+              `<line class="edge" data-edge="${key}" x1="${positions[node].x}" y1="${positions[node].y}" x2="${positions[neighbor].x}" y2="${positions[neighbor].y}"></line>`,
+            );
+          }),
+        );
+        const nodesMarkup = Object.keys(positions)
+          .map(
+            (node) =>
+              `<g class="node-group" data-node="${node}" transform="translate(${positions[node].x} ${positions[node].y})"><circle class="node-circle" r="28"></circle><text class="node-label" y="1">${node}</text></g>`,
+          )
+          .join("");
+        graphSvg.innerHTML = edgeMarkup.join("") + nodesMarkup;
+        graphSvg.querySelectorAll(".node-group").forEach((group) =>
+          group.addEventListener("click", () => {
+            if (isRunning) return;
+            startNode = group.dataset.node;
+            startSelect.value = startNode;
+            resetRun();
+          }),
+        );
+      }
+
+      function setControlsDisabled(disabled) {
+        controls.forEach((control) => {
+          control.disabled = disabled;
+        });
+        startSelect.disabled = disabled;
+      }
+
+      function resetRun() {
+        stopRun();
+        frontier = [];
+        discovered = new Set();
+        processed = new Set();
+        visitOrder = [];
+        currentNode = null;
+        examinedEdges = 0;
+        stepLog.innerHTML = "<li>Los pasos aparecerán aquí.</li>";
+        status.textContent = `Listo para ${algorithm === "bfs" ? "BFS" : "DFS"} desde ${startNode}.`;
+        render();
+      }
+
+      function beginRun() {
+        stopRun();
+        frontier = [startNode];
+        discovered = new Set([startNode]);
+        processed = new Set();
+        visitOrder = [];
+        currentNode = null;
+        examinedEdges = 0;
+        stepLog.innerHTML = `<li><b>Inicio:</b> ${algorithm === "bfs" ? "la Cola" : "la Pila"} recibe ${startNode}.</li>`;
+        status.textContent = `${algorithm === "bfs" ? "BFS" : "DFS"} preparado: observa cómo ${algorithm === "bfs" ? "la Cola" : "la Pila"} decide el siguiente nodo.`;
+        render();
+      }
+
+      function step() {
+        if (!frontier.length) {
+          currentNode = null;
+          status.textContent = `Recorrido terminado: ${visitOrder.length} vértices visitados.`;
+          stopRun();
+          render();
+          return false;
+        }
+        currentNode = algorithm === "bfs" ? frontier.shift() : frontier.pop();
+        processed.add(currentNode);
+        visitOrder.push(currentNode);
+        const freshNeighbors = [];
+        neighbors(currentNode).forEach((neighbor) => {
+          examinedEdges++;
+          if (!discovered.has(neighbor)) {
+            discovered.add(neighbor);
+            freshNeighbors.push(neighbor);
+            frontier.push(neighbor);
+          }
+        });
+        if (algorithm === "dfs") {
+          const added = freshNeighbors.reverse();
+          frontier.splice(
+            frontier.length - added.length,
+            added.length,
+            ...added,
+          );
+        }
+        const detail = freshNeighbors.length
+          ? ` descubre ${freshNeighbors.join(", ")}`
+          : " no descubre vecinos nuevos";
+        stepLog.insertAdjacentHTML(
+          "afterbegin",
+          `<li><b>Paso ${visitOrder.length} · ${currentNode}:</b>${detail}.</li>`,
+        );
+        status.textContent = `${algorithm === "bfs" ? "BFS" : "DFS"} procesa ${currentNode}.${detail}.`;
+        render();
+        if (!frontier.length) {
+          status.textContent = `Recorrido terminado: ${visitOrder.join(" → ")}.`;
+          stopRun();
+          render();
+        }
+        return true;
+      }
+
+      function startOrPause() {
+        if (isRunning) {
+          stopRun();
+          status.textContent =
+            "Recorrido pausado. Puedes continuar con “Iniciar recorrido” o avanzar un paso.";
+          return;
+        }
+        if (!frontier.length && !visitOrder.length) beginRun();
+        if (!frontier.length) return;
+        isRunning = true;
+        setControlsDisabled(true);
+        document.getElementById("runButton").textContent = "Pausar recorrido";
+        timer = setInterval(
+          () => {
+            if (!step()) return;
+          },
+          1450 - Number(document.getElementById("speedInput").value) * 210,
+        );
+      }
+
+      function stopRun() {
+        isRunning = false;
+        if (timer) clearInterval(timer);
+        timer = null;
+        setControlsDisabled(false);
+        document.getElementById("runButton").textContent = "Iniciar recorrido";
+      }
+
+      function render() {
+        const nextNode = frontier[0];
+        graphSvg.querySelectorAll(".node-group").forEach((group) => {
+          const node = group.dataset.node;
+          group.classList.toggle("visited", discovered.has(node));
+          group.classList.toggle("frontier", frontier.includes(node));
+          group.classList.toggle("current", node === currentNode);
+        });
+        graphSvg.querySelectorAll(".edge").forEach((edge) => {
+          edge.classList.toggle(
+            "active",
+            currentNode && edge.dataset.edge.split("-").includes(currentNode),
+          );
+        });
+        memoryTitle.textContent =
+          algorithm === "bfs" ? "Cola FIFO" : "Pila LIFO";
+        memoryHint.textContent =
+          algorithm === "bfs" ? "sale el primero" : "sale el último";
+        memoryItems.innerHTML = frontier.length
+          ? frontier
+              .map(
+                (node, index) =>
+                  `<span class="memory-item ${index === 0 && algorithm === "bfs" ? "next" : index === frontier.length - 1 && algorithm === "dfs" ? "next" : ""}">${node}</span>`,
+              )
+              .join("")
+          : '<span class="memory-item">vacía</span>';
+        visitItems.innerHTML = visitOrder.length
+          ? visitOrder
+              .map((node) => `<span class="memory-item">${node}</span>`)
+              .join("")
+          : '<span class="memory-item">aún no hay nodos</span>';
+        document.getElementById("visitedCount").textContent = discovered.size;
+        document.getElementById("stepCount").textContent = visitOrder.length;
+        document.getElementById("frontierCount").textContent = frontier.length;
+        document.getElementById("edgeCount").textContent = examinedEdges;
+      }
+
+      Object.keys(positions).forEach((node) => {
+        startSelect.insertAdjacentHTML(
+          "beforeend",
+          `<option value="${node}">${node}</option>`,
+        );
+      });
+      document.querySelectorAll(".mode-button").forEach((button) =>
+        button.addEventListener("click", () => {
+          algorithm = button.dataset.algorithm;
+          document
+            .querySelectorAll(".mode-button")
+            .forEach((item) =>
+              item.classList.toggle("active", item === button),
+            );
+          resetRun();
+        }),
+      );
+      startSelect.addEventListener("change", (event) => {
+        startNode = event.target.value;
+        resetRun();
+      });
+      document
+        .getElementById("runButton")
+        .addEventListener("click", startOrPause);
+      document.getElementById("stepButton").addEventListener("click", () => {
+        if (!frontier.length && !visitOrder.length) beginRun();
+        step();
+      });
+      document
+        .getElementById("resetButton")
+        .addEventListener("click", resetRun);
+      makeGraph();
+      render();
+    </script>
+  </body>
+</html>

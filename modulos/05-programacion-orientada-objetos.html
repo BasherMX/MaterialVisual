@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POO | Programación Orientada a Objetos Interactiva</title>
+    <meta
+      name="description"
+      content="Laboratorio visual interactivo para comprender los fundamentos y los cuatro pilares de la Programación Orientada a Objetos: Clases y Objetos, Abstracción, Encapsulamiento, Herencia y Polimorfismo."
+    />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --panel-dark: #161528;
+        --line: rgba(0, 255, 255, 0.32);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --gold: #ffd700;
+        --purple: #5d34d0;
+        --green: #00ffaa;
+        --shadow: 0 0 24px rgba(0, 128, 255, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(
+            circle at 50% -10%,
+            rgba(93, 52, 208, 0.44),
+            transparent 38%
+          ),
+          var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.025) 0,
+          rgba(255, 255, 255, 0.025) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+        opacity: 0.48;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(
+            rgba(0, 255, 255, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(to bottom, black, transparent 78%);
+      }
+
+      button,
+      input,
+      select {
+        font-family: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: var(--cyan);
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(0, 128, 255, 0.12);
+      }
+      .btn-back-index:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: var(--cyan);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.35);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--cyan);
+        font: 700 0.76rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 860px;
+        font-size: clamp(2.1rem, 4.5vw, 4.1rem);
+        line-height: 0.98;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+
+      .intro {
+        max-width: 480px;
+        margin: 0 0 4px;
+        color: var(--muted);
+        font: 0.95rem/1.55 Verdana, sans-serif;
+      }
+
+      /* Panel Teórico de Definición y Pilares */
+      .matrix-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+
+      .matrix-card h2 {
+        margin: 0 0 14px;
+        color: var(--cyan);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table.compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font: 0.85rem/1.45 Verdana, sans-serif;
+      }
+
+      table.compare-table th {
+        color: var(--cyan);
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px;
+        font-family: "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        font-size: 0.92rem;
+      }
+
+      table.compare-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+        color: var(--ink);
+        vertical-align: top;
+      }
+
+      table.compare-table tr:hover {
+        background: rgba(0, 255, 255, 0.04);
+      }
+
+      .badge-concept {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        font-size: 0.85rem;
+      }
+
+      .badge-class { color: var(--cyan); border: 1px solid var(--cyan); background: rgba(0,255,255,0.1); }
+      .badge-encap { color: var(--gold); border: 1px solid var(--gold); background: rgba(255,215,0,0.1); }
+      .badge-inherit { color: var(--green); border: 1px solid var(--green); background: rgba(0,255,170,0.1); }
+      .badge-poly { color: var(--coral); border: 1px solid var(--coral); background: rgba(255,0,110,0.1); }
+      .badge-abst { color: #b185ff; border: 1px solid #b185ff; background: rgba(177,133,255,0.1); }
+
+      /* Barra de Pestañas Interactivas (5 Pilares) */
+      .tabs-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+      }
+
+      .tab-btn {
+        flex: 1 1 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.7);
+        color: var(--muted);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        text-align: left;
+      }
+
+      .tab-btn .tab-badge {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.98rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--ink);
+      }
+
+      .tab-btn .tab-name {
+        font-size: 0.75rem;
+        font-family: Verdana, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .tab-btn:hover {
+        background: rgba(34, 33, 61, 0.95);
+        transform: translateY(-2px);
+      }
+
+      .tab-btn.active {
+        background: rgba(0, 255, 255, 0.12);
+        border-color: var(--cyan);
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.25);
+      }
+
+      .tab-btn.active .tab-badge {
+        color: var(--cyan);
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+      }
+
+      /* Layout de Laboratorio */
+      .lab-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 20px;
+        align-items: start;
+      }
+
+      .workspace,
+      .card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.92);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+      }
+
+      .workspace {
+        min-width: 0;
+        padding: 22px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .card + .card {
+        margin-top: 18px;
+      }
+
+      /* Barra de Controles */
+      .control-panel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 18px;
+      }
+
+      .input-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        background: rgba(22, 21, 40, 0.85);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-size: 0.85rem;
+      }
+
+      .input-group span {
+        color: var(--cyan);
+        font-weight: 700;
+      }
+
+      .input-group input,
+      .input-group select {
+        background: transparent;
+        border: 0;
+        color: #ffffff;
+        font-size: 0.95rem;
+        outline: none;
+      }
+
+      .btn-action {
+        padding: 8px 18px;
+        border-radius: 6px;
+        border: 1px solid var(--cyan);
+        background: linear-gradient(135deg, rgba(0, 128, 255, 0.3), rgba(0, 255, 255, 0.3));
+        color: #ffffff;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        transition: all 0.2s ease;
+      }
+
+      .btn-action:hover {
+        background: linear-gradient(135deg, rgba(0, 128, 255, 0.6), rgba(0, 255, 255, 0.6));
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
+      }
+
+      .btn-secondary {
+        padding: 8px 14px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(22, 21, 40, 0.8);
+        color: var(--muted);
+        transition: all 0.2s ease;
+      }
+
+      .btn-secondary:hover {
+        color: #ffffff;
+        border-color: var(--coral);
+      }
+
+      /* Escenario de Simulación */
+      .canvas-stage {
+        min-height: 420px;
+        background: rgba(15, 14, 28, 0.75);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 18px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .stage-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px dashed rgba(0, 255, 255, 0.2);
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+      }
+
+      .stage-title {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--cyan);
+      }
+
+      .stage-status {
+        font-size: 0.8rem;
+        color: var(--gold);
+        font-family: Verdana, sans-serif;
+      }
+
+      .visual-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: auto;
+        padding: 10px;
+        gap: 16px;
+      }
+
+      /* Estilos para Clases y Objetos */
+      .oop-entity-card {
+        background: rgba(22, 21, 40, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        width: 100%;
+        max-width: 320px;
+        box-shadow: 0 0 16px rgba(0,0,0,0.5);
+        transition: all 0.3s ease;
+      }
+
+      .oop-entity-card.active-target {
+        border-color: var(--green);
+        box-shadow: 0 0 20px rgba(0,255,170,0.4);
+        transform: scale(1.02);
+      }
+
+      .oop-header-bar {
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(0,255,255,0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .oop-props-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0;
+        font-size: 0.78rem;
+        color: var(--ink);
+      }
+
+      .oop-props-list li {
+        padding: 3px 0;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dashed rgba(255,255,255,0.06);
+      }
+
+      .oop-methods-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .method-tag {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: rgba(0, 128, 255, 0.25);
+        border: 1px solid var(--blue);
+        color: var(--cyan);
+      }
+
+      /* Jerarquía de Herencia */
+      .inherit-tree {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+      }
+
+      .inherit-arrow {
+        color: var(--green);
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-shadow: 0 0 10px var(--green);
+      }
+
+      .children-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+      }
+
+      /* Métricas */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .metric-box {
+        background: rgba(22, 21, 40, 0.85);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .metric-lbl {
+        font-size: 0.68rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-family: Verdana, sans-serif;
+        margin-bottom: 4px;
+      }
+
+      .metric-val {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--cyan);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      /* Bitácora */
+      .log-box {
+        max-height: 210px;
+        overflow-y: auto;
+        padding: 8px 0;
+        list-style: none;
+        margin: 0;
+      }
+
+      .log-box li {
+        padding: 6px 0;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        font: 0.74rem/1.45 "Courier New", Courier, monospace;
+        color: var(--muted);
+      }
+
+      .log-box li:last-child {
+        border-bottom: none;
+      }
+
+      .log-box li b {
+        color: var(--cyan);
+      }
+
+      .log-box li.alert {
+        color: var(--coral);
+      }
+
+      .log-box li.success {
+        color: var(--green);
+      }
+
+      .code-snippet {
+        background: #0d0c18;
+        border: 1px solid rgba(0, 255, 255, 0.18);
+        border-radius: 6px;
+        padding: 12px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.8rem;
+        color: #e0e8ff;
+        line-height: 1.5;
+        overflow-x: auto;
+      }
+
+      .code-kw { color: #ff006e; font-weight: 700; }
+      .code-type { color: #00ffff; }
+      .code-comment { color: #9aa8c2; font-style: italic; }
+      .code-fn { color: #ffd700; }
+
+      @media (max-width: 960px) {
+        header { display: block; }
+        .intro { margin-top: 14px; }
+        .lab-layout { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 600px) {
+        .page { width: calc(100% - 24px); padding-top: 24px; }
+        .metrics-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
+        <span>←</span> Volver al Índice
+      </a>
+
+      <header>
+        <div>
+          <p class="eyebrow">Paradigmas de Programación</p>
+          <h1>Programación Orientada a Objetos:<br />Los Cuatro Pilares Fundamentales</h1>
+        </div>
+        <p class="intro">
+          Aprende qué es la POO y cómo modela el mundo real mediante clases, objetos, encapsulamiento de datos, jerarquías de herencia y comportamiento polimórfico en tiempo de ejecución.
+        </p>
+      </header>
+
+      <!-- Tabla Comparativa y de Conceptos Esenciales -->
+      <section class="matrix-card" aria-label="Fundamentos de la Programación Orientada a Objetos">
+        <h2><span>📦</span> Fundamentos y Pilares de la POO</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th style="width: 22%;">Concepto / Pilar</th>
+              <th style="width: 38%;">¿Qué es y Cómo Funciona?</th>
+              <th style="width: 40%;">Analogía y Propósito Práctico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge-concept badge-class">Clases y Objetos</span></td>
+              <td>Una <strong>Clase</strong> es el plano o molde estructural (atributos y métodos). Un <strong>Objeto</strong> es una instancia concreta creada en memoria a partir de ese plano.</td>
+              <td>El plano de un automóvil (Clase) vs el auto real que puedes manejar con su propio color y matrícula (Objeto).</td>
+            </tr>
+            <tr>
+              <td><span class="badge-concept badge-encap">Encapsulamiento</span></td>
+              <td>Oculta los detalles internos del estado de un objeto mediante modificadores (<code>private</code>) y solo permite acceso a través de interfaces controladas (<code>getters/setters</code>).</td>
+              <td>El cajero automático: no puedes manipular los billetes internos manualmente, solo interactúas con la pantalla y teclado validados.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-concept badge-abst">Abstracción</span></td>
+              <td>Expone solo lo esencial al exterior, ocultando la complejidad operativa y técnica que no le concierne al cliente.</td>
+              <td>Pedal de aceleración: presionas el pedal y el coche acelera sin necesidad de saber cómo funciona la inyección electrónica interna.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-concept badge-inherit">Herencia</span></td>
+              <td>Permite que una <strong>clase hija</strong> derive y reutilice atributos y comportamientos de una <strong>clase padre</strong>, extendiéndolos o especializándolos.</td>
+              <td>Clase base <code>Vehiculo</code> con ruedas y motor; clases hijas <code>Auto</code> y <code>Motocicleta</code> heredan y agregan sus particularidades.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-concept badge-poly">Polimorfismo</span></td>
+              <td>Habilidad de enviar el mismo mensaje o método a distintos objetos y que cada uno responda según su propia forma o implementación (sobreescritura <code>override</code>).</td>
+              <td>Método <code>HacerSonido()</code>: Un <code>Perro</code> ladra, un <code>Gato</code> maúlla y una <code>Vaca</code> muge bajo la misma llamada polimórfica.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Selector de Pestañas de Laboratorio (5 Pilares) -->
+      <nav class="tabs-bar" aria-label="Seleccionar concepto interactivo">
+        <button class="tab-btn active" data-pillar="instantiation">
+          <span class="tab-badge">1. Clases y Objetos</span>
+          <span class="tab-name">Instanciación en Memoria</span>
+        </button>
+        <button class="tab-btn" data-pillar="encapsulation">
+          <span class="tab-badge">2. Encapsulamiento</span>
+          <span class="tab-name">Protección de Estado & Get/Set</span>
+        </button>
+        <button class="tab-btn" data-pillar="abstraction">
+          <span class="tab-badge">3. Abstracción</span>
+          <span class="tab-name">Ocultar Complejidad Interna</span>
+        </button>
+        <button class="tab-btn" data-pillar="inheritance">
+          <span class="tab-badge">4. Herencia</span>
+          <span class="tab-name">Jerarquía y Reutilización</span>
+        </button>
+        <button class="tab-btn" data-pillar="polymorphism">
+          <span class="tab-badge">5. Polimorfismo</span>
+          <span class="tab-name">Misma Llamada, Distinta Acción</span>
+        </button>
+      </nav>
+
+      <!-- Laboratorio Interactivo -->
+      <section class="lab-layout">
+        <div class="workspace">
+          <!-- Controles Dinámicos según Pilar -->
+          <div class="control-panel">
+            <!-- Controles 1: Instanciación -->
+            <div id="controlsInstantiation" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <label class="input-group">
+                <span>Nombre Objeto:</span>
+                <input type="text" id="inputObjName" value="autoDeportivo" style="width: 130px;" />
+              </label>
+              <label class="input-group">
+                <span>Color:</span>
+                <select id="selectObjColor">
+                  <option value="#ff006e">Rojo Carmín</option>
+                  <option value="#00ffff" selected>Cian Neón</option>
+                  <option value="#ffd700">Dorado</option>
+                  <option value="#00ffaa">Verde Esmeralda</option>
+                </select>
+              </label>
+              <label class="input-group">
+                <span>Vel. Máx:</span>
+                <input type="number" id="inputObjSpeed" min="120" max="350" value="260" style="width: 70px;" />
+              </label>
+            </div>
+
+            <!-- Controles 2: Encapsulamiento -->
+            <div id="controlsEncapsulation" style="display: none; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <label class="input-group">
+                <span>Operación:</span>
+                <select id="selectEncapAction">
+                  <option value="deposit">Depositar ($)</option>
+                  <option value="withdraw">Retirar ($)</option>
+                  <option value="direct">Acceso Directo Ilegal (Privado)</option>
+                </select>
+              </label>
+              <label class="input-group">
+                <span>Monto ($):</span>
+                <input type="number" id="inputEncapAmount" min="-500" max="2000" value="300" style="width: 80px;" />
+              </label>
+            </div>
+
+            <!-- Controles 3: Abstracción -->
+            <div id="controlsAbstraction" style="display: none; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <label class="input-group">
+                <span>Comando de Alto Nivel:</span>
+                <select id="selectAbstAction">
+                  <option value="start">Presionar Botón "Encender Motor"</option>
+                  <option value="brake">Presionar Pedal "Frenar"</option>
+                </select>
+              </label>
+            </div>
+
+            <!-- Controles 4: Herencia -->
+            <div id="controlsInheritance" style="display: none; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <label class="input-group">
+                <span>Clase Hija a Probar:</span>
+                <select id="selectChildClass">
+                  <option value="auto">Automovil : Vehiculo</option>
+                  <option value="moto">Motocicleta : Vehiculo</option>
+                </select>
+              </label>
+              <label class="input-group">
+                <span>Método a Ejecutar:</span>
+                <select id="selectInheritMethod">
+                  <option value="inherited">Moverse() [Heredado del Padre]</option>
+                  <option value="specific">Método Propio Específico</option>
+                </select>
+              </label>
+            </div>
+
+            <!-- Controles 5: Polimorfismo -->
+            <div id="controlsPolymorphism" style="display: none; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <label class="input-group">
+                <span>Invocación Polimórfica:</span>
+                <span style="color:#fff;">listaAnimales.ForEach(a => a.EmitirSonido())</span>
+              </label>
+            </div>
+
+            <button class="btn-action" id="btnRun">Ejecutar Acción</button>
+            <button class="btn-secondary" id="btnReset">Reiniciar</button>
+          </div>
+
+          <div class="canvas-stage">
+            <div class="stage-header">
+              <h3 class="stage-title" id="stageTitle">1. Clases y Objetos: Creación en Memoria</h3>
+              <span class="stage-status" id="stageStatus">Listo para interactuar</span>
+            </div>
+
+            <div class="visual-container" id="visualContainer">
+              <!-- Render dinámico según el pilar activo -->
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <div class="metric-lbl" id="metricLbl1">Instancias Creadas</div>
+              <div class="metric-val" id="metricVal1">0</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-lbl" id="metricLbl2">Estado / Acceso</div>
+              <div class="metric-val" id="metricVal2">Público</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-lbl" id="metricLbl3">Enlace de Métodos</div>
+              <div class="metric-val" id="metricVal3">Dinámico</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar con Código C# de Referencia y Bitácora -->
+        <aside class="sidebar">
+          <article class="card">
+            <h3 style="margin: 0 0 10px; color: var(--cyan); font-size: 1.05rem;">Mecánica del Pilar</h3>
+            <p id="explainText" style="margin: 0 0 12px; color: var(--muted); font: 0.82rem/1.6 Verdana, sans-serif;">
+              Una clase define el tipo de datos. Con el operador <code>new</code> reservamos memoria heap para un objeto independiente con sus propios valores.
+            </p>
+            <div class="code-snippet" id="codeSnippetBox">
+<span class="code-kw">public class</span> <span class="code-type">Auto</span> {
+    <span class="code-kw">public string</span> Color;
+    <span class="code-kw">public int</span> VelocidadMax;
+}
+<span class="code-comment">// Instanciación:</span>
+<span class="code-type">Auto</span> miAuto = <span class="code-kw">new</span> <span class="code-type">Auto</span>();</div>
+          </article>
+
+          <article class="card">
+            <h3 style="margin: 0 0 10px; color: var(--cyan); font-size: 1.05rem;">Bitácora de Ejecución</h3>
+            <ul class="log-box" id="logList">
+              <li>Esperando interacción...</li>
+            </ul>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      let currentPillar = "instantiation";
+      let objectCount = 0;
+      let bankBalance = 1000;
+
+      // Elementos del DOM
+      const tabButtons = document.querySelectorAll(".tab-btn");
+      const controlsInstantiation = document.getElementById("controlsInstantiation");
+      const controlsEncapsulation = document.getElementById("controlsEncapsulation");
+      const controlsAbstraction = document.getElementById("controlsAbstraction");
+      const controlsInheritance = document.getElementById("controlsInheritance");
+      const controlsPolymorphism = document.getElementById("controlsPolymorphism");
+
+      const inputObjName = document.getElementById("inputObjName");
+      const selectObjColor = document.getElementById("selectObjColor");
+      const inputObjSpeed = document.getElementById("inputObjSpeed");
+
+      const selectEncapAction = document.getElementById("selectEncapAction");
+      const inputEncapAmount = document.getElementById("inputEncapAmount");
+
+      const selectAbstAction = document.getElementById("selectAbstAction");
+      const selectChildClass = document.getElementById("selectChildClass");
+      const selectInheritMethod = document.getElementById("selectInheritMethod");
+
+      const btnRun = document.getElementById("btnRun");
+      const btnReset = document.getElementById("btnReset");
+
+      const stageTitle = document.getElementById("stageTitle");
+      const stageStatus = document.getElementById("stageStatus");
+      const visualContainer = document.getElementById("visualContainer");
+
+      const metricLbl1 = document.getElementById("metricLbl1");
+      const metricVal1 = document.getElementById("metricVal1");
+      const metricLbl2 = document.getElementById("metricLbl2");
+      const metricVal2 = document.getElementById("metricVal2");
+      const metricLbl3 = document.getElementById("metricLbl3");
+      const metricVal3 = document.getElementById("metricVal3");
+
+      const explainText = document.getElementById("explainText");
+      const codeSnippetBox = document.getElementById("codeSnippetBox");
+      const logList = document.getElementById("logList");
+
+      function logMessage(text, type = "normal") {
+        const li = document.createElement("li");
+        li.innerHTML = text;
+        if (type === "alert") li.className = "alert";
+        if (type === "success") li.className = "success";
+        logList.appendChild(li);
+        logList.scrollTop = logList.scrollHeight;
+      }
+
+      function clearLog() {
+        logList.innerHTML = "";
+      }
+
+      // Inicialización visual según el pilar seleccionado
+      function initPillar() {
+        clearLog();
+
+        if (currentPillar === "instantiation") {
+          stageTitle.textContent = "1. Clases y Objetos: Moldes e Instanciación en Memoria";
+          explainText.innerHTML = "La <strong>Clase</strong> es la plantilla abstracta. Al invocar <code>new Auto()</code>, se crea una copia tangible e independiente en memoria (el <strong>Objeto</strong>) con su propia identidad y valores.";
+          metricLbl1.textContent = "Objetos en Memoria";
+          metricLbl2.textContent = "Tipo de Estructura";
+          metricLbl3.textContent = "Operador Usado";
+          metricVal1.textContent = objectCount;
+          metricVal2.textContent = "Class Auto";
+          metricVal3.textContent = "new";
+
+          codeSnippetBox.innerHTML = `
+<span class="code-kw">public class</span> <span class="code-type">Auto</span> {
+    <span class="code-kw">public string</span> Nombre;
+    <span class="code-kw">public string</span> Color;
+    <span class="code-kw">public int</span> VelocidadMax;
+}
+<span class="code-comment">// Instanciación:</span>
+<span class="code-type">Auto</span> obj = <span class="code-kw">new</span> <span class="code-type">Auto</span>();`;
+
+          visualContainer.innerHTML = `
+            <div style="display:flex; gap:18px; flex-wrap:wrap; justify-content:center; width:100%;" id="instancesPool">
+              <div class="oop-entity-card" style="border-style:dashed; opacity:0.75;">
+                <div class="oop-header-bar" style="color:var(--cyan);">
+                  <span>Plano / Molde: Class Auto</span>
+                </div>
+                <ul class="oop-props-list">
+                  <li><span>string Nombre</span> <em>(sin asignar)</em></li>
+                  <li><span>string Color</span> <em>(sin asignar)</em></li>
+                  <li><span>int VelocidadMax</span> <em>(sin asignar)</em></li>
+                </ul>
+                <div class="method-tag">Acelerar()</div>
+                <div class="method-tag">Frenar()</div>
+              </div>
+            </div>
+          `;
+          logMessage("Molde <b>Class Auto</b> cargado. Configura atributos y presiona 'Ejecutar Acción' para instanciar.");
+          stageStatus.textContent = "Listo para instanciar";
+
+        } else if (currentPillar === "encapsulation") {
+          stageTitle.textContent = "2. Encapsulamiento: Blindaje de Estado con Getters y Setters";
+          explainText.innerHTML = "Los campos críticos como <code>_saldo</code> se declaran <code>private</code> para impedir que código externo los corrompa directamente. El acceso pasa por métodos validados (<code>Depositar</code>, <code>Retirar</code>).";
+          metricLbl1.textContent = "Saldo Protegido";
+          metricLbl2.textContent = "Modificador Atributo";
+          metricLbl3.textContent = "Validación";
+          metricVal1.textContent = `$${bankBalance}`;
+          metricVal2.textContent = "private";
+          metricVal3.textContent = "Activa";
+
+          codeSnippetBox.innerHTML = `
+<span class="code-kw">public class</span> <span class="code-type">CuentaBancaria</span> {
+    <span class="code-kw">private decimal</span> _saldo; <span class="code-comment">// Blindado</span>
+
+    <span class="code-kw">public void</span> <span class="code-fn">Depositar</span>(<span class="code-kw">decimal</span> m) {
+        <span class="code-kw">if</span> (m &gt; 0) _saldo += m;
+    }
+    <span class="code-kw">public bool</span> <span class="code-fn">Retirar</span>(<span class="code-kw">decimal</span> m) {
+        <span class="code-kw">if</span> (m &gt; 0 && _saldo &gt;= m) {
+            _saldo -= m; <span class="code-kw">return true</span>;
+        }
+        <span class="code-kw">return false</span>;
+    }
+}`;
+
+          visualContainer.innerHTML = `
+            <div class="oop-entity-card" id="vaultCard" style="max-width:380px;">
+              <div class="oop-header-bar" style="color:var(--gold);">
+                <span>Objeto: cuentaBancaria</span>
+                <span style="font-size:0.75rem; color:var(--coral);">🔒 PRIVADO</span>
+              </div>
+              <ul class="oop-props-list">
+                <li><span>private decimal _saldo</span> <strong id="vaultBalance" style="color:var(--gold); font-size:1.1rem;">$${bankBalance}</strong></li>
+                <li><span>public string Titular</span> <span>"Ulises"</span></li>
+              </ul>
+              <div style="font-size:0.75rem; color:var(--muted); margin-top:8px;">Puerta de enlace pública (Getters / Setters):</div>
+              <div class="oop-methods-list">
+                <span class="method-tag" style="border-color:var(--gold); color:var(--gold);">Depositar(monto)</span>
+                <span class="method-tag" style="border-color:var(--gold); color:var(--gold);">Retirar(monto)</span>
+                <span class="method-tag" style="border-color:var(--cyan); color:var(--cyan);">ObtenerSaldo()</span>
+              </div>
+            </div>
+          `;
+          logMessage("Caja fuerte instanciada con saldo protegido <b>$" + bankBalance + "</b>.");
+          stageStatus.textContent = "Listo para operaciones";
+
+        } else if (currentPillar === "abstraction") {
+          stageTitle.textContent = "3. Abstracción: Ocultar la Complejidad Interna";
+          explainText.innerHTML = "El cliente solo necesita saber <em>qué</em> hace el método (presionar el botón 'Encender'), sin preocuparse por los 10 pasos internos de combustión e inyección electrónica que ocurren bajo el capó.";
+          metricLbl1.textContent = "Interfaz Pública";
+          metricLbl2.textContent = "Procesos Ocultos";
+          metricLbl3.textContent = "Complejidad Externa";
+          metricVal1.textContent = "1 Botón";
+          metricVal2.textContent = "5 Internos";
+          metricVal3.textContent = "Mínima";
+
+          codeSnippetBox.innerHTML = `
+<span class="code-kw">public class</span> <span class="code-type">Automovil</span> {
+    <span class="code-comment">// Interfaz simple visible para el conductor</span>
+    <span class="code-kw">public void</span> <span class="code-fn">Encender</span>() {
+        InyectarCombustible();
+        ActivarBombaGasolina();
+        GenerarChispa();
+        IniciarCicloMotor();
+    }
+    <span class="code-comment">// Métodos internos ocultos (private)</span>
+    <span class="code-kw">private void</span> InyectarCombustible() { ... }
+}`;
+
+          visualContainer.innerHTML = `
+            <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; justify-content:center; width:100%;">
+              <div class="oop-entity-card" style="width:260px; border-color:var(--cyan);">
+                <div class="oop-header-bar" style="color:var(--cyan);">Interfaz Pública Simple</div>
+                <p style="font-size:0.78rem; color:var(--muted); margin:10px 0;">Solo expone lo necesario:</p>
+                <div class="method-tag" style="display:block; text-align:center; padding:8px; font-weight:700;">auto.Encender()</div>
+              </div>
+              <div style="font-size:1.8rem; color:var(--cyan);">➜</div>
+              <div class="oop-entity-card" id="internalStepsCard" style="width:340px; border-color:var(--purple); background:rgba(18,17,32,0.95);">
+                <div class="oop-header-bar" style="color:#b185ff;">Complejidad Interna Oculta</div>
+                <ul class="oop-props-list" id="abstStepsList">
+                  <li id="step1"><span>1. Inyección de combustible</span> <span>💤 En espera</span></li>
+                  <li id="step2"><span>2. Calentamiento de bujías</span> <span>💤 En espera</span></li>
+                  <li id="step3"><span>3. Generación de chispa eléctrica</span> <span>💤 En espera</span></li>
+                  <li id="step4"><span>4. Lubricación de pistones</span> <span>💤 En espera</span></li>
+                  <li id="step5"><span>5. Sincronización de revoluciones</span> <span>💤 En espera</span></li>
+                </ul>
+              </div>
+            </div>
+          `;
+          logMessage("Abstracción lista: Presiona 'Ejecutar Acción' para accionar la interfaz pública sin lidiar con los métodos privados.");
+          stageStatus.textContent = "Listo para accionar";
+
+        } else if (currentPillar === "inheritance") {
+          stageTitle.textContent = "4. Herencia: Reutilización de Código y Jerarquía Padre-Hijo";
+          explainText.innerHTML = "La clase hija (<code>Auto</code> o <code>Moto</code>) hereda todos los miembros no privados de la clase padre (<code>Vehiculo</code>), evitando duplicar código como <code>Moverse()</code> y agregando particularidades únicas.";
+          metricLbl1.textContent = "Clase Base";
+          metricLbl2.textContent = "Clase Derivada";
+          metricLbl3.textContent = "Relación";
+          metricVal1.textContent = "Vehiculo";
+          metricVal2.textContent = "Auto / Moto";
+          metricVal3.textContent = "es-un (is-a)";
+
+          codeSnippetBox.innerHTML = `
+<span class="code-kw">public class</span> <span class="code-type">Vehiculo</span> { <span class="code-comment">// Padre</span>
+    <span class="code-kw">public void</span> <span class="code-fn">Moverse</span>() { ... }
+}
+
+<span class="code-comment">// Clases Hijas que heredan:</span>
+<span class="code-kw">public class</span> <span class="code-type">Auto</span> : <span class="code-type">Vehiculo</span> {
+    <span class="code-kw">public void</span> <span class="code-fn">AbrirMaletero</span>() { ... }
+}
+<span class="code-kw">public class</span> <span class="code-type">Moto</span> : <span class="code-type">Vehiculo</span> {
+    <span class="code-kw">public void</span> <span class="code-fn">HacerCaballito</span>() { ... }
+}`;
+
+          visualContainer.innerHTML = `
+            <div class="inherit-tree">
+              <div class="oop-entity-card" id="parentCard" style="border-color:var(--green); max-width:300px;">
+                <div class="oop-header-bar" style="color:var(--green);">
+                  <span>CLASE PADRE: Vehiculo</span>
+                </div>
+                <ul class="oop-props-list">
+                  <li><span>string Marca</span> <span>"Genérica"</span></li>
+                  <li><span>int Ruedas</span> <span>Varía</span></li>
+                </ul>
+                <div class="method-tag" id="parentMethodTag" style="border-color:var(--green); color:var(--green);">
+                  public void Moverse()
+                </div>
+              </div>
+
+              <div class="inherit-arrow">▲ hereda de ▲</div>
+
+              <div class="children-row">
+                <div class="oop-entity-card" id="childAuto" style="border-color:var(--cyan); max-width:260px;">
+                  <div class="oop-header-bar" style="color:var(--cyan);">
+                    <span>HIJO: Automovil</span>
+                  </div>
+                  <div style="font-size:0.75rem; color:var(--muted); margin:4px 0;">+ Recibe Moverse()</div>
+                  <div class="method-tag" id="methodAutoPropio">AbrirMaletero()</div>
+                </div>
+
+                <div class="oop-entity-card" id="childMoto" style="border-color:var(--gold); max-width:260px;">
+                  <div class="oop-header-bar" style="color:var(--gold);">
+                    <span>HIJO: Motocicleta</span>
+                  </div>
+                  <div style="font-size:0.75rem; color:var(--muted); margin:4px 0;">+ Recibe Moverse()</div>
+                  <div class="method-tag" id="methodMotoPropio">HacerCaballito()</div>
+                </div>
+              </div>
+            </div>
+          `;
+          logMessage("Árbol de herencia cargado: <b>Vehiculo</b> provee miembros comunes a <b>Automovil</b> y <b>Motocicleta</b>.");
+          stageStatus.textContent = "Listo para probar herencia";
+
+        } else if (currentPillar === "polymorphism") {
+          stageTitle.textContent = "5. Polimorfismo: Misma Invocación, Distintas Respuestas";
+          explainText.innerHTML = "Mediante <code>virtual</code> y <code>override</code>, tratamos a todos los animales como tipo <code>Animal</code>, pero al llamar a <code>EmitirSonido()</code>, cada uno ejecuta su propia versión en tiempo de ejecución.";
+          metricLbl1.textContent = "Tipo de Referencia";
+          metricLbl2.textContent = "Resolución";
+          metricLbl3.textContent = "Comportamiento";
+          metricVal1.textContent = "List<Animal>";
+          metricVal2.textContent = "override";
+          metricVal3.textContent = "Polimórfico";
+
+          codeSnippetBox.innerHTML = `
+<span class="code-kw">public abstract class</span> <span class="code-type">Animal</span> {
+    <span class="code-kw">public abstract void</span> <span class="code-fn">EmitirSonido</span>();
+}
+<span class="code-kw">public class</span> <span class="code-type">Perro</span> : <span class="code-type">Animal</span> {
+    <span class="code-kw">public override void</span> <span class="code-fn">EmitirSonido</span>() => Console.WriteLine(<span class="code-type">"¡Guau!"</span>);
+}
+<span class="code-kw">public class</span> <span class="code-type">Gato</span> : <span class="code-type">Animal</span> {
+    <span class="code-kw">public override void</span> <span class="code-fn">EmitirSonido</span>() => Console.WriteLine(<span class="code-type">"¡Miau!"</span>);
+}
+<span class="code-kw">public class</span> <span class="code-type">Vaca</span> : <span class="code-type">Animal</span> {
+    <span class="code-kw">public override void</span> <span class="code-fn">EmitirSonido</span>() => Console.WriteLine(<span class="code-type">"¡Muuu!"</span>);
+}`;
+
+          visualContainer.innerHTML = `
+            <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; width:100%;">
+              <div class="oop-entity-card" id="polyCard0" style="max-width:210px; text-align:center;">
+                <div style="font-size:2.4rem;">🐕</div>
+                <div style="font-weight:700; color:var(--cyan); margin:4px 0;">Perro</div>
+                <div style="font-size:0.75rem; color:var(--muted);">Animal a1 = new Perro();</div>
+                <div class="method-tag" style="margin-top:8px;" id="sound0">Sonido: ???</div>
+              </div>
+
+              <div class="oop-entity-card" id="polyCard1" style="max-width:210px; text-align:center;">
+                <div style="font-size:2.4rem;">🐈</div>
+                <div style="font-weight:700; color:var(--gold); margin:4px 0;">Gato</div>
+                <div style="font-size:0.75rem; color:var(--muted);">Animal a2 = new Gato();</div>
+                <div class="method-tag" style="margin-top:8px;" id="sound1">Sonido: ???</div>
+              </div>
+
+              <div class="oop-entity-card" id="polyCard2" style="max-width:210px; text-align:center;">
+                <div style="font-size:2.4rem;">🐄</div>
+                <div style="font-weight:700; color:var(--green); margin:4px 0;">Vaca</div>
+                <div style="font-size:0.75rem; color:var(--muted);">Animal a3 = new Vaca();</div>
+                <div class="method-tag" style="margin-top:8px;" id="sound2">Sonido: ???</div>
+              </div>
+            </div>
+          `;
+          logMessage("Colección polimórfica lista: <b>List&lt;Animal&gt;</b> con 3 subclases distintas.");
+          stageStatus.textContent = "Listo para llamada polimórfica";
+        }
+      }
+
+      // Ejecución de la acción según el pilar activo
+      function runAction() {
+        if (currentPillar === "instantiation") {
+          const name = inputObjName.value || "auto" + (objectCount + 1);
+          const color = selectObjColor.value;
+          const speed = inputObjSpeed.value || 200;
+          objectCount++;
+          metricVal1.textContent = objectCount;
+
+          const pool = document.getElementById("instancesPool");
+          const card = document.createElement("div");
+          card.className = "oop-entity-card active-target";
+          card.style.borderColor = color;
+          card.innerHTML = `
+            <div class="oop-header-bar" style="color:${color};">
+              <span>Objeto: ${name}</span>
+              <span style="font-size:0.7rem; color:var(--muted);">@0x${Math.floor(Math.random()*89999+10000)}</span>
+            </div>
+            <ul class="oop-props-list">
+              <li><span>Nombre:</span> <strong>${name}</strong></li>
+              <li><span>Color:</span> <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${color}; vertical-align:middle;"></span></li>
+              <li><span>VelocidadMax:</span> <strong>${speed} km/h</strong></li>
+            </ul>
+            <div class="oop-methods-list">
+              <button class="method-tag" onclick="this.textContent='¡Acelerando a ${speed} km/h!';">Acelerar()</button>
+              <button class="method-tag" onclick="this.textContent='¡Freno activado!';">Frenar()</button>
+            </div>
+          `;
+          pool.appendChild(card);
+          logMessage(`✓ Instanciado en memoria heap: <b>Auto ${name}</b> con color propio y ${speed} km/h.`, "success");
+          stageStatus.textContent = `Instanciados: ${objectCount}`;
+
+        } else if (currentPillar === "encapsulation") {
+          const action = selectEncapAction.value;
+          const amount = parseFloat(inputEncapAmount.value) || 0;
+          const vaultCard = document.getElementById("vaultCard");
+          const vaultBalance = document.getElementById("vaultBalance");
+
+          vaultCard.classList.remove("active-target");
+
+          if (action === "deposit") {
+            if (amount <= 0) {
+              logMessage(`❌ Setter rechazó depósito: El monto ($${amount}) debe ser positivo. Saldo intacto.`, "alert");
+              stageStatus.textContent = "Operación rechazada";
+            } else {
+              bankBalance += amount;
+              vaultBalance.textContent = `$${bankBalance}`;
+              metricVal1.textContent = `$${bankBalance}`;
+              vaultCard.classList.add("active-target");
+              logMessage(`✓ Depósito de <b>$${amount}</b> validado por el método público. Nuevo saldo: $${bankBalance}.`, "success");
+              stageStatus.textContent = "Depósito exitoso";
+            }
+          } else if (action === "withdraw") {
+            if (amount <= 0) {
+              logMessage(`❌ Retiro rechazado: El monto ($${amount}) debe ser mayor a cero.`, "alert");
+              stageStatus.textContent = "Monto inválido";
+            } else if (amount > bankBalance) {
+              logMessage(`❌ Retiro denegado por regla interna: Fondos insuficientes (Saldo: $${bankBalance}, Solicitado: $${amount}).`, "alert");
+              stageStatus.textContent = "Fondos insuficientes";
+            } else {
+              bankBalance -= amount;
+              vaultBalance.textContent = `$${bankBalance}`;
+              metricVal1.textContent = `$${bankBalance}`;
+              vaultCard.classList.add("active-target");
+              logMessage(`✓ Retiro de <b>$${amount}</b> aprobado por el método público. Saldo restante: $${bankBalance}.`, "success");
+              stageStatus.textContent = "Retiro exitoso";
+            }
+          } else if (action === "direct") {
+            logMessage(`⛔ ERROR DE COMPILACIÓN: <code>cuentaBancaria._saldo</code> es inaccesible debido a su nivel de protección <b>private</b>. El estado está blindado contra manipulación indebida.`, "alert");
+            stageStatus.textContent = "Acceso privado bloqueado";
+          }
+
+        } else if (currentPillar === "abstraction") {
+          const action = selectAbstAction.value;
+          const steps = [
+            "Inyectando mezcla de combustible y aire...",
+            "Activando bobinas y calentamiento de bujías...",
+            "Disparando chispa en cilindros en milisegundos...",
+            "Bomba presurizando lubricación del cárter...",
+            "¡Motor en ralentí estable a 900 RPM!"
+          ];
+
+          clearLog();
+          logMessage(`Invocando método de alto nivel: <code>auto.Encender()</code>`);
+          stageStatus.textContent = "Ejecutando encapsulado...";
+
+          steps.forEach((text, idx) => {
+            setTimeout(() => {
+              const li = document.getElementById(`step${idx + 1}`);
+              if (li) {
+                li.style.color = "var(--green)";
+                li.innerHTML = `<span>${idx + 1}. ${text.replace("...", "")}</span> <span style="color:var(--green); font-weight:700;">✓ OK</span>`;
+              }
+              logMessage(`Paso interno privado ${idx + 1}: ${text}`);
+
+              if (idx === steps.length - 1) {
+                stageStatus.textContent = "Motor encendido";
+                logMessage(`✓ <b>Abstracción demostrada:</b> El conductor solo ejecutó <code>auto.Encender()</code> y el sistema coordinó todos los pasos internos ocultos.`, "success");
+              }
+            }, (idx + 1) * 600);
+          });
+
+        } else if (currentPillar === "inheritance") {
+          const child = selectChildClass.value;
+          const methodType = selectInheritMethod.value;
+
+          const cardAuto = document.getElementById("childAuto");
+          const cardMoto = document.getElementById("childMoto");
+          const parentCard = document.getElementById("parentCard");
+
+          cardAuto.classList.remove("active-target");
+          cardMoto.classList.remove("active-target");
+          parentCard.classList.remove("active-target");
+
+          if (child === "auto") {
+            cardAuto.classList.add("active-target");
+            if (methodType === "inherited") {
+              parentCard.classList.add("active-target");
+              logMessage(`✓ <code>miAuto.Moverse()</code> ejecutado: Este método <b>NO fue reescrito</b>, proviene directamente de la clase base <code>Vehiculo</code>.`, "success");
+              stageStatus.textContent = "Método heredado ejecutado";
+            } else {
+              logMessage(`✓ <code>miAuto.AbrirMaletero()</code> ejecutado: Método propio y exclusivo de la clase especializada <code>Automovil</code>.`, "success");
+              stageStatus.textContent = "Método específico ejecutado";
+            }
+          } else {
+            cardMoto.classList.add("active-target");
+            if (methodType === "inherited") {
+              parentCard.classList.add("active-target");
+              logMessage(`✓ <code>miMoto.Moverse()</code> ejecutado: Reutiliza el comportamiento de la clase padre <code>Vehiculo</code> sin duplicar una sola línea de código.`, "success");
+              stageStatus.textContent = "Método heredado ejecutado";
+            } else {
+              logMessage(`✓ <code>miMoto.HacerCaballito()</code> ejecutado: Comportamiento exclusivo de <code>Motocicleta</code>.`, "success");
+              stageStatus.textContent = "Método específico ejecutado";
+            }
+          }
+
+        } else if (currentPillar === "polymorphism") {
+          const sounds = [
+            { id: 0, text: "¡Guau, Guau!", name: "Perro" },
+            { id: 1, text: "¡Miau, Miau!", name: "Gato" },
+            { id: 2, text: "¡Muuu, Muuu!", name: "Vaca" }
+          ];
+
+          clearLog();
+          logMessage(`Iterando polimórficamente: <code>foreach (Animal a in listaAnimales) a.EmitirSonido();</code>`);
+
+          sounds.forEach((item, idx) => {
+            setTimeout(() => {
+              const card = document.getElementById(`polyCard${item.id}`);
+              const tag = document.getElementById(`sound${item.id}`);
+              if (card && tag) {
+                card.classList.add("active-target");
+                tag.textContent = item.text;
+                tag.style.borderColor = "var(--green)";
+                tag.style.color = "var(--green)";
+              }
+              logMessage(`Elemento [${idx}] (${item.name}): Ejecutó su propio <code>override EmitirSonido()</code> ➜ <b>${item.text}</b>`, "success");
+
+              if (idx === sounds.length - 1) {
+                stageStatus.textContent = "Polimorfismo completado";
+                logMessage(`✓ <b>Polimorfismo demostrado:</b> Una misma llamada unificada (<code>EmitirSonido()</code>) produjo 3 comportamientos radicalmente diferentes según la subclase real.`, "success");
+              }
+            }, (idx + 1) * 700);
+          });
+        }
+      }
+
+      // Cambio de pestaña/pilar
+      tabButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          tabButtons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentPillar = btn.dataset.pillar;
+
+          controlsInstantiation.style.display = currentPillar === "instantiation" ? "flex" : "none";
+          controlsEncapsulation.style.display = currentPillar === "encapsulation" ? "flex" : "none";
+          controlsAbstraction.style.display = currentPillar === "abstraction" ? "flex" : "none";
+          controlsInheritance.style.display = currentPillar === "inheritance" ? "flex" : "none";
+          controlsPolymorphism.style.display = currentPillar === "polymorphism" ? "flex" : "none";
+
+          initPillar();
+        });
+      });
+
+      btnRun.addEventListener("click", runAction);
+      btnReset.addEventListener("click", () => {
+        if (currentPillar === "instantiation") objectCount = 0;
+        if (currentPillar === "encapsulation") bankBalance = 1000;
+        initPillar();
+      });
+
+      // Inicialización por defecto
+      initPillar();
+    </script>
+  </body>
+</html>

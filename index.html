@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laboratorio de Estructuras y Algoritmos | Índice Interactivo</title>
+    <meta
+      name="description"
+      content="Índice interactivo para explorar visualizaciones de estructuras de datos y algoritmos: Árboles AVL autobalanceables y Recorridos BFS/DFS en grafos."
+    />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --line: rgba(0, 255, 255, 0.32);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --purple: #5d34d0;
+        --gold: #ffd700;
+        --shadow: 0 0 24px rgba(0, 128, 255, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(
+            circle at 50% -10%,
+            rgba(93, 52, 208, 0.44),
+            transparent 40%
+          ),
+          var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.025) 0,
+          rgba(255, 255, 255, 0.025) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+        opacity: 0.48;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(
+            rgba(0, 255, 255, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 48px 0 60px;
+      }
+
+      header {
+        margin-bottom: 46px;
+        text-align: center;
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--cyan);
+        font: 700 0.8rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+      }
+
+      h1 {
+        margin: 0 auto;
+        font-size: clamp(2.4rem, 5vw, 4.4rem);
+        line-height: 1.05;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+        max-width: 900px;
+      }
+
+      .intro {
+        max-width: 680px;
+        margin: 18px auto 0;
+        color: var(--muted);
+        font: 1.05rem/1.6 Verdana, sans-serif;
+      }
+
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 10px;
+      }
+
+      .module-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.92);
+        border-radius: 10px;
+        padding: 20px 18px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .module-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--cyan), var(--coral));
+        opacity: 0.6;
+        transition: opacity 0.25s ease;
+      }
+
+      .module-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--cyan);
+        box-shadow: 0 10px 24px rgba(0, 255, 255, 0.2), inset 0 0 16px rgba(93, 52, 208, 0.15);
+      }
+
+      .module-card:hover::before {
+        opacity: 1;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font: 700 0.68rem/1 Verdana, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 10px;
+        border: 1px solid currentColor;
+      }
+
+      .badge-tree {
+        color: var(--cyan);
+        background: rgba(0, 255, 255, 0.08);
+      }
+
+      .badge-graph {
+        color: var(--gold);
+        background: rgba(255, 215, 0, 0.08);
+      }
+
+      .module-title {
+        margin: 0 0 8px;
+        font-size: 1.25rem;
+        line-height: 1.2;
+        color: #ffffff;
+        font-weight: 700;
+      }
+
+      .module-desc {
+        color: var(--muted);
+        font: 0.82rem/1.5 Verdana, sans-serif;
+        margin: 0 0 14px;
+        flex-grow: 1;
+      }
+
+      .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 18px;
+        border-top: 1px solid rgba(0, 255, 255, 0.15);
+        padding-top: 10px;
+      }
+
+      .feature-list li {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--ink);
+        font: 0.74rem/1.5 Verdana, sans-serif;
+        margin-bottom: 4px;
+      }
+
+      .feature-list li::before {
+        content: "▹";
+        color: var(--cyan);
+        font-size: 0.85rem;
+      }
+
+      .btn-launch {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font: 700 0.85rem/1 "Courier New", Courier, monospace;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        transition: all 0.2s ease;
+      }
+
+      .btn-avl {
+        background: linear-gradient(135deg, #0080ff, #00ffff);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
+      }
+
+      .btn-avl:hover {
+        background: linear-gradient(135deg, #00ffff, #0080ff);
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.6);
+        color: #000;
+        transform: scale(1.02);
+      }
+
+      .btn-bfs {
+        background: linear-gradient(135deg, #ff006e, #ffd700);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(255, 0, 110, 0.3);
+      }
+
+      .btn-bfs:hover {
+        background: linear-gradient(135deg, #ffd700, #ff006e);
+        box-shadow: 0 0 24px rgba(255, 215, 0, 0.6);
+        color: #000;
+        transform: scale(1.02);
+      }
+
+      .badge-bigo {
+        color: #00ffaa;
+        background: rgba(0, 255, 170, 0.08);
+      }
+
+      .btn-bigo {
+        background: linear-gradient(135deg, #00ffaa, #00ffff);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.3);
+      }
+
+      .btn-bigo:hover {
+        background: linear-gradient(135deg, #00ffff, #00ffaa);
+        box-shadow: 0 0 24px rgba(0, 255, 170, 0.6);
+        color: #000;
+        transform: scale(1.02);
+      }
+
+      .badge-paradigms {
+        color: #ffd700;
+        background: rgba(255, 215, 0, 0.08);
+      }
+
+      .btn-paradigms {
+        background: linear-gradient(135deg, #ffd700, #ff006e);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
+      }
+
+      .btn-paradigms:hover {
+        background: linear-gradient(135deg, #ff006e, #ffd700);
+        box-shadow: 0 0 24px rgba(255, 215, 0, 0.6);
+        color: #000;
+        transform: scale(1.02);
+      }
+
+      .badge-poo {
+        color: #b185ff;
+        background: rgba(177, 133, 255, 0.08);
+      }
+
+      .btn-poo {
+        background: linear-gradient(135deg, #b185ff, #00ffff);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(177, 133, 255, 0.3);
+      }
+
+      .btn-poo:hover {
+        background: linear-gradient(135deg, #00ffff, #b185ff);
+        box-shadow: 0 0 24px rgba(177, 133, 255, 0.6);
+        color: #000;
+        transform: scale(1.02);
+      }
+
+      footer {
+        margin-top: 50px;
+        text-align: center;
+        border-top: 1px solid var(--line);
+        padding-top: 24px;
+        color: var(--muted);
+        font: 0.78rem/1.5 Verdana, sans-serif;
+      }
+
+      @media (max-width: 600px) {
+        .page {
+          width: calc(100% - 24px);
+          padding-top: 28px;
+        }
+        .modules-grid {
+          grid-template-columns: 1fr;
+        }
+        .module-card {
+          padding: 22px 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <p class="eyebrow">Visualizadores Interactivos</p>
+        <h1>Índice de Material Visual</h1>
+        <p class="intro">
+          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos y algoritmos paso a paso con retroalimentación visual en tiempo real.
+        </p>
+      </header>
+
+      <section class="modules-grid" aria-label="Módulos de visualización">
+        <!-- Tarjeta 1: Árboles AVL -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-tree">01 · Estructura Dinámica</span>
+            <h2 class="module-title">Árboles AVL: Equilibrio en Movimiento</h2>
+            <p class="module-desc">
+              Simulador interactivo de inserción y autobalanceo en árboles binarios de búsqueda auto-balanceados.
+            </p>
+            <ul class="feature-list">
+              <li>Cálculo en vivo de altura y factor de balance</li>
+              <li>Detección de rotaciones simples y dobles (LL, RR, LR, RL)</li>
+              <li>Historial de operaciones e inserción personalizada</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/01-arboles-avl-autobalanceo.html"
+            class="btn-launch btn-avl"
+            id="btn-goto-avl"
+            aria-label="Abrir simulador de Árboles AVL"
+          >
+            Abrir Módulo AVL <span>→</span>
+          </a>
+        </article>
+
+        <!-- Tarjeta 2: BFS y DFS -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-graph">02 · Algoritmos de Recorrido</span>
+            <h2 class="module-title">Explorador de Grafos: BFS vs DFS</h2>
+            <p class="module-desc">
+              Visualización comparativa de algoritmos de búsqueda en anchura (Cola) y profundidad (Pila) sobre una misma red topológica.
+            </p>
+            <ul class="feature-list">
+              <li>Inspección visual de cola FIFO vs pila LIFO en vivo</li>
+              <li>Seguimiento de estados: sin visitar, en frontera y visitados</li>
+              <li>Pausa, avance por paso, reinicio y control de velocidad</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/02-bfs-dfs-recorridos-interactivos.html"
+            class="btn-launch btn-bfs"
+            id="btn-goto-bfs"
+            aria-label="Abrir explorador de BFS y DFS"
+          >
+            Abrir Módulo BFS / DFS <span>→</span>
+          </a>
+        </article>
+
+        <!-- Tarjeta 3: Complejidades Computacionales -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-bigo">03 · Teoría y Rendimiento</span>
+            <h2 class="module-title">Complejidad Computacional: Big O</h2>
+            <p class="module-desc">
+              Laboratorio interactivo de las complejidades fundamentales O(1), O(log n), O(n), O(n log n) y O(n²) con simulaciones en vivo.
+            </p>
+            <ul class="feature-list">
+              <li>Demostraciones interactivas para O(1), O(log n), O(n), O(n log n) y O(n²)</li>
+              <li>Reglas de simplificación: Término dominante, regla de la suma y constantes</li>
+              <li>Simulador interactivo de reducción asintótica y eclipsamiento de n²</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/03-complejidades-computacionales.html"
+            class="btn-launch btn-bigo"
+            id="btn-goto-bigo"
+            aria-label="Abrir módulo de Complejidad Computacional Big O"
+          >
+            Abrir Módulo Big O <span>→</span>
+          </a>
+        </article>
+
+        <!-- Tarjeta 4: Paradigmas Algorítmicos (Greedy vs D&C) -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-paradigms">04 · Estrategias de Diseño</span>
+            <h2 class="module-title">Greedy vs Divide & Conquer</h2>
+            <p class="module-desc">
+              Comparativa detallada entre decisiones locales irrevocables (Devorador) y descomposición recursiva con combinación (Divide y Vencerás).
+            </p>
+            <ul class="feature-list">
+              <li>Camino más corto en grafos con nodos (Dijkstra) y cambio de monedas voraz</li>
+              <li>Partición recursiva y combinación con Merge Sort y Búsqueda Binaria</li>
+              <li>Galería ampliada: Huffman, Prim/Kruskal, Karatsuba, Strassen y Mochila</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/04-algoritmos-greedy-divide-venceras.html"
+            class="btn-launch btn-paradigms"
+            id="btn-goto-paradigms"
+            aria-label="Abrir módulo de Greedy vs Divide y Vencerás"
+          >
+            Abrir Módulo Estrategias <span>→</span>
+          </a>
+        </article>
+
+        <!-- Tarjeta 5: Programación Orientada a Objetos (POO) -->
+        <article class="module-card">
+          <div>
+            <span class="badge badge-poo">05 · Paradigma Central</span>
+            <h2 class="module-title">Programación Orientada a Objetos (POO)</h2>
+            <p class="module-desc">
+              Laboratorio interactivo de los cuatro pilares fundamentales: Clases/Objetos, Encapsulamiento, Abstracción, Herencia y Polimorfismo.
+            </p>
+            <ul class="feature-list">
+              <li>Instanciación dinámica en memoria con atributos y métodos</li>
+              <li>Blindaje de estado privado (getters/setters) y abstracción de motor</li>
+              <li>Jerarquía de herencia y despacho polimórfico en tiempo de ejecución</li>
+            </ul>
+          </div>
+          <a
+            href="modulos/05-programacion-orientada-objetos.html"
+            class="btn-launch btn-poo"
+            id="btn-goto-poo"
+            aria-label="Abrir módulo de Programación Orientada a Objetos"
+          >
+            Abrir Módulo POO <span>→</span>
+          </a>
+        </article>
+      </section>
+
+      <footer>
+        Material Didáctico e Interactivo para Estructuras de Datos y Algoritmos
+      </footer>
+    </main>
+  </body>
+</html>
