@@ -13,3 +13,5 @@ Visualizadores y simuladores interactivos de estructuras de datos, algoritmos, d
 - 08. Diseño Lógico Relacional y Normalización (1FN, 2FN, 3FN, BCNF y Desnormalización)
 - 09. El Triángulo de Hierro: Triple Restricción de Proyectos (Sommerville & Pressman)
 - 10. EDT / WBS: Estructura de Descomposición del Trabajo (Marion E. Haynes)
+- 11. Modelo de Madurez de Richardson (Leonard Richardson & Martin Fowler)
+- 12. Métodos HTTP y Códigos de Estado Estándar (RFC 9110)

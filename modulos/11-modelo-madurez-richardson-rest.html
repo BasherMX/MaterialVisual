@@ -1,0 +1,1055 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modelo de Madurez de Richardson | Arquitectura RESTful</title>
+    <meta
+      name="description"
+      content="Simulador y laboratorio interactivo de los 4 niveles del Modelo de Madurez de Richardson (Leonard Richardson / Martin Fowler): Nivel 0 (The Swamp of POX), Nivel 1 (Recursos), Nivel 2 (Verbos y Códigos HTTP), y Nivel 3 (HATEOAS / Hypermedia Controls)."
+    />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --panel-dark: #121124;
+        --line: rgba(0, 255, 255, 0.28);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --purple: #7928ca;
+        --gold: #ffd700;
+        --green: #00ffaa;
+        --shadow: 0 0 24px rgba(0, 255, 255, 0.16);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(circle at 50% -10%, rgba(0, 255, 255, 0.22), transparent 45%), var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
+        opacity: 0.45;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 38px 38px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: var(--cyan);
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+      }
+
+      .btn-back-index:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: var(--cyan);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.35);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--cyan);
+        font: 700 0.76rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 860px;
+        font-size: clamp(2.1rem, 4.4vw, 3.8rem);
+        line-height: 1.05;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+
+      .intro {
+        max-width: 520px;
+        margin: 0 0 4px;
+        color: var(--muted);
+        font: 0.95rem/1.55 Verdana, sans-serif;
+      }
+
+      /* Pyramid / Steps visualizer */
+      .pyramid-section {
+        background: rgba(34, 33, 61, 0.92);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      .pyramid-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .pyramid-header h2 {
+        margin: 0;
+        color: var(--cyan);
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .levels-bar-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .level-tier {
+        display: grid;
+        grid-template-columns: 140px 1fr auto;
+        gap: 16px;
+        align-items: center;
+        padding: 14px 18px;
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .level-tier:hover, .level-tier.active {
+        border-color: var(--cyan);
+        background: rgba(0, 255, 255, 0.08);
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.2);
+        transform: scale(1.01);
+      }
+
+      .level-tier.tier-0.active { border-color: #ff5555; background: rgba(255, 85, 85, 0.12); box-shadow: 0 0 18px rgba(255, 85, 85, 0.3); }
+      .level-tier.tier-1.active { border-color: var(--gold); background: rgba(255, 215, 0, 0.12); box-shadow: 0 0 18px rgba(255, 215, 0, 0.3); }
+      .level-tier.tier-2.active { border-color: var(--blue); background: rgba(0, 128, 255, 0.15); box-shadow: 0 0 18px rgba(0, 128, 255, 0.3); }
+      .level-tier.tier-3.active { border-color: var(--green); background: rgba(0, 255, 170, 0.14); box-shadow: 0 0 18px rgba(0, 255, 170, 0.35); }
+
+      .tier-badge {
+        font-size: 0.9rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: Verdana, sans-serif;
+      }
+
+      .tier-0 .tier-badge { color: #ff5555; background: rgba(255, 85, 85, 0.2); border: 1px solid #ff5555; }
+      .tier-1 .tier-badge { color: var(--gold); background: rgba(255, 215, 0, 0.2); border: 1px solid var(--gold); }
+      .tier-2 .tier-badge { color: var(--cyan); background: rgba(0, 255, 255, 0.2); border: 1px solid var(--cyan); }
+      .tier-3 .tier-badge { color: var(--green); background: rgba(0, 255, 170, 0.2); border: 1px solid var(--green); }
+
+      .tier-info {
+        font-family: Verdana, sans-serif;
+      }
+
+      .tier-info h3 {
+        margin: 0 0 4px;
+        font-size: 1rem;
+        color: #fff;
+      }
+
+      .tier-info p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+
+      .tier-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .tag-pill {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--ink);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      /* Playground 2-columns */
+      .layout-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      @media (max-width: 1024px) {
+        .layout-grid { grid-template-columns: 1fr; }
+        .level-tier { grid-template-columns: 1fr; }
+      }
+
+      .panel-card {
+        background: rgba(34, 33, 61, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .panel-card h2 {
+        margin: 0 0 16px;
+        color: var(--cyan);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Inspector of request / response */
+      .scenario-picker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+
+      .btn-scenario {
+        padding: 8px 14px;
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        color: var(--ink);
+        border-radius: 5px;
+        font: 700 0.8rem Verdana, sans-serif;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-scenario:hover {
+        border-color: var(--cyan);
+        background: rgba(0, 255, 255, 0.1);
+      }
+
+      .btn-scenario.active {
+        background: var(--cyan);
+        color: #0b0b1a;
+        border-color: var(--cyan);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      }
+
+      .http-packet {
+        background: #0d0c18;
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 14px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.88rem;
+        position: relative;
+        overflow-x: auto;
+      }
+
+      .packet-title {
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .method-badge {
+        padding: 2px 7px;
+        border-radius: 3px;
+        font-weight: 700;
+        font-size: 0.75rem;
+      }
+      .m-post { background: #ffaa00; color: #111; }
+      .m-get { background: #00ffaa; color: #111; }
+      .m-put { background: #00bbff; color: #111; }
+      .m-delete { background: #ff0055; color: #fff; }
+
+      .status-pill {
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-weight: 700;
+        font-size: 0.75rem;
+      }
+      .st-200 { background: rgba(0, 255, 170, 0.2); color: #00ffaa; border: 1px solid #00ffaa; }
+      .st-201 { background: rgba(0, 187, 255, 0.2); color: #00bbff; border: 1px solid #00bbff; }
+      .st-404 { background: rgba(255, 0, 85, 0.2); color: #ff0055; border: 1px solid #ff0055; }
+      .st-409 { background: rgba(255, 170, 0, 0.2); color: #ffaa00; border: 1px solid #ffaa00; }
+
+      .code-line {
+        margin: 2px 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .c-dim { color: #6e7992; }
+      .c-hl { color: var(--gold); font-weight: 700; }
+      .c-cyan { color: var(--cyan); }
+      .c-green { color: var(--green); }
+      .c-coral { color: var(--coral); }
+      .c-uri { color: #fff; font-weight: 700; }
+
+      /* Comparison Table */
+      .matrix-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+
+      .matrix-card h2 {
+        margin: 0 0 14px;
+        color: var(--cyan);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table.compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font: 0.85rem/1.45 Verdana, sans-serif;
+      }
+
+      table.compare-table th {
+        color: var(--cyan);
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px;
+        font-family: "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        background: rgba(0, 0, 0, 0.25);
+      }
+
+      table.compare-table td {
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        padding: 12px 14px;
+        vertical-align: top;
+      }
+
+      table.compare-table tr:hover td {
+        background: rgba(0, 255, 255, 0.04);
+      }
+
+      .interactive-client {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .hateoas-links-container {
+        margin-top: 10px;
+        padding: 12px;
+        background: rgba(0, 255, 170, 0.07);
+        border: 1px dashed var(--green);
+        border-radius: 6px;
+      }
+
+      .hateoas-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--green);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .hateoas-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        margin: 4px 6px 4px 0;
+        background: rgba(0, 255, 170, 0.18);
+        border: 1px solid var(--green);
+        color: #fff;
+        border-radius: 4px;
+        font-size: 0.78rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .hateoas-action-btn:hover {
+        background: var(--green);
+        color: #0b0b1a;
+        box-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+      }
+
+      .critique-box {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 6px;
+        font-family: Verdana, sans-serif;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        border-left: 4px solid;
+      }
+
+      .critique-bad {
+        background: rgba(255, 85, 85, 0.1);
+        border-color: #ff5555;
+        color: #ffd0d0;
+      }
+
+      .critique-mid {
+        background: rgba(255, 215, 0, 0.1);
+        border-color: var(--gold);
+        color: #fff0b3;
+      }
+
+      .critique-good {
+        background: rgba(0, 255, 170, 0.1);
+        border-color: var(--green);
+        color: #b3ffe0;
+      }
+
+      .btn-nav-next {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 6px;
+        border: 1px solid var(--coral);
+        background: rgba(255, 0, 110, 0.15);
+        color: #ffffff;
+        text-decoration: none;
+        font: 700 0.9rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 16px rgba(255, 0, 110, 0.25);
+      }
+
+      .btn-nav-next:hover {
+        background: var(--coral);
+        color: #ffffff;
+        box-shadow: 0 0 22px rgba(255, 0, 110, 0.6);
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <a href="../index.html" class="btn-back-index">← Volver al Índice Principal</a>
+
+      <header>
+        <div>
+          <div class="eyebrow">Arquitectura de Software · RESTful APIs</div>
+          <h1>Modelo de Madurez de Richardson</h1>
+        </div>
+        <p class="intro">
+          Guía interactiva de los 4 escalones concebidos por Leonard Richardson y popularizados por Martin Fowler para calificar el grado de alineación de una API web con los principios REST.
+        </p>
+      </header>
+
+      <!-- Pirámide de Niveles -->
+      <section class="pyramid-section">
+        <div class="pyramid-header">
+          <h2><span>🏛️</span> Los 4 Niveles de Madurez hacia la "Gloria de REST"</h2>
+          <span style="color: var(--muted); font-size: 0.85rem; font-family: Verdana;">Haz clic en cada nivel para inspeccionar su comportamiento</span>
+        </div>
+
+        <div class="levels-bar-container">
+          <!-- Nivel 3 -->
+          <div class="level-tier tier-3" onclick="selectLevel(3)" id="tier-btn-3">
+            <div class="tier-badge">🔗 Nivel 3</div>
+            <div class="tier-info">
+              <h3>Controles Hipermedia / HATEOAS (Hypermedia As The Engine Of Application State)</h3>
+              <p>El cliente descubre las acciones y transiciones válidas dinámicamente mediante enlaces incrustados (links/rel) en la respuesta.</p>
+            </div>
+            <div class="tier-tags">
+              <span class="tag-pill">Autodescubrimiento</span>
+              <span class="tag-pill">Desacoplamiento Total</span>
+              <span class="tag-pill">HAL / JSON-LD</span>
+            </div>
+          </div>
+
+          <!-- Nivel 2 -->
+          <div class="level-tier tier-2" onclick="selectLevel(2)" id="tier-btn-2">
+            <div class="tier-badge">🚦 Nivel 2</div>
+            <div class="tier-info">
+              <h3>Verbos HTTP y Códigos de Estado Estándar</h3>
+              <p>Uso estricto de la semántica HTTP (GET, POST, PUT, DELETE, PATCH) y códigos de resultado (200, 201, 204, 404, 409). Idempotencia y seguridad.</p>
+            </div>
+            <div class="tier-tags">
+              <span class="tag-pill">GET seguro</span>
+              <span class="tag-pill">Idempotencia</span>
+              <span class="tag-pill">HTTP Statuses</span>
+            </div>
+          </div>
+
+          <!-- Nivel 1 -->
+          <div class="level-tier tier-1" onclick="selectLevel(1)" id="tier-btn-1">
+            <div class="tier-badge">📦 Nivel 1</div>
+            <div class="tier-info">
+              <h3>Recursos Individuales (URIs Dedicadas)</h3>
+              <p>Se abandona el endpoint monolítico en favor de URIs jerárquicas (/cuentas/123, /citas/456), pero todavía se usa solo POST para todo el tráfico.</p>
+            </div>
+            <div class="tier-tags">
+              <span class="tag-pill">División de Recursos</span>
+              <span class="tag-pill">URIs semánticas</span>
+              <span class="tag-pill">Todo sobre POST</span>
+            </div>
+          </div>
+
+          <!-- Nivel 0 -->
+          <div class="level-tier tier-0" onclick="selectLevel(0)" id="tier-btn-0">
+            <div class="tier-badge">🕳️ Nivel 0</div>
+            <div class="tier-info">
+              <h3>The Swamp of POX (El Pantano de POX / Plain Old XML - RPC)</h3>
+              <p>Un único endpoint (ej. /apiService) y un solo verbo (usualmente POST). HTTP se utiliza únicamente como un simple túnel de transporte.</p>
+            </div>
+            <div class="tier-tags">
+              <span class="tag-pill">Túnel HTTP</span>
+              <span class="tag-pill">SOAP / XML-RPC</span>
+              <span class="tag-pill">Acoplamiento Alto</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Playground Comparativo -->
+      <div class="layout-grid">
+        <!-- Panel Izquierdo: Simulación de Petición/Respuesta -->
+        <section class="panel-card">
+          <h2><span>🛰️</span> Inspector de Tráfico HTTP en Tiempo Real</h2>
+
+          <div style="margin-bottom: 12px; font-size: 0.85rem; color: var(--muted); font-family: Verdana;">
+            Selecciona la operación de negocio a ejecutar en el nivel actual:
+          </div>
+          <div class="scenario-picker" id="scenario-buttons">
+            <!-- Botones dinámicos según el caso -->
+          </div>
+
+          <!-- Petición -->
+          <div class="http-packet">
+            <div class="packet-title">
+              <span>PETICIÓN CLIENTE → SERVIDOR</span>
+              <span id="req-method-tag" class="method-badge m-post">POST</span>
+            </div>
+            <div class="code-line"><span class="c-hl" id="req-method-uri">POST /apiService HTTP/1.1</span></div>
+            <div class="code-line c-dim">Host: api.banco-salud.gob.mx</div>
+            <div class="code-line c-dim" id="req-headers">Content-Type: application/json</div>
+            <div class="code-line c-dim">Accept: application/json</div>
+            <div class="code-line"></div>
+            <div id="req-body" class="code-line c-cyan">{"action": "obtenerCita", "id": 123}</div>
+          </div>
+
+          <!-- Respuesta -->
+          <div class="http-packet">
+            <div class="packet-title">
+              <span>RESPUESTA SERVIDOR → CLIENTE</span>
+              <span id="res-status-tag" class="status-pill st-200">200 OK</span>
+            </div>
+            <div class="code-line"><span class="c-hl" id="res-status-line">HTTP/1.1 200 OK</span></div>
+            <div class="code-line c-dim" id="res-headers">Content-Type: application/json</div>
+            <div class="code-line"></div>
+            <div id="res-body" class="code-line c-green"></div>
+          </div>
+
+          <!-- Bloque de Enlaces HATEOAS dinámico -->
+          <div class="hateoas-links-container" id="hateoas-box" style="display: none;">
+            <div class="hateoas-title">🔗 Controles Hipermedia Disponibles (HATEOAS Navigation):</div>
+            <div id="hateoas-actions"></div>
+          </div>
+
+          <!-- Crítica arquitectónica del nivel -->
+          <div id="level-critique" class="critique-box critique-bad">
+            <!-- Texto dinámico -->
+          </div>
+        </section>
+
+        <!-- Panel Derecho: Explicación Técnica y Diagnóstico -->
+        <section class="panel-card">
+          <h2><span>🔬</span> Diagnóstico Arquitectónico y Criterios</h2>
+          
+          <div style="font-family: Verdana, sans-serif; font-size: 0.9rem; line-height: 1.6; color: var(--ink);">
+            <div id="detail-card-content">
+              <!-- Se inyecta dinámicamente -->
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line);">
+              <h3 style="color: var(--gold); font-size: 1.05rem; margin: 0 0 10px; font-family: 'Courier New', monospace;">
+                ⚡ Matriz de Cumplimiento REST
+              </h3>
+              <div id="compliance-matrix" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.82rem;">
+                <!-- Checks dinámicos -->
+              </div>
+            </div>
+
+            <div style="margin-top: 24px; text-align: center;">
+              <a href="12-metodos-http-y-codigos-de-estado.html" class="btn-nav-next">
+                Siguiente Módulo: Verbos HTTP y Códigos de Estado →
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tabla Comparativa de Referencia de Richardson -->
+      <section class="matrix-card">
+        <h2><span>📊</span> Tabla Maestra Comparativa: Niveles de Richardson</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Nivel</th>
+              <th>Mecanismo Central</th>
+              <th>Espacio de Direcciones (URIs)</th>
+              <th>Verbos Empleados</th>
+              <th>Gestión de Errores</th>
+              <th>Ejemplo Típico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: #ff5555; font-weight: bold;">0. The Swamp of POX</td>
+              <td>Túnel RPC único sobre HTTP</td>
+              <td>Un único punto final monolítico (ej. <code>/endpoint</code>)</td>
+              <td>Casi exclusivamente <code>POST</code></td>
+              <td>Siempre <code>200 OK</code> con código de error dentro del payload JSON/XML</td>
+              <td>SOAP, XML-RPC, gRPC Web (en ciertas implementaciones), APIs primitivas</td>
+            </tr>
+            <tr>
+              <td style="color: var(--gold); font-weight: bold;">1. Recursos</td>
+              <td>División del espacio en entidades</td>
+              <td>Múltiples URIs identificando recursos (<code>/doctores/1</code>, <code>/citas/20</code>)</td>
+              <td>Sigue usando casi siempre <code>POST</code></td>
+              <td>Errores aún empaquetados en respuestas 200 o mezclas inconsistentes</td>
+              <td>APIs orientadas a acciones (<code>/citas/crear</code>, <code>/citas/123/cancelar</code>)</td>
+            </tr>
+            <tr>
+              <td style="color: var(--cyan); font-weight: bold;">2. Verbos HTTP</td>
+              <td>Semántica de protocolo completa</td>
+              <td>Múltiples URIs limpias para colecciones e items</td>
+              <td><code>GET</code> (lectura segura/idempotente), <code>POST</code> (creación), <code>PUT/PATCH</code> (edición), <code>DELETE</code></td>
+              <td>Uso riguroso de HTTP Status (<code>201 Created</code>, <code>404 Not Found</code>, <code>409 Conflict</code>)</td>
+              <td>La inmensa mayoría de las "APIs RESTful" de la industria moderna</td>
+            </tr>
+            <tr>
+              <td style="color: var(--green); font-weight: bold;">3. Hypermedia Controls</td>
+              <td>Motor de Estado (HATEOAS)</td>
+              <td>URIs descubribles en tiempo de ejecución guiadas por hipervínculos</td>
+              <td>Verbos HTTP + Enlaces canónicos (<code>rel</code>, <code>href</code>)</td>
+              <td>Códigos HTTP + payloads con enlaces a acciones alternativas de recuperación</td>
+              <td>REST puro (Roy Fielding), GitHub API (hipermedios parciales), PayPal API, Spring HATEOAS</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer>
+        Material Visual Didáctico e Interactivo para el SPC (Servicio Profesional de Carrera) · INEGI
+      </footer>
+    </div>
+
+    <script>
+      // Base de datos de simulación por Nivel y Escenario
+      const levelsData = {
+        0: {
+          name: "Nivel 0: The Swamp of POX",
+          badgeClass: "tier-0",
+          critiqueClass: "critique-bad",
+          critiqueText: "⚠️ <strong>Anti-patrón / Túnel Ciego:</strong> Todo viaja al mismo endpoint usando POST. El servidor responde HTTP 200 OK incluso si la operación falló, requiriendo que el cliente parsee el cuerpo del mensaje para saber si hubo error. Ignora por completo las bondades del protocolo HTTP (sin caché intermedia, sin proxies semánticos).",
+          compliance: [
+            { label: "Múltiples Recursos (URIs)", ok: false },
+            { label: "Semántica de Verbos HTTP", ok: false },
+            { label: "Códigos de Estado Estándar", ok: false },
+            { label: "Controles Hipermedia (HATEOAS)", ok: false }
+          ],
+          explanation: `
+            <p><strong>Definición:</strong> Concebido por Leonard Richardson como el "Pantano del POX" (Plain Old XML), describe sistemas que únicamente utilizan HTTP como mecanismo de transporte puro (un túnel) para invocar procedimientos remotos (RPC).</p>
+            <p><strong>Características clave:</strong></p>
+            <ul>
+              <li><strong>Punto único de entrada:</strong> Todas las solicitudes se envían a la misma URI (ej. <code>/apiService</code> o <code>/ws/endpoint</code>).</li>
+              <li><strong>Monopolio de POST:</strong> Toda interacción es enviada por POST, independientemente de si se lee, se actualiza o se elimina información.</li>
+              <li><strong>Falso 200 OK:</strong> Siempre retorna código 200, obligando a inspeccionar el JSON/XML interno (ej. <code>{"status": "ERROR"}</code>). Imposibilita el almacenamiento en caché de los proxies o navegadores.</li>
+            </ul>
+          `,
+          scenarios: [
+            {
+              id: "consultar",
+              label: "1. Consultar Cita",
+              reqMethod: "POST",
+              reqUri: "POST /hospitalService HTTP/1.1",
+              reqBody: '{\n  "action": "obtenerCita",\n  "citaId": 842\n}',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "codigoRespuesta": 0,\n  "mensaje": "OK",\n  "resultado": {\n    "id": 842,\n    "paciente": "Ana Gómez",\n    "doctor": "Dr. Méndez",\n    "hora": "10:30",\n    "estado": "CONFIRMADA"\n  }\n}'
+            },
+            {
+              id: "crear",
+              label: "2. Reservar Nueva Cita",
+              reqMethod: "POST",
+              reqUri: "POST /hospitalService HTTP/1.1",
+              reqBody: '{\n  "action": "reservarCita",\n  "paciente": "Carlos Ruiz",\n  "slot": "2026-11-05T14:00"\n}',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "codigoRespuesta": 0,\n  "mensaje": "Cita creada con exito",\n  "citaIdAsignado": 905\n}'
+            },
+            {
+              id: "error",
+              label: "3. Cita No Encontrada (Falso 200)",
+              reqMethod: "POST",
+              reqUri: "POST /hospitalService HTTP/1.1",
+              reqBody: '{\n  "action": "obtenerCita",\n  "citaId": 9999\n}',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "codigoRespuesta": 404,\n  "status": "FAIL",\n  "error": "La cita 9999 no existe en el sistema hospitalario."\n  /* ¡OJO! El protocolo HTTP dijo 200 OK */\n}'
+            }
+          ]
+        },
+        1: {
+          name: "Nivel 1: Recursos (Resources)",
+          badgeClass: "tier-1",
+          critiqueClass: "critique-mid",
+          critiqueText: "⚠️ <strong>Mejora de Identidad sin Semántica HTTP:</strong> Ahora cada entidad tiene su propia dirección URI (/citas/842, /doctores/12), dividiendo la complejidad. Sin embargo, se continúa recurriendo a POST para consultas y eliminaciones, o se inventan verbos en la URI (/citas/842/cancelar), desaprovechando los métodos de HTTP.",
+          compliance: [
+            { label: "Múltiples Recursos (URIs)", ok: true },
+            { label: "Semántica de Verbos HTTP", ok: false },
+            { label: "Códigos de Estado Estándar", ok: false },
+            { label: "Controles Hipermedia (HATEOAS)", ok: false }
+          ],
+          explanation: `
+            <p><strong>Definición:</strong> En lugar de pasar todas las peticiones a un endpoint único, se introduce el concepto de <em>recursos</em> individuales, asignando una URI a cada objeto del dominio.</p>
+            <p><strong>Características clave:</strong></p>
+            <ul>
+              <li><strong>Direccionamiento individual:</strong> Se habla con <code>/citas/842</code> o <code>/doctores/5</code> en lugar de <code>/hospitalService</code>.</li>
+              <li><strong>URIs orientadas a acciones (RPC-style URIs):</strong> Como no se dominan los verbos HTTP, es habitual ver endpoints como <code>/citas/842/cancelar</code> o <code>/citas/crear</code>.</li>
+              <li><strong>Tráfico monótono:</strong> Casi todo sigue enviándose vía <code>POST</code>.</li>
+            </ul>
+          `,
+          scenarios: [
+            {
+              id: "consultar",
+              label: "1. Consultar Cita 842",
+              reqMethod: "POST",
+              reqUri: "POST /citas/842 HTTP/1.1",
+              reqBody: '{\n  "solicitud": "consultar_datos"\n}',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "id": 842,\n  "paciente": "Ana Gómez",\n  "hora": "10:30",\n  "estado": "CONFIRMADA"\n}'
+            },
+            {
+              id: "crear",
+              label: "2. Crear en /citas/crear",
+              reqMethod: "POST",
+              reqUri: "POST /citas/crear HTTP/1.1",
+              reqBody: '{\n  "paciente": "Carlos Ruiz",\n  "slot": "2026-11-05T14:00"\n}',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "mensaje": "Creado",\n  "recurso": "/citas/905"\n}'
+            },
+            {
+              id: "cancelar",
+              label: "3. Cancelar /citas/842/cancelar",
+              reqMethod: "POST",
+              reqUri: "POST /citas/842/cancelar HTTP/1.1",
+              reqBody: '{\n  "motivo": "Cambio de horario"\n}',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "id": 842,\n  "nuevoEstado": "CANCELADA"\n}'
+            }
+          ]
+        },
+        2: {
+          name: "Nivel 2: Verbos HTTP y Códigos de Estado",
+          badgeClass: "tier-2",
+          critiqueClass: "critique-good",
+          critiqueText: "✅ <strong>Estándar de la Industria:</strong> Se utilizan los métodos HTTP canónicos (GET es seguro y cacheable, POST crea, DELETE remueve, PUT/PATCH actualiza) y códigos de estado universales (201 Created con cabecera Location, 404 si no existe, 409 si hay conflicto). La mayoría de las APIs en producción residen con éxito aquí.",
+          compliance: [
+            { label: "Múltiples Recursos (URIs)", ok: true },
+            { label: "Semántica de Verbos HTTP", ok: true },
+            { label: "Códigos de Estado Estándar", ok: true },
+            { label: "Controles Hipermedia (HATEOAS)", ok: false }
+          ],
+          explanation: `
+            <p><strong>Definición:</strong> Uso pleno de HTTP como un protocolo de aplicación en lugar de solo transporte. Se respetan las propiedades formales de los verbos (seguridad e idempotencia) y el catálogo de códigos de estado de la RFC.</p>
+            <p><strong>Características clave:</strong></p>
+            <ul>
+              <li><strong>GET Seguro y Cacheable:</strong> <code>GET /citas/842</code> jamás altera el estado del servidor. Permite cachés intermedias transparentes.</li>
+              <li><strong>Creación formal (201 Created):</strong> <code>POST /citas</code> responde con código 201 y la cabecera <code>Location: /citas/905</code>.</li>
+              <li><strong>Eliminación semántica:</strong> <code>DELETE /citas/842</code> (responde 200 o 204 No Content).</li>
+              <li><strong>Manejo de errores canónico:</strong> Si no existe, se retorna un auténtico <code>404 Not Found</code>. Si hay choque de horario, un <code>409 Conflict</code>.</li>
+            </ul>
+          `,
+          scenarios: [
+            {
+              id: "consultar",
+              label: "1. GET /citas/842 (Lectura)",
+              reqMethod: "GET",
+              reqUri: "GET /citas/842 HTTP/1.1",
+              reqBody: '/* GET no tiene cuerpo (Safe & Idempotent) */',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "id": 842,\n  "paciente": "Ana Gómez",\n  "hora": "10:30",\n  "estado": "CONFIRMADA"\n}'
+            },
+            {
+              id: "crear",
+              label: "2. POST /citas (201 Created)",
+              reqMethod: "POST",
+              reqUri: "POST /citas HTTP/1.1",
+              reqBody: '{\n  "paciente": "Carlos Ruiz",\n  "slot": "2026-11-05T14:00"\n}',
+              resStatus: "201 Created",
+              resStatusClass: "st-201",
+              resBody: '/* Cabecera Location: /citas/905 */\n{\n  "id": 905,\n  "paciente": "Carlos Ruiz",\n  "slot": "2026-11-05T14:00",\n  "estado": "RESERVADA"\n}'
+            },
+            {
+              id: "delete",
+              label: "3. DELETE /citas/842",
+              reqMethod: "DELETE",
+              reqUri: "DELETE /citas/842 HTTP/1.1",
+              reqBody: '/* Eliminación directa del recurso */',
+              resStatus: "204 No Content",
+              resStatusClass: "st-200",
+              resBody: '/* 204 No Content: Recurso eliminado exitosamente sin cuerpo */'
+            },
+            {
+              id: "conflicto",
+              label: "4. Conflicto Horario (409)",
+              reqMethod: "POST",
+              reqUri: "POST /citas HTTP/1.1",
+              reqBody: '{\n  "slot": "2026-11-05T10:30",\n  "doctor": "Dr. Méndez"\n}',
+              resStatus: "409 Conflict",
+              resStatusClass: "st-409",
+              resBody: '{\n  "tipo": "https://api.hospital.gob.mx/errores/conflicto-horario",\n  "titulo": "Horario ocupado",\n  "detalle": "El Dr. Méndez ya tiene una cita asignada en ese bloque."\n}'
+            }
+          ]
+        },
+        3: {
+          name: "Nivel 3: Controles Hipermedia / HATEOAS",
+          badgeClass: "tier-3",
+          critiqueClass: "critique-good",
+          critiqueText: "🌟 <strong>La Gloria de REST (Roy Fielding):</strong> El cliente no necesita conocer de antemano las URIs de los pasos posteriores. La respuesta contiene enlaces ('_links') que indican qué transiciones son legalmente posibles según el estado del recurso (ej. pagar, cancelar, reagendar).",
+          compliance: [
+            { label: "Múltiples Recursos (URIs)", ok: true },
+            { label: "Semántica de Verbos HTTP", ok: true },
+            { label: "Códigos de Estado Estándar", ok: true },
+            { label: "Controles Hipermedia (HATEOAS)", ok: true }
+          ],
+          explanation: `
+            <p><strong>Definición:</strong> <em>Hypermedia As The Engine Of Application State</em> (HATEOAS). Un cliente inicia en una URI inicial conocida y a partir de allí navega la API descubriendo los enlaces devueltos por el servidor, igual que una persona navega una página web haciendo clics en enlaces HTML.</p>
+            <p><strong>Características clave:</strong></p>
+            <ul>
+              <li><strong>Desacoplamiento cliente-servidor supremo:</strong> Si las reglas del negocio cambian (por ejemplo, una cita ya pagada no se puede cancelar), el servidor simplemente omite el enlace <code>rel: cancel</code> en la respuesta. El cliente no necesita programar reglas complejas 'if/else' acopladas al servidor.</li>
+              <li><strong>Estandarización de enlaces:</strong> Suele usarse formatos como HAL (Hypertext Application Language), JSON:API o JSON-LD.</li>
+              <li><strong>Navegación autoguiada:</strong> Las transiciones de estado son guiadas en tiempo real por el payload de respuesta.</li>
+            </ul>
+          `,
+          scenarios: [
+            {
+              id: "cita-abierta",
+              label: "1. Cita Reservada (Acciones abiertas)",
+              reqMethod: "GET",
+              reqUri: "GET /citas/842 HTTP/1.1",
+              reqBody: '/* Solicitud estándar de lectura */',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "id": 842,\n  "paciente": "Ana Gómez",\n  "estado": "RESERVADA",\n  "_links": {\n    "self": { "href": "/citas/842" },\n    "confirmar": { "href": "/citas/842/confirmacion", "method": "PUT" },\n    "cancelar": { "href": "/citas/842", "method": "DELETE" },\n    "doctor": { "href": "/doctores/12" }\n  }\n}',
+              hateoasLinks: [
+                { rel: "confirmar", method: "PUT", url: "/citas/842/confirmacion", label: "Confirmar Cita (PUT)" },
+                { rel: "cancelar", method: "DELETE", url: "/citas/842", label: "Cancelar Cita (DELETE)" },
+                { rel: "doctor", method: "GET", url: "/doctores/12", label: "Ver Doctor (GET)" }
+              ]
+            },
+            {
+              id: "cita-cancelada",
+              label: "2. Cita ya Cancelada (HATEOAS limita acciones)",
+              reqMethod: "GET",
+              reqUri: "GET /citas/842 HTTP/1.1",
+              reqBody: '/* Lectura de cita en estado final */',
+              resStatus: "200 OK",
+              resStatusClass: "st-200",
+              resBody: '{\n  "id": 842,\n  "paciente": "Ana Gómez",\n  "estado": "CANCELADA",\n  "_links": {\n    "self": { "href": "/citas/842" },\n    "historial": { "href": "/citas/842/auditoria" },\n    "reagendar": { "href": "/citas", "method": "POST" }\n  }\n  /* Fíjate: los enlaces de "confirmar" o "cancelar" ya no existen */\n}',
+              hateoasLinks: [
+                { rel: "historial", method: "GET", url: "/citas/842/auditoria", label: "Ver Auditoría (GET)" },
+                { rel: "reagendar", method: "POST", url: "/citas", label: "Reagendar Nueva (POST)" }
+              ]
+            }
+          ]
+        }
+      };
+
+      let currentLevel = 2;
+      let currentScenarioIndex = 0;
+
+      function selectLevel(lvl) {
+        currentLevel = lvl;
+        currentScenarioIndex = 0;
+        
+        // Actualizar botones de tiers
+        for (let i = 0; i <= 3; i++) {
+          const btn = document.getElementById(`tier-btn-${i}`);
+          if (btn) {
+            btn.classList.toggle('active', i === lvl);
+          }
+        }
+
+        renderLevel();
+      }
+
+      function selectScenario(idx) {
+        currentScenarioIndex = idx;
+        renderScenario();
+      }
+
+      function renderLevel() {
+        const lvlData = levelsData[currentLevel];
+
+        // Escenarios
+        const container = document.getElementById("scenario-buttons");
+        container.innerHTML = "";
+        lvlData.scenarios.forEach((sc, idx) => {
+          const b = document.createElement("button");
+          b.className = `btn-scenario ${idx === currentScenarioIndex ? 'active' : ''}`;
+          b.innerText = sc.label;
+          b.onclick = () => selectScenario(idx);
+          container.appendChild(b);
+        });
+
+        // Crítica
+        const critBox = document.getElementById("level-critique");
+        critBox.className = `critique-box ${lvlData.critiqueClass}`;
+        critBox.innerHTML = lvlData.critiqueText;
+
+        // Explicación técnica
+        const detailDiv = document.getElementById("detail-card-content");
+        detailDiv.innerHTML = `
+          <h3 style="color: var(--cyan); margin: 0 0 8px; font-size: 1.15rem;">${lvlData.name}</h3>
+          ${lvlData.explanation}
+        `;
+
+        // Matriz de cumplimiento
+        const compDiv = document.getElementById("compliance-matrix");
+        compDiv.innerHTML = "";
+        lvlData.compliance.forEach(item => {
+          const row = document.createElement("div");
+          row.style.padding = "6px 10px";
+          row.style.borderRadius = "4px";
+          row.style.background = item.ok ? "rgba(0, 255, 170, 0.12)" : "rgba(255, 85, 85, 0.12)";
+          row.style.border = item.ok ? "1px solid var(--green)" : "1px solid #ff5555";
+          row.style.color = item.ok ? "#b3ffe0" : "#ffb3b3";
+          row.innerHTML = `<span>${item.ok ? '✅' : '❌'}</span> <strong>${item.label}</strong>`;
+          compDiv.appendChild(row);
+        });
+
+        renderScenario();
+      }
+
+      function renderScenario() {
+        const lvlData = levelsData[currentLevel];
+        const sc = lvlData.scenarios[currentScenarioIndex] || lvlData.scenarios[0];
+
+        // Resaltar botón de escenario activo
+        const btns = document.querySelectorAll(".btn-scenario");
+        btns.forEach((b, idx) => b.classList.toggle("active", idx === currentScenarioIndex));
+
+        // Petición
+        const reqMethodTag = document.getElementById("req-method-tag");
+        reqMethodTag.innerText = sc.reqMethod;
+        reqMethodTag.className = `method-badge m-${sc.reqMethod.toLowerCase()}`;
+
+        document.getElementById("req-method-uri").innerText = sc.reqUri;
+        document.getElementById("req-body").innerText = sc.reqBody;
+
+        // Respuesta
+        const resStatusTag = document.getElementById("res-status-tag");
+        resStatusTag.innerText = sc.resStatus;
+        resStatusTag.className = `status-pill ${sc.resStatusClass}`;
+
+        document.getElementById("res-status-line").innerText = `HTTP/1.1 ${sc.resStatus}`;
+        document.getElementById("res-body").innerText = sc.resBody;
+
+        // HATEOAS Box
+        const hateoasBox = document.getElementById("hateoas-box");
+        const hateoasActions = document.getElementById("hateoas-actions");
+        if (sc.hateoasLinks && sc.hateoasLinks.length > 0) {
+          hateoasBox.style.display = "block";
+          hateoasActions.innerHTML = "";
+          sc.hateoasLinks.forEach(link => {
+            const btn = document.createElement("button");
+            btn.className = "hateoas-action-btn";
+            btn.innerHTML = `<span>👉</span> <strong>${link.rel}:</strong> ${link.method} ${link.url}`;
+            btn.onclick = () => {
+              alert(`Navegando vía HATEOAS: El cliente realiza automáticamente una petición ${link.method} al recurso [${link.url}] guiado por el enlace rel="${link.rel}" sin tener codificada la ruta en duro.`);
+            };
+            hateoasActions.appendChild(btn);
+          });
+        } else {
+          hateoasBox.style.display = "none";
+        }
+      }
+
+      // Inicializar en Nivel 2 por defecto
+      selectLevel(2);
+    </script>
+  </body>
+</html>
