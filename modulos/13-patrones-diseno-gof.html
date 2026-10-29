@@ -449,6 +449,90 @@
       table.compare-table tr:hover td {
         background: rgba(121, 40, 202, 0.08);
       }
+    
+      /* Barra de navegacion estandarizada entre modulos */
+      .module-nav-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line, rgba(0, 255, 255, 0.28));
+        flex-wrap: wrap;
+      }
+      .module-nav-bar .nav-left,
+      .module-nav-bar .nav-center,
+      .module-nav-bar .nav-right {
+        display: flex;
+        align-items: center;
+      }
+      .module-nav-bar .nav-center {
+        margin: 0 auto;
+      }
+      .btn-nav-standard {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        transition: all 0.25s ease;
+      }
+      .btn-nav-prev {
+        background: rgba(34, 33, 61, 0.9);
+        border: 1px solid rgba(0, 255, 255, 0.35);
+        color: var(--cyan, #00ffff);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+      }
+      .btn-nav-prev:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: var(--cyan, #00ffff);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
+        transform: translateX(-3px);
+      }
+      .btn-nav-next {
+        background: rgba(255, 0, 110, 0.18);
+        border: 1px solid var(--coral, #ff006e);
+        color: #ffffff;
+        box-shadow: 0 0 14px rgba(255, 0, 110, 0.25);
+      }
+      .btn-nav-next:hover {
+        background: var(--coral, #ff006e);
+        color: #ffffff;
+        box-shadow: 0 0 22px rgba(255, 0, 110, 0.6);
+        transform: translateX(3px);
+      }
+      .btn-nav-home {
+        background: rgba(34, 33, 61, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--muted, #9aa8c2);
+      }
+      .btn-nav-home:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--ink, #e7f6ff);
+        color: #ffffff;
+      }
+      @media (max-width: 768px) {
+        .module-nav-bar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+        .module-nav-bar .nav-left,
+        .module-nav-bar .nav-center,
+        .module-nav-bar .nav-right {
+          width: 100%;
+          justify-content: center;
+        }
+        .btn-nav-standard {
+          width: 100%;
+          justify-content: center;
+        }
+      }
     </style>
   </head>
   <body>
@@ -597,6 +681,20 @@
           </tbody>
         </table>
       </section>
+
+      
+      <!-- Barra de Navegacion Estandarizada -->
+      <nav class="module-nav-bar" aria-label="Navegacion entre modulos">
+        <div class="nav-left">
+          <a href="12-metodos-http-y-codigos-de-estado.html" class="btn-nav-standard btn-nav-prev">&#8592; Anterior: 12 - Metodos HTTP y Codigos de Estado</a>
+        </div>
+        <div class="nav-center">
+          <a href="../index.html" class="btn-nav-standard btn-nav-home">&#205;ndice Principal &#127968;</a>
+        </div>
+        <div class="nav-right">
+          <span style="visibility: hidden;" class="btn-nav-standard">Siguiente</span>
+        </div>
+      </nav>
 
       <footer style="margin-top: 40px; text-align: center; color: var(--muted); font-size: 0.8rem; font-family: Verdana;">
         Material Visual Didáctico e Interactivo para Ciencias de la Computación, Algoritmos y Arquitectura de Software
