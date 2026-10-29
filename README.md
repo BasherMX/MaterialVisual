@@ -15,3 +15,4 @@ Visualizadores y simuladores interactivos de estructuras de datos, algoritmos, d
 - 10. EDT / WBS: Estructura de Descomposición del Trabajo (Marion E. Haynes)
 - 11. Modelo de Madurez de Richardson (Leonard Richardson & Martin Fowler)
 - 12. Métodos HTTP y Códigos de Estado Estándar (RFC 9110)
+- 13. Patrones de Diseño GoF (Gang of Four: Gamma, Helm, Johnson, Vlissides)

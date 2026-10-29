@@ -1,0 +1,1253 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patrones de Diseño GoF (Gang of Four) | Catálogo Interactivo</title>
+    <meta
+      name="description"
+      content="Laboratorio y catálogo interactivo de los 23 patrones de diseño clásicos de GoF (Erich Gamma, Richard Helm, Ralph Johnson y John Vlissides): Creacionales, Estructurales y de Comportamiento. Diagramas UML interactivos, simulador en tiempo real de ejecución y código en vivo."
+    />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --panel-dark: #121124;
+        --line: rgba(0, 255, 255, 0.28);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --purple: #7928ca;
+        --gold: #ffd700;
+        --green: #00ffaa;
+        --shadow: 0 0 24px rgba(121, 40, 202, 0.2);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(circle at 50% -10%, rgba(121, 40, 202, 0.35), transparent 45%), var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
+        opacity: 0.45;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(rgba(121, 40, 202, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(121, 40, 202, 0.05) 1px, transparent 1px);
+        background-size: 38px 38px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: #b185ff;
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(121, 40, 202, 0.2);
+      }
+
+      .btn-back-index:hover {
+        background: rgba(121, 40, 202, 0.2);
+        border-color: #b185ff;
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(121, 40, 202, 0.4);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: #b185ff;
+        font: 700 0.76rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(121, 40, 202, 0.7);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 880px;
+        font-size: clamp(2.1rem, 4.4vw, 3.8rem);
+        line-height: 1.05;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+
+      .intro {
+        max-width: 520px;
+        margin: 0 0 4px;
+        color: var(--muted);
+        font: 0.95rem/1.55 Verdana, sans-serif;
+      }
+
+      /* Category Selector Tabs */
+      .gof-tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+
+      .gof-tab-btn {
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: var(--panel-dark);
+        color: var(--ink);
+        font: 700 0.88rem "Courier New", Courier, monospace;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .gof-tab-btn:hover {
+        border-color: #b185ff;
+        background: rgba(121, 40, 202, 0.2);
+      }
+
+      .gof-tab-btn.active.tab-creational {
+        background: rgba(0, 255, 170, 0.18);
+        border-color: var(--green);
+        color: var(--green);
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.3);
+      }
+
+      .gof-tab-btn.active.tab-structural {
+        background: rgba(0, 255, 255, 0.18);
+        border-color: var(--cyan);
+        color: var(--cyan);
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
+      }
+
+      .gof-tab-btn.active.tab-behavioral {
+        background: rgba(255, 0, 110, 0.18);
+        border-color: var(--coral);
+        color: var(--coral);
+        box-shadow: 0 0 16px rgba(255, 0, 110, 0.3);
+      }
+
+      .gof-tab-btn.active.tab-all {
+        background: rgba(177, 133, 255, 0.2);
+        border-color: #b185ff;
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(121, 40, 202, 0.4);
+      }
+
+      /* Pattern Browser Bar */
+      .patterns-chip-bar {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+        margin-bottom: 24px;
+      }
+
+      .pattern-chip {
+        padding: 8px 14px;
+        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: var(--panel-dark);
+        color: var(--ink);
+        font: 700 0.8rem "Courier New", Courier, monospace;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .pattern-chip:hover {
+        border-color: #b185ff;
+        transform: translateY(-2px);
+      }
+
+      .pattern-chip.active {
+        background: #b185ff;
+        color: #0d0c18;
+        border-color: #ffffff;
+        box-shadow: 0 0 14px rgba(177, 133, 255, 0.6);
+      }
+
+      /* 2-Columns Interactive Workbench */
+      .workbench-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+
+      @media (max-width: 1024px) {
+        .workbench-grid { grid-template-columns: 1fr; }
+      }
+
+      .card-panel {
+        background: rgba(34, 33, 61, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .card-panel h2 {
+        margin: 0 0 16px;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Meta info header of current pattern */
+      .pattern-hero {
+        margin-bottom: 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 14px;
+      }
+
+      .pattern-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .badge-category {
+        font-size: 0.72rem;
+        font-family: Verdana, sans-serif;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 4px;
+        text-transform: uppercase;
+      }
+
+      .cat-creational { background: rgba(0, 255, 170, 0.15); color: var(--green); border: 1px solid var(--green); }
+      .cat-structural { background: rgba(0, 255, 255, 0.15); color: var(--cyan); border: 1px solid var(--cyan); }
+      .cat-behavioral { background: rgba(255, 0, 110, 0.15); color: var(--coral); border: 1px solid var(--coral); }
+
+      .pattern-intent {
+        font-family: Verdana, sans-serif;
+        font-size: 0.92rem;
+        color: #fff;
+        line-height: 1.5;
+        font-style: italic;
+      }
+
+      /* UML Architecture Schema */
+      .uml-box {
+        background: #0d0c18;
+        border: 1px solid rgba(177, 133, 255, 0.3);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 18px;
+        position: relative;
+        overflow-x: auto;
+      }
+
+      .uml-title {
+        font-size: 0.75rem;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      .uml-classes-flow {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .uml-class {
+        background: rgba(34, 33, 61, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 5px;
+        min-width: 140px;
+        font-size: 0.76rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      .uml-class-name {
+        background: rgba(0, 255, 255, 0.1);
+        padding: 6px 10px;
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        color: var(--cyan);
+      }
+
+      .uml-class-members {
+        padding: 6px 10px;
+        font-family: "Courier New", Courier, monospace;
+        color: var(--ink);
+      }
+
+      .uml-class-members div {
+        margin: 2px 0;
+      }
+
+      .uml-arrow {
+        color: #b185ff;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      /* Interactive Live Simulator */
+      .sim-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .btn-sim-action {
+        padding: 8px 16px;
+        background: #b185ff;
+        color: #0d0c18;
+        border: none;
+        border-radius: 5px;
+        font: 700 0.82rem "Courier New", Courier, monospace;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-sim-action:hover {
+        background: #fff;
+        box-shadow: 0 0 14px rgba(177, 133, 255, 0.8);
+        transform: translateY(-2px);
+      }
+
+      .sim-output-console {
+        background: #090910;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 6px;
+        padding: 14px;
+        min-height: 110px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.82rem;
+        color: var(--green);
+        line-height: 1.45;
+      }
+
+      .console-log-line {
+        margin-bottom: 4px;
+      }
+      .console-log-line.hl { color: var(--gold); }
+      .console-log-line.cyan { color: var(--cyan); }
+      .console-log-line.coral { color: var(--coral); }
+
+      /* Code viewer */
+      .code-viewer {
+        background: #0b0b14;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        padding: 16px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        overflow-x: auto;
+        max-height: 380px;
+      }
+
+      /* 23 Patterns Master Table */
+      .matrix-card {
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.94);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        padding: 22px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+
+      .matrix-card h2 {
+        margin: 0 0 14px;
+        color: #b185ff;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table.compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font: 0.85rem/1.45 Verdana, sans-serif;
+      }
+
+      table.compare-table th {
+        color: #b185ff;
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px;
+        font-family: "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        background: rgba(0, 0, 0, 0.25);
+      }
+
+      table.compare-table td {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 12px 14px;
+        vertical-align: top;
+      }
+
+      table.compare-table tr:hover td {
+        background: rgba(121, 40, 202, 0.08);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <a href="../index.html" class="btn-back-index">← Volver al Índice Principal</a>
+
+      <header>
+        <div>
+          <div class="eyebrow">Diseño de Software · Gang of Four (GoF)</div>
+          <h1>Patrones de Diseño GoF</h1>
+        </div>
+        <p class="intro">
+          Catálogo interactivo y simulador en vivo de los 23 patrones de diseño canónicos de Erich Gamma, Richard Helm, Ralph Johnson y John Vlissides. Soluciones reutilizables a problemas recurrentes de arquitectura de software.
+        </p>
+      </header>
+
+      <!-- Selector de Categoría GoF -->
+      <div class="gof-tabs">
+        <button class="gof-tab-btn active tab-all" onclick="filterCategory('all')">
+          <span>🌟</span> Los 23 Patrones GoF
+        </button>
+        <button class="gof-tab-btn tab-creational" onclick="filterCategory('creational')">
+          <span>🌱</span> Creacionales (5)
+        </button>
+        <button class="gof-tab-btn tab-structural" onclick="filterCategory('structural')">
+          <span>🏗️</span> Estructurales (7)
+        </button>
+        <button class="gof-tab-btn tab-behavioral" onclick="filterCategory('behavioral')">
+          <span>🎭</span> Comportamiento (11)
+        </button>
+      </div>
+
+      <!-- Barra de Chips de Patrones -->
+      <div class="patterns-chip-bar" id="patterns-chips">
+        <!-- Render dinámico de chips -->
+      </div>
+
+      <!-- Mesa de Trabajo Interactiva (Detalle, UML y Simulador) -->
+      <div class="workbench-grid">
+        <!-- Columna Izquierda: Arquitectura, UML y Simulador interactivo -->
+        <div class="card-panel">
+          <div class="pattern-hero">
+            <div class="pattern-title-row">
+              <h2 id="hero-pattern-name" style="margin: 0; color: #fff;">Singleton</h2>
+              <span id="hero-pattern-category" class="badge-category cat-creational">Creacional</span>
+            </div>
+            <div id="hero-pattern-intent" class="pattern-intent">
+              Garantiza que una clase tenga una única instancia y proporciona un punto de acceso global a ella.
+            </div>
+          </div>
+
+          <!-- Estructura UML -->
+          <div class="uml-box">
+            <div class="uml-title">📐 Diagrama de Clases Conceptual (UML)</div>
+            <div class="uml-classes-flow" id="uml-container">
+              <!-- Clases dinámicas inyectadas -->
+            </div>
+          </div>
+
+          <!-- Laboratorio Interactivo -->
+          <h3 style="color: var(--gold); font-size: 1rem; margin: 0 0 10px;">
+            ⚡ Banco de Pruebas Interactivo: Comportamiento en Memoria
+          </h3>
+          <div class="sim-controls" id="sim-controls-container">
+            <!-- Botones dinámicos de simulación -->
+          </div>
+
+          <div style="font-size: 0.76rem; color: var(--muted); margin-bottom: 6px;">Consola de eventos y memoria:</div>
+          <div class="sim-output-console" id="sim-console">
+            <div class="console-log-line hl">// Presiona uno de los botones de arriba para interactuar con el patrón</div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Código Canónico y Claves de Examen -->
+        <div class="card-panel">
+          <h2 style="color: var(--cyan);"><span>💻</span> Código de Implementación</h2>
+          
+          <div class="code-viewer" id="code-snippet-box">
+            <!-- Código fuente dinámico -->
+          </div>
+
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line);">
+            <h3 style="color: #b185ff; font-size: 0.95rem; margin: 0 0 8px;">
+              🎯 Criterios de Selección y Uso Real:
+            </h3>
+            <div id="pattern-usage-notes" style="font-family: Verdana; font-size: 0.82rem; line-height: 1.5; color: var(--ink);">
+              <!-- Explicación de caso de uso -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla Maestra de los 23 Patrones GoF -->
+      <section class="matrix-card">
+        <h2><span>📚</span> Matriz Clasificatoria de los 23 Patrones GoF</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Propósito Central</th>
+              <th>Patrones Incluidos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: var(--green); font-weight: bold;">🌱 Creacionales<br><span style="font-size: 0.72rem; color: var(--muted);">(5 patrones)</span></td>
+              <td>Mecanismos de instanciación y creación de objetos que aumentan la flexibilidad y aíslan la lógica del cliente respecto a cómo se crean los objetos.</td>
+              <td>
+                <strong>Factory Method</strong> (herencia para delegar creación), 
+                <strong>Abstract Factory</strong> (familias de objetos conexos), 
+                <strong>Builder</strong> (construcción paso a paso de objetos complejos), 
+                <strong>Prototype</strong> (clonación de instancias existentes), 
+                <strong>Singleton</strong> (instancia única global).
+              </td>
+            </tr>
+            <tr>
+              <td style="color: var(--cyan); font-weight: bold;">🏗️ Estructurales<br><span style="font-size: 0.72rem; color: var(--muted);">(7 patrones)</span></td>
+              <td>Cómo ensamblar clases y objetos en estructuras más grandes manteniendo la flexibilidad, eficiencia y desacoplamiento.</td>
+              <td>
+                <strong>Adapter</strong> (convierte interfaces incompatibles), 
+                <strong>Bridge</strong> (desacopla abstracción de implementación), 
+                <strong>Composite</strong> (árboles parte-todo homogéneos), 
+                <strong>Decorator</strong> (agrega responsabilidades dinámicamente sin subclases), 
+                <strong>Facade</strong> (interfaz simplificada para subsistemas complejos), 
+                <strong>Flyweight</strong> (comparte estado común para optimizar memoria masiva), 
+                <strong>Proxy</strong> (sustituto o placeholder con control de acceso).
+              </td>
+            </tr>
+            <tr>
+              <td style="color: var(--coral); font-weight: bold;">🎭 Comportamiento<br><span style="font-size: 0.72rem; color: var(--muted);">(11 patrones)</span></td>
+              <td>Algoritmos, comunicación e interconexión efectiva entre objetos y asignación de responsabilidades.</td>
+              <td>
+                <strong>Chain of Responsibility</strong> (cadena de manejadores sucesivos), 
+                <strong>Command</strong> (encapsula peticiones como objetos con undo/redo), 
+                <strong>Interpreter</strong> (gramática y evaluación de lenguaje), 
+                <strong>Iterator</strong> (recorrido secuencial sin exponer representación), 
+                <strong>Mediator</strong> (centraliza comunicación entre componentes reduciendo dependencias directas), 
+                <strong>Memento</strong> (captura y restauración de estado sin violar encapsulamiento), 
+                <strong>Observer</strong> (notificación reactiva de cambios uno a muchos), 
+                <strong>State</strong> (cambia comportamiento al mutar su estado interno), 
+                <strong>Strategy</strong> (familia de algoritmos intercambiables en tiempo de ejecución), 
+                <strong>Template Method</strong> (esqueleto algorítmico postergando pasos a subclases), 
+                <strong>Visitor</strong> (agrega operaciones a estructuras complejas sin modificarlas).
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer style="margin-top: 40px; text-align: center; color: var(--muted); font-size: 0.8rem; font-family: Verdana;">
+        Material Visual Didáctico e Interactivo para el SPC (Servicio Profesional de Carrera) · INEGI
+      </footer>
+    </div>
+
+    <script>
+      // Base de datos de los 23 patrones GoF con simuladores y código
+      const gofCatalog = [
+        // CREACIONALES
+        {
+          id: "singleton",
+          name: "Singleton",
+          category: "creational",
+          catName: "Creacional",
+          intent: "Garantiza que una clase tenga una única instancia en memoria durante el ciclo de vida del proceso y proporciona un punto de acceso global a ella.",
+          uml: [
+            { name: "Singleton", members: ["- static instance", "- private constructor()", "+ static getInstance()", "+ doBusinessOperation()"] }
+          ],
+          actions: [
+            { label: "1. Obtener Instancia A (ref1)", fn: "singletonGetA" },
+            { label: "2. Obtener Instancia B (ref2)", fn: "singletonGetB" },
+            { label: "3. Comprobar Identidad (ref1 === ref2)", fn: "singletonCheck" }
+          ],
+          usage: "Ideal para conexiones compartidas a base de datos, pools de subprocesos, gestores de configuración en memoria y logs centrales. Evitar abusar de él porque introduce estado global y dificulta las pruebas unitarias aisladas.",
+          code: `class DatabasePool {
+  private static instance: DatabasePool;
+  private connectionsCount = 10;
+
+  // Constructor PRIVADO para impedir 'new'
+  private constructor() {
+    console.log("Iniciando pool exclusivo...");
+  }
+
+  public static getInstance(): DatabasePool {
+    if (!DatabasePool.instance) {
+      DatabasePool.instance = new DatabasePool();
+    }
+    return DatabasePool.instance;
+  }
+}`
+        },
+        {
+          id: "factory-method",
+          name: "Factory Method",
+          category: "creational",
+          catName: "Creacional",
+          intent: "Define una interfaz para crear un objeto, pero delega en las subclases la decisión de qué clase exacta instanciar.",
+          uml: [
+            { name: "Creator", members: ["+ someOperation()", "# createProduct(): Product*"] },
+            { arrow: "◄--" },
+            { name: "ConcreteCreator", members: ["+ createProduct(): Product"] },
+            { arrow: "..." },
+            { name: "Product", members: ["+ operation()"] }
+          ],
+          actions: [
+            { label: "Crear Transporte Terrestre (Camión)", fn: "factoryTruck" },
+            { label: "Crear Transporte Marítimo (Barco)", fn: "factoryShip" }
+          ],
+          usage: "Útil cuando no se conoce de antemano el tipo exacto y las dependencias de los objetos con los que debe trabajar el código. Cumple con el Principio Abierto/Cerrado (OCP).",
+          code: `abstract class Logistica {
+  // El Factory Method abstracto
+  abstract crearTransporte(): Transporte;
+
+  planificarEntrega(): void {
+    const transporte = this.crearTransporte();
+    transporte.entregar();
+  }
+}
+
+class LogisticaTerrestre extends Logistica {
+  crearTransporte(): Transporte { return new Camion(); }
+}`
+        },
+        {
+          id: "abstract-factory",
+          name: "Abstract Factory",
+          category: "creational",
+          catName: "Creacional",
+          intent: "Proporciona una interfaz para crear familias de objetos relacionados o dependientes sin especificar sus clases concretas.",
+          uml: [
+            { name: "GUIFactory", members: ["+ createButton()", "+ createCheckbox()"] },
+            { arrow: "◄--" },
+            { name: "WinFactory / MacFactory", members: ["+ createButton()", "+ createCheckbox()"] }
+          ],
+          actions: [
+            { label: "Crear Familia UI Windows (Botón + Check)", fn: "afWin" },
+            { label: "Crear Familia UI MacOS (Botón + Check)", fn: "afMac" }
+          ],
+          usage: "Se utiliza cuando el sistema debe ser independiente de cómo se crean sus productos y debe ser configurado con una de múltiples familias de productos (ej. temas gráficos Claro/Oscuro, compatibilidad multiplataforma).",
+          code: `interface GUIFactory {
+  crearBoton(): Boton;
+  crearCheckbox(): Checkbox;
+}
+
+class WindowsFactory implements GUIFactory {
+  crearBoton() { return new BotonWindows(); }
+  crearCheckbox() { return new CheckboxWindows(); }
+}`
+        },
+        {
+          id: "builder",
+          name: "Builder",
+          category: "creational",
+          catName: "Creacional",
+          intent: "Separa la construcción de un objeto complejo de su representación, permitiendo que el mismo proceso de construcción cree diferentes representaciones.",
+          uml: [
+            { name: "Director", members: ["- builder", "+ construct()"] },
+            { arrow: "-->" },
+            { name: "Builder", members: ["+ buildPartA()", "+ buildPartB()", "+ getResult()"] }
+          ],
+          actions: [
+            { label: "Construir Auto Deportivo (Turbo + 2 Asientos)", fn: "builderSport" },
+            { label: "Construir Auto Familiar (GPS + 7 Asientos)", fn: "builderFamily" }
+          ],
+          usage: "Evita el antipatrón del 'constructor telescópico' (constructores con 10 o más parámetros opcionales). Ideal para la creación de reportes (PDF, HTML), hamburguesas personalizadas o configuraciones complejas.",
+          code: `const auto = new AutoBuilder()
+  .setMotor("V8 BiTurbo")
+  .setAsientos(2)
+  .setGPS(true)
+  .setTechoSolar(false)
+  .build();`
+        },
+        {
+          id: "prototype",
+          name: "Prototype",
+          category: "creational",
+          catName: "Creacional",
+          intent: "Especifica los tipos de objetos a crear mediante una instancia prototípica y crea nuevos objetos clonando este prototipo.",
+          uml: [
+            { name: "Prototype", members: ["+ clone(): Prototype"] },
+            { arrow: "◄--" },
+            { name: "ConcretePrototype", members: ["- field1", "+ clone()"] }
+          ],
+          actions: [
+            { label: "Clonar Prototipo Servidor Base", fn: "protoClone" },
+            { label: "Personalizar Clón 1 (Aumentar RAM a 64GB)", fn: "protoMutate" }
+          ],
+          usage: "Se utiliza cuando el costo de crear una nueva instancia desde cero es muy costoso (por ejemplo, consultas pesadas a BD o cálculos geométricos) y resulta más económico clonar un objeto preconfigurado.",
+          code: `interface Clonable {
+  clonar(): Clonable;
+}
+
+class ServidorConfig implements Clonable {
+  constructor(public os: string, public ram: number) {}
+  clonar(): ServidorConfig {
+    return new ServidorConfig(this.os, this.ram);
+  }
+}`
+        },
+
+        // ESTRUCTURALES
+        {
+          id: "adapter",
+          name: "Adapter",
+          category: "structural",
+          catName: "Estructural",
+          intent: "Convierte la interfaz de una clase en otra interfaz que los clientes esperan. Permite que clases con interfaces incompatibles colaboren juntas.",
+          uml: [
+            { name: "Client", members: [""] },
+            { arrow: "-->" },
+            { name: "TargetInterface", members: ["+ request()"] },
+            { arrow: "◄--" },
+            { name: "Adapter", members: ["- adaptee", "+ request()"] },
+            { arrow: "-->" },
+            { name: "Adaptee (XML Legacy)", members: ["+ specificXmlRequest()"] }
+          ],
+          actions: [
+            { label: "Llamar API Moderna enviando JSON vía Adaptador", fn: "adapterRun" }
+          ],
+          usage: "Muy frecuente al integrar librerías de terceros o sistemas heredados (legacy) sin necesidad de modificar el código original existente ni el cliente.",
+          code: `class AdaptadorXMLaJSON implements ApiModerna {
+  constructor(private legacyService: ServicioXMLAntiguo) {}
+
+  obtenerDatos(): JSONData {
+    const xml = this.legacyService.consultarXML();
+    return parseXmlToJson(xml); // Conversión
+  }
+}`
+        },
+        {
+          id: "decorator",
+          name: "Decorator",
+          category: "structural",
+          catName: "Estructural",
+          intent: "Añade responsabilidades adicionales a un objeto de forma dinámica sin recurrir a la herencia. Los decoradores proporcionan una alternativa flexible a la creación de subclases.",
+          uml: [
+            { name: "Component", members: ["+ execute()"] },
+            { arrow: "◄--" },
+            { name: "Decorator", members: ["- wrappee: Component", "+ execute()"] }
+          ],
+          actions: [
+            { label: "1. Café Simple ($20)", fn: "decCoffee" },
+            { label: "2. Decorar con Leche (+ $10)", fn: "decMilk" },
+            { label: "3. Decorar con Chocolate (+ $15)", fn: "decChoc" }
+          ],
+          usage: "Ampliamente utilizado en flujos de entrada/salida (como Java InputStream / BufferedInputStream) y middleware web (autenticación, compresión gzip, logging sobre una misma ruta).",
+          code: `let cafe: Bebida = new CafeSimple(); // $20
+cafe = new ConLeche(cafe);            // +$10
+cafe = new ConChocolate(cafe);        // +$15
+console.log(cafe.costo());            // $45`
+        },
+        {
+          id: "facade",
+          name: "Facade",
+          category: "structural",
+          catName: "Estructural",
+          intent: "Proporciona una interfaz unificada y simplificada para un conjunto de interfaces en un subsistema complejo. Facade define una interfaz de nivel superior que hace que el subsistema sea más fácil de usar.",
+          uml: [
+            { name: "Facade", members: ["+ encenderSistemaCine()"] },
+            { arrow: "-->" },
+            { name: "Subsistemas", members: ["Proyector, Luces, Audio 5.1, Bluray"] }
+          ],
+          actions: [
+            { label: "Presionar botón Fachada: 'Modo Cine'", fn: "facadeMovie" },
+            { label: "Presionar botón Fachada: 'Apagar Todo'", fn: "facadeOff" }
+          ],
+          usage: "Aislar clientes de bibliotecas complejas, controladores multimedia o SDKs financieros extensos, ofreciendo un único punto de entrada limpio.",
+          code: `class HomeTheaterFacade {
+  constructor(private audio: Amp, private luces: Luces, private proy: Proyector) {}
+
+  verPelicula() {
+    this.luces.atenuar(10);
+    this.proy.encender();
+    this.audio.modoEnvolvente();
+  }
+}`
+        },
+        {
+          id: "proxy",
+          name: "Proxy",
+          category: "structural",
+          catName: "Estructural",
+          intent: "Proporciona un sustituto o marcador de posición para otro objeto para controlar el acceso a él (Proxy virtual con Lazy Loading, Proxy de seguridad o Proxy de caché).",
+          uml: [
+            { name: "Subject", members: ["+ request()"] },
+            { arrow: "◄--" },
+            { name: "Proxy", members: ["- realSubject", "+ request()"] },
+            { arrow: "-->" },
+            { name: "RealSubject", members: ["+ request()"] }
+          ],
+          actions: [
+            { label: "Cargar Imagen con Proxy (Lazy Init)", fn: "proxyLazy" },
+            { label: "Acceso con Proxy de Seguridad (Rol Admin)", fn: "proxyAuth" }
+          ],
+          usage: "Imágenes de alta resolución que solo se descargan al ser visibles, control de permisos de usuario antes de invocar operaciones sensibles o interceptores de transacciones en Spring / Hibernate.",
+          code: `class ProxyImagen implements Imagen {
+  private imagenReal: ImagenReal | null = null;
+  constructor(private filename: string) {}
+
+  mostrar() {
+    if (!this.imagenReal) {
+      this.imagenReal = new ImagenReal(this.filename); // Carga perezosa
+    }
+    this.imagenReal.mostrar();
+  }
+}`
+        },
+
+        // COMPORTAMIENTO
+        {
+          id: "observer",
+          name: "Observer",
+          category: "behavioral",
+          catName: "Comportamiento",
+          intent: "Define una dependencia de uno a muchos entre objetos, de manera que cuando un objeto cambia su estado, todos sus dependientes son notificados y actualizados automáticamente.",
+          uml: [
+            { name: "Subject", members: ["+ attach(Observer)", "+ detach(Observer)", "+ notify()"] },
+            { arrow: "-->" },
+            { name: "Observer", members: ["+ update(state)"] }
+          ],
+          actions: [
+            { label: "1. Suscribir App Móvil y Correo", fn: "obsAttach" },
+            { label: "2. Notificar Nueva Oferta (-50%)", fn: "obsNotify" },
+            { label: "3. Desuscribir Correo y Re-notificar", fn: "obsDetach" }
+          ],
+          usage: "Base del patrón Modelo-Vista-Controlador (MVC), arquitecturas reactivas (RxJS, Event Listeners en JavaScript, Webhooks y sistemas Pub/Sub).",
+          code: `class Tienda {
+  private suscriptores: Observer[] = [];
+
+  suscribir(obs: Observer) { this.suscriptores.push(obs); }
+  notificar(oferta: string) {
+    this.suscriptores.forEach(s => s.actualizar(oferta));
+  }
+}`
+        },
+        {
+          id: "strategy",
+          name: "Strategy",
+          category: "behavioral",
+          catName: "Comportamiento",
+          intent: "Define una familia de algoritmos, encapsula cada uno de ellos y los hace intercambiables. Strategy permite que el algoritmo varíe independientemente de los clientes que lo utilizan.",
+          uml: [
+            { name: "Context", members: ["- strategy: Strategy", "+ executeStrategy()"] },
+            { arrow: "-->" },
+            { name: "Strategy", members: ["+ pay(amount)"] },
+            { arrow: "◄--" },
+            { name: "PayPal / Tarjeta / Cripto", members: ["+ pay()"] }
+          ],
+          actions: [
+            { label: "Pagar con Tarjeta de Crédito", fn: "stratCredit" },
+            { label: "Pagar con PayPal", fn: "stratPaypal" },
+            { label: "Pagar con Criptomoneda", fn: "stratCrypto" }
+          ],
+          usage: "Elimina condicionales gigantescos (switch/case) para seleccionar formas de pago, algoritmos de compresión (ZIP, RAR), cálculos de impuestos por país o rutas de navegación (en auto, a pie, en bicicleta).",
+          code: `class CarritoCompras {
+  constructor(private estrategiaPago: EstrategiaPago) {}
+
+  cambiarEstrategia(nueva: EstrategiaPago) {
+    this.estrategiaPago = nueva;
+  }
+  checkout(total: number) {
+    this.estrategiaPago.procesar(total);
+  }
+}`
+        },
+        {
+          id: "command",
+          name: "Command",
+          category: "behavioral",
+          catName: "Comportamiento",
+          intent: "Encapsula una petición como un objeto, lo que le permite parametrizar a los clientes con distintas peticiones, hacer cola o llevar un registro de las peticiones, y soportar operaciones que se pueden deshacer (Undo/Redo).",
+          uml: [
+            { name: "Invoker", members: ["- command: Command", "+ clickButton()"] },
+            { arrow: "-->" },
+            { name: "Command", members: ["+ execute()", "+ undo()"] },
+            { arrow: "-->" },
+            { name: "Receiver (Editor/Luz)", members: ["+ action()"] }
+          ],
+          actions: [
+            { label: "1. Ejecutar: Escribir 'Hola'", fn: "cmdType" },
+            { label: "2. Ejecutar: Poner Negrita", fn: "cmdBold" },
+            { label: "3. Presionar Deshacer (Undo)", fn: "cmdUndo" }
+          ],
+          usage: "Implementación de botones con macros, historial de Ctrl+Z / Ctrl+Y en editores de texto, encolamiento de trabajos asíncronos y transacciones reproducibles.",
+          code: `interface Command {
+  execute(): void;
+  undo(): void;
+}
+
+class InsertTextCommand implements Command {
+  constructor(private editor: Editor, private texto: string) {}
+  execute() { this.editor.insert(this.texto); }
+  undo() { this.editor.deleteLast(this.texto.length); }
+}`
+        },
+        {
+          id: "state",
+          name: "State",
+          category: "behavioral",
+          catName: "Comportamiento",
+          intent: "Permite a un objeto alterar su comportamiento cuando su estado interno cambia. El objeto parecerá haber cambiado de clase.",
+          uml: [
+            { name: "Context", members: ["- state: State", "+ request()", "+ setState()"] },
+            { arrow: "-->" },
+            { name: "State", members: ["+ handle(context)"] }
+          ],
+          actions: [
+            { label: "Acción en Estado: Borrador (Solicitar revisión)", fn: "stateDraft" },
+            { label: "Acción en Estado: En Revisión (Aprobar)", fn: "stateReview" },
+            { label: "Acción en Estado: Publicado (Archivar)", fn: "statePublished" }
+          ],
+          usage: "Máquinas de estados finitos: carritos de compras (creado, pagado, despachado), documentos de workflow o personajes de videojuegos (caminando, saltando, agachado).",
+          code: `class Pedido {
+  private estado: EstadoPedido = new EstadoPendiente();
+
+  setEstado(nuevo: EstadoPedido) { this.estado = nuevo; }
+  pagar() { this.estado.pagar(this); }
+  cancelar() { this.estado.cancelar(this); }
+}`
+        }
+      ];
+
+      let currentPatternIndex = 0;
+      let activeFilter = 'all';
+
+      // Memoria de simulación para los patrones
+      const simMemory = {
+        singletonA: null,
+        singletonB: null,
+        coffeePrice: 20,
+        coffeeDesc: "Café Espresso Base",
+        editorHistory: [],
+        documentState: "Borrador",
+        observers: ["AppMóvil"]
+      };
+
+      function filterCategory(cat) {
+        activeFilter = cat;
+        document.querySelectorAll('.gof-tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.closest('.gof-tab-btn').classList.add('active');
+        renderChips();
+      }
+
+      function renderChips() {
+        const container = document.getElementById('patterns-chips');
+        container.innerHTML = "";
+
+        gofCatalog.forEach((p, idx) => {
+          if (activeFilter !== 'all' && p.category !== activeFilter) return;
+
+          const chip = document.createElement('div');
+          chip.className = `pattern-chip ${idx === currentPatternIndex ? 'active' : ''}`;
+          
+          let icon = "🌱";
+          if (p.category === 'structural') icon = "🏗️";
+          if (p.category === 'behavioral') icon = "🎭";
+
+          chip.innerHTML = `<span>${icon}</span> ${p.name}`;
+          chip.onclick = () => selectPattern(idx);
+          container.appendChild(chip);
+        });
+      }
+
+      function selectPattern(idx) {
+        currentPatternIndex = idx;
+        renderChips();
+        renderActivePattern();
+      }
+
+      function renderActivePattern() {
+        const p = gofCatalog[currentPatternIndex];
+
+        document.getElementById('hero-pattern-name').innerText = p.name;
+        document.getElementById('hero-pattern-intent').innerText = `"${p.intent}"`;
+
+        const catBadge = document.getElementById('hero-pattern-category');
+        catBadge.innerText = p.catName;
+        catBadge.className = `badge-category cat-${p.category}`;
+
+        // Render UML
+        const umlContainer = document.getElementById('uml-container');
+        umlContainer.innerHTML = "";
+        p.uml.forEach(node => {
+          if (node.arrow) {
+            const arr = document.createElement('div');
+            arr.className = 'uml-arrow';
+            arr.innerText = node.arrow;
+            umlContainer.appendChild(arr);
+          } else {
+            const cl = document.createElement('div');
+            cl.className = 'uml-class';
+            let membersHtml = node.members.map(m => `<div>${m}</div>`).join('');
+            cl.innerHTML = `
+              <div class="uml-class-name">${node.name}</div>
+              <div class="uml-class-members">${membersHtml}</div>
+            `;
+            umlContainer.appendChild(cl);
+          }
+        });
+
+        // Controles de simulación
+        const simContainer = document.getElementById('sim-controls-container');
+        simContainer.innerHTML = "";
+        p.actions.forEach(act => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-sim-action';
+          btn.innerText = act.label;
+          btn.onclick = () => window[act.fn]();
+          simContainer.appendChild(btn);
+        });
+
+        // Código
+        document.getElementById('code-snippet-box').innerText = p.code;
+
+        // Notas
+        document.getElementById('pattern-usage-notes').innerHTML = `<p>${p.usage}</p>`;
+
+        // Limpiar consola
+        logConsole(`// Patrón cargado: ${p.name}. Listo para interactuar.`, 'hl');
+      }
+
+      function logConsole(text, type = '') {
+        const c = document.getElementById('sim-console');
+        const line = document.createElement('div');
+        line.className = `console-log-line ${type}`;
+        line.innerText = `> ${text}`;
+        c.appendChild(line);
+        c.scrollTop = c.scrollHeight;
+      }
+
+      // SIMULACIONES REALES EN VIVO
+      // 1. Singleton
+      window.singletonGetA = function() {
+        if (!simMemory.singletonA) {
+          simMemory.singletonA = { id: 0x8F34A, connection: "PostgreSQL_Pool_1" };
+          logConsole(`Instancia A creada en dirección [0x8F34A]: Conexión Postgres establecida`, 'cyan');
+        } else {
+          logConsole(`Retornando instancia existente en [0x8F34A]`);
+        }
+      };
+
+      window.singletonGetB = function() {
+        simMemory.singletonB = simMemory.singletonA || { id: 0x8F34A, connection: "PostgreSQL_Pool_1" };
+        logConsole(`Instancia B obtenida: Referencia apunta a [0x8F34A]`);
+      };
+
+      window.singletonCheck = function() {
+        if (!simMemory.singletonA) {
+          logConsole("Primero obtén la instancia A.", "coral");
+          return;
+        }
+        const same = (simMemory.singletonA === simMemory.singletonB);
+        logConsole(`¿(refA === refB)? ${same ? "TRUE (Misma dirección física de memoria única)" : "FALSE"}`, 'hl');
+      };
+
+      // 2. Factory Method
+      window.factoryTruck = function() {
+        logConsole("LogisticaTerrestre invoca crearTransporte() -> retorna instancia [Camión]", "cyan");
+        logConsole("Camion.entregar(): 'Entrega por carretera en caja seca completada.'");
+      };
+      window.factoryShip = function() {
+        logConsole("LogisticaMaritima invoca crearTransporte() -> retorna instancia [Barco]", "cyan");
+        logConsole("Barco.entregar(): 'Entrega por contenedor marítimo en altamar completada.'");
+      };
+
+      // 3. Abstract Factory
+      window.afWin = function() {
+        logConsole("WindowsFactory crea: [BotonWindows estilo Fluent] y [CheckboxWindows estilo palomita]");
+      };
+      window.afMac = function() {
+        logConsole("MacFactory crea: [BotonMacOS estilo Aqua] y [CheckboxMacOS con animación]", "cyan");
+      };
+
+      // 4. Builder
+      window.builderSport = function() {
+        logConsole("Director.crearDeportivo(): Auto con Motor V8 Biturbo, 2 Asientos de Fibra, Carrocería Roja.", "coral");
+      };
+      window.builderFamily = function() {
+        logConsole("Director.crearFamiliar(): Auto con Motor 1.6L Híbrido, 7 Asientos, GPS Integrado y Sensores.", "cyan");
+      };
+
+      // 5. Prototype
+      window.protoClone = function() {
+        logConsole("Clonando prototipo ServidorBase -> Nuevo objeto Clón creado en RAM en 1ms sin consultar BD.");
+      };
+      window.protoMutate = function() {
+        logConsole("Clón.modificar(RAM: 64GB) -> El objeto prototipo original sigue intacto con 8GB.", "hl");
+      };
+
+      // 6. Adapter
+      window.adapterRun = function() {
+        logConsole("Cliente envía petición REST: { 'usuario': 105 }", "cyan");
+        logConsole("Adaptador convierte payload a XML: <consulta><id>105</id></consulta>");
+        logConsole("Servicio Legacy responde XML -> Adaptador devuelve JSON limpio al cliente.", "hl");
+      };
+
+      // 7. Decorator
+      window.decCoffee = function() {
+        simMemory.coffeePrice = 20;
+        simMemory.coffeeDesc = "Café Espresso";
+        logConsole(`Bebida base: ${simMemory.coffeeDesc} | Total: $${simMemory.coffeePrice}`, "cyan");
+      };
+      window.decMilk = function() {
+        simMemory.coffeePrice += 10;
+        simMemory.coffeeDesc += " + Leche";
+        logConsole(`Decorador [ConLeche] envuelve: ${simMemory.coffeeDesc} | Total: $${simMemory.coffeePrice}`, "hl");
+      };
+      window.decChoc = function() {
+        simMemory.coffeePrice += 15;
+        simMemory.coffeeDesc += " + Chocolate";
+        logConsole(`Decorador [ConChocolate] envuelve: ${simMemory.coffeeDesc} | Total: $${simMemory.coffeePrice}`, "coral");
+      };
+
+      // 8. Facade
+      window.facadeMovie = function() {
+        logConsole("HomeTheaterFacade.verPelicula() ejecutado:");
+        logConsole("  -> Luces.atenuar(10%)");
+        logConsole("  -> PantallaProyector.bajar()");
+        logConsole("  -> SistemaSonido.configurarDolbyAtmos()");
+        logConsole("  -> Reproductor.iniciar()");
+      };
+      window.facadeOff = function() {
+        logConsole("HomeTheaterFacade.apagar(): Todo el equipo apagado en 1 sola llamada.", "coral");
+      };
+
+      // 9. Proxy
+      window.proxyLazy = function() {
+        logConsole("ProxyImagen creado. La imagen pesada (25MB) NO se descarga todavía.");
+        setTimeout(() => {
+          logConsole("-> Usuario hace scroll: Proxy descarga e instancia ImagenReal ahora.", "hl");
+        }, 600);
+      };
+      window.proxyAuth = function() {
+        logConsole("ProxySeguridad: Verificando token JWT del usuario...");
+        logConsole("Permiso concedido para rol 'ADMIN' -> Delegando a ServicioBancarioReal.", "cyan");
+      };
+
+      // 10. Observer
+      window.obsAttach = function() {
+        simMemory.observers = ["AppMóvil", "ServicioCorreo", "NotificacionesSMS"];
+        logConsole(`Observadores suscritos: ${simMemory.observers.join(", ")}`);
+      };
+      window.obsNotify = function() {
+        logConsole(`Tienda publica cambio: "¡Laptop con 50% de descuento!"`, "hl");
+        simMemory.observers.forEach(obs => {
+          logConsole(`  -> Notificación entregada a [${obs}]`);
+        });
+      };
+      window.obsDetach = function() {
+        simMemory.observers = simMemory.observers.filter(o => o !== "ServicioCorreo");
+        logConsole("ServicioCorreo desuscrito.");
+        logConsole(`Observadores actuales: ${simMemory.observers.join(", ")}`);
+      };
+
+      // 11. Strategy
+      window.stratCredit = function() {
+        logConsole("Ejecutando Estrategia: [Tarjeta de Crédito] -> Validación de CVV y cobro de comisión 1.5%.", "cyan");
+      };
+      window.stratPaypal = function() {
+        logConsole("Ejecutando Estrategia: [PayPal] -> Redirección a pasarela de autenticación OAuth segura.", "hl");
+      };
+      window.stratCrypto = function() {
+        logConsole("Ejecutando Estrategia: [Criptomoneda] -> Generación de código QR y hash de transacción en blockchain.", "coral");
+      };
+
+      // 12. Command
+      window.cmdType = function() {
+        simMemory.editorHistory.push("Texto 'Hola'");
+        logConsole("Comando [EscribirTexto('Hola')] ejecutado. Historial tamaño: " + simMemory.editorHistory.length);
+      };
+      window.cmdBold = function() {
+        simMemory.editorHistory.push("Formato Negrita");
+        logConsole("Comando [AplicarNegrita] ejecutado. Historial tamaño: " + simMemory.editorHistory.length, "cyan");
+      };
+      window.cmdUndo = function() {
+        if (simMemory.editorHistory.length === 0) {
+          logConsole("Historial vacío. Nada que deshacer.", "coral");
+          return;
+        }
+        const undone = simMemory.editorHistory.pop();
+        logConsole(`Deshaciendo acción (Undo): ${undone}. Comando revertido con éxito.`, "hl");
+      };
+
+      // 13. State
+      window.stateDraft = function() {
+        simMemory.documentState = "En Revisión";
+        logConsole("Transición de Estado: [Borrador] -> [En Revisión]. Permisos de edición ahora bloqueados.", "cyan");
+      };
+      window.stateReview = function() {
+        simMemory.documentState = "Publicado";
+        logConsole("Transición de Estado: [En Revisión] -> [Publicado]. Documento visible para todo el público.", "hl");
+      };
+      window.statePublished = function() {
+        simMemory.documentState = "Archivado";
+        logConsole("Transición de Estado: [Publicado] -> [Archivado]. Documento en solo lectura histórica.", "coral");
+      };
+
+      // Inicializar
+      renderChips();
+      renderActivePattern();
+    </script>
+  </body>
+</html>
