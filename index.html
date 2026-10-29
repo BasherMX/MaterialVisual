@@ -216,10 +216,30 @@
         font-size: 0.85rem;
       }
 
+      /* Estilo base para todos los botones de módulos */
+      .btn-launch {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font: 700 0.85rem/1 "Courier New", Courier, monospace;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        transition: all 0.25s ease;
+      }
+
+      .btn-launch:hover {
+        transform: translateY(-2px);
+      }
+
       /* ==========================================================
-         SISTEMA MODULAR DE 6 TEMAS CROMÁTICOS REUTILIZABLES
+         SISTEMA MODULAR DE TEMAS CROMÁTICOS REUTILIZABLES
          ========================================================== */
-      /* 1. Cyan (Estructura Dinámica / Búsquedas) */
+      /* 1. Cyan (Estructura Dinámica / Búsquedas / Richardson) */
       .theme-cyan .badge-theme { color: var(--cyan); background: rgba(0, 255, 255, 0.08); }
       .theme-cyan.module-card::before { background: linear-gradient(90deg, #0080ff, #00ffff); }
       .theme-cyan .btn-theme {
@@ -233,7 +253,7 @@
         color: #000;
       }
 
-      /* 2. Gold (Grafos / Algoritmos) */
+      /* 2. Gold (Grafos / Algoritmos / Triple Restricción) */
       .theme-gold .badge-theme { color: var(--gold); background: rgba(255, 215, 0, 0.08); }
       .theme-gold.module-card::before { background: linear-gradient(90deg, #ffd700, #ff9100); }
       .theme-gold .btn-theme {
@@ -301,6 +321,20 @@
         background: linear-gradient(135deg, #ff006e, #ff9100);
         box-shadow: 0 0 24px rgba(255, 145, 0, 0.6);
         color: #fff;
+      }
+
+      /* 7. Blue (Protocolos / RFC 9110 / HTTP) */
+      .theme-blue .badge-theme { color: #00aaff; background: rgba(0, 170, 255, 0.08); }
+      .theme-blue.module-card::before { background: linear-gradient(90deg, #0080ff, #55ffff); }
+      .theme-blue .btn-theme {
+        background: linear-gradient(135deg, #0080ff, #00ffff);
+        color: #0b1021;
+        box-shadow: 0 0 16px rgba(0, 128, 255, 0.3);
+      }
+      .theme-blue .btn-theme:hover {
+        background: linear-gradient(135deg, #00ffff, #0080ff);
+        box-shadow: 0 0 24px rgba(0, 128, 255, 0.6);
+        color: #000;
       }
 
       footer {
