@@ -16,3 +16,4 @@ Visualizadores y simuladores interactivos de estructuras de datos, algoritmos, d
 - 11. Modelo de Madurez de Richardson (Leonard Richardson & Martin Fowler)
 - 12. Métodos HTTP y Códigos de Estado Estándar (RFC 9110)
 - 13. Patrones de Diseño GoF (Gang of Four: Gamma, Helm, Johnson, Vlissides)
+- 14. Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL y DQL)
