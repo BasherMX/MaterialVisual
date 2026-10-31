@@ -19,3 +19,4 @@ Visualizadores y simuladores interactivos de estructuras de datos, algoritmos, d
 - 14. Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL y DQL)
 - 15. Propiedades ACID y Axiomas de Armstrong (Inferencia de DF y Clausuras)
 - 16. Diseño Físico: Índices (Clustered vs Non-Clustered) y Árboles B+ Interactivos
+- 17. Arquitectura ANSI/SPARC de Tres Niveles (Mapeos, Independencia Física/Lógica y Oppel)

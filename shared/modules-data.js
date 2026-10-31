@@ -265,6 +265,22 @@
         "Laboratorio de planes de ejecución: Table Scan vs Index Seek vs Key Lookup e Índices Cubridores"
       ],
       btnId: "btn-goto-bplus"
+    },
+    {
+      id: "17",
+      slug: "17-arquitectura-ansi-sparc-tres-niveles",
+      filename: "17-arquitectura-ansi-sparc-tres-niveles.html",
+      theme: "theme-cyan",
+      category: "Bases de Datos",
+      badge: "17 · Arquitectura de BD & Abstracción",
+      title: "Arquitectura ANSI/SPARC de Tres Niveles",
+      desc: "Aislamiento de programas frente al hardware: Niveles Externo, Conceptual e Interno, Mapeos automáticos, Independencia Física/Lógica y la tesis de Andy Oppel.",
+      features: [
+        "Simulador reactivo del viaje de una consulta: descompone vistas, valida el catálogo y resuelve bloques de disco",
+        "Pruebas de inmunidad al cambio: demuestra la Independencia Física (migración a SSD/B+) y Lógica (adición de columnas)",
+        "Análisis de autor: discrepancia teórica vs implementación comercial fusionada en motores RDBMS (Oppel)"
+      ],
+      btnId: "btn-goto-ansi-sparc"
     }
   ];
 });
