@@ -5,7 +5,7 @@ Documento maestro de arquitectura técnica, principios de diseño, componentes r
 ---
 
 ## 1. Visión y Propósito
-MaterialVisual es un laboratorio interactivo enfocado en la divulgación rigurosa de Ciencias de la Computación, Algoritmos, Estructuras de Datos, Arquitectura de Software, Bases de Datos Relacionales y Gestión de Proyectos. Su premisa fundamental es **convertir conceptos abstractos y teóricos en modelos visuales manipulables en tiempo real** con retroalimentación instantánea.
+MaterialVisual es un laboratorio interactivo enfocado en la divulgación rigurosa de Ciencias de la Computación, Algoritmos, Estructuras de Datos, Arquitectura de Software, Bases de Datos Relacionales y Gestión de Proyectos. Su premisa fundamental es **convertir conceptos abstractos y teóricos en modelos visuales manipulables en tiempo real** con retroalimentación instantánea, permitiendo al estudiante o profesional "aprender haciendo".
 
 ---
 
@@ -99,10 +99,19 @@ Al cargarse cualquier módulo, `nav.js`:
 
 ---
 
-## 6. Estándar Pedagógico de los Módulos
-Cada módulo debe brindar una experiencia de aprendizaje completa en 5 pestañas:
-1. **Marco Conceptual Riguroso:** Fundamentación teórica formal con referencias a autores canónicos.
-2. **Simulador Visual Reactivo:** El corazón interactivo. Modificación de estado en tiempo real (nodos, árboles, transacciones, tablas).
-3. **Casos de Estudio / Duelos / Discrepancias:** Confrontación entre teoría y práctica comercial (ej. DELETE vs TRUNCATE vs DROP, B+ vs AVL, Teoría ANSI/SPARC vs RDBMS comerciales).
-4. **Herramienta Cuantitativa / Calculadora:** Ejecución paso a paso de algoritmos matemáticos (clausura de dependencias funcionales, cálculo de I/O, fan-out, complejidades Big O).
-5. **Laboratorio de Diagnóstico (Quiz):** Preguntas técnicas con validación inmediata y explicación pedagógica.
+## 6. Estándar Didáctico y de Interactividad ("Aprender Haciendo")
+Cada módulo debe brindar una experiencia de aprendizaje completa estructurada en 5 dimensiones pedagógicas:
+1. **Marco Conceptual Riguroso:** Fundamentación teórica formal con referencias a autores canónicos (Codd, Oppel, Pressman, Sommerville, Gamma, Richardson, etc.).
+2. **Simulador Visual Reactivo:** El corazón interactivo. Modificación de estado en tiempo real (nodos que se rotan o dividen, transacciones ACID que fallan o confirman, lectura de bloques físicos en disco).
+3. **Casos de Estudio / Duelos / Discrepancias:** Confrontación entre teoría formal y práctica comercial real (ej. DELETE vs TRUNCATE vs DROP, B+ vs AVL, Teoría ANSI/SPARC vs RDBMS comerciales).
+4. **Herramienta Cuantitativa / Calculadora:** Ejecución paso a paso de algoritmos matemáticos o métricas de ingeniería (clausura de dependencias funcionales, cálculo de I/O, fan-out, complejidades Big O).
+5. **Laboratorio de Diagnóstico (Quiz Formativo):** Preguntas de evaluación técnica con validación inmediata y retroalimentación pedagógica exhaustiva que enseñe el trasfondo técnico de la respuesta correcta.
+
+---
+
+## 7. Estándar Mobile-First & Responsive Universal
+Todo módulo debe garantizar plena funcionalidad visual y táctil en pantallas desde 320px de ancho:
+1. **Prevención de Desbordamiento:** El contenedor `.page` y la etiqueta `body` deben mitigar el scroll horizontal indeseado con anchos fluidos y `word-break: break-word`.
+2. **Colapso Unificado de Rejillas:** Las cuadrículas (`.taxo-grid`, `.lab-layout`, `.sim-sparc-grid`, `.index-compare-grid`, etc.) colapsan a 1 columna en pantallas móviles (`@media (max-width: 768px)` y `600px`).
+3. **Contenedores de Desplazamiento Táctil:** Tablas (`.data-table-wrap`) y representaciones complejas (árboles B+, esquemas SPARC, diagramas ERD) deben incorporar scroll horizontal táctil suave (`-webkit-overflow-scrolling: touch`).
+4. **Ergonomía Táctil (Touch Targets):** Todo control accionable (pestañas, botones, selectores y reactivos del quiz) debe tener una altura mínima accesible de 42-44px y espacio suficiente para interacción precisa con los dedos.

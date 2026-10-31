@@ -373,12 +373,99 @@ footer.global-footer, footer {
   font: 0.78rem/1.5 Verdana, sans-serif;
 }
 
+/* Responsividad Universal Mobile-First */
 @media (max-width: 768px) {
-  .page { width: calc(100% - 20px); padding-top: 20px; }
-  h1 { font-size: 1.85rem; line-height: 1.1; word-break: break-word; }
-  .intro { font-size: 0.9rem; }
-  .module-nav-bar { flex-direction: column; align-items: stretch; gap: 12px; }
-  .module-nav-bar .nav-left, .module-nav-bar .nav-center, .module-nav-bar .nav-right { width: 100%; justify-content: center; }
-  .btn-nav-standard { width: 100%; }
+  .page {
+    width: calc(100% - 24px);
+    padding-top: 18px;
+    padding-bottom: 36px;
+  }
+  header.module-header, header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(1.6rem, 6vw, 2.3rem);
+    line-height: 1.15;
+    word-break: break-word;
+  }
+  .intro {
+    font-size: 0.88rem;
+    max-width: 100%;
+  }
+  .matrix-card {
+    padding: 16px 14px;
+    margin-bottom: 18px;
+  }
+  /* Pestañas táctiles cómodas */
+  .nav-tabs {
+    gap: 8px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+  }
+  .tab-btn {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    min-height: 44px;
+    flex: 1 1 calc(50% - 8px);
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  /* Colapso unificado de cuadrículas para dispositivos móviles */
+  .taxo-grid,
+  .taxo-grid-4,
+  .index-compare-grid,
+  .ansi-levels-grid,
+  .account-card-grid,
+  .sim-sparc-grid,
+  .acid-sim-layout,
+  .sim-layout,
+  .lab-layout,
+  .layout,
+  .layout-grid,
+  .compare-grid,
+  .rules-grid,
+  .metrics-grid,
+  .stats,
+  .examples,
+  .form-grid,
+  .consistency-grid,
+  .armstrong-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  /* Barra de navegación de módulos apilada en móvil */
+  .module-nav-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .module-nav-bar .nav-left,
+  .module-nav-bar .nav-center,
+  .module-nav-bar .nav-right {
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-nav-standard {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
 }
+
+@media (max-width: 480px) {
+  .page {
+    width: calc(100% - 16px);
+  }
+  .tab-btn {
+    flex: 1 1 100%;
+  }
+  .matrix-card {
+    padding: 14px 10px;
+  }
+}
+
 

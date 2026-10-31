@@ -222,6 +222,53 @@
         outline: none;
         box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
       }
+    
+      /* Responsive Mobile-First para Dispositivos Móviles */
+      @media (max-width: 768px) {
+        .index-compare-grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        .bplus-controls {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+          padding: 12px;
+        }
+        .bplus-controls > div {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+        }
+        .bplus-input {
+          width: 100%;
+          box-sizing: border-box;
+          min-height: 42px;
+        }
+        .bplus-controls button {
+          min-height: 44px;
+          width: 100%;
+        }
+        .disk-page {
+          flex: 1 1 100%;
+        }
+        .bplus-container {
+          padding: 14px 10px;
+          min-height: 320px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .index-card {
+          padding: 14px 12px;
+        }
+        .bplus-key-cell {
+          padding: 4px 6px;
+          font-size: 0.8rem;
+          min-width: 22px;
+        }
+      }
     </style>
   </head>
   <body>

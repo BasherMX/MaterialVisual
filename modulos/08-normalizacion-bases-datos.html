@@ -529,7 +529,8 @@
       <!-- Tabla Comparativa de Formas Normales -->
       <section class="matrix-card" aria-label="Matriz de Formas Normales">
         <h2><span>⚡</span> Las Formas Normales Esenciales y las Anomalías que Eliminan</h2>
-        <table class="compare-table">
+        <div class="data-table-wrap">
+<table class="compare-table">
           <thead>
             <tr>
               <th>Forma Normal</th>
@@ -565,6 +566,7 @@
             </tr>
           </tbody>
         </table>
+</div>
       </section>
 
       <!-- Pestañas de Paso a Paso -->
@@ -716,7 +718,8 @@
             </div>
             <div class="data-table-wrap" style="margin-top:12px;">
               <h5 style="color:var(--green); margin:0 0 6px;">Tabla LINEA_FACTURA (1FN)</h5>
-              <table class="demo-table">
+              <div class="data-table-wrap">
+<table class="demo-table">
                 <thead>
                   <tr><th>Nº Factura (CP, CE)</th><th>Nº Producto (CP)</th><th>Descripción</th><th>Cantidad</th><th>Precio Unitario</th></tr>
                 </thead>
@@ -726,6 +729,7 @@
                   <tr><td><span class="pill pill-pk">102</span></td><td><span class="pill pill-pk">SFR-1</span></td><td>Combustible</td><td>1</td><td>$128,200.00</td></tr>
                 </tbody>
               </table>
+</div>
             </div>
             <p style="font-size:0.78rem; color:var(--gold);">⚠️ <strong>Atención:</strong> En LINEA_FACTURA, 'Descripción' depende sólo de 'Nº Producto', violando la 2FN (dependencia parcial).</p>
           `
@@ -749,7 +753,8 @@
             </div>
             <div class="data-table-wrap" style="margin-top:10px;">
               <h5 style="color:var(--green); margin:0 0 6px;">Tabla LINEA_FACTURA (2FN - Intersección M:N pura)</h5>
-              <table class="demo-table">
+              <div class="data-table-wrap">
+<table class="demo-table">
                 <thead>
                   <tr><th>Nº Factura (CP, CE1)</th><th>Nº Producto (CP, CE2)</th><th>Cantidad</th><th>Precio Venta</th></tr>
                 </thead>
@@ -759,6 +764,7 @@
                   <tr><td>102</td><td>SFR-1</td><td>1</td><td>$128,200.00</td></tr>
                 </tbody>
               </table>
+</div>
             </div>
             <p style="font-size:0.78rem; color:var(--coral);">⚠️ <strong>Pendiente:</strong> En FACTURA, Nombre Cliente depende de Nº Cliente (dependencia transitiva de la PK).</p>
           `
@@ -781,7 +787,8 @@
             </div>
             <div class="data-table-wrap" style="margin-top:10px;">
               <h5 style="color:var(--green); margin:0 0 6px;">Tabla FACTURA (3FN)</h5>
-              <table class="demo-table">
+              <div class="data-table-wrap">
+<table class="demo-table">
                 <thead>
                   <tr><th>Nº Factura (CP)</th><th>Nº Cliente (CE)</th><th>Fecha Pedido</th><th>Método Envío</th></tr>
                 </thead>
@@ -790,6 +797,7 @@
                   <tr><td><span class="pill pill-pk">102</span></td><td>1454</td><td>05/12/2008</td><td>USPS</td></tr>
                 </tbody>
               </table>
+</div>
             </div>
             <p style="font-size:0.82rem; color:var(--green);">✓ <strong>¡Base de Datos Normalizada!</strong> Desaparecen las 3 anomalías. Si se borra la factura 101, el cliente 1454 y los productos permanecen intactos.</p>
           `

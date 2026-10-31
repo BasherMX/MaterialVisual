@@ -228,6 +228,47 @@
         margin: 0 0 10px;
         font-size: 1.2rem;
       }
+    
+      /* Responsive Mobile-First para Portal Principal */
+      @media (max-width: 768px) {
+        .page {
+          width: calc(100% - 24px);
+          padding: 20px 0 40px;
+        }
+        .modules-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .controls-bar {
+          padding: 14px 12px;
+          gap: 12px;
+        }
+        .category-chips {
+          gap: 6px;
+        }
+        .chip-btn {
+          padding: 8px 12px;
+          min-height: 40px;
+          font-size: 0.74rem;
+        }
+        .btn-launch {
+          min-height: 44px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .page {
+          width: calc(100% - 16px);
+        }
+        .module-card {
+          padding: 16px 14px;
+        }
+        .chip-btn {
+          flex: 1 1 calc(50% - 6px);
+          text-align: center;
+          justify-content: center;
+        }
+      }
     </style>
   </head>
   <body>

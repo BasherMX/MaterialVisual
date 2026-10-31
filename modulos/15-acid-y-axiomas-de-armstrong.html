@@ -276,6 +276,32 @@
         border-color: var(--coral) !important;
         color: #fff !important;
       }
+    
+      @media (max-width: 768px) {
+        .taxo-grid-4 {
+          grid-template-columns: 1fr;
+        }
+        .acid-sim-layout {
+          grid-template-columns: 1fr;
+        }
+        .account-card-grid {
+          grid-template-columns: 1fr;
+        }
+        .armstrong-grid {
+          grid-template-columns: 1fr;
+        }
+        .acid-controls button,
+        .btn-armstrong-eval {
+          min-height: 44px;
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .acid-card, .armstrong-rule-box {
+          padding: 14px 12px;
+        }
+      }
     </style>
   </head>
   <body>
