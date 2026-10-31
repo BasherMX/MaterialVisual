@@ -8,21 +8,9 @@
       name="description"
       content="Laboratorio y simulador interactivo de la taxonomía del lenguaje SQL: Data Definition Language (DDL), Data Manipulation Language (DML), Data Control Language (DCL) y Transaction Control Language (TCL)."
     />
+    <link rel="stylesheet" href="../shared/theme.css" />
     <style>
       :root {
-        --ink: #e7f6ff;
-        --muted: #9aa8c2;
-        --paper: #1a1a2e;
-        --panel: #22213d;
-        --panel-dark: #121124;
-        --line: rgba(0, 255, 255, 0.28);
-        --cyan: #00ffff;
-        --blue: #0080ff;
-        --coral: #ff006e;
-        --purple: #7928ca;
-        --gold: #ffd700;
-        --green: #00ffaa;
-        --shadow: 0 0 24px rgba(0, 255, 255, 0.16);
         --ddl-color: #00ffff;
         --dml-color: #00ffaa;
         --dcl-color: #ffd700;
@@ -30,176 +18,7 @@
         --dql-color: #9d4edd;
       }
 
-      * {
-        box-sizing: border-box;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(0, 255, 255, 0.45) #0c0b1a;
-      }
-
-      /* Custom Scrollbar Cyberpunk / Neon */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: #0c0b1a;
-        border-radius: 4px;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, rgba(0, 255, 255, 0.6), rgba(121, 40, 202, 0.7));
-        border-radius: 4px;
-        border: 1px solid rgba(0, 255, 255, 0.3);
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #00ffaa, #ff006e);
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
-      }
-
-      ::-webkit-scrollbar-corner {
-        background: #0c0b1a;
-      }
-
-      body {
-        margin: 0;
-        color: var(--ink);
-        position: relative;
-        min-height: 100vh;
-        overflow-x: hidden;
-        background: radial-gradient(circle at 50% -10%, rgba(0, 255, 255, 0.22), transparent 45%), var(--paper);
-        font-family: "Courier New", Courier, monospace;
-      }
-
-      body::before {
-        position: fixed;
-        z-index: 4;
-        inset: 0;
-        pointer-events: none;
-        content: "";
-        background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
-        opacity: 0.45;
-      }
-
-      body::after {
-        position: fixed;
-        z-index: 0;
-        inset: 0;
-        pointer-events: none;
-        content: "";
-        background-image: linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.04) 1px, transparent 1px);
-        background-size: 38px 38px;
-        mask-image: linear-gradient(to bottom, black, transparent 80%);
-      }
-
-      .page {
-        position: relative;
-        z-index: 1;
-        width: min(1440px, calc(100% - 40px));
-        margin: 0 auto;
-        padding: 34px 0 54px;
-      }
-
-      .btn-back-index {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 20px;
-        padding: 8px 16px;
-        border-radius: 6px;
-        border: 1px solid var(--line);
-        background: rgba(34, 33, 61, 0.85);
-        color: var(--cyan);
-        text-decoration: none;
-        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
-        letter-spacing: 0.05em;
-        transition: all 0.2s ease;
-        box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
-      }
-
-      .btn-back-index:hover {
-        background: rgba(0, 255, 255, 0.15);
-        border-color: var(--cyan);
-        color: #ffffff;
-        box-shadow: 0 0 16px rgba(0, 255, 255, 0.35);
-        transform: translateX(-3px);
-      }
-
-      header {
-        display: flex;
-        justify-content: space-between;
-        gap: 30px;
-        align-items: flex-end;
-        margin-bottom: 28px;
-        flex-wrap: wrap;
-      }
-
-      .eyebrow {
-        margin: 0 0 10px;
-        color: var(--cyan);
-        font: 700 0.76rem/1.2 Verdana, sans-serif;
-        letter-spacing: 0.13em;
-        text-transform: uppercase;
-        text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 920px;
-        font-size: clamp(2.1rem, 4.4vw, 3.8rem);
-        line-height: 1.05;
-        color: var(--coral);
-        font-family: "Courier New", Courier, monospace;
-        font-weight: 700;
-        letter-spacing: -0.035em;
-        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
-      }
-
-      .intro {
-        max-width: 520px;
-        margin: 0 0 4px;
-        color: var(--muted);
-        font: 0.95rem/1.55 Verdana, sans-serif;
-      }
-
-      /* Navigation Tabs */
-      .nav-tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 24px;
-        border-bottom: 1px solid var(--line);
-        padding-bottom: 16px;
-      }
-
-      .tab-btn {
-        padding: 10px 18px;
-        border-radius: 6px;
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        background: var(--panel-dark);
-        color: var(--ink);
-        font: 700 0.85rem "Courier New", Courier, monospace;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .tab-btn:hover {
-        border-color: var(--cyan);
-        background: rgba(0, 255, 255, 0.1);
-      }
-
-      .tab-btn.active {
-        background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(121, 40, 202, 0.3));
-        color: #fff;
-        border-color: var(--cyan);
-        box-shadow: 0 0 14px rgba(0, 255, 255, 0.4);
-      }
-
-      /* Sections & Panels */
+      /* Estilos específicos del Módulo 14 */
       .content-panel {
         display: none;
         animation: fadeIn 0.3s ease;
@@ -761,84 +580,7 @@
         font: 700 0.9rem "Courier New", monospace;
       }
 
-      /* Module Nav Bar */
-      .module-nav-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        margin-top: 40px;
-        padding-top: 24px;
-        border-top: 1px solid var(--line);
-        flex-wrap: wrap;
-      }
-
-      .module-nav-bar .nav-left,
-      .module-nav-bar .nav-center,
-      .module-nav-bar .nav-right {
-        display: flex;
-        align-items: center;
-      }
-
-      .module-nav-bar .nav-center {
-        margin: 0 auto;
-      }
-
-      .btn-nav-standard {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 18px;
-        border-radius: 6px;
-        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
-        letter-spacing: 0.04em;
-        text-decoration: none;
-        transition: all 0.25s ease;
-      }
-
-      .btn-nav-prev {
-        background: rgba(34, 33, 61, 0.9);
-        border: 1px solid rgba(0, 255, 255, 0.35);
-        color: var(--cyan);
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
-      }
-
-      .btn-nav-prev:hover {
-        background: rgba(0, 255, 255, 0.15);
-        border-color: var(--cyan);
-        color: #ffffff;
-        box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
-        transform: translateX(-3px);
-      }
-
-      .btn-nav-home {
-        background: rgba(34, 33, 61, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: var(--muted);
-      }
-
-      .btn-nav-home:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: var(--ink);
-        color: #ffffff;
-      }
-
-      footer {
-        margin-top: 50px;
-        text-align: center;
-        border-top: 1px solid var(--line);
-        padding-top: 24px;
-        color: var(--muted);
-        font: 0.78rem/1.5 Verdana, sans-serif;
-      }
-
       @media (max-width: 768px) {
-        .page { width: calc(100% - 20px); padding-top: 20px; }
-        h1 { font-size: 1.85rem; line-height: 1.1; word-break: break-word; }
-        .intro { font-size: 0.9rem; }
-        .module-nav-bar { flex-direction: column; align-items: stretch; gap: 12px; }
-        .module-nav-bar .nav-left, .module-nav-bar .nav-center, .module-nav-bar .nav-right { width: 100%; justify-content: center; }
-        .btn-nav-standard { width: 100%; }
         .engine-flow { flex-direction: column; }
         .engine-arrow { transform: rotate(90deg); }
       }
@@ -2093,6 +1835,9 @@ COMMIT; -- Todo se consolida atómicamente</pre>
         });
       });
     </script>
+    <!-- Navegación Dinámica Centralizada -->
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
   </body>
 </html>
 

@@ -3,150 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Laboratorio Aprendizaje | Índice Interactivo</title>
+    <title>Laboratorio Aprendizaje | Catálogo Interactivo</title>
     <meta
       name="description"
-      content="Índice interactivo para explorar visualizaciones de estructuras de datos y algoritmos: Árboles AVL autobalanceables y Recorridos BFS/DFS en grafos."
+      content="Índice interactivo para explorar simulaciones de estructuras de datos, algoritmos, bases de datos, diseño de software y gestión de proyectos."
     />
+    <!-- Estilos Compartidos Centralizados -->
+    <link rel="stylesheet" href="shared/theme.css" />
     <style>
-      :root {
-        --ink: #e7f6ff;
-        --muted: #9aa8c2;
-        --paper: #1a1a2e;
-        --panel: #22213d;
-        --line: rgba(0, 255, 255, 0.32);
-        --cyan: #00ffff;
-        --blue: #0080ff;
-        --coral: #ff006e;
-        --purple: #5d34d0;
-        --gold: #ffd700;
-        --shadow: 0 0 24px rgba(0, 128, 255, 0.16);
-      }
-
-      * {
-        box-sizing: border-box;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(0, 255, 255, 0.45) #0c0b1a;
-      }
-
-      /* Custom Scrollbar Cyberpunk / Neon */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: #0c0b1a;
-        border-radius: 4px;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, rgba(0, 255, 255, 0.6), rgba(121, 40, 202, 0.7));
-        border-radius: 4px;
-        border: 1px solid rgba(0, 255, 255, 0.3);
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #00ffaa, #ff006e);
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
-      }
-
-      ::-webkit-scrollbar-corner {
-        background: #0c0b1a;
-      }
-
-      body {
-        margin: 0;
-        color: var(--ink);
-        position: relative;
-        min-height: 100vh;
-        overflow-x: hidden;
-        background: radial-gradient(
-            circle at 50% -10%,
-            rgba(93, 52, 208, 0.44),
-            transparent 40%
-          ),
-          var(--paper);
-        font-family: "Courier New", Courier, monospace;
-      }
-
-      body::before {
-        position: fixed;
-        z-index: 4;
-        inset: 0;
-        pointer-events: none;
-        content: "";
-        background: repeating-linear-gradient(
-          0deg,
-          rgba(255, 255, 255, 0.025) 0,
-          rgba(255, 255, 255, 0.025) 1px,
-          transparent 1px,
-          transparent 4px
-        );
-        opacity: 0.48;
-      }
-
-      body::after {
-        position: fixed;
-        z-index: 0;
-        inset: 0;
-        pointer-events: none;
-        content: "";
-        background-image: linear-gradient(
-            rgba(0, 255, 255, 0.05) 1px,
-            transparent 1px
-          ),
-          linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-        background-size: 42px 42px;
-        mask-image: linear-gradient(to bottom, black, transparent 80%);
-      }
-
       .page {
-        position: relative;
-        z-index: 1;
-        width: min(1200px, calc(100% - 40px));
-        margin: 0 auto;
-        padding: 48px 0 60px;
+        width: min(1280px, calc(100% - 40px));
+        padding: 40px 0 60px;
       }
 
       header {
-        margin-bottom: 46px;
+        margin-bottom: 34px;
         text-align: center;
-      }
-
-      .eyebrow {
-        margin: 0 0 12px;
-        color: var(--cyan);
-        font: 700 0.8rem/1.2 Verdana, sans-serif;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
-      }
-
-      h1 {
-        margin: 0 auto;
-        font-size: clamp(2.4rem, 5vw, 4.4rem);
-        line-height: 1.05;
-        color: var(--coral);
-        font-family: "Courier New", Courier, monospace;
-        font-weight: 700;
-        letter-spacing: -0.035em;
-        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
-        max-width: 900px;
-      }
-
-      .intro {
-        max-width: 680px;
-        margin: 18px auto 0;
-        color: var(--muted);
-        font: 1.05rem/1.6 Verdana, sans-serif;
       }
 
       .modules-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        margin-top: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 22px;
       }
 
       .module-card {
@@ -170,14 +48,12 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, var(--cyan), var(--coral));
-        opacity: 0.6;
+        opacity: 0.65;
         transition: opacity 0.25s ease;
       }
 
       .module-card:hover {
         transform: translateY(-4px);
-        border-color: var(--cyan);
         box-shadow: 0 10px 24px rgba(0, 255, 255, 0.2), inset 0 0 16px rgba(93, 52, 208, 0.15);
       }
 
@@ -194,16 +70,6 @@
         letter-spacing: 0.08em;
         margin-bottom: 10px;
         border: 1px solid currentColor;
-      }
-
-      .badge-tree {
-        color: var(--cyan);
-        background: rgba(0, 255, 255, 0.08);
-      }
-
-      .badge-graph {
-        color: var(--gold);
-        background: rgba(255, 215, 0, 0.08);
       }
 
       .module-title {
@@ -244,7 +110,6 @@
         font-size: 0.85rem;
       }
 
-      /* Estilo base para todos los botones de módulos */
       .btn-launch {
         display: inline-flex;
         align-items: center;
@@ -264,488 +129,290 @@
         transform: translateY(-2px);
       }
 
-      /* ==========================================================
-         SISTEMA MODULAR DE TEMAS CROMÁTICOS REUTILIZABLES
-         ========================================================== */
-      /* 1. Cyan (Estructura Dinámica / Búsquedas / Richardson) */
-      .theme-cyan .badge-theme { color: var(--cyan); background: rgba(0, 255, 255, 0.08); }
-      .theme-cyan.module-card::before { background: linear-gradient(90deg, #0080ff, #00ffff); }
-      .theme-cyan .btn-theme {
-        background: linear-gradient(135deg, #0080ff, #00ffff);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
-      }
-      .theme-cyan .btn-theme:hover {
-        background: linear-gradient(135deg, #00ffff, #0080ff);
-        box-shadow: 0 0 24px rgba(0, 255, 255, 0.6);
-        color: #000;
+      /* Barra de Filtros y Búsqueda */
+      .controls-bar {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 28px;
+        background: rgba(34, 33, 61, 0.85);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
       }
 
-      /* 2. Gold (Grafos / Algoritmos / Triple Restricción) */
-      .theme-gold .badge-theme { color: var(--gold); background: rgba(255, 215, 0, 0.08); }
-      .theme-gold.module-card::before { background: linear-gradient(90deg, #ffd700, #ff9100); }
-      .theme-gold .btn-theme {
-        background: linear-gradient(135deg, #ffd700, #ff9100);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
-      }
-      .theme-gold .btn-theme:hover {
-        background: linear-gradient(135deg, #ff9100, #ffd700);
-        box-shadow: 0 0 24px rgba(255, 215, 0, 0.6);
-        color: #000;
+      .search-wrap {
+        position: relative;
+        width: 100%;
       }
 
-      /* 3. Green (Rendimiento / Optimización / Codd) */
-      .theme-green .badge-theme { color: var(--green); background: rgba(0, 255, 170, 0.08); }
-      .theme-green.module-card::before { background: linear-gradient(90deg, #00ffaa, #0080ff); }
-      .theme-green .btn-theme {
-        background: linear-gradient(135deg, #00ffaa, #0080ff);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(0, 255, 170, 0.3);
-      }
-      .theme-green .btn-theme:hover {
-        background: linear-gradient(135deg, #0080ff, #00ffaa);
-        box-shadow: 0 0 24px rgba(0, 255, 170, 0.6);
+      .search-input {
+        width: 100%;
+        padding: 12px 18px 12px 42px;
+        background: #0a0914;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 8px;
         color: #fff;
+        font: 600 0.92rem "Courier New", Courier, monospace;
+        outline: none;
+        transition: all 0.25s ease;
       }
 
-      /* 4. Coral (Estrategias / Decisiones / Paradigmas) */
-      .theme-coral .badge-theme { color: var(--coral); background: rgba(255, 0, 110, 0.08); }
-      .theme-coral.module-card::before { background: linear-gradient(90deg, #ff006e, #ffd700); }
-      .theme-coral .btn-theme {
-        background: linear-gradient(135deg, #ff006e, #ffd700);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(255, 0, 110, 0.3);
-      }
-      .theme-coral .btn-theme:hover {
-        background: linear-gradient(135deg, #ffd700, #ff006e);
-        box-shadow: 0 0 24px rgba(255, 0, 110, 0.6);
-        color: #000;
+      .search-input:focus {
+        border-color: var(--cyan);
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.35);
       }
 
-      /* 5. Purple (POO / WBS / Arquitectura) */
-      .theme-purple .badge-theme { color: #b185ff; background: rgba(177, 133, 255, 0.08); }
-      .theme-purple.module-card::before { background: linear-gradient(90deg, #7928ca, #00ffff); }
-      .theme-purple .btn-theme {
-        background: linear-gradient(135deg, #7928ca, #00ffff);
-        color: #ffffff;
-        box-shadow: 0 0 16px rgba(121, 40, 202, 0.3);
-      }
-      .theme-purple .btn-theme:hover {
-        background: linear-gradient(135deg, #00ffff, #7928ca);
-        box-shadow: 0 0 24px rgba(121, 40, 202, 0.6);
-        color: #000;
+      .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--cyan);
+        pointer-events: none;
+        font-size: 1.1rem;
       }
 
-      /* 6. Amber (Diseño UI/UX / Usabilidad) */
-      .theme-amber .badge-theme { color: #ff9100; background: rgba(255, 145, 0, 0.08); }
-      .theme-amber.module-card::before { background: linear-gradient(90deg, #ff9100, #ff006e); }
-      .theme-amber .btn-theme {
-        background: linear-gradient(135deg, #ff9100, #ff006e);
-        color: #ffffff;
-        box-shadow: 0 0 16px rgba(255, 145, 0, 0.3);
-      }
-      .theme-amber .btn-theme:hover {
-        background: linear-gradient(135deg, #ff006e, #ff9100);
-        box-shadow: 0 0 24px rgba(255, 145, 0, 0.6);
-        color: #fff;
+      .category-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
       }
 
-      /* 7. Blue (Protocolos / RFC 9110 / HTTP) */
-      .theme-blue .badge-theme { color: #00aaff; background: rgba(0, 170, 255, 0.08); }
-      .theme-blue.module-card::before { background: linear-gradient(90deg, #0080ff, #55ffff); }
-      .theme-blue .btn-theme {
-        background: linear-gradient(135deg, #0080ff, #00ffff);
-        color: #0b1021;
-        box-shadow: 0 0 16px rgba(0, 128, 255, 0.3);
-      }
-      .theme-blue .btn-theme:hover {
-        background: linear-gradient(135deg, #00ffff, #0080ff);
-        box-shadow: 0 0 24px rgba(0, 128, 255, 0.6);
-        color: #000;
-      }
-
-      footer {
-        margin-top: 50px;
-        text-align: center;
-        border-top: 1px solid var(--line);
-        padding-top: 24px;
+      .chip-btn {
+        padding: 7px 14px;
+        border-radius: 6px;
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.2);
         color: var(--muted);
-        font: 0.78rem/1.5 Verdana, sans-serif;
+        font: 700 0.78rem "Courier New", monospace;
+        cursor: pointer;
+        transition: all 0.2s ease;
       }
 
-      @media (max-width: 600px) {
-        .page {
-          width: calc(100% - 24px);
-          padding-top: 24px;
-        }
-        h1 {
-          font-size: 1.85rem;
-          word-break: break-word;
-        }
-        .intro {
-          font-size: 0.95rem;
-        }
-        .modules-grid {
-          grid-template-columns: 1fr;
-        }
-        .module-card {
-          padding: 18px 14px;
-        }
+      .chip-btn:hover {
+        border-color: var(--cyan);
+        color: #fff;
+      }
+
+      .chip-btn.active {
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.22), rgba(121, 40, 202, 0.35));
+        border-color: var(--cyan);
+        color: #fff;
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+      }
+
+      .meta-status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        font: 0.8rem "Courier New", monospace;
+        color: var(--cyan);
+      }
+
+      .no-results-card {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px 20px;
+        background: rgba(34, 33, 61, 0.85);
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+      }
+
+      .no-results-card h3 {
+        color: var(--coral);
+        margin: 0 0 10px;
+        font-size: 1.2rem;
       }
     </style>
   </head>
   <body>
     <main class="page">
       <header>
-        <p class="eyebrow">Visualizadores Interactivos</p>
+        <p class="eyebrow">Laboratorio Interactivo de Computación & Software</p>
         <h1>Índice de Material Visual</h1>
         <p class="intro">
-          Selecciona una de las herramientas interactivas para explorar la mecánica de estructuras de datos, algoritmos, diseño de software, bases de datos y gestión de proyectos paso a paso con retroalimentación visual en tiempo real.
+          Selecciona o filtra cualquiera de los visualizadores interactivos para explorar conceptos complejos de ingeniería de software con retroalimentación en tiempo real.
         </p>
       </header>
 
-      <section class="modules-grid" aria-label="Módulos de visualización">
-        <!-- Tarjeta 1: Árboles AVL [Color 1: Cyan] -->
-        <article class="module-card theme-cyan">
-          <div>
-            <span class="badge badge-theme">01 · Estructura Dinámica</span>
-            <h2 class="module-title">Árboles AVL: Equilibrio en Movimiento</h2>
-            <p class="module-desc">
-              Simulador interactivo de inserción y autobalanceo en árboles binarios de búsqueda auto-balanceados.
-            </p>
-            <ul class="feature-list">
-              <li>Cálculo en vivo de altura y factor de balance</li>
-              <li>Detección de rotaciones simples y dobles (LL, RR, LR, RL)</li>
-              <li>Historial de operaciones e inserción personalizada</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/01-arboles-avl-autobalanceo.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-avl"
-            aria-label="Abrir simulador de Árboles AVL"
-          >
-            Abrir Módulo AVL <span>→</span>
-          </a>
-        </article>
+      <!-- Barra de Filtros y Búsqueda Reutilizable -->
+      <section class="controls-bar" aria-label="Filtros y Búsqueda de Módulos">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="Buscar por concepto o palabra clave (ej. AVL, REST, SQL, ACID, Big O, GoF, Normalización)..."
+            aria-label="Buscar módulos"
+          />
+        </div>
 
-        <!-- Tarjeta 2: BFS y DFS [Color 2: Gold] -->
-        <article class="module-card theme-gold">
-          <div>
-            <span class="badge badge-theme">02 · Algoritmos de Recorrido</span>
-            <h2 class="module-title">Explorador de Grafos: BFS vs DFS</h2>
-            <p class="module-desc">
-              Visualización comparativa de algoritmos de búsqueda en anchura (Cola) y profundidad (Pila) sobre una misma red topológica.
-            </p>
-            <ul class="feature-list">
-              <li>Inspección visual de cola FIFO vs pila LIFO en vivo</li>
-              <li>Seguimiento de estados: sin visitar, en frontera y visitados</li>
-              <li>Pausa, avance por paso, reinicio y control de velocidad</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/02-bfs-dfs-recorridos-interactivos.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-bfs"
-            aria-label="Abrir explorador de BFS y DFS"
-          >
-            Abrir Módulo BFS / DFS <span>→</span>
-          </a>
-        </article>
+        <div class="category-chips" id="category-chips-container">
+          <!-- Generado dinámicamente -->
+        </div>
 
-        <!-- Tarjeta 3: Complejidades Computacionales [Color 3: Green] -->
-        <article class="module-card theme-green">
-          <div>
-            <span class="badge badge-theme">03 · Teoría y Rendimiento</span>
-            <h2 class="module-title">Complejidad Computacional: Big O</h2>
-            <p class="module-desc">
-              Laboratorio interactivo de las complejidades fundamentales O(1), O(log n), O(n), O(n log n) y O(n²) con simulaciones en vivo.
-            </p>
-            <ul class="feature-list">
-              <li>Demostraciones interactivas para O(1), O(log n), O(n), O(n log n) y O(n²)</li>
-              <li>Reglas de simplificación: Término dominante, regla de la suma y constantes</li>
-              <li>Simulador interactivo de reducción asintótica y eclipsamiento de n²</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/03-complejidades-computacionales.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-bigo"
-            aria-label="Abrir módulo de Complejidad Computacional Big O"
-          >
-            Abrir Módulo Big O <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 4: Paradigmas Algorítmicos [Color 4: Coral] -->
-        <article class="module-card theme-coral">
-          <div>
-            <span class="badge badge-theme">04 · Estrategias de Diseño</span>
-            <h2 class="module-title">Greedy vs Divide & Conquer</h2>
-            <p class="module-desc">
-              Comparativa detallada entre decisiones locales irrevocables (Devorador) y descomposición recursiva con combinación (Divide y Vencerás).
-            </p>
-            <ul class="feature-list">
-              <li>Camino más corto en grafos con nodos (Dijkstra) y cambio de monedas voraz</li>
-              <li>Partición recursiva y combinación con Merge Sort y Búsqueda Binaria</li>
-              <li>Galería ampliada: Huffman, Prim/Kruskal, Karatsuba, Strassen y Mochila</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/04-algoritmos-greedy-divide-venceras.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-paradigms"
-            aria-label="Abrir módulo de Greedy vs Divide y Vencerás"
-          >
-            Abrir Módulo Estrategias <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 5: Programación Orientada a Objetos [Color 5: Purple] -->
-        <article class="module-card theme-purple">
-          <div>
-            <span class="badge badge-theme">05 · Paradigma Central</span>
-            <h2 class="module-title">Programación Orientada a Objetos (POO)</h2>
-            <p class="module-desc">
-              Laboratorio interactivo de los cuatro pilares fundamentales: Clases/Objetos, Encapsulamiento, Abstracción, Herencia y Polimorfismo.
-            </p>
-            <ul class="feature-list">
-              <li>Instanciación dinámica en memoria con atributos y métodos</li>
-              <li>Blindaje de estado privado (getters/setters) y abstracción de motor</li>
-              <li>Jerarquía de herencia y despacho polimórfico en tiempo de ejecución</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/05-programacion-orientada-objetos.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-poo"
-            aria-label="Abrir módulo de Programación Orientada a Objetos"
-          >
-            Abrir Módulo POO <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 6: Reglas de Oro de Theo Mandel [Color 6: Amber] -->
-        <article class="module-card theme-amber">
-          <div>
-            <span class="badge badge-theme">06 · Diseño UI / UX</span>
-            <h2 class="module-title">Las 3 Reglas de Oro de Theo Mandel</h2>
-            <p class="module-desc">
-              Doctrina de Roger Pressman para el diseño centrado en el usuario: Control, Reducción de carga de memoria y Consistencia de interfaz.
-            </p>
-            <ul class="feature-list">
-              <li>Pila de Undo/Redo y confirmación previa ante acciones destructivas</li>
-              <li>Valores predeterminados inteligentes y metáforas analógicas</li>
-              <li>Matriz de consistencia visual, posicional y operativa estándar</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/06-reglas-oro-theo-mandel-ui-ux.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-uiux"
-            aria-label="Abrir módulo de las 3 Reglas de Oro de Theo Mandel"
-          >
-            Abrir Módulo UI/UX <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 7: Modelado Conceptual ERD [Reutiliza Color 1: Cyan] -->
-        <article class="module-card theme-cyan">
-          <div>
-            <span class="badge badge-theme">07 · Bases de Datos / Modelado</span>
-            <h2 class="module-title">Modelado Conceptual ERD y Notaciones</h2>
-            <p class="module-desc">
-              Comparativa gráfica de diagramas entidad-relación: Peter Chen, Information Engineering (Pata de Gallo), IDEF1X y diagramas de clases UML.
-            </p>
-            <ul class="feature-list">
-              <li>Entidades fuertes, entidades débiles dependientes e identificadores</li>
-              <li>Conexiones y cardinalidades mínimas/máximas (uno a uno, uno a varios, varios a varios)</li>
-              <li>Jerarquías de generalización (supertipos/subtipos) y Matriz CRUD</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/07-modelado-conceptual-erd-diagramas.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-erd"
-            aria-label="Abrir módulo de Modelado Conceptual ERD"
-          >
-            Abrir Módulo ERD <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 8: Normalización de Bases de Datos [Reutiliza Color 3: Green] -->
-        <article class="module-card theme-green">
-          <div>
-            <span class="badge badge-theme">08 · Diseño Lógico / Codd</span>
-            <h2 class="module-title">Normalización de Bases de Datos (1FN - BCNF)</h2>
-            <p class="module-desc">
-              Metodología de diseño lógico relacional para eliminar anomalías de inserción, eliminación y actualización según Codd, Oppel y Marqués.
-            </p>
-            <ul class="feature-list">
-              <li>Paso a paso interactivo: De factura no normalizada hasta 1FN, 2FN y 3FN</li>
-              <li>Detección de dependencias funcionales parciales y transitivas</li>
-              <li>Simulador en vivo de anomalías y criterios de desnormalización controlada</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/08-normalizacion-bases-datos.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-norm"
-            aria-label="Abrir módulo de Normalización de Bases de Datos"
-          >
-            Abrir Módulo Normalización <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 9: El Triángulo de Hierro [Reutiliza Color 2: Gold] -->
-        <article class="module-card theme-gold">
-          <div>
-            <span class="badge badge-theme">09 · Gestión de Proyectos</span>
-            <h2 class="module-title">El Triángulo de Hierro: Triple Restricción</h2>
-            <p class="module-desc">
-              Dinámica de equilibrio entre Alcance, Tiempo y Costo con impacto directo en la Calidad según Sommerville y Pressman.
-            </p>
-            <ul class="feature-list">
-              <li>Simulador vectorial del triángulo con cálculo dinámico de calidad</li>
-              <li>Casos preestablecidos: Crash urgencia, Scope Creep, recortes y MVP</li>
-              <li>Máxima de los dos de tres, Ley de Brooks y gestión de deuda técnica</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/09-triangulo-de-hierro-gestion-proyectos.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-iron"
-            aria-label="Abrir módulo del Triángulo de Hierro"
-          >
-            Abrir Módulo Triángulo de Hierro <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 10: EDT / WBS [Reutiliza Color 5: Purple] -->
-        <article class="module-card theme-purple">
-          <div>
-            <span class="badge badge-theme">10 · Planificación / Haynes</span>
-            <h2 class="module-title">EDT / WBS: Descomposición del Trabajo</h2>
-            <p class="module-desc">
-              Estructura de Descomposición del Trabajo según Marion E. Haynes: paquetes de trabajo (Work Packages), regla del 100% y diccionario de la EDT.
-            </p>
-            <ul class="feature-list">
-              <li>Árbol jerárquico interactivo multinivel (Proyecto, Entregables y Paquetes de Trabajo)</li>
-              <li>Diccionario de la EDT dinámico: responsables, criterios de aceptación y esfuerzo</li>
-              <li>Proyectos preestablecidos: App E-Commerce, Modernización de BD y Seminario TI</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/10-edt-wbs-descomposicion-trabajo.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-wbs"
-            aria-label="Abrir módulo de la EDT / WBS"
-          >
-            Abrir Módulo EDT / WBS <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 11: Modelo de Madurez de Richardson [Cyan] -->
-        <article class="module-card theme-cyan">
-          <div>
-            <span class="badge badge-theme">11 · Arquitectura Web / REST</span>
-            <h2 class="module-title">Modelo de Madurez de Richardson</h2>
-            <p class="module-desc">
-              Clasificación de 4 niveles concebida por Leonard Richardson y Martin Fowler hacia la verdadera arquitectura RESTful y desacoplamiento con hipermedios.
-            </p>
-            <ul class="feature-list">
-              <li>Nivel 0 (The Swamp of POX) vs Nivel 1 (Recursos) vs Nivel 2 (Verbos HTTP) vs Nivel 3 (HATEOAS)</li>
-              <li>Simulador interactivo de paquetes HTTP y navegación de transiciones de estado</li>
-              <li>Matriz de cumplimiento de criterios y diferencias con SOAP / RPC</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/11-modelo-madurez-richardson-rest.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-richardson"
-            aria-label="Abrir módulo del Modelo de Madurez de Richardson"
-          >
-            Abrir Módulo Richardson <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 12: Métodos HTTP y Códigos de Estado [Blue] -->
-        <article class="module-card theme-blue">
-          <div>
-            <span class="badge badge-theme">12 · Protocolos / RFC 9110</span>
-            <h2 class="module-title">Métodos HTTP y Códigos de Estado Estándar</h2>
-            <p class="module-desc">
-              Semántica profunda del protocolo HTTP: métodos seguros, idempotencia, reemplazo total con PUT vs parcial con PATCH y taxonomía de códigos de error.
-            </p>
-            <ul class="feature-list">
-              <li>Catálogo y reglas de GET, POST, PUT, PATCH, DELETE, OPTIONS y HEAD</li>
-              <li>Laboratorio interactivo de idempotencia y simulación de efectos secundarios en BD</li>
-              <li>Guía exhaustiva de familias de códigos: 2xx (Éxito), 3xx (Redirección), 4xx (Cliente) y 5xx (Servidor)</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/12-metodos-http-y-codigos-de-estado.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-http-methods"
-            aria-label="Abrir módulo de Métodos HTTP y Códigos de Estado"
-          >
-            Abrir Módulo HTTP & Códigos <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 13: Patrones de Diseño GoF [Purple] -->
-        <article class="module-card theme-purple">
-          <div>
-            <span class="badge badge-theme">13 · Arquitectura / GoF</span>
-            <h2 class="module-title">Patrones de Diseño GoF (Gang of Four)</h2>
-            <p class="module-desc">
-              Catálogo canónico de los 23 patrones de Gamma, Helm, Johnson y Vlissides: Creacionales, Estructurales y de Comportamiento con simuladores y diagramas UML.
-            </p>
-            <ul class="feature-list">
-              <li>Mesa de trabajo interactiva: Singleton, Factory, Builder, Adapter, Decorator, Observer, Strategy y State</li>
-              <li>Diagramas de clases conceptuales (UML) y banco de pruebas de eventos en memoria</li>
-              <li>Matriz clasificatoria completa de los 23 patrones de la literatura clásica</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/13-patrones-diseno-gof.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-gof"
-            aria-label="Abrir módulo de Patrones de Diseño GoF"
-          >
-            Abrir Módulo Patrones GoF <span>→</span>
-          </a>
-        </article>
-
-        <!-- Tarjeta 14: Taxonomía de Sublenguajes SQL [Cyan] -->
-        <article class="module-card theme-cyan">
-          <div>
-            <span class="badge badge-theme">14 · Bases de Datos / SQL</span>
-            <h2 class="module-title">Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL)</h2>
-            <p class="module-desc">
-              Arquitectura funcional del estándar ANSI/ISO SQL: Definición (DDL), Manipulación y Consultas (DML/DQL), Control de Acceso (DCL) y Transacciones ACID (TCL).
-            </p>
-            <ul class="feature-list">
-              <li>Simulador interactivo de RDBMS con motor de catálogo, almacenamiento, RBAC y WAL</li>
-              <li>El duelo canónico: DELETE vs TRUNCATE vs DROP a fondo (memoria, disco, triggers y rollback)</li>
-              <li>Laboratorio de clasificación y quiz de preguntas técnicas con retroalimentación en vivo</li>
-            </ul>
-          </div>
-          <a
-            href="modulos/14-taxonomia-sublenguajes-sql-ddl-dml-dcl-tcl.html"
-            class="btn-launch btn-theme"
-            id="btn-goto-sql-taxonomy"
-            aria-label="Abrir módulo de Taxonomía de Sublenguajes SQL"
-          >
-            Abrir Módulo SQL <span>→</span>
-          </a>
-        </article>
+        <div class="meta-status-row">
+          <span id="modules-counter">Cargando catálogo...</span>
+          <span style="color:var(--muted);">Total registrado: <strong id="total-badge" style="color:var(--green);">0</strong></span>
+        </div>
       </section>
 
-      <footer>
+      <!-- Contenedor Dinámico de Tarjetas -->
+      <section class="modules-grid" id="modules-grid-container" aria-label="Módulos de visualización">
+        <!-- Renderizado dinámicamente a partir de MATERIAL_MODULES -->
+      </section>
+
+      <!-- Fallback accesible sin JS -->
+      <noscript>
+        <div style="background:rgba(34,33,61,0.9); padding:20px; border-radius:8px; border:1px solid #00ffff; margin-top:20px;">
+          <h3 style="color:#00ffff; margin-top:0;">Acceso Directo a los Módulos (JavaScript Desactivado):</h3>
+          <ul>
+            <li><a href="modulos/01-arboles-avl-autobalanceo.html" style="color:#00ffaa;">01. Árboles AVL y autobalanceo</a></li>
+            <li><a href="modulos/02-bfs-dfs-recorridos-interactivos.html" style="color:#00ffaa;">02. Recorridos BFS vs DFS en grafos</a></li>
+            <li><a href="modulos/03-complejidades-computacionales.html" style="color:#00ffaa;">03. Complejidad Computacional (Big O)</a></li>
+            <li><a href="modulos/04-algoritmos-greedy-divide-venceras.html" style="color:#00ffaa;">04. Paradigmas: Greedy vs Divide & Conquer</a></li>
+            <li><a href="modulos/05-programacion-orientada-objetos.html" style="color:#00ffaa;">05. Fundamentos de POO</a></li>
+            <li><a href="modulos/06-reglas-oro-theo-mandel-ui-ux.html" style="color:#00ffaa;">06. Las 3 Reglas de Oro de Theo Mandel</a></li>
+            <li><a href="modulos/07-modelado-conceptual-erd-diagramas.html" style="color:#00ffaa;">07. Modelado Conceptual ERD y Notaciones</a></li>
+            <li><a href="modulos/08-normalizacion-bases-datos.html" style="color:#00ffaa;">08. Normalización de Bases de Datos</a></li>
+            <li><a href="modulos/09-triangulo-de-hierro-gestion-proyectos.html" style="color:#00ffaa;">09. El Triángulo de Hierro</a></li>
+            <li><a href="modulos/10-edt-wbs-descomposicion-trabajo.html" style="color:#00ffaa;">10. EDT / WBS: Descomposición del Trabajo</a></li>
+            <li><a href="modulos/11-modelo-madurez-richardson-rest.html" style="color:#00ffaa;">11. Modelo de Madurez de Richardson</a></li>
+            <li><a href="modulos/12-metodos-http-y-codigos-de-estado.html" style="color:#00ffaa;">12. Métodos HTTP y Códigos de Estado</a></li>
+            <li><a href="modulos/13-patrones-diseno-gof.html" style="color:#00ffaa;">13. Patrones de Diseño GoF</a></li>
+            <li><a href="modulos/14-taxonomia-sublenguajes-sql-ddl-dml-dcl-tcl.html" style="color:#00ffaa;">14. Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL)</a></li>
+          </ul>
+        </div>
+      </noscript>
+
+      <footer class="global-footer">
         Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software, Bases de Datos, Gestión de Proyectos y Arquitectura Web
       </footer>
     </main>
+
+    <!-- Datos Centralizados de los Módulos -->
+    <script src="shared/modules-data.js"></script>
+    <script>
+      (function () {
+        const modules = window.MATERIAL_MODULES || [];
+        let activeCategory = 'all';
+        let searchQuery = '';
+
+        const container = document.getElementById('modules-grid-container');
+        const chipsContainer = document.getElementById('category-chips-container');
+        const counterEl = document.getElementById('modules-counter');
+        const totalBadge = document.getElementById('total-badge');
+        const searchInput = document.getElementById('search-input');
+
+        if (totalBadge) totalBadge.innerText = modules.length;
+
+        // Extraer categorías únicas
+        const categories = ['all', ...new Set(modules.map(m => m.category).filter(Boolean))];
+
+        function renderChips() {
+          chipsContainer.innerHTML = '';
+          categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = `chip-btn ${cat === activeCategory ? 'active' : ''}`;
+            
+            let label = cat === 'all' ? 'Todos' : cat;
+            let count = cat === 'all' ? modules.length : modules.filter(m => m.category === cat).length;
+            btn.innerText = `${label} (${count})`;
+
+            btn.onclick = () => {
+              activeCategory = cat;
+              renderChips();
+              renderGrid();
+            };
+            chipsContainer.appendChild(btn);
+          });
+        }
+
+        function renderGrid() {
+          container.innerHTML = '';
+
+          const filtered = modules.filter(m => {
+            const matchCategory = activeCategory === 'all' || m.category === activeCategory;
+            
+            const q = searchQuery.toLowerCase().trim();
+            const matchSearch = !q ||
+              m.title.toLowerCase().includes(q) ||
+              m.desc.toLowerCase().includes(q) ||
+              m.badge.toLowerCase().includes(q) ||
+              m.category.toLowerCase().includes(q) ||
+              m.features.some(f => f.toLowerCase().includes(q));
+
+            return matchCategory && matchSearch;
+          });
+
+          counterEl.innerText = `Mostrando ${filtered.length} de ${modules.length} módulo${modules.length === 1 ? '' : 's'}`;
+
+          if (filtered.length === 0) {
+            container.innerHTML = `
+              <div class="no-results-card">
+                <h3>No se encontraron módulos</h3>
+                <p style="color:var(--muted); font-size:0.9rem;">
+                  No hay resultados que coincidan con "${searchQuery}". Intenta con otro término o limpia el filtro.
+                </p>
+                <button class="chip-btn active" style="margin-top:10px;" onclick="resetSearch()">Restablecer Filtros</button>
+              </div>
+            `;
+            return;
+          }
+
+          filtered.forEach(m => {
+            const card = document.createElement('article');
+            card.className = `module-card ${m.theme}`;
+
+            const featuresHtml = m.features.map(f => `<li>${f}</li>`).join('');
+
+            card.innerHTML = `
+              <div>
+                <span class="badge badge-theme">${m.badge}</span>
+                <h2 class="module-title">${m.title}</h2>
+                <p class="module-desc">${m.desc}</p>
+                <ul class="feature-list">
+                  ${featuresHtml}
+                </ul>
+              </div>
+              <a
+                href="modulos/${m.filename}"
+                class="btn-launch btn-theme"
+                id="${m.btnId}"
+                aria-label="Abrir módulo ${m.title}"
+              >
+                Abrir Módulo <span>→</span>
+              </a>
+            `;
+            container.appendChild(card);
+          });
+        }
+
+        window.resetSearch = function () {
+          activeCategory = 'all';
+          searchQuery = '';
+          if (searchInput) searchInput.value = '';
+          renderChips();
+          renderGrid();
+        };
+
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderGrid();
+          });
+        }
+
+        // Inicializar
+        renderChips();
+        renderGrid();
+      })();
+    </script>
   </body>
 </html>
