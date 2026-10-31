@@ -17,3 +17,5 @@ Visualizadores y simuladores interactivos de estructuras de datos, algoritmos, d
 - 12. Métodos HTTP y Códigos de Estado Estándar (RFC 9110)
 - 13. Patrones de Diseño GoF (Gang of Four: Gamma, Helm, Johnson, Vlissides)
 - 14. Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL y DQL)
+- 15. Propiedades ACID y Axiomas de Armstrong (Inferencia de DF y Clausuras)
+- 16. Diseño Físico: Índices (Clustered vs Non-Clustered) y Árboles B+ Interactivos

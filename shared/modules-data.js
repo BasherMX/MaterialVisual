@@ -233,6 +233,38 @@
         "Laboratorio de clasificación y quiz de preguntas técnicas con retroalimentación en vivo"
       ],
       btnId: "btn-goto-sql-taxonomy"
+    },
+    {
+      id: "15",
+      slug: "15-acid-y-axiomas-de-armstrong",
+      filename: "15-acid-y-axiomas-de-armstrong.html",
+      theme: "theme-gold",
+      category: "Bases de Datos",
+      badge: "15 · Teoría Relacional & Transacciones",
+      title: "Propiedades ACID y Axiomas de Armstrong",
+      desc: "Solidez transaccional (Atomicidad, Consistencia, Aislamiento, Durabilidad) y el sistema formal de inferencia de dependencias funcionales de William W. Armstrong.",
+      features: [
+        "Simulador de transferencias, Write-Ahead Log (WAL) y algoritmo de recuperación ante caídas ARIES",
+        "Axiomas primarios (Reflexividad, Aumento, Transitividad) y reglas derivadas demostradas paso a paso",
+        "Calculadora interactiva de clausura de atributos (X⁺) y detección de superclaves"
+      ],
+      btnId: "btn-goto-acid-armstrong"
+    },
+    {
+      id: "16",
+      slug: "16-diseno-fisico-indices-arbol-b-plus",
+      filename: "16-diseno-fisico-indices-arbol-b-plus.html",
+      theme: "theme-green",
+      category: "Bases de Datos",
+      badge: "16 · Almacenamiento & Diseño Físico",
+      title: "Diseño Físico: Índices y Árboles B+",
+      desc: "Mecánica interna de acceso en disco: Índices Agrupados (Clustered) vs No Agrupados (Non-Clustered), Key Lookups y simulación visual paso a paso del Árbol B+.",
+      features: [
+        "Simulador interactivo de Árbol B+: inserciones, división de nodos (splits) y recorridos de rango en hojas",
+        "Diferencias clave: ordenamiento físico único (Clustered) vs múltiples índices auxiliares con punteros (Non-Clustered)",
+        "Laboratorio de planes de ejecución: Table Scan vs Index Seek vs Key Lookup e Índices Cubridores"
+      ],
+      btnId: "btn-goto-bplus"
     }
   ];
 });
