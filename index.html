@@ -229,11 +229,101 @@
         font-size: 1.2rem;
       }
     
+      /* Banner Hero Arena Flashcards */
+      .anki-hero-banner {
+        background: linear-gradient(135deg, rgba(34, 33, 61, 0.95), rgba(18, 17, 36, 0.98));
+        border: 2px solid var(--cyan);
+        border-radius: 12px;
+        padding: 24px 28px;
+        margin-bottom: 28px;
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(121, 40, 202, 0.15);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        position: relative;
+        overflow: hidden;
+      }
+      .anki-hero-banner::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--cyan), var(--gold), var(--coral));
+      }
+      .anki-hero-badge {
+        display: inline-block;
+        font: 700 0.72rem/1 "Courier New", monospace;
+        letter-spacing: 0.1em;
+        color: var(--gold);
+        background: rgba(255, 215, 0, 0.1);
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        margin-bottom: 8px;
+      }
+      .anki-hero-title {
+        margin: 0 0 8px;
+        font-size: 1.45rem;
+        color: #ffffff;
+        font-family: "Courier New", monospace;
+      }
+      .anki-hero-desc {
+        color: var(--muted);
+        font: 0.88rem/1.5 Verdana, sans-serif;
+        margin: 0 0 12px;
+        max-width: 680px;
+      }
+      .anki-hero-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .anki-hero-tags span {
+        font: 700 0.72rem "Courier New", monospace;
+        color: var(--cyan);
+        background: rgba(0, 255, 255, 0.08);
+        padding: 3px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+      }
+      .btn-launch-arena {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        color: #ffffff;
+        font: 700 0.92rem "Courier New", monospace;
+        padding: 14px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 48px;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.35);
+        transition: all 0.25s ease;
+        white-space: nowrap;
+      }
+      .btn-launch-arena:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 0 28px rgba(0, 255, 255, 0.6);
+        background: linear-gradient(135deg, var(--green), var(--cyan));
+        color: #000;
+      }
+
       /* Responsive Mobile-First para Portal Principal */
       @media (max-width: 768px) {
         .page {
           width: calc(100% - 24px);
           padding: 20px 0 40px;
+        }
+        .anki-hero-banner {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 18px 16px;
+        }
+        .btn-launch-arena {
+          width: 100%;
         }
         .modules-grid {
           grid-template-columns: 1fr;
@@ -281,6 +371,28 @@
         </p>
       </header>
 
+      <!-- Banner Hero: Arena Flashcards Anki & Cyber-Survival (Transversal) -->
+      <section class="anki-hero-banner" aria-label="Arena Flashcards Anki">
+        <div class="anki-hero-content">
+          <span class="anki-hero-badge">⚡ HERRAMIENTA TRANSVERSAL DE REPASO ACTIVO</span>
+          <h2 class="anki-hero-title">🗂️ Arena Flashcards Anki & Cyber-Survival</h2>
+          <p class="anki-hero-desc">
+            Pon a prueba tu retención y dominio conceptual en los <strong>17 temas</strong> de la plataforma. Juega en modo arcade de <strong>3 vidas (❤️❤️❤️)</strong> con combos y recuperación por racha, o repasa a tu propio ritmo con el método clásico <strong>Anki</strong> de repetición espaciada.
+          </p>
+          <div class="anki-hero-tags">
+            <span>❤️ 3 Vidas & Combos</span>
+            <span>💡 Autoevaluación o Opción Múltiple</span>
+            <span>🎧 Audio Sintetizado Web</span>
+            <span>📱 100% Mobile-First</span>
+          </div>
+        </div>
+        <div class="anki-hero-action">
+          <a href="modulos/anki-arena.html" class="btn-launch-arena">
+            Entrar a la Arena Flashcards ➔
+          </a>
+        </div>
+      </section>
+
       <!-- Barra de Filtros y Búsqueda Reutilizable -->
       <section class="controls-bar" aria-label="Filtros y Búsqueda de Módulos">
         <div class="search-wrap">
@@ -315,6 +427,7 @@
         <h3 style="color:#00ffff; margin-top:0;">Catálogo de Módulos (Acceso sin JavaScript)</h3>
         <p style="color:#9aa8c2;">Este portal requiere JavaScript para los filtros en vivo. Puedes acceder directamente a cualquier módulo a continuación:</p>
         <ul style="color:#e7f6ff; line-height:1.8;">
+        <li><a href="modulos/anki-arena.html" style="color:var(--cyan); font-weight:700;">⚡ 🗂️ Arena Flashcards Anki & Cyber-Survival (Herramienta Transversal de Repaso)</a></li>
         <li><a href="modulos/01-complejidades-computacionales.html">01 · Análisis Algorítmico: Complejidad Computacional: Big O</a></li>
         <li><a href="modulos/02-algoritmos-greedy-divide-venceras.html">02 · Paradigmas Algorítmicos: Greedy vs Divide & Conquer</a></li>
         <li><a href="modulos/03-arboles-avl-autobalanceo.html">03 · Estructura Dinámica: Árboles AVL: Equilibrio en Movimiento</a></li>

@@ -13,8 +13,8 @@
     const currentPath = window.location.pathname.replace(/\\/g, '/');
     const currentFile = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
 
-    // Si estamos en el índice principal, no inyectar barra de módulo
-    if (currentFile === 'index.html' || currentFile === '') {
+    // Si estamos en el índice principal o en la arena transversal, no inyectar barra secuencial de módulo
+    if (currentFile === 'index.html' || currentFile === '' || currentFile === 'anki-arena.html') {
       return;
     }
 
@@ -74,8 +74,9 @@
 
     navBar.innerHTML = `
       <div class="nav-left">${prevHtml}</div>
-      <div class="nav-center">
+      <div class="nav-center" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
         <a href="../index.html" class="btn-nav-standard btn-nav-home">Índice Principal 🏠</a>
+        <a href="anki-arena.html?modulo=${currentModule.id}" class="btn-nav-standard" style="background:rgba(121,40,202,0.25); border-color:var(--purple); color:#e7f6ff;" title="Entrenar este tema en la Arena Flashcards">🗂️ Arena Flashcards</a>
       </div>
       <div class="nav-right">${nextHtml}</div>
     `;

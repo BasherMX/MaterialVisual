@@ -6,6 +6,16 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 
 ---
 
+## ⚡ Herramienta Transversal de Repaso Activo
+
+- **[🗂️ Arena Flashcards Anki & Minijuego Cyber-Survival](modulos/anki-arena.html)**:
+  - Repaso de los 17 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
+  - Combos por racha y recuperación de +1 Vida cada 5 aciertos consecutivos (máx. 3 vidas).
+  - Modalidad de respuesta dual: **Autoevaluación Honesta** (por defecto) u **Opción Múltiple (A, B, C, D)** con post-mortem explicativo.
+  - Generación procedural de audio sintetizado Web Audio API y diseño 100% Mobile-First con flip 3D.
+
+---
+
 ## Catálogo de Módulos (Organizados por Área Temática)
 
 ### 🧩 1. Ciencias de la Computación, Algoritmos y Estructuras de Datos

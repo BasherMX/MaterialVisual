@@ -1,0 +1,1169 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arena Flashcards Anki & Cyber-Survival | Repaso Activo y Gamificación</title>
+    <meta
+      name="description"
+      content="Arena interactiva de flashcards estilo Anki y minijuego Cyber-Survival de 3 vidas para repasar los 17 temas de Ciencias de la Computación, Bases de Datos, Arquitectura y Proyectos."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --arena-gold: #ffd700;
+        --arena-cyan: #00ffff;
+        --arena-coral: #ff006e;
+        --arena-green: #00ffaa;
+        --arena-purple: #7928ca;
+      }
+
+      /* Barra de Estado y Vidas */
+      .status-hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: rgba(18, 17, 36, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 22px;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.12);
+      }
+
+      .hud-stat {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font: 700 0.88rem/1 "Courier New", monospace;
+      }
+
+      .hud-lives {
+        display: flex;
+        gap: 6px;
+        font-size: 1.25rem;
+        filter: drop-shadow(0 0 6px rgba(255, 0, 110, 0.6));
+      }
+
+      .hud-streak {
+        color: var(--arena-gold);
+        background: rgba(255, 215, 0, 0.1);
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+      }
+
+      .hud-streak.fire {
+        color: #ff3366;
+        border-color: #ff3366;
+        animation: pulseFire 0.8s infinite alternate;
+      }
+
+      @keyframes pulseFire {
+        0% { box-shadow: 0 0 4px #ff006e; transform: scale(1); }
+        100% { box-shadow: 0 0 18px #ff006e; transform: scale(1.05); }
+      }
+
+      /* Controles de Configuración de Mazo y Modo */
+      .config-panel {
+        background: rgba(34, 33, 61, 0.88);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin-bottom: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .config-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .select-deck {
+        background: #090913;
+        border: 1px solid var(--arena-cyan);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font: 700 0.85rem "Courier New", monospace;
+        outline: none;
+        max-width: 100%;
+        min-height: 44px;
+        cursor: pointer;
+      }
+
+      .mode-toggle-group {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .toggle-btn {
+        padding: 8px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        background: var(--panel-dark);
+        color: var(--muted);
+        font: 700 0.78rem "Courier New", monospace;
+        cursor: pointer;
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+      }
+
+      .toggle-btn:hover {
+        border-color: var(--arena-cyan);
+        color: #fff;
+      }
+
+      .toggle-btn.active {
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.25), rgba(121, 40, 202, 0.35));
+        border-color: var(--arena-cyan);
+        color: #fff;
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.35);
+      }
+
+      /* Contenedor y Animación de la Flashcard 3D */
+      .flashcard-stage {
+        perspective: 1200px;
+        margin: 0 auto 24px;
+        width: 100%;
+        min-height: 340px;
+      }
+
+      .flashcard-3d {
+        width: 100%;
+        min-height: 340px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .flashcard-3d.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .card-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border-radius: 12px;
+        padding: 26px 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+      }
+
+      /* Frente de la Tarjeta */
+      .card-front {
+        background: linear-gradient(145deg, #1b1a32, #121124);
+        border: 2px solid rgba(0, 255, 255, 0.4);
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.12), inset 0 0 16px rgba(0, 255, 255, 0.05);
+      }
+
+      .card-front:hover {
+        border-color: var(--arena-cyan);
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+      }
+
+      /* Reverso de la Tarjeta */
+      .card-back {
+        background: linear-gradient(145deg, #161a30, #0d1124);
+        border: 2px solid rgba(0, 255, 170, 0.5);
+        box-shadow: 0 0 24px rgba(0, 255, 170, 0.15), inset 0 0 16px rgba(0, 255, 170, 0.05);
+        transform: rotateY(180deg);
+      }
+
+      .card-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+      }
+
+      .card-topic-tag {
+        font: 700 0.74rem/1 "Courier New", monospace;
+        color: var(--arena-cyan);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .card-counter {
+        font: 700 0.74rem/1 "Courier New", monospace;
+        color: var(--muted);
+      }
+
+      .card-question {
+        font: 700 1.22rem/1.4 "Courier New", Courier, monospace;
+        color: #ffffff;
+        margin: auto 0;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      }
+
+      .card-answer {
+        font: 700 1.15rem/1.45 "Courier New", Courier, monospace;
+        color: var(--arena-green);
+        margin-bottom: 12px;
+      }
+
+      .card-explanation {
+        font: 0.86rem/1.55 Verdana, sans-serif;
+        color: var(--ink);
+        background: rgba(0, 0, 0, 0.3);
+        border-left: 3px solid var(--arena-green);
+        padding: 10px 14px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        max-height: 140px;
+        overflow-y: auto;
+      }
+
+      .card-author-ref {
+        font: italic 0.76rem/1.2 Verdana, sans-serif;
+        color: var(--arena-gold);
+        margin-top: 6px;
+      }
+
+      .card-hint-text {
+        font: 700 0.76rem/1 "Courier New", monospace;
+        color: var(--muted);
+        text-align: center;
+        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        padding-top: 10px;
+        margin-top: 14px;
+      }
+
+      /* Controles de Respuesta */
+      .action-dock {
+        background: rgba(18, 17, 36, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin-bottom: 24px;
+      }
+
+      /* Botones de Autoevaluación Honesta */
+      .honest-controls-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .btn-honest {
+        padding: 14px 18px;
+        border-radius: 8px;
+        font: 700 0.95rem "Courier New", monospace;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 54px;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+      }
+
+      .btn-honest span.small-desc {
+        font: 0.72rem Verdana, sans-serif;
+        opacity: 0.85;
+      }
+
+      .btn-failed {
+        background: rgba(255, 0, 110, 0.15);
+        border-color: var(--arena-coral);
+        color: #ffffff;
+      }
+
+      .btn-failed:hover {
+        background: var(--arena-coral);
+        box-shadow: 0 0 20px rgba(255, 0, 110, 0.6);
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background: rgba(0, 255, 170, 0.15);
+        border-color: var(--arena-green);
+        color: #ffffff;
+      }
+
+      .btn-success:hover {
+        background: var(--arena-green);
+        color: #060b13;
+        box-shadow: 0 0 20px rgba(0, 255, 170, 0.6);
+        transform: translateY(-2px);
+      }
+
+      /* Botones de Opción Múltiple */
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .option-btn {
+        width: 100%;
+        text-align: left;
+        background: #0d0c1b;
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        color: var(--ink);
+        padding: 12px 16px;
+        border-radius: 8px;
+        font: 0.86rem/1.4 Verdana, sans-serif;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .option-btn:hover {
+        border-color: var(--arena-cyan);
+        background: rgba(0, 255, 255, 0.08);
+      }
+
+      .option-btn.opt-correct {
+        background: rgba(0, 255, 170, 0.2) !important;
+        border-color: var(--arena-green) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.4);
+      }
+
+      .option-btn.opt-wrong {
+        background: rgba(255, 0, 110, 0.2) !important;
+        border-color: var(--arena-coral) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 16px rgba(255, 0, 110, 0.4);
+      }
+
+      .option-letter {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        color: var(--arena-cyan);
+        width: 26px;
+        height: 26px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font: 700 0.8rem "Courier New", monospace;
+        flex-shrink: 0;
+      }
+
+      /* Pantalla de Post-Mortem y Victoria / Derrota */
+      .modal-banner {
+        background: rgba(22, 17, 36, 0.98);
+        border: 2px solid var(--arena-coral);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        animation: fadeIn 0.3s ease;
+        box-shadow: 0 0 30px rgba(255, 0, 110, 0.3);
+      }
+
+      .modal-banner.banner-victory {
+        border-color: var(--arena-gold);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.35);
+      }
+
+      .modal-banner h3 {
+        margin: 0 0 10px;
+        font-size: 1.3rem;
+      }
+
+      /* Barra de Progreso */
+      .progress-container {
+        width: 100%;
+        height: 8px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        margin-bottom: 20px;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--arena-cyan), var(--arena-green));
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      /* Responsive Mobile-First */
+      @media (max-width: 768px) {
+        .config-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .select-deck {
+          width: 100%;
+        }
+        .mode-toggle-group {
+          width: 100%;
+        }
+        .toggle-btn {
+          flex: 1 1 calc(50% - 6px);
+          justify-content: center;
+        }
+        .honest-controls-grid {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        .card-question {
+          font-size: 1.05rem;
+        }
+        .card-answer {
+          font-size: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .toggle-btn {
+          flex: 1 1 100%;
+        }
+        .card-face {
+          padding: 18px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a href="../index.html" class="btn-back-index"><span>←</span> Volver al Portal Principal</a>
+
+      <header>
+        <div>
+          <p class="eyebrow">Herramienta Transversal · Repaso Activo & Supervivencia</p>
+          <h1>Arena Flashcards Anki</h1>
+        </div>
+        <p class="intro">
+          Entrena tu memoria y pon a prueba tu dominio técnico de los 17 módulos. Elige entre el modo arcade <strong>Cyber-Survival</strong> de 3 vidas o el modo de estudio clásico <strong>Anki</strong> con repetición espaciada.
+        </p>
+      </header>
+
+      <!-- Barra HUD de Estado en Vivo -->
+      <section class="status-hud" aria-label="Estado del juego">
+        <div class="hud-stat">
+          <span>Vidas:</span>
+          <div id="hud-lives-container" class="hud-lives">
+            <span>❤️</span><span>❤️</span><span>❤️</span>
+          </div>
+        </div>
+
+        <div class="hud-stat">
+          <span>Racha:</span>
+          <span id="hud-streak-count" class="hud-streak">0 aciertos seguidos</span>
+        </div>
+
+        <div class="hud-stat">
+          <span>Progreso:</span>
+          <span id="hud-progress-label" style="color:var(--arena-cyan);">0 / 0</span>
+        </div>
+
+        <div class="hud-stat">
+          <button id="btn-toggle-sound" class="toggle-btn" style="min-height:36px; padding:4px 10px;" title="Silenciar / Activar sonido">
+            <span id="sound-icon">🔊</span> Sonido
+          </button>
+        </div>
+      </section>
+
+      <!-- Barra de Progreso Visual -->
+      <div class="progress-container">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+
+      <!-- Panel de Configuración: Mazo y Modos -->
+      <section class="config-panel">
+        <div class="config-row">
+          <div style="flex:1; min-width:260px;">
+            <label for="select-deck-choice" style="display:block; font:700 0.78rem 'Courier New', monospace; color:var(--arena-cyan); margin-bottom:6px;">
+              📁 SELECCIONAR MAZO DE ESTUDIO (DECK):
+            </label>
+            <select id="select-deck-choice" class="select-deck" style="width:100%;">
+              <option value="all">🌟 Todos los Módulos (Examen Global · 17 temas)</option>
+              <optgroup label="── Por Bloque Temático ──">
+                <option value="cat-Estructuras & Algoritmos">🧩 Bloque 1: Estructuras & Algoritmos (01 - 04)</option>
+                <option value="cat-Bases de Datos">🗄️ Bloque 2: Bases de Datos & Almacenamiento (05 - 10)</option>
+                <option value="cat-Arquitectura & Web">🌐 Bloque 3: Arquitectura & Web (11 - 12)</option>
+                <option value="cat-Diseño & UI/UX">🎨 Bloque 4: Paradigmas, Patrones & UI/UX (13 - 15)</option>
+                <option value="cat-Gestión de Proyectos">📈 Bloque 5: Gestión de Proyectos (16 - 17)</option>
+              </optgroup>
+              <optgroup id="optgroup-individual-modules" label="── Módulo Específico (01 al 17) ──">
+                <!-- Inyectado dinámicamente -->
+              </optgroup>
+            </select>
+          </div>
+
+          <div>
+            <span style="display:block; font:700 0.78rem 'Courier New', monospace; color:var(--arena-cyan); margin-bottom:6px;">
+              🎮 REGLAS DEL JUEGO:
+            </span>
+            <div class="mode-toggle-group">
+              <button id="btn-mode-survival" class="toggle-btn active" onclick="setPlayMode('survival')">
+                ❤️ Cyber-Survival (3 Vidas)
+              </button>
+              <button id="btn-mode-study" class="toggle-btn" onclick="setPlayMode('study')">
+                🔄 Estudio Libre Anki (Sin Vidas)
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <span style="display:block; font:700 0.78rem 'Courier New', monospace; color:var(--arena-cyan); margin-bottom:6px;">
+              ✍️ FORMATO DE RESPUESTA:
+            </span>
+            <div class="mode-toggle-group">
+              <button id="btn-format-honest" class="toggle-btn active" onclick="setResponseFormat('honest')">
+                💡 Autoevaluación Honesta
+              </button>
+              <button id="btn-format-choice" class="toggle-btn" onclick="setResponseFormat('choice')">
+                🎯 Opción Múltiple (A, B, C, D)
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notificación Flotante / Post-Mortem / Pantalla Final -->
+      <div id="arena-banner" class="modal-banner" style="display:none;">
+        <!-- Se inyecta dinámicamente para Game Over, Victoria o Feedback de error -->
+      </div>
+
+      <!-- Escenario de la Flashcard (3D Flip) -->
+      <div id="flashcard-viewport" class="flashcard-stage">
+        <div id="card-element" class="flashcard-3d" onclick="handleCardClick(event)">
+          <!-- Frente -->
+          <div class="card-face card-front">
+            <div class="card-header-row">
+              <span id="card-tag-front" class="card-topic-tag">Módulo 01 · Complejidad</span>
+              <span id="card-counter-front" class="card-counter">Tarjeta 1/36</span>
+            </div>
+            <div id="card-question-text" class="card-question">
+              Cargando pregunta...
+            </div>
+            <div class="card-hint-text">
+              <span>🔄 Toca la tarjeta o usa el botón para voltear y ver la respuesta</span>
+            </div>
+          </div>
+
+          <!-- Reverso -->
+          <div class="card-face card-back">
+            <div class="card-header-row">
+              <span id="card-tag-back" class="card-topic-tag" style="color:var(--arena-green);">Respuesta Formal</span>
+              <span id="card-counter-back" class="card-counter">Tarjeta 1/36</span>
+            </div>
+            <div style="margin:auto 0;">
+              <div id="card-answer-text" class="card-answer">Respuesta...</div>
+              <div id="card-explanation-text" class="card-explanation">Explicación...</div>
+              <div id="card-author-text" class="card-author-ref">Autor / Doctrina</div>
+            </div>
+            <div class="card-hint-text" style="color:var(--arena-green);">
+              <span>💡 Evalúa tu conocimiento abajo para registrar tu progreso</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dock de Acciones de Respuesta -->
+      <section id="action-dock" class="action-dock">
+        <!-- Controles para Modo Autoevaluación Honesta -->
+        <div id="honest-controls-container">
+          <div id="dock-btn-flip-wrap" style="text-align:center; margin-bottom:12px;">
+            <button id="btn-flip-card" class="btn-theme" style="width:100%; max-width:400px; padding:12px 20px; font:700 0.95rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="flipCurrentCard()">
+              🔄 Voltear Tarjeta / Ver Respuesta
+            </button>
+          </div>
+
+          <div id="dock-honest-eval" class="honest-controls-grid" style="display:none;">
+            <button class="btn-honest btn-failed" onclick="submitHonestEvaluation(false)">
+              <span>❌ No la supe / Fallé</span>
+              <span class="small-desc">-1 Vida en Supervivencia · Racha a 0</span>
+            </button>
+            <button class="btn-honest btn-success" onclick="submitHonestEvaluation(true)">
+              <span>✅ ¡La supe correctamente!</span>
+              <span class="small-desc">+1 Acierto · +1 Combo (+1 Vida cada 5 aciertos)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Controles para Modo Opción Múltiple -->
+        <div id="choice-controls-container" style="display:none;">
+          <p style="margin:0 0 10px; font:700 0.8rem 'Courier New', monospace; color:var(--arena-cyan);">
+            SELECCIONA LA OPCIÓN CORRECTA:
+          </p>
+          <div id="options-buttons-list" class="options-list">
+            <!-- 4 botones generados dinámicamente -->
+          </div>
+        </div>
+      </section>
+
+      <footer class="global-footer">
+        Material Didáctico e Interactivo · Arena Anki & Cyber-Survival · MaterialVisual
+      </footer>
+    </main>
+
+    <!-- Scripts de Datos y Navegación -->
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/flashcards-data.js"></script>
+    <script src="../shared/nav.js"></script>
+
+    <!-- Lógica de Gamificación, Audio y Repaso Espaciado -->
+    <script>
+      (function () {
+        // --- 1. Estado de la Arena ---
+        let currentDeck = [];
+        let currentIndex = 0;
+        let lives = 3;
+        const maxLives = 3;
+        let streak = 0;
+        let maxStreak = 0;
+        let totalAnswered = 0;
+        let totalCorrect = 0;
+        let playMode = 'survival'; // 'survival' | 'study'
+        let responseFormat = 'honest'; // 'honest' | 'choice'
+        let isFlipped = false;
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        // --- 2. Elementos del DOM ---
+        const hudLives = document.getElementById('hud-lives-container');
+        const hudStreak = document.getElementById('hud-streak-count');
+        const hudProgress = document.getElementById('hud-progress-label');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const deckSelect = document.getElementById('select-deck-choice');
+        const optgroupModules = document.getElementById('optgroup-individual-modules');
+        const cardElement = document.getElementById('card-element');
+        const banner = document.getElementById('arena-banner');
+        const btnToggleSound = document.getElementById('btn-toggle-sound');
+        const soundIcon = document.getElementById('sound-icon');
+
+        // Textos de la tarjeta
+        const cardTagFront = document.getElementById('card-tag-front');
+        const cardCounterFront = document.getElementById('card-counter-front');
+        const cardQuestion = document.getElementById('card-question-text');
+        const cardTagBack = document.getElementById('card-tag-back');
+        const cardCounterBack = document.getElementById('card-counter-back');
+        const cardAnswer = document.getElementById('card-answer-text');
+        const cardExplanation = document.getElementById('card-explanation-text');
+        const cardAuthor = document.getElementById('card-author-text');
+
+        // Docks
+        const honestContainer = document.getElementById('honest-controls-container');
+        const dockBtnFlip = document.getElementById('dock-btn-flip-wrap');
+        const dockHonestEval = document.getElementById('dock-honest-eval');
+        const choiceContainer = document.getElementById('choice-controls-container');
+        const optionsList = document.getElementById('options-buttons-list');
+
+        // --- 3. Inicialización del Motor de Audio Sintetizado (Web Audio API) ---
+        function getAudioContext() {
+          if (!audioCtx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) audioCtx = new AudioContextClass();
+          }
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          return audioCtx;
+        }
+
+        function playSound(type) {
+          if (!soundEnabled) return;
+          try {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+
+            if (type === 'flip') {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(440, now);
+              osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+              gain.gain.setValueAtTime(0.08, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(now);
+              osc.stop(now + 0.08);
+            } else if (type === 'correct') {
+              // Arpegio ascendente victorioso
+              [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + i * 0.06);
+                gain.gain.setValueAtTime(0.12, now + i * 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.12);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + i * 0.06);
+                osc.stop(now + i * 0.06 + 0.12);
+              });
+            } else if (type === 'wrong') {
+              // Tono grave disonante de daño
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'sawtooth';
+              osc.frequency.setValueAtTime(140, now);
+              osc.frequency.linearRampToValueAtTime(70, now + 0.25);
+              gain.gain.setValueAtTime(0.2, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(now);
+              osc.stop(now + 0.25);
+            } else if (type === 'heal') {
+              // Sonido de recuperación de vida (+1 ❤️)
+              [440, 554.37, 659.25, 880, 1108.73].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + i * 0.05);
+                gain.gain.setValueAtTime(0.15, now + i * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + i * 0.05);
+                osc.stop(now + i * 0.05 + 0.15);
+              });
+            } else if (type === 'gameover') {
+              // Acorde descendente de Game Over
+              [392, 349.23, 311.13, 261.63].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, now + i * 0.1);
+                gain.gain.setValueAtTime(0.18, now + i * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + i * 0.1);
+                osc.stop(now + i * 0.1 + 0.2);
+              });
+            }
+          } catch (e) {
+            // Ignorar silenciosamente si el navegador bloquea audio
+          }
+        }
+
+        btnToggleSound.addEventListener('click', function () {
+          soundEnabled = !soundEnabled;
+          soundIcon.innerText = soundEnabled ? '🔊' : '🔇';
+          btnToggleSound.style.opacity = soundEnabled ? '1' : '0.6';
+          if (soundEnabled) playSound('flip');
+        });
+
+        // --- 4. Población Dinámica de Módulos en el Selector de Mazo ---
+        function populateModuleSelector() {
+          const modules = window.MATERIAL_MODULES || [];
+          optgroupModules.innerHTML = '';
+          modules.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = 'mod-' + m.id;
+            opt.innerText = `${m.id} · ${m.title}`;
+            optgroupModules.appendChild(opt);
+          });
+        }
+
+        // --- 5. Filtrado y Barajado de Mazo ---
+        function loadDeck() {
+          const allCards = window.MATERIAL_FLASHCARDS || [];
+          const selected = deckSelect.value;
+          let filtered = [];
+
+          if (selected === 'all') {
+            filtered = [...allCards];
+          } else if (selected.startsWith('cat-')) {
+            const cat = selected.replace('cat-', '');
+            filtered = allCards.filter(c => c.category === cat);
+          } else if (selected.startsWith('mod-')) {
+            const modId = selected.replace('mod-', '');
+            filtered = allCards.filter(c => c.moduleId === modId);
+          }
+
+          // Barajado Fisher-Yates
+          for (let i = filtered.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+          }
+
+          currentDeck = filtered;
+          currentIndex = 0;
+          lives = 3;
+          streak = 0;
+          maxStreak = 0;
+          totalAnswered = 0;
+          totalCorrect = 0;
+          isFlipped = false;
+          cardElement.classList.remove('flipped');
+          banner.style.display = 'none';
+
+          updateHUD();
+          renderCard();
+        }
+
+        deckSelect.addEventListener('change', loadDeck);
+
+        // --- 6. Renderizado de Tarjeta Actual ---
+        function renderCard() {
+          if (currentDeck.length === 0) {
+            cardQuestion.innerText = 'No hay tarjetas disponibles para el filtro seleccionado.';
+            return;
+          }
+
+          if (currentIndex >= currentDeck.length) {
+            triggerVictory();
+            return;
+          }
+
+          const card = currentDeck[currentIndex];
+          isFlipped = false;
+          cardElement.classList.remove('flipped');
+          banner.style.display = 'none';
+
+          // Frente
+          cardTagFront.innerText = `Módulo ${card.moduleId} · ${card.moduleTitle}`;
+          cardCounterFront.innerText = `Tarjeta ${currentIndex + 1} de ${currentDeck.length}`;
+          cardQuestion.innerText = card.question;
+
+          // Reverso
+          cardTagBack.innerText = `Respuesta Técnica · Módulo ${card.moduleId}`;
+          cardCounterBack.innerText = `Tarjeta ${currentIndex + 1} de ${currentDeck.length}`;
+          cardAnswer.innerText = card.answer;
+          cardExplanation.innerText = card.explanation;
+          cardAuthor.innerText = card.authorRef ? `Referencia / Doctrina: ${card.authorRef}` : '';
+
+          // Reset docks según formato
+          if (responseFormat === 'honest') {
+            honestContainer.style.display = 'block';
+            choiceContainer.style.display = 'none';
+            dockBtnFlip.style.display = 'block';
+            dockHonestEval.style.display = 'none';
+          } else {
+            honestContainer.style.display = 'none';
+            choiceContainer.style.display = 'block';
+            renderChoiceOptions(card);
+          }
+
+          updateHUD();
+        }
+
+        function renderChoiceOptions(card) {
+          optionsList.innerHTML = '';
+          const letters = ['A', 'B', 'C', 'D'];
+          // Barajar opciones conservando la respuesta correcta
+          const optsWithIndex = card.options.map((text, idx) => ({ text, isCorrect: idx === card.correctOption }));
+          // Barajar
+          for (let i = optsWithIndex.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [optsWithIndex[i], optsWithIndex[j]] = [optsWithIndex[j], optsWithIndex[i]];
+          }
+
+          optsWithIndex.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="option-letter">${letters[idx]}</span> <span>${opt.text}</span>`;
+            btn.onclick = function () {
+              evaluateChoiceAnswer(opt.isCorrect, btn, optsWithIndex);
+            };
+            optionsList.appendChild(btn);
+          });
+        }
+
+        // --- 7. Volteo de Tarjeta ---
+        window.flipCurrentCard = function () {
+          playSound('flip');
+          isFlipped = !isFlipped;
+          cardElement.classList.toggle('flipped', isFlipped);
+
+          if (responseFormat === 'honest' && isFlipped) {
+            dockBtnFlip.style.display = 'none';
+            dockHonestEval.style.display = 'grid';
+          }
+        };
+
+        window.handleCardClick = function (e) {
+          // Permitir voltear haciendo tap sobre la tarjeta en modo honesto
+          if (responseFormat === 'honest') {
+            window.flipCurrentCard();
+          }
+        };
+
+        // --- 8. Evaluación Honesta ---
+        window.submitHonestEvaluation = function (didKnow) {
+          totalAnswered++;
+          if (didKnow) {
+            handleSuccess();
+          } else {
+            handleFailure('Declaraste no recordar el concepto. ¡Repasar el reverso afianzará la huella de memoria!');
+          }
+        };
+
+        // --- 9. Evaluación de Opción Múltiple ---
+        function evaluateChoiceAnswer(isCorrect, clickedBtn, allOpts) {
+          // Desactivar todos los botones para evitar doble clic
+          const allBtns = optionsList.querySelectorAll('.option-btn');
+          allBtns.forEach(b => (b.disabled = true));
+
+          totalAnswered++;
+
+          if (isCorrect) {
+            clickedBtn.classList.add('opt-correct');
+            handleSuccess();
+            setTimeout(nextCard, 900);
+          } else {
+            clickedBtn.classList.add('opt-wrong');
+            // Resaltar la correcta
+            allBtns.forEach((b, idx) => {
+              if (allOpts[idx].isCorrect) b.classList.add('opt-correct');
+            });
+            // Voltear la tarjeta para mostrar la respuesta completa
+            if (!isFlipped) {
+              isFlipped = true;
+              cardElement.classList.add('flipped');
+            }
+            handleFailure('Opción incorrecta. Revisa el reverso de la tarjeta para comprender el fundamento.');
+          }
+        }
+
+        // --- 10. Lógica de Acierto y Racha ---
+        function handleSuccess() {
+          totalCorrect++;
+          streak++;
+          if (streak > maxStreak) maxStreak = streak;
+
+          // Regla del usuario: Recuperar 1 vida cada 5 aciertos seguidos (máximo 3 vidas)
+          if (playMode === 'survival' && streak % 5 === 0) {
+            if (lives < maxLives) {
+              lives = Math.min(maxLives, lives + 1);
+              playSound('heal');
+              showFlashBanner(`🎉 ¡Racha de ${streak} aciertos! Has recuperado +1 Vida (❤️).`, 'var(--arena-green)');
+            } else {
+              playSound('correct');
+              showFlashBanner(`🔥 ¡Imparable! Racha de ${streak} aciertos consecutivos (Vidas al máximo).`, 'var(--arena-gold)');
+            }
+          } else {
+            playSound('correct');
+          }
+
+          updateHUD();
+          if (responseFormat === 'honest') {
+            nextCard();
+          }
+        }
+
+        // --- 11. Lógica de Fallo y Post-Mortem ---
+        function handleFailure(message) {
+          streak = 0;
+          playSound('wrong');
+
+          if (playMode === 'survival') {
+            lives--;
+            updateHUD();
+
+            if (lives <= 0) {
+              triggerGameOver();
+              return;
+            }
+          }
+
+          // Mostrar Post-Mortem
+          showPostMortemBanner(message);
+        }
+
+        function showPostMortemBanner(reason) {
+          const card = currentDeck[currentIndex];
+          banner.className = 'modal-banner';
+          banner.style.display = 'block';
+          banner.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+              <div>
+                <h3 style="color:var(--arena-coral); margin:0 0 6px;">💥 Post-Mortem Pedagógico · -1 Vida</h3>
+                <p style="font:0.86rem/1.5 Verdana, sans-serif; color:var(--ink); margin:0 0 8px;">
+                  ${reason}
+                </p>
+                <div style="background:rgba(0,0,0,0.3); border-left:3px solid var(--arena-coral); padding:8px 12px; border-radius:4px; font:0.82rem/1.4 'Courier New', monospace; color:var(--arena-cyan);">
+                  <strong>Concepto Clave:</strong> ${card.answer}
+                </div>
+              </div>
+              <button class="btn-theme" style="padding:10px 16px; border-radius:6px; font:700 0.85rem 'Courier New', monospace; cursor:pointer; flex-shrink:0;" onclick="continueAfterPostMortem()">
+                Continuar ➔
+              </button>
+            </div>
+          `;
+          banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        window.continueAfterPostMortem = function () {
+          banner.style.display = 'none';
+          nextCard();
+        };
+
+        function showFlashBanner(text, color) {
+          banner.className = 'modal-banner banner-victory';
+          banner.style.display = 'block';
+          banner.style.borderColor = color;
+          banner.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:#ffffff; font:700 0.88rem 'Courier New', monospace;">${text}</span>
+              <button class="toggle-btn" style="padding:4px 10px; min-height:30px;" onclick="document.getElementById('arena-banner').style.display='none'">✕</button>
+            </div>
+          `;
+        }
+
+        // --- 12. Transición a Siguiente Tarjeta ---
+        function nextCard() {
+          currentIndex++;
+          renderCard();
+        }
+
+        // --- 13. Pantallas de Fin de Partida ---
+        function triggerGameOver() {
+          playSound('gameover');
+          banner.className = 'modal-banner';
+          banner.style.display = 'block';
+          const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+          banner.innerHTML = `
+            <div style="text-align:center; padding:10px 0;">
+              <div style="font-size:3rem; margin-bottom:10px;">💀</div>
+              <h2 style="color:var(--arena-coral); margin:0 0 10px; font-size:1.8rem;">GAME OVER · TE HAS QUEDADO SIN VIDAS</h2>
+              <p style="font:0.92rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:600px; margin:0 auto 18px;">
+                La simulación de supervivencia ha terminado. El estudio activo se nutre de los errores para afianzar el dominio conceptual a largo plazo.
+              </p>
+              <div style="display:inline-flex; gap:20px; flex-wrap:wrap; justify-content:center; background:rgba(0,0,0,0.3); border:1px solid var(--line); border-radius:8px; padding:12px 24px; margin-bottom:20px; font:700 0.88rem 'Courier New', monospace;">
+                <div>Tarjetas Respondidas: <span style="color:var(--arena-cyan);">${totalAnswered}</span></div>
+                <div>Aciertos: <span style="color:var(--arena-green);">${totalCorrect}</span></div>
+                <div>Racha Máxima: <span style="color:var(--arena-gold);">${maxStreak}</span></div>
+                <div>Precisión: <span style="color:#ffffff;">${accuracy}%</span></div>
+              </div>
+              <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                <button class="btn-theme" style="padding:12px 22px; font:700 0.9rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="restartDeck()">
+                  🔄 Reintentar Este Mazo
+                </button>
+                <button class="toggle-btn" style="padding:12px 22px; font:700 0.9rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="setPlayMode('study')">
+                  📖 Cambiar a Estudio Libre (Sin Vidas)
+                </button>
+              </div>
+            </div>
+          `;
+          banner.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function triggerVictory() {
+          playSound('heal');
+          banner.className = 'modal-banner banner-victory';
+          banner.style.display = 'block';
+          const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 100;
+          banner.innerHTML = `
+            <div style="text-align:center; padding:10px 0;">
+              <div style="font-size:3.5rem; margin-bottom:10px;">🏆</div>
+              <h2 style="color:var(--arena-gold); margin:0 0 10px; font-size:1.8rem;">¡VICTORIA EN LA ARENA! MAZO COMPLETADO</h2>
+              <p style="font:0.92rem/1.5 Verdana, sans-serif; color:var(--ink); max-width:600px; margin:0 auto 18px;">
+                Has dominado exitosamente todas las tarjetas del mazo seleccionado conservando vidas activas. ¡Demostración impecable de conocimiento técnico!
+              </p>
+              <div style="display:inline-flex; gap:20px; flex-wrap:wrap; justify-content:center; background:rgba(0,0,0,0.3); border:1px solid var(--line); border-radius:8px; padding:12px 24px; margin-bottom:20px; font:700 0.88rem 'Courier New', monospace;">
+                <div>Tarjetas Superadas: <span style="color:var(--arena-cyan);">${currentDeck.length}</span></div>
+                <div>Vidas Finales: <span style="color:#ff3366;">${'❤️'.repeat(lives)}</span></div>
+                <div>Racha Máxima: <span style="color:var(--arena-gold);">${maxStreak}</span></div>
+                <div>Precisión: <span style="color:var(--arena-green);">${accuracy}%</span></div>
+              </div>
+              <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                <button class="btn-theme" style="padding:12px 22px; font:700 0.9rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="restartDeck()">
+                  🔄 Jugar de Nuevo (Barajar)
+                </button>
+                <a href="../index.html" class="toggle-btn" style="text-decoration:none; display:inline-flex; align-items:center; padding:12px 22px; font:700 0.9rem 'Courier New', monospace; border-radius:6px;">
+                  🏠 Volver al Índice Principal
+                </a>
+              </div>
+            </div>
+          `;
+          banner.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.restartDeck = function () {
+          loadDeck();
+        };
+
+        // --- 14. Actualización del HUD de Estado ---
+        function updateHUD() {
+          // Vidas
+          if (playMode === 'survival') {
+            hudLives.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, maxLives - lives));
+          } else {
+            hudLives.innerHTML = '<span style="font-size:0.85rem; color:var(--arena-cyan);">MODO LIBRE ∞</span>';
+          }
+
+          // Racha
+          hudStreak.innerText = `${streak} combo${streak === 1 ? '' : 's'}`;
+          if (streak >= 5) {
+            hudStreak.className = 'hud-streak fire';
+            hudStreak.innerText = `🔥 ${streak} EN LLAMAS`;
+          } else {
+            hudStreak.className = 'hud-streak';
+          }
+
+          // Progreso
+          const total = currentDeck.length;
+          const current = Math.min(currentIndex + 1, total);
+          hudProgress.innerText = `${current} / ${total}`;
+          const pct = total > 0 ? (currentIndex / total) * 100 : 0;
+          progressBarFill.style.width = `${pct}%`;
+        }
+
+        // --- 15. Modos de Juego y Formatos ---
+        window.setPlayMode = function (mode) {
+          playMode = mode;
+          document.getElementById('btn-mode-survival').classList.toggle('active', mode === 'survival');
+          document.getElementById('btn-mode-study').classList.toggle('active', mode === 'study');
+          updateHUD();
+        };
+
+        window.setResponseFormat = function (format) {
+          responseFormat = format;
+          document.getElementById('btn-format-honest').classList.toggle('active', format === 'honest');
+          document.getElementById('btn-format-choice').classList.toggle('active', format === 'choice');
+          renderCard();
+        };
+
+        // --- 16. Carga Inicial y Parámetros URL (?modulo=XX) ---
+        function initArena() {
+          populateModuleSelector();
+
+          // Revisar si viene parametro en la URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const requestedModule = urlParams.get('modulo') || urlParams.get('module');
+          if (requestedModule) {
+            const formatted = String(requestedModule).padStart(2, '0');
+            const matchOpt = 'mod-' + formatted;
+            if (Array.from(deckSelect.options).some(o => o.value === matchOpt)) {
+              deckSelect.value = matchOpt;
+            }
+          }
+
+          loadDeck();
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initArena);
+        } else {
+          initArena();
+        }
+      })();
+    </script>
+  </body>
+</html>
