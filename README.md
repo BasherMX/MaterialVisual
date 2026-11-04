@@ -45,6 +45,10 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 - **[16 · El Triángulo de Hierro: Triple Restricción](modulos/16-triangulo-de-hierro-gestion-proyectos.html)**: Balance dinámico entre Alcance, Tiempo y Costo/Recursos con impacto en Calidad.
 - **[17 · EDT / WBS: Descomposición del Trabajo](modulos/17-edt-wbs-descomposicion-trabajo.html)**: Estructura jerárquica de entregables, Regla del 100%, código de numeración decimal y diccionario WBS (Marion E. Haynes & PMBOK).
 
+### ⚙️ 6. Arquitectura Backend, C# 12 & Entity Framework Core
+- **[18 · Inyección de Dependencias & C# 12](modulos/18-inyeccion-dependencias-constructores-primarios-csharp.html)**: Contenedor IoC en .NET, Transient vs Scoped vs Singleton, prevención de dependencias cautivas (*Captive Dependencies*) y Constructores Primarios en C# 12.
+- **[19 · EF Core: Concurrencia & Optimización](modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html)**: Concurrencia en `DbContext` y paralelización limpia con `Task.WhenAll` e `IDbContextFactory`, optimización de memoria con `.AsNoTracking()` vs `.AsNoTrackingWithIdentityResolution()` y rendimiento de runtime con **Native AOT** y JSON Source Generators vs JIT.
+
 ---
 
 ## Arquitectura Técnica

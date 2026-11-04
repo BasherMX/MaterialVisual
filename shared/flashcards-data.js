@@ -674,6 +674,134 @@
         "La reunión diaria de sincronización de 15 minutos (Daily Scrum)"
       ],
       correctOption: 0
+    },
+
+    // =========================================================================
+    // BLOQUE 6: ARQUITECTURA BACKEND, C# 12 & ENTITY FRAMEWORK CORE
+    // =========================================================================
+
+    // Módulo 18: Inyección de Dependencias & C# 12
+    {
+      id: "fc-18-01",
+      moduleId: "18",
+      moduleTitle: "Inyección de Dependencias & C# 12",
+      category: "Arquitectura & Backend",
+      question: "¿Cuál es el ciclo de vida apropiado para un servicio que gestiona la sesión y datos de autenticación del usuario actual?",
+      answer: "Scoped (AddScoped): Una única instancia aislada por cada petición HTTP.",
+      explanation: "Si se registrara como Singleton, la identidad del primer usuario quedaría compartida con todas las peticiones subsecuentes de otros usuarios (vulnerabilidad crítica de datos cruzados). Scoped garantiza aislamiento estricto por petición.",
+      authorRef: "Microsoft .NET Dependency Injection Team",
+      options: [
+        "Scoped (AddScoped): Aislado estrictamente por petición HTTP",
+        "Singleton (AddSingleton): Reutilizado por todos los usuarios concurrentes",
+        "Transient (AddTransient): Instanciado cada vez que se lee una propiedad",
+        "Static global sin contenedor IoC"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-18-02",
+      moduleId: "18",
+      moduleTitle: "Inyección de Dependencias & C# 12",
+      category: "Arquitectura & Backend",
+      question: "¿Qué es una Dependencia Cautiva (Captive Dependency) y por qué genera fallos en .NET?",
+      answer: "Ocurre cuando un Singleton inyecta un servicio Scoped, secuestrando su instancia e impidiendo su recolección.",
+      explanation: "Como el Singleton vive durante todo el proceso, la dependencia Scoped jamás es liberada al terminar la petición HTTP original, provocando acumulación en memoria y errores de concurrencia al reusar contextos no thread-safe (como DbContext).",
+      authorRef: "Mark Seemann (Dependency Injection Principles)",
+      options: [
+        "Un Singleton que inyecta un Scoped, manteniendo 'cautiva' la instancia indefinidamente",
+        "Un servicio que no puede resolverse porque su interfaz no tiene implementación registrada",
+        "Una referencia circular entre dos servicios Transient",
+        "Un ensamblado no firmado bloqueado por el runtime"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-18-03",
+      moduleId: "18",
+      moduleTitle: "Inyección de Dependencias & C# 12",
+      category: "Arquitectura & Backend",
+      question: "¿Qué ventaja ofrecen los Constructores Primarios en C# 12 para servicios con inyección de dependencias?",
+      answer: "Declaran dependencias directamente en la cabecera de la clase, eliminando constructores explícitos y campos privados.",
+      explanation: "En lugar de declarar campos 'private readonly' y asignar cada parámetro manualmente dentro del cuerpo del constructor, C# 12 pone los parámetros del constructor primario al alcance léxico de todos los métodos de la clase en una sola línea.",
+      authorRef: "Mads Torgersen & C# Language Design Team",
+      options: [
+        "Eliminan el boilerplate de campos privados y constructores explícitos en la declaración de clase",
+        "Convierten todas las dependencias en hilos asíncronos paralelos",
+        "Impiden que las clases utilicen interfaces",
+        "Fuerzan que todos los parámetros sean serializados en JSON nativo"
+      ],
+      correctOption: 0
+    },
+
+    // Módulo 19: EF Core: Concurrencia & Optimización
+    {
+      id: "fc-19-01",
+      moduleId: "19",
+      moduleTitle: "EF Core: Concurrencia & Optimización",
+      category: "Arquitectura & Backend",
+      question: "¿Por qué falla Task.WhenAll al ejecutar múltiples consultas paralelas sobre una misma instancia de DbContext?",
+      answer: "Porque DbContext no es thread-safe y su conexión subyacente y StateManager no admiten operaciones simultáneas.",
+      explanation: "Lanza System.InvalidOperationException ('A second operation was started on this context instance before a previous operation completed'). Cada consulta activa requiere exclusividad sobre el DataReader y el socket ADO.NET de la base de datos.",
+      authorRef: "Entity Framework Core Architecture Team",
+      options: [
+        "Porque DbContext no es thread-safe y su conexión socket no admite comandos paralelos concurrentes",
+        "Porque Task.WhenAll solo admite métodos síncronos que retornen void",
+        "Porque SQL Server prohíbe abrir más de una tabla por transacción",
+        "Porque el Garbage Collector bloquea las tareas en segundo plano"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-19-02",
+      moduleId: "19",
+      moduleTitle: "EF Core: Concurrencia & Optimización",
+      category: "Arquitectura & Backend",
+      question: "¿Cómo resuelve IDbContextFactory<TContext> la paralelización de consultas concurrentes?",
+      answer: "Crea instancias independientes y efímeras de DbContext por cada hilo o tarea con 'await using'.",
+      explanation: "Al fabricar un contexto dedicado por tarea, cada hilo tiene su propia conexión y ChangeTracker aislado, permitiendo a Task.WhenAll ejecutar en paralelo real sin bloqueos ni excepciones de concurrencia.",
+      authorRef: "Microsoft EF Core Patterns",
+      options: [
+        "Fabrica un DbContext efímero dedicado e independiente por cada tarea o hilo paralelo",
+        "Aplica un bloqueo global 'lock' que serializa las consultas en segundo plano",
+        "Convierte la base de datos relacional en una caché de Redis",
+        "Ejecuta las consultas en el cliente sin conectarse al servidor"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-19-03",
+      moduleId: "19",
+      moduleTitle: "EF Core: Concurrencia & Optimización",
+      category: "Arquitectura & Backend",
+      question: "¿En qué se diferencia .AsNoTrackingWithIdentityResolution() de .AsNoTracking() tradicional en EF Core?",
+      answer: "IdentityResolution reutiliza la misma instancia en memoria para entidades con el mismo ID, evitando duplicación en el Heap.",
+      explanation: "En consultas con relaciones 1:N, .AsNoTracking() crea una nueva instancia de la entidad padre por cada fila leída (duplicando objetos en memoria). IdentityResolution mantiene un mapa efímero de claves sin activar el Change Tracker completo, ahorrando RAM y preservando la igualdad referencial.",
+      authorRef: "Arthur Vickers (EF Core Team)",
+      options: [
+        "Reutiliza la misma instancia en memoria para entidades con el mismo ID, deduplicando objetos en el Heap",
+        "Habilita el guardado automático de cambios sin necesidad de SaveChanges()",
+        "Descarga los datos directamente en archivos XML en disco local",
+        "Convierte las consultas LINQ en llamadas GraphQL"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-19-04",
+      moduleId: "19",
+      moduleTitle: "EF Core: Concurrencia & Optimización",
+      category: "Arquitectura & Backend",
+      question: "¿Por qué Native AOT en .NET 8+ exige JSON Source Generators en lugar de Reflection en tiempo de ejecución?",
+      answer: "Porque Native AOT aplica Trimming agresivo y compila a binario cerrado sin compilador JIT ni emisión dinámica.",
+      explanation: "El Source Generator inspecciona los tipos en compilación y genera código C# explícito para serializar/deserializar, eliminando la necesidad de inspeccionar miembros por Reflection y garantizando que el optimizador no pode código crítico.",
+      authorRef: ".NET Native AOT Team",
+      options: [
+        "Porque compila a binario nativo cerrado y no dispone de motor JIT para emitir código dinámico por Reflection",
+        "Porque Native AOT solo es compatible con tipos numéricos enteros",
+        "Porque los Source Generators duplican el tamaño del ejecutable",
+        "Porque el protocolo HTTP/3 prohíbe la reflexión de tipos"
+      ],
+      correctOption: 0
     }
   ];
 });
+

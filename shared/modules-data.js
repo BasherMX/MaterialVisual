@@ -282,6 +282,38 @@
             "Diccionario EDT automatizado con criterios de aceptación de entregables"
         ],
         "btnId": "btn-goto-wbs"
+    },
+    {
+        "id": "18",
+        "slug": "18-inyeccion-dependencias-constructores-primarios-csharp",
+        "filename": "18-inyeccion-dependencias-constructores-primarios-csharp.html",
+        "theme": "theme-purple",
+        "category": "Arquitectura & Backend",
+        "badge": "18 · Arquitectura & Backend",
+        "title": "Inyección de Dependencias & C# 12",
+        "desc": "Laboratorio interactivo de ciclos de vida Transient, Scoped, Singleton, detección de Dependencia Cautiva y Constructores Primarios.",
+        "features": [
+            "Simulador de Scopes y resolución de GUIDs en tiempo real",
+            "Detección visual de Captive Dependency (ValidateScopes = true)",
+            "Comparador interactivo de sintaxis C# 11 vs C# 12"
+        ],
+        "btnId": "btn-goto-di-csharp"
+    },
+    {
+        "id": "19",
+        "slug": "19-efcore-concurrencia-dbcontextfactory-optimizacion",
+        "filename": "19-efcore-concurrencia-dbcontextfactory-optimizacion.html",
+        "theme": "theme-green",
+        "category": "Arquitectura & Backend",
+        "badge": "19 · EF Core & Concurrencia",
+        "title": "EF Core: Concurrencia & Optimización",
+        "desc": "Simulador multihilo de Task.WhenAll con IDbContextFactory, optimización de memoria con AsNoTracking vs IdentityResolution y Native AOT.",
+        "features": [
+            "Simulador de colisión multihilo y solución con IDbContextFactory",
+            "Inspector de nodos en Heap (.AsNoTracking vs IdentityResolution)",
+            "Benchmark interactivo de Native AOT vs JIT y Source Generators"
+        ],
+        "btnId": "btn-goto-efcore-opt"
     }
 ];
 });
