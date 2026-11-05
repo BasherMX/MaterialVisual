@@ -314,6 +314,54 @@
             "Benchmark interactivo de Native AOT vs JIT y Source Generators"
         ],
         "btnId": "btn-goto-efcore-opt"
+    },
+    {
+        "id": "20",
+        "slug": "20-grpc-patrones-comunicacion-streaming",
+        "filename": "20-grpc-patrones-comunicacion-streaming.html",
+        "theme": "theme-cyan",
+        "category": "Arquitectura & Web",
+        "badge": "20 · gRPC & Streaming",
+        "title": "gRPC & Patrones de Streaming",
+        "desc": "Protocolo de alto rendimiento basado en HTTP/2 y Protocol Buffers. Explora Unary, Server, Client y Bidirectional Streaming frente a REST.",
+        "features": [
+            "Simulador reactivo de los 4 canales de streaming gRPC",
+            "Duelo de tamaño en bytes: Protocol Buffers vs JSON",
+            "Multiplexación HTTP/2 y erradicación del bloqueo de cabeza de línea"
+        ],
+        "btnId": "btn-goto-grpc"
+    },
+    {
+        "id": "21",
+        "slug": "21-graphql-over-under-fetching-hotchocolate",
+        "filename": "21-graphql-over-under-fetching-hotchocolate.html",
+        "theme": "theme-coral",
+        "category": "Arquitectura & Web",
+        "badge": "21 · GraphQL & APIs",
+        "title": "GraphQL & HotChocolate: Over/Under-fetching",
+        "desc": "Paradigma declarativo que erradica el Over-fetching y Under-fetching de REST. Queries, Mutations y HotChocolate en .NET con EF Core.",
+        "features": [
+            "Laboratorio comparativo de tráfico de red REST vs GraphQL en vivo",
+            "Proyección SQL nativa con HotChocolate [UseProjection] y EF Core",
+            "Equivalencias directas entre Queries, Mutations y verbos HTTP REST"
+        ],
+        "btnId": "btn-goto-graphql"
+    },
+    {
+        "id": "22",
+        "slug": "22-jwt-autenticacion-tokens-seguridad",
+        "filename": "22-jwt-autenticacion-tokens-seguridad.html",
+        "theme": "theme-gold",
+        "category": "Arquitectura & Backend",
+        "badge": "22 · Seguridad & Autenticación",
+        "title": "JWT: Tokens & Criptografía",
+        "desc": "Mecanismo estándar de autenticación sin estado (RFC 7519). Anatomía de Header, Payload y Signature, mitigación XSS/CSRF y Refresh Tokens.",
+        "features": [
+            "Firmador criptográfico HMAC-SHA256 e inspector de tokens en vivo",
+            "Diferenciación crucial: Firma digital vs Cifrado de datos (JWS vs JWE)",
+            "Ciclo de vida y rotación segura de Access Tokens y Refresh Tokens"
+        ],
+        "btnId": "btn-goto-jwt"
     }
 ];
 });

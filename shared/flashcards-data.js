@@ -801,6 +801,118 @@
         "Porque el protocolo HTTP/3 prohíbe la reflexión de tipos"
       ],
       correctOption: 0
+    },
+
+    // =========================================================================
+    // BLOQUE 6: APIS MODERNAS, STREAMING & SEGURIDAD
+    // =========================================================================
+
+    // Módulo 20: gRPC & Patrones de Streaming
+    {
+      id: "fc-20-01",
+      moduleId: "20",
+      moduleTitle: "gRPC & Patrones de Streaming",
+      category: "Arquitectura & Web",
+      question: "¿Por qué gRPC logra un rendimiento y compresión drásticamente superiores frente a una API REST tradicional basada en JSON?",
+      answer: "Porque utiliza serialización binaria con Protocol Buffers (tags numéricos y varints) sobre transporte multiplexado HTTP/2.",
+      explanation: "A diferencia de JSON, que transmite nombres de atributos repetitivos en texto ASCII legible, Protobuf codifica las propiedades como tags numéricos enteros y serializa valores en binario compacto. Además, el túnel HTTP/2 multiplexa múltiples llamadas sobre una única conexión TCP sin bloqueo de cabeza de línea a nivel de aplicación.",
+      authorRef: "Google RPC Architecture & CNCF Specification",
+      options: [
+        "Porque utiliza serialización binaria con Protocol Buffers (tags numéricos) sobre transporte multiplexado HTTP/2",
+        "Porque gRPC reemplaza la pila TCP/IP por conexiones UDP directas sin verificación de errores",
+        "Porque convierte todas las consultas de la base de datos en sockets WebRTC sin cifrado TLS",
+        "Porque almacena todos los registros en la memoria caché del navegador de los clientes"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-20-02",
+      moduleId: "20",
+      moduleTitle: "gRPC & Patrones de Streaming",
+      category: "Arquitectura & Web",
+      question: "¿En qué consiste el patrón de llamada 'Bidirectional Streaming' en gRPC y cómo operan el cliente y servidor?",
+      answer: "Ambos extremos abren dos flujos independientes de lectura/escritura sobre el mismo stream HTTP/2 y emiten mensajes de forma asíncrona sin bloquearse.",
+      explanation: "En la firma 'rpc Chat(stream Msg) returns (stream Msg)', la comunicación está totalmente desacoplada en el tiempo; el cliente puede enviar ráfagas de paquetes mientras el servidor responde inmediatamente o acumula respuestas, todo en un único stream lógico de baja latencia.",
+      authorRef: "gRPC Protocol Specification",
+      options: [
+        "Ambos extremos abren flujos independientes de lectura/escritura sobre el mismo stream HTTP/2 y emiten mensajes asíncronos sin bloquearse",
+        "El cliente envía un paquete y el servidor debe responder obligatoriamente con exactamente un paquete de confirmación",
+        "El servidor envía el esquema en SQL y el cliente ejecuta la consulta en memoria RAM local",
+        "El protocolo cierra y reabre la conexión TCP en cada mensaje individual para garantizar seguridad"
+      ],
+      correctOption: 0
+    },
+
+    // Módulo 21: GraphQL & HotChocolate: Over/Under-fetching
+    {
+      id: "fc-21-01",
+      moduleId: "21",
+      moduleTitle: "GraphQL & HotChocolate: Over/Under-fetching",
+      category: "Arquitectura & Web",
+      question: "¿Qué patologías de red resuelven las consultas de GraphQL frente al diseño rígido de endpoints REST?",
+      answer: "Over-fetching (descarga de campos innecesarios) y Under-fetching (múltiples llamadas secuenciales en cascada o problema N+1).",
+      explanation: "En GraphQL el cliente define de forma declarativa la estructura exacta y las relaciones requeridas en su Query, obteniendo todos los datos necesarios en un único viaje de red (Round-Trip Time) sin desperdiciar ancho de banda ni encadenar llamadas.",
+      authorRef: "GraphQL Foundation & Lee Byron",
+      options: [
+        "Over-fetching (descarga de campos innecesarios) y Under-fetching (múltiples llamadas secuenciales o problema N+1)",
+        "Errores de compilación en el compilador Roslyn y excepciones de OutOfMemory en el recolector de basura",
+        "La necesidad de implementar certificados TLS/HTTPS en los servidores de producción",
+        "La fragmentación de índices agrupados en discos de estado sólido SSD"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-21-02",
+      moduleId: "21",
+      moduleTitle: "GraphQL & HotChocolate: Over/Under-fetching",
+      category: "Arquitectura & Web",
+      question: "¿Cómo optimiza HotChocolate en .NET el consumo de base de datos al usar el atributo [UseProjection] junto con Entity Framework Core?",
+      answer: "Traduce los campos solicitados en el Query de GraphQL directamente a una cláusula SELECT específica en la consulta SQL generada por EF Core.",
+      explanation: "Al devolver IQueryable<T> y aplicar [UseProjection], HotChocolate no descarga todas las columnas a memoria para filtrarlas luego en C#, sino que compone el árbol de expresión de EF Core para que el motor SQL solo transfiera las columnas solicitadas.",
+      authorRef: "ChilliCream (HotChocolate .NET)",
+      options: [
+        "Traduce los campos del Query de GraphQL directamente a una cláusula SELECT específica en la consulta SQL generada por EF Core",
+        "Convierte la base de datos relacional a una base de datos documental en tiempo de ejecución",
+        "Elimina las claves foráneas de las tablas de SQL Server para acelerar los JOINs",
+        "Guarda todos los resultados en archivos JSON temporales en el disco duro del servidor"
+      ],
+      correctOption: 0
+    },
+
+    // Módulo 22: JWT: Tokens & Criptografía
+    {
+      id: "fc-22-01",
+      moduleId: "22",
+      moduleTitle: "JWT: Tokens & Criptografía",
+      category: "Arquitectura & Backend",
+      question: "¿Cuál es el mito y error más crítico de seguridad sobre los JSON Web Tokens (JWS estándar)?",
+      answer: "Creer que un JWT está cifrado o protege la confidencialidad de los datos, cuando en realidad solo está firmado digitalmente y codificado en Base64Url.",
+      explanation: "El Header y Payload de un JWS (JSON Web Signature) son públicamente legibles por cualquiera con solo decodificar Base64Url (atob). La firma garantiza integridad y autenticidad (que nadie lo alteró), pero nunca confidencialidad. Para ocultar datos sensibles se requiere JWE (JSON Web Encryption).",
+      authorRef: "RFC 7519 (JSON Web Token) & OWASP",
+      options: [
+        "Creer que un JWT está cifrado y protege secretos, cuando solo está firmado digitalmente y codificado en Base64Url legible",
+        "Pensar que un JWT firmado con HS256 requiere una pareja de clave pública y privada asimétrica",
+        "Asumir que un token JWT expira automáticamente sin necesidad de validar el claim 'exp'",
+        "Creer que un JWT solo puede transmitirse a través de sockets WebSocket y no por cabeceras HTTP"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-22-02",
+      moduleId: "22",
+      moduleTitle: "JWT: Tokens & Criptografía",
+      category: "Arquitectura & Backend",
+      question: "¿Por qué se recomienda almacenar el Refresh Token en una cookie HttpOnly, Secure y SameSite en lugar de Web Storage (localStorage)?",
+      answer: "Porque las cookies con el flag HttpOnly son inaccesibles para el motor de JavaScript en el navegador, mitigando el robo de sesiones por ataques XSS.",
+      explanation: "Si una aplicación sufre una vulnerabilidad de Cross-Site Scripting (XSS), cualquier script malicioso inyectado puede leer inmediatamente localStorage.getItem('token'). Una cookie con HttpOnly solo es leída y enviada por el navegador en la cabecera HTTP, bloqueando el acceso a scripts maliciosos de terceros.",
+      authorRef: "OWASP Session Management Cheat Sheet",
+      options: [
+        "Porque las cookies con el flag HttpOnly son inaccesibles para el motor de JavaScript, mitigando el robo de sesión por XSS",
+        "Porque el almacenamiento localStorage tiene un límite máximo de almacenamiento de 100 bytes",
+        "Porque las cookies HttpOnly cifran automáticamente la base de datos de los servidores de backend",
+        "Porque Google Chrome bloquea cualquier petición HTTP que no incluya una cookie de sesión activa"
+      ],
+      correctOption: 0
     }
   ];
 });

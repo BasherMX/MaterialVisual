@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphQL, Over/Under-fetching & HotChocolate | Laboratorio Interactivo</title>
+    <meta
+      name="description"
+      content="Laboratorio interactivo de GraphQL: Solución a los problemas de Over-fetching y Under-fetching de REST, Queries, Mutations y la integración de HotChocolate con Entity Framework Core en .NET."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --gql-pink: #e10098;
+        --gql-cyan: #00ffff;
+        --gql-green: #00ffaa;
+        --gql-gold: #ffd700;
+        --gql-purple: #7928ca;
+        --gql-coral: #ff006e;
+      }
+
+      .content-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .content-panel.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Comparación de Over-fetching vs Under-fetching */
+      .fetching-dilemma-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .fetching-card {
+        background: var(--panel-dark);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 22px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .fetching-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+      }
+
+      .card-over { border-color: rgba(255, 0, 110, 0.4); }
+      .card-over::before { background: var(--gql-coral); }
+
+      .card-under { border-color: rgba(255, 215, 0, 0.4); }
+      .card-under::before { background: var(--gql-gold); }
+
+      .card-solution { border-color: rgba(225, 0, 152, 0.5); }
+      .card-solution::before { background: var(--gql-pink); }
+
+      /* Simulador REST vs GraphQL */
+      .network-lab-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 22px;
+        margin-bottom: 24px;
+      }
+
+      .mobile-mockup {
+        background: #090913;
+        border: 2px solid var(--gql-cyan);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+      }
+
+      .fields-selector-box {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 14px;
+      }
+
+      .field-checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+        font: 0.84rem "Courier New", monospace;
+        color: var(--ink);
+        cursor: pointer;
+      }
+
+      .traffic-meter-card {
+        background: var(--panel-dark);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+      }
+
+      .stat-metric-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font: 700 0.85rem "Courier New", monospace;
+      }
+
+      /* Playground HotChocolate */
+      .hotchocolate-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 16px;
+      }
+
+      .code-block-panel {
+        background: #070710;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 16px;
+        font: 0.8rem/1.5 "Courier New", monospace;
+      }
+
+      /* Quiz */
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 16px 0;
+      }
+
+      .quiz-option-btn {
+        width: 100%;
+        text-align: left;
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        color: var(--ink);
+        padding: 12px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font: 0.86rem Verdana, sans-serif;
+        min-height: 44px;
+        transition: all 0.2s ease;
+      }
+
+      .quiz-option-btn:hover {
+        border-color: var(--gql-pink);
+        background: rgba(225, 0, 152, 0.08);
+      }
+
+      /* Responsive Mobile-First */
+      @media (max-width: 768px) {
+        .network-lab-grid {
+          grid-template-columns: 1fr !important;
+          gap: 16px;
+        }
+        .hotchocolate-grid {
+          grid-template-columns: 1fr !important;
+          gap: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a href="../index.html" class="btn-back-index"><span>←</span> Volver al Portal Principal</a>
+
+      <header>
+        <div>
+          <p class="eyebrow">21 · Arquitectura & Web</p>
+          <h1>GraphQL & HotChocolate</h1>
+        </div>
+        <p class="intro">
+          El paradigma de consulta declarativa que erradica el <strong>Over-fetching</strong> y <strong>Under-fetching</strong> de las APIs REST. Explora <strong>Queries</strong>, <strong>Mutations</strong> y la integración con <strong>Entity Framework Core</strong> mediante <strong>HotChocolate en .NET</strong>.
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-dilemma')">
+          <span>⚖️</span> 1. El Dilema de REST: Over & Under-fetching
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-simulator')">
+          <span>🔬</span> 2. Laboratorio: REST vs GraphQL en Vivo
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-hotchocolate')">
+          <span>☕</span> 3. HotChocolate en .NET & EF Core
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-queries-mutations')">
+          <span>⚡</span> 4. Queries, Mutations & Schemas
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 5. Laboratorio de Evaluación
+        </button>
+      </nav>
+
+      <!-- Pestaña 1: El Dilema de REST -->
+      <section id="tab-dilemma" class="content-panel active">
+        <div class="matrix-card">
+          <h2><span>⚖️</span> Las Dos Grandes Patologías de las APIs REST Rígidas</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
+            En la arquitectura REST clásica, los endpoints devuelven una estructura de datos fija decidida por el desarrollador de backend. Esto genera dos problemas estructurales en aplicaciones web y móviles modernas:
+          </p>
+
+          <div class="fetching-dilemma-grid">
+            <!-- Over-fetching -->
+            <div class="fetching-card card-over">
+              <span class="badge-lang" style="color:var(--gql-coral); border-color:var(--gql-coral);">PATOLOGÍA 1</span>
+              <h3 style="color:var(--gql-coral); margin:8px 0; font-size:1.15rem;">Over-fetching (Sobredescarga)</h3>
+              <p style="font:0.86rem/1.5 Verdana, sans-serif; color:var(--ink);">
+                El servidor entrega **muchos más datos de los necesarios**.
+              </p>
+              <div style="background:#090913; padding:10px; border-radius:4px; font:0.75rem 'Courier New', monospace; color:var(--muted); margin-top:10px;">
+                <strong>Ejemplo:</strong> La app móvil solo necesita mostrar el <code>nombre</code> del usuario en la barra superior, pero el endpoint <code>GET /api/usuarios/1</code> descarga 45 campos: dirección, CURP, historial de compras, geolocalización y preferencias (8 KB descargados para usar 12 bytes).
+              </div>
+            </div>
+
+            <!-- Under-fetching -->
+            <div class="fetching-card card-under">
+              <span class="badge-lang" style="color:var(--gql-gold); border-color:var(--gql-gold);">PATOLOGÍA 2</span>
+              <h3 style="color:var(--gql-gold); margin:8px 0; font-size:1.15rem;">Under-fetching (Subdescarga & N+1)</h3>
+              <p style="font:0.86rem/1.5 Verdana, sans-serif; color:var(--ink);">
+                Un endpoint **no entrega suficiente información**, obligando a emitir múltiples peticiones en cascada.
+              </p>
+              <div style="background:#090913; padding:10px; border-radius:4px; font:0.75rem 'Courier New', monospace; color:var(--muted); margin-top:10px;">
+                <strong>Ejemplo:</strong> Para pintar la pantalla de una factura, el cliente debe hacer 3 llamadas secuenciales: <code>GET /pedidos/10</code> ➔ <code>GET /clientes/5</code> ➔ <code>GET /pagos/3</code>. Cada petición añade 150ms de latencia de red en conexiones móviles 4G/5G.
+              </div>
+            </div>
+
+            <!-- La Solución GraphQL -->
+            <div class="fetching-card card-solution">
+              <span class="badge-lang" style="color:var(--gql-pink); border-color:var(--gql-pink);">LA SOLUCIÓN</span>
+              <h3 style="color:var(--gql-pink); margin:8px 0; font-size:1.15rem;">GraphQL: Contrato Declarativo</h3>
+              <p style="font:0.86rem/1.5 Verdana, sans-serif; color:var(--ink);">
+                El cliente solicita **exactamente la forma y las propiedades que necesita en un solo viaje de red**.
+              </p>
+              <div style="background:#090913; padding:10px; border-radius:4px; font:0.75rem 'Courier New', monospace; color:var(--gql-green); margin-top:10px;">
+                <strong>Resultado:</strong> Cero datos sobrantes (0% Over-fetching) y cero peticiones en cascada (0% Under-fetching): <code>1 Request ➔ 1 Response con la forma exacta</code>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 2: Laboratorio REST vs GraphQL -->
+      <section id="tab-simulator" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🔬</span> Laboratorio de Tráfico de Red: REST vs GraphQL en Vivo</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            Imagina que estás construyendo la pantalla de **"Detalle de Orden de Compra"**. Elige qué campos necesita tu pantalla y observa la diferencia de peticiones y tamaño de carga útil entre ambos enfoques.
+          </p>
+
+          <div class="network-lab-grid">
+            <!-- Mockup de Pantalla Móvil -->
+            <div class="mobile-mockup">
+              <h3 style="color:var(--gql-cyan); margin:0 0 10px; font-size:1.05rem;">
+                📱 Campos Necesarios para la Vista Móvil:
+              </h3>
+              <p style="font:0.8rem Verdana, sans-serif; color:var(--muted); margin-bottom:12px;">
+                Selecciona las propiedades requeridas por el componente:
+              </p>
+
+              <div class="fields-selector-box">
+                <label class="field-checkbox-row">
+                  <input type="checkbox" id="chk-order-id" checked disabled />
+                  <span>Pedido: id</span>
+                </label>
+                <label class="field-checkbox-row">
+                  <input type="checkbox" id="chk-order-total" checked onchange="updateSimulation()" />
+                  <span>Pedido: total</span>
+                </label>
+                <label class="field-checkbox-row">
+                  <input type="checkbox" id="chk-client-name" checked onchange="updateSimulation()" />
+                  <span>Cliente: nombre</span>
+                </label>
+                <label class="field-checkbox-row">
+                  <input type="checkbox" id="chk-client-email" onchange="updateSimulation()" />
+                  <span>Cliente: email</span>
+                </label>
+                <label class="field-checkbox-row">
+                  <input type="checkbox" id="chk-items-count" onchange="updateSimulation()" />
+                  <span>Artículos: cantidad</span>
+                </label>
+              </div>
+
+              <div style="display:flex; gap:10px;">
+                <button class="btn-theme" style="flex:1; padding:10px; font:700 0.8rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="runSimulationTest('rest')">
+                  📡 Probar con REST
+                </button>
+                <button class="btn-theme" style="flex:1; padding:10px; font:700 0.8rem 'Courier New', monospace; border-radius:6px; cursor:pointer; background:linear-gradient(135deg, var(--gql-pink), var(--purple));" onclick="runSimulationTest('graphql')">
+                  ⚡ Probar con GraphQL
+                </button>
+              </div>
+            </div>
+
+            <!-- Panel de Métricas de Red -->
+            <div class="traffic-meter-card">
+              <h3 style="color:var(--gold); margin:0 0 14px; font-size:1.05rem;">
+                📊 Telemetría de Red y Rendimiento:
+              </h3>
+
+              <div class="stat-metric-row">
+                <span>Modo Activo:</span>
+                <span id="metric-mode-label" style="color:var(--gql-cyan);">REST Tradicional</span>
+              </div>
+              <div class="stat-metric-row">
+                <span>Viajes de Red (Round-trips HTTP):</span>
+                <span id="metric-roundtrips" style="color:var(--gql-coral);">3 peticiones (N+1)</span>
+              </div>
+              <div class="stat-metric-row">
+                <span>Carga Útil Transferida:</span>
+                <span id="metric-payload-size" style="color:var(--gql-coral);">4,820 Bytes (Over-fetching)</span>
+              </div>
+              <div class="stat-metric-row">
+                <span>Latencia Acumulada Estimada (4G):</span>
+                <span id="metric-latency" style="color:var(--gql-coral);">~420 ms</span>
+              </div>
+              <div class="stat-metric-row">
+                <span>Eficiencia de Datos Requeridos:</span>
+                <span id="metric-efficiency" style="color:var(--gql-coral);">4.2% útil (95.8% desperdicio)</span>
+              </div>
+
+              <!-- Terminal de Payload Resultante -->
+              <div style="margin-top:14px;">
+                <span style="font:700 0.75rem 'Courier New', monospace; color:var(--muted);">PAYLOAD RECIBIDO EN EL CLIENTE:</span>
+                <pre id="payload-preview-box" style="background:#05050a; border:1px solid rgba(0,255,255,0.2); border-radius:4px; padding:10px; font:0.75rem 'Courier New', monospace; color:var(--ink); height:120px; overflow-y:auto; margin:6px 0 0;">Presiona 'Probar con REST' o 'Probar con GraphQL'</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 3: HotChocolate en .NET & EF Core -->
+      <section id="tab-hotchocolate" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>☕</span> HotChocolate en .NET: La Fusión de GraphQL con Entity Framework Core</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            <strong>HotChocolate</strong> es el servidor de GraphQL de alto rendimiento para ASP.NET Core. Su ventaja crítica es el soporte de middlewares sobre <code>IQueryable&lt;T&gt;</code>, traduciendo las peticiones GraphQL directamente a sentencias SQL optimizadas en el motor de base de datos:
+          </p>
+
+          <div class="hotchocolate-grid">
+            <!-- Código C# en HotChocolate -->
+            <div class="code-block-panel">
+              <div style="color:var(--gql-pink); font-weight:700; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+                1. Query Type en C# (HotChocolate)
+              </div>
+              <pre style="margin:0; color:#e7f6ff; overflow-x:auto;"><code>public class Query
+{
+    // Las proyecciones inspeccionan la consulta GraphQL
+    [UseProjection] // Solo proyecta columnas solicitadas
+    [UseFiltering]  // Habilita WHERE dinámico en GraphQL
+    [UseSorting]    // Habilita ORDER BY dinámico
+    public IQueryable&lt;Pedido&gt; GetPedidos([Service] AppDbContext db)
+    {
+        return db.Pedidos; // Retorna IQueryable puro
+    }
+}</code></pre>
+            </div>
+
+            <!-- SQL Generado por EF Core -->
+            <div class="code-block-panel" style="border-color:var(--green);">
+              <div style="color:var(--green); font-weight:700; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+                2. Sentencia SQL Generada en la BD
+              </div>
+              <pre style="margin:0; color:#e7f6ff; overflow-x:auto;"><code>-- ¡Cero columnas innecesarias en el SELECT!
+-- HotChocolate + EF Core proyectan solo lo pedido:
+SELECT 
+    p.Id, 
+    p.Total, 
+    c.Nombre
+FROM Pedidos AS p
+INNER JOIN Clientes AS c ON p.ClienteId = c.Id
+ORDER BY p.Total DESC</code></pre>
+            </div>
+          </div>
+
+          <!-- Matriz de Middlewares de HotChocolate -->
+          <div class="data-table-wrap" style="margin-top:20px;">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Atributo HotChocolate</th>
+                  <th>Equivalente LINQ / SQL</th>
+                  <th>Beneficio Arquitectónico</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[UseProjection]</code></td>
+                  <td><code>.Select(p => new { ... })</code></td>
+                  <td>Evita traer todas las columnas de la tabla; SQL solo lee del disco las columnas exactas solicitadas.</td>
+                </tr>
+                <tr>
+                  <td><code>[UseFiltering]</code></td>
+                  <td><code>.Where(...)</code></td>
+                  <td>Permite al frontend filtrar por cualquier propiedad sin escribir endpoints REST dedicados (ej. <code>where: { total: { gt: 1000 } }</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>[UseSorting]</code></td>
+                  <td><code>.OrderBy(...)</code></td>
+                  <td>Ordenamiento dinámico ascendente o descendente en tiempo de compilación SQL.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 4: Queries, Mutations & Schemas -->
+      <section id="tab-queries-mutations" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>⚡</span> Queries vs Mutations: Anatomía y Equivalencias REST</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            En GraphQL no existen verbos HTTP como <code>GET</code>, <code>POST</code>, <code>PUT</code> o <code>DELETE</code>. Toda operación se envía por HTTP POST al endpoint único <code>/graphql</code> clasificándose en dos operaciones principales:
+          </p>
+
+          <div class="hotchocolate-grid">
+            <div class="code-block-panel">
+              <div style="color:var(--cyan); font-weight:700; margin-bottom:8px;">
+                🔍 QUERY (Operación de Lectura · Equivalente a GET)
+              </div>
+              <pre style="margin:0; color:#e7f6ff; overflow-x:auto;"><code>query ObtenerFactura($id: ID!) {
+  pedido(id: $id) {
+    id
+    fecha
+    total
+    cliente {
+      nombre
+      rfc
+    }
+  }
+}</code></pre>
+              <div style="margin-top:10px; font:0.78rem Verdana, sans-serif; color:var(--muted);">
+                Idempotente y sin efectos secundarios. Puede ser paralelizado de forma segura por el motor.
+              </div>
+            </div>
+
+            <div class="code-block-panel" style="border-color:var(--gql-coral);">
+              <div style="color:var(--gql-coral); font-weight:700; margin-bottom:8px;">
+                ✏️ MUTATION (Operación con Efectos Secundarios · POST/PUT/DELETE)
+              </div>
+              <pre style="margin:0; color:#e7f6ff; overflow-x:auto;"><code>mutation RegistrarPago($input: PagoInput!) {
+  aplicarPago(input: $input) {
+    pagoId
+    estado
+    saldoRestante
+  }
+}</code></pre>
+              <div style="margin-top:10px; font:0.78rem Verdana, sans-serif; color:var(--muted);">
+                Ejecución estrictamente secuencial para garantizar consistencia transaccional del negocio.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 5: Laboratorio de Diagnóstico (Quiz) -->
+      <section id="tab-quiz" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🎯</span> Laboratorio de Evaluación: GraphQL & HotChocolate</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            Comprueba tu dominio sobre Over-fetching, Under-fetching, Queries, Mutations y HotChocolate.
+          </p>
+
+          <div id="quiz-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--gql-cyan);">Pregunta 1 de 5</span>
+              <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
+            </div>
+
+            <h3 id="quiz-question-text" style="font-size:1.15rem; color:#fff; margin-bottom:14px;">Cargando pregunta...</h3>
+
+            <div id="quiz-options-container" class="quiz-options"></div>
+
+            <div id="quiz-feedback" style="display:none; padding:14px; border-radius:6px; font:0.86rem/1.5 Verdana, sans-serif; margin-top:14px;"></div>
+
+            <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 18px; border-radius:6px; font:700 0.85rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Barra de Navegación Dinámica -->
+      <nav class="module-nav-bar"></nav>
+
+      <footer class="global-footer">
+        Material Didáctico e Interactivo · Módulo 21: GraphQL, Over/Under-fetching & HotChocolate · MaterialVisual
+      </footer>
+    </main>
+
+    <script>
+      // --- Lógica del Simulador REST vs GraphQL ---
+      function updateSimulation() {
+        // Solo refresca visual si ya se ejecutó una simulación
+      }
+
+      window.runSimulationTest = function (mode) {
+        const modeLabel = document.getElementById('metric-mode-label');
+        const roundtrips = document.getElementById('metric-roundtrips');
+        const payloadSize = document.getElementById('metric-payload-size');
+        const latency = document.getElementById('metric-latency');
+        const efficiency = document.getElementById('metric-efficiency');
+        const preview = document.getElementById('payload-preview-box');
+
+        const totalChecked = document.getElementById('chk-order-total').checked;
+        const clientNameChecked = document.getElementById('chk-client-name').checked;
+        const clientEmailChecked = document.getElementById('chk-client-email').checked;
+        const itemsChecked = document.getElementById('chk-items-count').checked;
+
+        if (mode === 'rest') {
+          modeLabel.innerText = 'REST Tradicional (Endpoints Fijos)';
+          modeLabel.style.color = 'var(--coral)';
+
+          // REST sufre Under-fetching (necesita llamar /pedidos, /clientes y /articulos)
+          let calls = 1;
+          if (clientNameChecked || clientEmailChecked) calls++;
+          if (itemsChecked) calls++;
+
+          roundtrips.innerText = `${calls} peticiones HTTP en cascada (Under-fetching)`;
+          roundtrips.style.color = 'var(--coral)';
+
+          const size = 1200 + calls * 1150;
+          payloadSize.innerText = `${size} Bytes (Over-fetching: incluye 35 campos no solicitados)`;
+          payloadSize.style.color = 'var(--coral)';
+
+          latency.innerText = `~${calls * 140} ms (Latencia acumulada)`;
+          latency.style.color = 'var(--coral)';
+
+          efficiency.innerText = '6.4% útil (93.6% de datos descartados)';
+          efficiency.style.color = 'var(--coral)';
+
+          preview.innerText = JSON.stringify({
+            pedido: { id: 10452, fecha: "2026-11-04", total: 8450.50, subtotal: 7280.00, iva: 1170.50, descuento: 0, metodo_pago: "Tarjeta", estatus: "PAGADO", direccion_entrega: "Calle 10...", codigo_postal: "01000", notas: "Dejar en caseta...", peso_total_kg: 4.5 },
+            cliente: { id: 501, rfc: "XAXX010101000", nombre: "Carlos Morales", telefono_fijo: "555-0000", celular: "555-1234", email: "carlos@example.com", fecha_registro: "2021-03-15", limite_credito: 50000, activo: true }
+          }, null, 2);
+
+        } else {
+          modeLabel.innerText = 'GraphQL + HotChocolate (Consulta Declarativa)';
+          modeLabel.style.color = 'var(--green)';
+
+          roundtrips.innerText = '1 sola petición HTTP (0% Under-fetching)';
+          roundtrips.style.color = 'var(--green)';
+
+          // Construir payload exacto
+          const result = { id: 10452 };
+          let usefulBytes = 25;
+          if (totalChecked) { result.total = 8450.50; usefulBytes += 20; }
+          if (clientNameChecked || clientEmailChecked) {
+            result.cliente = {};
+            if (clientNameChecked) { result.cliente.nombre = "Carlos Morales"; usefulBytes += 30; }
+            if (clientEmailChecked) { result.cliente.email = "carlos@example.com"; usefulBytes += 35; }
+          }
+          if (itemsChecked) { result.totalArticulos = 3; usefulBytes += 22; }
+
+          payloadSize.innerText = `${usefulBytes + 35} Bytes (-96% Reducción de ancho de banda)`;
+          payloadSize.style.color = 'var(--green)';
+
+          latency.innerText = '~110 ms (1 solo round-trip)';
+          latency.style.color = 'var(--green)';
+
+          efficiency.innerText = '100% útil (0% Over-fetching)';
+          efficiency.style.color = 'var(--green)';
+
+          preview.innerText = JSON.stringify({ data: { pedido: result } }, null, 2);
+        }
+      };
+
+      runSimulationTest('rest');
+
+      // --- Quiz Formativo ---
+      const quizQuestions = [
+        {
+          q: "¿En qué consiste exactamente el problema de Over-fetching en una API REST tradicional?",
+          options: [
+            "El endpoint retorna muchos más campos y datos de los que el cliente o pantalla necesita.",
+            "El servidor se queda sin memoria RAM por recibir demasiadas peticiones por segundo.",
+            "El cliente se ve obligado a realizar múltiples peticiones secuenciales para armar una vista.",
+            "Las bases de datos relacionales bloquean las tablas en modo exclusivo."
+          ],
+          correct: 0,
+          feedback: "¡Correcto! Over-fetching significa descargar información sobrante innecesaria, desperdiciando ancho de banda y batería en dispositivos móviles."
+        },
+        {
+          q: "¿Cómo soluciona GraphQL el problema de Under-fetching (N+1 peticiones de red en cascada)?",
+          options: [
+            "Permite solicitar recursos anidados y relacionados en una sola consulta declarativa en un único viaje de red.",
+            "Obliga a que todas las tablas de la base de datos se desnormalicen en una sola.",
+            "Descarga una copia completa de la base de datos en el LocalStorage del navegador.",
+            "Aplica compresión gzip obligatoria en todos los archivos HTML."
+          ],
+          correct: 0,
+          feedback: "¡Exacto! El cliente puede anidar en el query al pedido, su cliente y sus artículos, resolviéndolos en un solo round-trip HTTP."
+        },
+        {
+          q: "En el ecosistema .NET, ¿qué hace el atributo [UseProjection] de HotChocolate sobre un método que retorna IQueryable?",
+          options: [
+            "Traduce los campos pedidos en GraphQL a una proyección .Select() en SQL, trayendo de la BD solo esas columnas.",
+            "Convierte la base de datos relacional a MongoDB automáticamente.",
+            "Crea una copia de seguridad en memoria caché Redis.",
+            "Bloquea las mutaciones concurrentes en Entity Framework Core."
+          ],
+          correct: 0,
+          feedback: "¡Muy bien! [UseProjection] inspecciona el árbol de selección de GraphQL y lo convierte en una expresión SELECT de SQL con solo las columnas requeridas."
+        },
+        {
+          q: "¿Cuál es la diferencia semántica fundamental entre una Query y una Mutation en GraphQL?",
+          options: [
+            "Query es solo lectura (idempotente sin efectos secundarios); Mutation realiza operaciones con efectos secundarios (escritura).",
+            "Query solo se puede ejecutar en servidores Linux y Mutation en Windows.",
+            "Query usa protocolo UDP y Mutation usa TCP.",
+            "Son sinónimos idénticos y solo cambia el nombre por convención."
+          ],
+          correct: 0,
+          feedback: "¡Correcto! Query es la operación de consulta (análogo a GET), mientras que Mutation modifica estado (análogo a POST, PUT, DELETE) y se ejecuta secuencialmente."
+        },
+        {
+          q: "¿A qué endpoint y método HTTP se envían típicamente las consultas y mutaciones en GraphQL?",
+          options: [
+            "A un único endpoint (comúnmente /graphql) mediante peticiones HTTP POST.",
+            "A una URL distinta por cada entidad mediante métodos GET, PUT y DELETE separados.",
+            "A través de puertos raw de sockets TCP sin protocolo HTTP.",
+            "Exclusivamente mediante peticiones HTTP HEAD."
+          ],
+          correct: 0,
+          feedback: "¡Excelente! A diferencia de REST que dispersa recursos en múltiples URLs, GraphQL centraliza el esquema en un único endpoint (ej. /graphql) recibiendo la consulta en el body de un POST."
+        }
+      ];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+
+      function renderQuizQuestion() {
+        const q = quizQuestions[currentQuizIdx];
+        document.getElementById('quiz-question-number').innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        document.getElementById('quiz-question-text').innerText = q.q;
+
+        const optsContainer = document.getElementById('quiz-options-container');
+        optsContainer.innerHTML = '';
+        const feedbackBox = document.getElementById('quiz-feedback');
+        feedbackBox.style.display = 'none';
+        document.getElementById('btn-next-quiz').style.display = 'none';
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerText = opt;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      }
+
+      function selectQuizOption(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('.quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        feedbackBox.style.display = 'block';
+
+        if (idx === q.correct) {
+          quizScore++;
+          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[idx].style.borderColor = 'var(--gql-green)';
+          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+          feedbackBox.style.border = '1px solid var(--gql-green)';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerText = q.feedback;
+        } else {
+          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+          btns[idx].style.borderColor = 'var(--gql-coral)';
+          btns[q.correct].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[q.correct].style.borderColor = 'var(--gql-green)';
+          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+          feedbackBox.style.border = '1px solid var(--gql-coral)';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerText = `Incorrecto. ${q.feedback}`;
+        }
+
+        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        document.getElementById('btn-next-quiz').style.display = 'inline-block';
+      }
+
+      function nextQuizQuestion() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      }
+
+      function showQuizSummary() {
+        const container = document.getElementById('quiz-container');
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gql-pink); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
+              ${pct >= 80 ? '¡Excelente dominio de GraphQL, HotChocolate y optimización de red!' : 'Buen intento. Repasa la pestaña del Laboratorio REST vs GraphQL y vuelve a intentarlo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      }
+
+      function restartQuiz() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        location.reload();
+      }
+
+      renderQuizQuestion();
+
+      // Pestañas
+      window.switchTab = function (tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+        if (activeBtn) activeBtn.classList.add('active');
+      };
+    </script>
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>

@@ -9,7 +9,7 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 ## ⚡ Herramienta Transversal de Repaso Activo
 
 - **[🗂️ Arena Flashcards Anki & Minijuego Cyber-Survival](modulos/anki-arena.html)**:
-  - Repaso de los 17 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
+  - Repaso de los 22 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
   - Combos por racha y recuperación de +1 Vida cada 5 aciertos consecutivos (máx. 3 vidas).
   - Modalidad de respuesta dual: **Autoevaluación Honesta** (por defecto) u **Opción Múltiple (A, B, C, D)** con post-mortem explicativo.
   - Generación procedural de audio sintetizado Web Audio API y diseño 100% Mobile-First con flip 3D.
@@ -35,6 +35,8 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 ### 🌐 3. Arquitectura de Software y Protocolos Web
 - **[11 · Métodos HTTP y Códigos de Estado Estándar](modulos/11-metodos-http-y-codigos-de-estado.html)**: Semántica RFC 9110, métodos seguros e idempotentes (GET, POST, PUT, DELETE, PATCH) y bloques 1xx-5xx.
 - **[12 · Modelo de Madurez de Richardson](modulos/12-modelo-madurez-richardson-rest.html)**: Los 4 niveles hacia la gloria de REST (POX, URIs, Verbos HTTP y HATEOAS).
+- **[20 · gRPC & Patrones de Streaming](modulos/20-grpc-patrones-comunicacion-streaming.html)**: Protocolo de alto rendimiento basado en HTTP/2 y Protocol Buffers (Protobuf). Simulador interactivo de los 4 canales (Unary, Server Streaming, Client Streaming, Bidirectional Streaming) y comparativa de carga útil en bytes frente a JSON.
+- **[21 · GraphQL & HotChocolate: Over/Under-fetching](modulos/21-graphql-over-under-fetching-hotchocolate.html)**: Paradigma declarativo que erradica el Over-fetching y Under-fetching de las APIs REST. Queries, Mutations, integración con HotChocolate en .NET y proyección SQL directa con EF Core (`[UseProjection]`).
 
 ### 🎨 4. Paradigmas de Software y Experiencia de Usuario
 - **[13 · Programación Orientada a Objetos (POO)](modulos/13-programacion-orientada-objetos.html)**: Abstracción, Encapsulamiento, Herencia, Polimorfismo y despacho dinámico en tiempo de ejecución.
@@ -45,9 +47,10 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 - **[16 · El Triángulo de Hierro: Triple Restricción](modulos/16-triangulo-de-hierro-gestion-proyectos.html)**: Balance dinámico entre Alcance, Tiempo y Costo/Recursos con impacto en Calidad.
 - **[17 · EDT / WBS: Descomposición del Trabajo](modulos/17-edt-wbs-descomposicion-trabajo.html)**: Estructura jerárquica de entregables, Regla del 100%, código de numeración decimal y diccionario WBS (Marion E. Haynes & PMBOK).
 
-### ⚙️ 6. Arquitectura Backend, C# 12 & Entity Framework Core
+### ⚙️ 6. Arquitectura Backend, C# 12 & Seguridad
 - **[18 · Inyección de Dependencias & C# 12](modulos/18-inyeccion-dependencias-constructores-primarios-csharp.html)**: Contenedor IoC en .NET, Transient vs Scoped vs Singleton, prevención de dependencias cautivas (*Captive Dependencies*) y Constructores Primarios en C# 12.
 - **[19 · EF Core: Concurrencia & Optimización](modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html)**: Concurrencia en `DbContext` y paralelización limpia con `Task.WhenAll` e `IDbContextFactory`, optimización de memoria con `.AsNoTracking()` vs `.AsNoTrackingWithIdentityResolution()` y rendimiento de runtime con **Native AOT** y JSON Source Generators vs JIT.
+- **[22 · JWT: Tokens & Criptografía](modulos/22-jwt-autenticacion-tokens-seguridad.html)**: Estándar RFC 7519 sin estado (Stateless). Anatomía de Header, Payload y Signature, diferenciación crucial entre firma digital y cifrado (JWS vs JWE), mitigación de XSS/CSRF con cookies `HttpOnly` y ciclo de vida seguro de Access Tokens y Refresh Tokens.
 
 ---
 
