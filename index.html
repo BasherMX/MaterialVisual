@@ -311,6 +311,36 @@
         color: #000;
       }
 
+      .btn-launch-exam {
+        background: linear-gradient(135deg, var(--gold), var(--coral));
+        color: #ffffff;
+        font: 700 0.92rem "Courier New", monospace;
+        padding: 14px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 48px;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.35);
+        transition: all 0.25s ease;
+        white-space: nowrap;
+      }
+      .btn-launch-exam:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 0 28px rgba(255, 215, 0, 0.6);
+        background: linear-gradient(135deg, var(--green), var(--gold));
+        color: #000;
+      }
+
+      .transversal-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
       /* Responsive Mobile-First para Portal Principal */
       @media (max-width: 768px) {
         .page {
@@ -322,7 +352,7 @@
           align-items: stretch;
           padding: 18px 16px;
         }
-        .btn-launch-arena {
+        .btn-launch-arena, .btn-launch-exam {
           width: 100%;
         }
         .modules-grid {
@@ -371,27 +401,52 @@
         </p>
       </header>
 
-      <!-- Banner Hero: Arena Flashcards Anki & Cyber-Survival (Transversal) -->
-      <section class="anki-hero-banner" aria-label="Arena Flashcards Anki">
-        <div class="anki-hero-content">
-          <span class="anki-hero-badge">⚡ HERRAMIENTA TRANSVERSAL DE REPASO ACTIVO</span>
-          <h2 class="anki-hero-title">🗂️ Arena Flashcards Anki & Cyber-Survival</h2>
-          <p class="anki-hero-desc">
-            Pon a prueba tu retención y dominio conceptual en los <strong>26 temas</strong> de la plataforma. Juega en modo arcade de <strong>3 vidas (❤️❤️❤️)</strong> con combos y recuperación por racha, o repasa a tu propio ritmo con el método clásico <strong>Anki</strong> de repetición espaciada.
-          </p>
-          <div class="anki-hero-tags">
-            <span>❤️ 3 Vidas & Combos</span>
-            <span>💡 Autoevaluación o Opción Múltiple</span>
-            <span>🎧 Audio Sintetizado Web</span>
-            <span>📱 100% Mobile-First</span>
+      <!-- Herramientas Transversales de Estudio & Evaluación -->
+      <div class="transversal-grid">
+        <!-- Banner Hero 1: Arena Flashcards Anki & Cyber-Survival -->
+        <section class="anki-hero-banner" aria-label="Arena Flashcards Anki">
+          <div class="anki-hero-content">
+            <span class="anki-hero-badge">⚡ HERRAMIENTA TRANSVERSAL DE REPASO ACTIVO</span>
+            <h2 class="anki-hero-title">🗂️ Arena Flashcards Anki & Cyber-Survival</h2>
+            <p class="anki-hero-desc">
+              Pon a prueba tu retención y dominio conceptual en los <strong>29 temas</strong> de la plataforma. Juega en modo arcade de <strong>3 vidas (❤️❤️❤️)</strong> con combos y recuperación por racha, o repasa con el método clásico <strong>Anki</strong> de repetición espaciada.
+            </p>
+            <div class="anki-hero-tags">
+              <span>❤️ 3 Vidas & Combos</span>
+              <span>💡 Autoevaluación o Opción Múltiple</span>
+              <span>🎧 Audio Sintetizado Web</span>
+              <span>📱 100% Mobile-First</span>
+            </div>
           </div>
-        </div>
-        <div class="anki-hero-action">
-          <a href="modulos/anki-arena.html" class="btn-launch-arena">
-            Entrar a la Arena Flashcards ➔
-          </a>
-        </div>
-      </section>
+          <div class="anki-hero-action">
+            <a href="modulos/anki-arena.html" class="btn-launch-arena">
+              Entrar a la Arena Flashcards ➔
+            </a>
+          </div>
+        </section>
+
+        <!-- Banner Hero 2: Simulador de Exámenes SPC & CENEVAL -->
+        <section class="anki-hero-banner" style="border-color:rgba(255,215,0,0.35); box-shadow:0 0 24px rgba(255,215,0,0.12);" aria-label="Simulador de Exámenes SPC">
+          <div class="anki-hero-content">
+            <span class="anki-hero-badge" style="color:var(--gold); border-color:rgba(255,215,0,0.4); background:rgba(255,215,0,0.1);">📝 BANCO Y SIMULADOR DE EXÁMENES SPC</span>
+            <h2 class="anki-hero-title" style="color:#fff;">🎯 Simulador de Exámenes SPC & CENEVAL</h2>
+            <p class="anki-hero-desc">
+              Evaluación técnica formal cronometrada con <strong>Examen Integrador de 30 reactivos</strong>, temporizador regresivo, cuadrícula de salto rápido, marcado con bandera 🚩, dictamen de competencia (umbral 80 pts) y gestor para <strong>crear tus propios cuestionarios</strong>.
+            </p>
+            <div class="anki-hero-tags">
+              <span style="color:var(--gold); border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.08);">⏱️ Temporizador & 30 Reactivos</span>
+              <span style="color:var(--gold); border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.08);">📊 Dictamen SPC & Feedback</span>
+              <span style="color:var(--gold); border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.08);">🔀 Opciones Barajadas</span>
+              <span style="color:var(--gold); border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.08);">💾 Guarda tus Exámenes (JSON/MD)</span>
+            </div>
+          </div>
+          <div class="anki-hero-action">
+            <a href="modulos/simulador-examenes.html" class="btn-launch-exam">
+              Abrir Simulador de Exámenes ➔
+            </a>
+          </div>
+        </section>
+      </div>
 
       <!-- Barra de Filtros y Búsqueda Reutilizable -->
       <section class="controls-bar" aria-label="Filtros y Búsqueda de Módulos">
@@ -431,6 +486,7 @@
         <p style="color:#9aa8c2;">Este portal requiere JavaScript para los filtros en vivo. Puedes acceder directamente a cualquier módulo a continuación:</p>
         <ul style="color:#e7f6ff; line-height:1.8;">
         <li><a href="modulos/anki-arena.html" style="color:var(--cyan); font-weight:700;">⚡ 🗂️ Arena Flashcards Anki & Cyber-Survival (Herramienta Transversal de Repaso)</a></li>
+        <li><a href="modulos/simulador-examenes.html" style="color:var(--gold); font-weight:700;">📝 🎯 Simulador de Exámenes SPC & CENEVAL (Evaluaciones Cronometradas y Creador)</a></li>
         <li><a href="modulos/01-complejidades-computacionales.html">01 · Análisis Algorítmico: Complejidad Computacional: Big O</a></li>
         <li><a href="modulos/02-algoritmos-greedy-divide-venceras.html">02 · Paradigmas Algorítmicos: Greedy vs Divide & Conquer</a></li>
         <li><a href="modulos/03-arboles-avl-autobalanceo.html">03 · Estructura Dinámica: Árboles AVL: Equilibrio en Movimiento</a></li>
@@ -558,17 +614,19 @@
             const featuresHtml = m.features.map(f => `<li>${f}</li>`).join('');
 
             card.innerHTML = `
-              <button
-                class="btn-card-check ${isViewed ? 'is-viewed' : ''}"
-                data-mod-id="${m.id}"
-                title="${isViewed ? 'Módulo completado. Clic para marcar como pendiente' : 'Marcar módulo como visto'}"
-                aria-label="Alternar visto módulo ${m.title}"
-              >
-                <span>${isViewed ? '✓' : '○'}</span>
-                <span>${isViewed ? 'Visto' : 'Marcar'}</span>
-              </button>
               <div>
-                <span class="badge badge-theme">${m.badge}</span>
+                <div class="card-header-row">
+                  <span class="badge badge-theme">${m.badge}</span>
+                  <button
+                    class="btn-card-check ${isViewed ? 'is-viewed' : ''}"
+                    data-mod-id="${m.id}"
+                    title="${isViewed ? 'Módulo completado. Clic para marcar como pendiente' : 'Marcar módulo como visto'}"
+                    aria-label="Alternar visto módulo ${m.title}"
+                  >
+                    <span>${isViewed ? '✓' : '○'}</span>
+                    <span>${isViewed ? 'Visto' : 'Marcar'}</span>
+                  </button>
+                </div>
                 <h2 class="module-title">${m.title}</h2>
                 <p class="module-desc">${m.desc}</p>
                 <ul class="feature-list">

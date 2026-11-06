@@ -6,13 +6,20 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 
 ---
 
-## ⚡ Herramienta Transversal de Repaso Activo
+## ⚡ Herramientas Transversales de Estudio & Evaluación
 
 - **[🗂️ Arena Flashcards Anki & Minijuego Cyber-Survival](modulos/anki-arena.html)**:
   - Repaso de los 29 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
   - Combos por racha y recuperación de +1 Vida cada 5 aciertos consecutivos (máx. 3 vidas).
   - Modalidad de respuesta dual: **Autoevaluación Honesta** (por defecto) u **Opción Múltiple (A, B, C, D)** con post-mortem explicativo.
   - Generación procedural de audio sintetizado Web Audio API y diseño 100% Mobile-First con flip 3D.
+
+- **[📝 Simulador de Exámenes SPC & CENEVAL](modulos/simulador-examenes.html)**:
+  - **Examen Integrador Nacional de 30 Reactivos** de alta exigencia técnica conforme al estándar formal de oposición del Servicio Profesional de Carrera (INEGI).
+  - **Motor de Evaluación Avanzado:** Temporizador regresivo configurable con alertas de tiempo, opciones barajadas estocásticamente en cada sesión rastreando la clave correcta, cuadrícula táctil de reactivos (1..30) y marcado de preguntas para revisión (🚩).
+  - **Prevención de Omisiones:** Modal interactivo de advertencia ante reactivos sin contestar al intentar finalizar.
+  - **Auditoría Post-Mortem Detallada:** Calificación 0-100, dictamen técnico formal (umbral mínimo 80 pts) y desglose pregunta por pregunta con tu respuesta vs la correcta, justificación formal y referencias bibliográficas canónicas.
+  - **Gestor & Creador de Cuestionarios:** Importación y exportación de exámenes personalizados mediante formato JSON canónico (`shared/plantilla-examen.json`) o formato rápido Markdown/Texto, con persistencia automática en `localStorage`.
 
 ---
 

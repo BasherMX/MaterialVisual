@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plantilla Canónica de Examen para MaterialVisual",
+  "description": "Formato JSON estándar para importar y crear exámenes personalizados en el Simulador de Exámenes SPC.",
+  "id": "mi-examen-personalizado-01",
+  "title": "Evaluación Técnica Especializada: Concurrencia y Arquitectura",
+  "category": "Arquitectura & Backend",
+  "description": "Cuestionario de evaluación técnica con 10 reactivos de opción múltiple conforme al estándar SPC e INEGI.",
+  "timeLimitMinutes": 45,
+  "passingScore": 80,
+  "immediateFeedback": false,
+  "shuffleOptions": true,
+  "shuffleQuestions": false,
+  "author": "Subdirección de Desarrollo de Sistemas",
+  "createdAt": "2026-11-06",
+  "questions": [
+    {
+      "id": "q1",
+      "number": 1,
+      "text": "Al evaluar la operación de incremento 'x++' en C# ejecutada concurrentemente por múltiples hilos sin sincronización, ¿cuál es la razón arquitectónica a nivel de hardware/CPU por la que se producen pérdidas de actualizaciones (Lost Updates)?",
+      "options": [
+        "Porque la operación 'x++' requiere tres instrucciones de CPU separadas (cargar en registro, incrementar y almacenar en RAM); la clase 'Interlocked.Increment' realiza la modificación atómica a nivel de hardware con un prefijo bus lock.",
+        "Porque el compilador de C# convierte la variable 'x' en un tipo de referencia temporal que queda bloqueado por el recolector de basura.",
+        "Porque la memoria caché L1 del procesador desactiva automáticamente las operaciones en enteros de 32 bits.",
+        "Porque el sistema operativo suspende los hilos que no utilizan métodos asíncronos con Task.Run."
+      ],
+      "correct": 0,
+      "feedback": "La operación 'x++' es un ciclo Read-Modify-Write (RMW) compuesto por tres ciclos de instrucción de máquina: 1) Cargar el valor de RAM al registro de CPU, 2) Incrementar el registro, 3) Escribir de vuelta a RAM. Si dos hilos leen simultáneamente el mismo valor inicial, uno sobrescribirá al otro. 'Interlocked.Increment' emite la instrucción de microcódigo atómica 'LOCK XADD' a nivel hardware impidiendo colisiones.",
+      "reference": "CLR via C# (Jeffrey Richter) & SWEBOK v4"
+    },
+    {
+      "id": "q2",
+      "number": 2,
+      "text": "¿En qué estructura de código IL/C# transforma internamente el compilador Roslyn una declaración 'lock (objSync)' para asegurar la liberación del monitor incluso ante excepciones críticas?",
+      "options": [
+        "Un bloque 'try-finally' donde invoca 'Monitor.Enter(objSync, ref lockTaken)' al inicio y garantiza la invocación a 'Monitor.Exit(objSync)' dentro de la cláusula 'finally'.",
+        "Un bucle de espera activa ('spin-lock') gestionado por TaskFactory que sondea la dirección de memoria hasta que el flag cambie.",
+        "Una invocación a un Mutex de Kernel que bloquea el hilo nativo de Windows mediante una llamada al sistema.",
+        "Una instrucción 'goto' que reintenta la sección crítica mientras otra tarea se encuentre ejecutando el bloque."
+      ],
+      "correct": 0,
+      "feedback": "El bloque 'lock' es azúcar sintáctico formal del compilador de C#. Roslyn emite un bloque 'try-finally' llamando a 'Monitor.Enter' con una bandera booleana 'lockTaken', garantizando que en caso de cualquier excepción (o interrupción del hilo) 'Monitor.Exit' sea invocado en el 'finally', evitando deadlocks perpetuos.",
+      "reference": "C# Language Specification & Richter"
+    }
+  ]
+}

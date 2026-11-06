@@ -147,6 +147,7 @@
           ${isCompleted(currentModule.id) ? '✓ Visto' : 'Marcar Visto ○'}
         </button>
         <a href="anki-arena.html?modulo=${currentModule.id}" class="btn-nav-standard" style="background:rgba(121,40,202,0.25); border-color:var(--purple); color:#e7f6ff;" title="Entrenar este tema en la Arena Flashcards">🗂️ Arena Flashcards</a>
+        <a href="simulador-examenes.html" class="btn-nav-standard" style="background:rgba(255,215,0,0.18); border-color:var(--gold); color:#ffd700;" title="Simulador de Exámenes SPC / CENEVAL">📝 Simulador Exámenes</a>
       </div>
       <div class="nav-right">${nextHtml}</div>
     `;
