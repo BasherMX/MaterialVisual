@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executable UML (xUML) según Ian Sommerville · MaterialVisual</title>
+  <link rel="stylesheet" href="../shared/theme.css" />
+  <style>
+    :root {
+      --accent: var(--accent-purple);
+      --accent-glow: rgba(187, 134, 252, 0.25);
+      --xuml-cyan: #00ffff;
+      --xuml-green: #00ffaa;
+      --xuml-gold: #ffd700;
+      --xuml-coral: #ff3366;
+    }
+
+    .triad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 18px 0 24px;
+    }
+
+    .triad-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .triad-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .triad-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+
+    .triad-domain::before { background: var(--xuml-cyan); }
+    .triad-class::before { background: var(--xuml-green); }
+    .triad-state::before { background: var(--xuml-gold); }
+
+    .formula-banner-xuml {
+      background: linear-gradient(135deg, rgba(187, 134, 252, 0.12), rgba(0, 240, 255, 0.08));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 18px 24px;
+      margin: 20px 0;
+      text-align: center;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .state-machine-box {
+      background: #060914;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin: 16px 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .fsm-state-node {
+      padding: 10px 18px;
+      border-radius: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    .fsm-state-node.active-state {
+      border-color: var(--xuml-green);
+      background: rgba(0, 255, 170, 0.2);
+      color: #fff;
+      box-shadow: 0 0 14px rgba(0, 255, 170, 0.4);
+      transform: scale(1.06);
+    }
+
+    .compiler-view-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .code-console {
+      background: #05070e;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: #a5d6ff;
+      max-height: 380px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    @media (max-width: 768px) {
+      .triad-grid {
+        grid-template-columns: 1fr;
+      }
+      .compiler-view-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="theme-purple">
+  <div class="top-nav-bar"></div>
+
+  <header class="module-header">
+    <div class="module-badge">Ingenier&iacute;a de Software &middot; Ian Sommerville (Cap. 5)</div>
+    <h1 class="module-title">Executable UML (xUML) &amp; Compilaci&oacute;n MDA</h1>
+    <p class="module-desc">
+      El subconjunto formal estricto del Lenguaje Unificado de Modelado capaz de compilarse directamente a c&oacute;digo ejecutable.
+      La regla mnemot&eacute;cnica can&oacute;nica: <strong>Dominio + Clases + Estados = C&oacute;digo Ejecutable</strong> y la exclusi&oacute;n de diagramas no deterministas.
+    </p>
+  </header>
+
+  <nav class="module-tabs" role="tablist">
+    <button class="tab-btn active" data-tab="tab-theory" role="tab">1. Doctrina Sommerville (Cap. 5)</button>
+    <button class="tab-btn" data-tab="tab-triad" role="tab">2. La Tr&iacute;ada Formal xUML</button>
+    <button class="tab-btn" data-tab="tab-exclusions" role="tab">3. &iquest;Por qu&eacute; se Excluyen Secuencia y Casos de Uso?</button>
+    <button class="tab-btn" data-tab="tab-compiler-sim" role="tab">4. Compilador MDA Interactivo</button>
+    <button class="tab-btn" data-tab="tab-quiz" role="tab">5. Laboratorio Evaluativo SPC</button>
+  </nav>
+
+  <main class="module-content">
+    <!-- TAB 1: TEORÍA -->
+    <section id="tab-theory" class="tab-panel active" role="tabpanel">
+      <h2>1. El Paradigma de Executable UML (xUML)</h2>
+      <p>
+        En el Cap&iacute;tulo 5 de <em>Ingenier&iacute;a de Software</em>, <strong>Ian Sommerville</strong> aborda un problema cr&iacute;tico de la pr&aacute;ctica profesional: 
+        los modelos UML tradicionales suelen redactarse como diagramas informales de documentaci&oacute;n que terminan desactualizados y arrumbados en cajones (el llamado <em>"shelfware"</em>).
+      </p>
+
+      <div class="formula-banner-xuml">
+        <h3 style="margin-top:0; color:var(--accent);">La F&oacute;rmula de Ian Sommerville para C&oacute;digo Ejecutable</h3>
+        <p style="font-size:1.35rem; font-family:var(--font-mono); margin:12px 0; color:#fff;">
+          <strong>MODELO DE DOMINIO + MODELO DE CLASES + M&Aacute;QUINAS DE ESTADOS = C&Oacute;DIGO EJECUTABLE</strong>
+        </p>
+        <p style="color:var(--text-secondary); font-size:0.86rem; margin-bottom:0;">
+          * Si falta cualquiera de estos tres elementos, el modelo no posee la sem&aacute;ntica matem&aacute;tica suficiente para ser traducido a binarios o c&oacute;digo fuente por un compilador MDA.
+        </p>
+      </div>
+
+      <div class="card-grid">
+        <div class="concept-card">
+          <h3>Arquitectura Dirigida por Modelos (MDA)</h3>
+          <p>
+            Executable UML (xUML) es la implementaci&oacute;n t&eacute;cnica can&oacute;nica de <strong>MDA (Model-Driven Architecture)</strong> promovida por el Object Management Group (OMG):
+          </p>
+          <ul>
+            <li><strong>PIM (Platform-Independent Model):</strong> Se dise&ntilde;a la l&oacute;gica de negocio pura en xUML sin atarse a ningún lenguaje ni base de datos.</li>
+            <li><strong>Generador de C&oacute;digo / Motor de Ejecuci&oacute;n:</strong> Un compilador traduce el PIM a un PSM (Platform-Specific Model) en C#, Java o C++ y genera automáticamente los esqueletos, m&aacute;quinas de estados y almacenamiento relacional.</li>
+            <li><strong>Mantenimiento en el Modelo:</strong> Los desarrolladores nunca alteran el c&oacute;digo generado; modifican el modelo visual y vuelven a compilar.</li>
+          </ul>
+        </div>
+
+        <div class="concept-card">
+          <h3>El Subconjunto Estricto vs UML Completo</h3>
+          <p>
+            UML 2.x define m&aacute;s de 14 diagramas distintos (Casos de Uso, Secuencia, Actividad, Componentes, Despliegue, etc.). 
+            Sommerville destaca que <strong>no se puede usar todo UML</strong> para generar c&oacute;digo ejecutable porque:
+          </p>
+          <ul>
+            <li>Muchos diagramas contienen <strong>ambig&uuml;edades sem&aacute;nticas</strong> que el compilador no puede resolver de forma un&iacute;voca.</li>
+            <li>Existen <strong>solapamientos y redundancias</strong> (ej. modelar una interacci&oacute;n en Secuencia y a la vez en M&aacute;quinas de Estados puede generar contradicciones l&oacute;gicas insolubles).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: LA TRÍADA FORMAL -->
+    <section id="tab-triad" class="tab-panel" role="tabpanel">
+      <h2>2. Los Tres Modelos Constitutivos de Executable UML</h2>
+      <p>
+        Para que un motor de compilaci&oacute;n genere un sistema completo y funcional en .NET o Java, Sommerville estipula que 
+        cada modelo de la tr&iacute;ada cumple una responsabilidad matem&aacute;tica &uacute;nica e irremplazable:
+      </p>
+
+      <div class="triad-grid">
+        <!-- 1. Dominio -->
+        <div class="triad-card triad-domain">
+          <span style="font:700 0.7rem 'Courier New', monospace; color:var(--xuml-cyan); text-transform:uppercase;">1. L&iacute;mites &amp; Entidades</span>
+          <h3 style="color:var(--xuml-cyan); margin:6px 0 10px;">Modelos de Dominio</h3>
+          <p style="font-size:0.85rem; line-height:1.5;">
+            Definen las <strong>fronteras del sistema</strong> y establecen las entidades tangibles e intangibles del mundo real con las que el software interact&uacute;a.
+          </p>
+          <ul style="font-size:0.8rem; color:var(--text-secondary); padding-left:18px;">
+            <li>Delimita qu&eacute; aspectos de la realidad est&aacute;n <em>dentro</em> del alcance del software y cu&aacute;les quedan fuera.</li>
+            <li>Define el vocabulario formal ubicuo (Ubiquitous Language) del negocio.</li>
+            <li>Establece los subsistemas o paquetes de dominio aut&oacute;nomos.</li>
+          </ul>
+        </div>
+
+        <!-- 2. Clases -->
+        <div class="triad-card triad-class">
+          <span style="font:700 0.7rem 'Courier New', monospace; color:var(--xuml-green); text-transform:uppercase;">2. Estructura Est&aacute;tica</span>
+          <h3 style="color:var(--xuml-green); margin:6px 0 10px;">Modelos de Clases</h3>
+          <p style="font-size:0.85rem; line-height:1.5;">
+            Definen la <strong>estructura est&aacute;tica</strong> del software: atributos tipados, m&eacute;todos y relaciones estructurales formales.
+          </p>
+          <ul style="font-size:0.8rem; color:var(--text-secondary); padding-left:18px;">
+            <li>Multiplicidades exactas en asociaciones (1, 0..1, 1..*, *).</li>
+            <li>Tipos de datos primitivos e invariantes de encapsulamiento.</li>
+            <li>Permite al compilador generar las clases de C#/Java y los esquemas de bases de datos relacionales.</li>
+          </ul>
+        </div>
+
+        <!-- 3. Estados -->
+        <div class="triad-card triad-state">
+          <span style="font:700 0.7rem 'Courier New', monospace; color:var(--xuml-gold); text-transform:uppercase;">3. Sem&aacute;ntica Din&aacute;mica</span>
+          <h3 style="color:var(--xuml-gold); margin:6px 0 10px;">M&aacute;quinas de Estados</h3>
+          <p style="font-size:0.85rem; line-height:1.5;">
+            Definen el <strong>comportamiento reactivo y el ciclo de vida</strong> completo de cada objeto en respuesta a eventos del entorno.
+          </p>
+          <ul style="font-size:0.8rem; color:var(--text-secondary); padding-left:18px;">
+            <li>Estados formales (ej. <em>Creado</em>, <em>Aprobado</em>, <em>Facturado</em>, <em>Cancelado</em>).</li>
+            <li>Transiciones disparadas por eventos externos con guardas condicionales booleanas.</li>
+            <li>Acciones de entrada/salida: el motor ejecuta el c&oacute;digo real en cada transici&oacute;n.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: EXCLUSIONES -->
+    <section id="tab-exclusions" class="tab-panel" role="tabpanel">
+      <h2>3. &iquest;Por qu&eacute; se Excluyen Diagramas de Secuencia y Casos de Uso?</h2>
+      <p>
+        Este es uno de los <strong>reactivos m&aacute;s frecuentes y tramposos en ex&aacute;menes de oposici&oacute;n del SPC (INEGI)</strong>.
+        Muchos desarrolladores asumen intuitivamente que para compilar c&oacute;digo se necesitan diagramas de flujo o de secuencia, pero Sommerville aclara por qu&eacute; la doctrina formal los excluye:
+      </p>
+
+      <div class="data-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Diagrama UML</th>
+              <th>&iquest;Forma parte de xUML?</th>
+              <th>Justificaci&oacute;n Formal de Ian Sommerville</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Modelo de Dominio</strong></td>
+              <td><span style="color:var(--xuml-green); font-weight:700;">&check; S&Iacute; (Indispensable)</span></td>
+              <td>Fija las entidades can&oacute;nicas y los l&iacute;mites del problema a resolver.</td>
+            </tr>
+            <tr>
+              <td><strong>Modelo de Clases</strong></td>
+              <td><span style="color:var(--xuml-green); font-weight:700;">&check; S&Iacute; (Indispensable)</span></td>
+              <td>Genera la declaraci&oacute;n est&aacute;tica de tipos, miembros y asociaciones de datos.</td>
+            </tr>
+            <tr>
+              <td><strong>M&aacute;quinas de Estados</strong></td>
+              <td><span style="color:var(--xuml-green); font-weight:700;">&check; S&Iacute; (Indispensable)</span></td>
+              <td>Es la &uacute;nica t&eacute;cnica con sem&aacute;ntica formal rigurosa para describir transiciones de ejecuci&oacute;n deterministas.</td>
+            </tr>
+            <tr>
+              <td><strong>Diagramas de Secuencia</strong></td>
+              <td><span style="color:var(--xuml-coral); font-weight:700;">&cross; NO (Excluido de xUML)</span></td>
+              <td>
+                Son excelentes para ilustrar un escenario individual de comunicaci&oacute;n, pero <strong>no cubren todos los caminos posibles</strong>. 
+                Si se usan para compilar junto a m&aacute;quinas de estados, provocan colisiones y redundancia sem&aacute;ntica inmanejable.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Diagramas de Casos de Uso</strong></td>
+              <td><span style="color:var(--xuml-coral); font-weight:700;">&cross; NO (Excluido de xUML)</span></td>
+              <td>
+                Son t&eacute;cnicas de <strong>an&aacute;lisis de requerimientos</strong> a nivel de usuario, escritas en lenguaje natural informal. 
+                Carecen de tipos de datos, l&oacute;gica algor&iacute;tmica y precisi&oacute;n computable.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Diagramas de Actividad</strong></td>
+              <td><span style="color:var(--xuml-coral); font-weight:700;">&cross; NO (Excluido de xUML)</span></td>
+              <td>
+                Su sem&aacute;ntica orientada a flujo procedimental es redundante frente a las acciones embebidas en las transiciones de las M&aacute;quinas de Estados.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout tip">
+        <h4>Regla Mnemot&eacute;cnica de Examen SPC:</h4>
+        <p style="font-size:0.95rem; margin:0;">
+          Recuerda: <strong>"D-C-E"</strong> &rarr; <strong>D</strong>ominio, <strong>C</strong>lases y <strong>E</strong>stados. 
+          Cualquier reactivo que te pregunte qu&eacute; tres modelos integran Executable UML tiene como respuesta correcta exactamente esa combinaci&oacute;n.
+        </p>
+      </div>
+    </section>
+
+    <!-- TAB 4: COMPILADOR SIMULADOR -->
+    <section id="tab-compiler-sim" class="tab-panel" role="tabpanel">
+      <h2>4. Simulador Interactivo: Compilador MDA de xUML a C#</h2>
+      <p>
+        Observa c&oacute;mo un motor de ejecuci&oacute;n de xUML toma la definici&oacute;n del Modelo de Dominio, Clases y la M&aacute;quina de Estados finita 
+        para sintetizar c&oacute;digo C# 12/.NET en producci&oacute;n.
+      </p>
+
+      <div style="background:#090b16; border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:18px; margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <label style="font:700 0.75rem var(--font-mono); color:var(--xuml-cyan);">SELECCIONAR CASO DE DOMINIO:</label>
+            <select id="select-domain-model" style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:#fff; padding:6px 10px; border-radius:4px; font-family:var(--font-mono); margin-left:8px;" onchange="loadXUMLModel()">
+              <option value="order">Gesti&oacute;n de Pedidos (E-Commerce)</option>
+              <option value="dam">Control de Compuerta de Presa Hidr&aacute;ulica</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="compileXUMLToCSharp()">
+            &check; Compilar Modelo xUML &rarr; C#
+          </button>
+        </div>
+
+        <div style="margin-top:16px;">
+          <h4 style="margin:0 0 8px; color:var(--xuml-gold);">M&aacute;quina de Estados en Vivo (Ciclo de Vida del Objeto)</h4>
+          <div id="fsm-container" class="state-machine-box">
+            <!-- Nodos de Estado -->
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+            <button class="btn btn-sm" id="btn-fire-evt1" onclick="fireFSMEvent(1)"></button>
+            <button class="btn btn-sm" id="btn-fire-evt2" onclick="fireFSMEvent(2)"></button>
+            <button class="btn btn-sm" id="btn-fire-evt3" onclick="fireFSMEvent(3)"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="compiler-view-grid">
+        <div>
+          <h4 style="color:var(--xuml-cyan); margin-top:0;">1. Modelo xUML Estructurado (PIM)</h4>
+          <div id="xuml-spec-console" class="code-console"></div>
+        </div>
+        <div>
+          <h4 style="color:var(--xuml-green); margin-top:0;">2. C&oacute;digo C# Generado por Motor MDA (PSM)</h4>
+          <div id="csharp-output-console" class="code-console"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: QUIZ SPC -->
+    <section id="tab-quiz" class="tab-panel" role="tabpanel">
+      <h2>5. Laboratorio Evaluativo SPC &middot; Executable UML</h2>
+      <p>
+        Resuelve estos 4 reactivos de alta complejidad con base en la obra de Ian Sommerville y las gu&iacute;as de evaluaci&oacute;n del Servicio Profesional de Carrera (INEGI).
+      </p>
+
+      <div class="quiz-container" id="xuml-quiz">
+        <!-- Reactivo 1 -->
+        <div class="quiz-card" data-correct="1">
+          <p class="quiz-question">
+            1. De acuerdo con Ian Sommerville (Cap. 5: Modelado del Sistema), &iquest;cu&aacute;les son exactamente los TRES modelos que conforman el subconjunto formal estricto de Executable UML (xUML) para que un dise&ntilde;o pueda compilarse directamente a c&oacute;digo ejecutable?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="xq1" value="0" /> Diagramas de Casos de Uso, Diagramas de Secuencia y Diagramas de Clases.</label>
+            <label class="quiz-option"><input type="radio" name="xq1" value="1" /> Modelos de Dominio, Modelos de Clases y Modelos de Estados (State Machines).</label>
+            <label class="quiz-option"><input type="radio" name="xq1" value="2" /> Diagramas de Actividades, Diagramas de Componentes y Diagramas de Despliegue.</label>
+            <label class="quiz-option"><input type="radio" name="xq1" value="3" /> Diagramas de Flujo de Datos (DFD), Diagramas Entidad-Relaci&oacute;n y Diccionario de Datos.</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            Sommerville estipula la regla can&oacute;nica: <em>Modelos de Dominio</em> (l&iacute;mites y entidades del mundo real) + <em>Modelos de Clases</em> (estructura est&aacute;tica de atributos y asociaciones) + <em>Modelos de Estados</em> (sem&aacute;ntica din&aacute;mica y ciclo de vida de objetos) = <strong>C&oacute;digo ejecutable</strong>.
+          </div>
+        </div>
+
+        <!-- Reactivo 2 -->
+        <div class="quiz-card" data-correct="0">
+          <p class="quiz-question">
+            2. &iquest;Por qu&eacute; los Diagramas de Secuencia y los Diagramas de Casos de Uso NO forman parte del est&aacute;ndar de compilaci&oacute;n en Executable UML (xUML)?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="xq2" value="0" /> Porque los Casos de Uso son requerimientos informales en texto, y los de Secuencia s&oacute;lo modelan escenarios parciales que generar&iacute;an colisiones y redundancia con las m&aacute;quinas de estados.</label>
+            <label class="quiz-option"><input type="radio" name="xq2" value="1" /> Porque el consorcio OMG prohibi&oacute; los diagramas de secuencia en 2005.</label>
+            <label class="quiz-option"><input type="radio" name="xq2" value="2" /> Porque los motores de ejecuci&oacute;n de C# s&oacute;lo aceptan c&oacute;digo ensamblador nativo.</label>
+            <label class="quiz-option"><input type="radio" name="xq2" value="3" /> Porque los casos de uso consumen excesivo ancho de banda en HTTP/2.</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            Los casos de uso carecen de rigor formal computable. Los diagramas de secuencia representan trazas individuales de interacci&oacute;n; intentar derivar l&oacute;gica completa a partir de secuencias parciales introduce ambig&uuml;edades que un compilador MDA no puede resolver sin colisionar con la m&aacute;quina de estados.
+          </div>
+        </div>
+
+        <!-- Reactivo 3 -->
+        <div class="quiz-card" data-correct="2">
+          <p class="quiz-question">
+            3. En la arquitectura MDA (Model-Driven Architecture) vinculada a Executable UML, &iquest;qu&eacute; funci&oacute;n desempe&ntilde;a el Modelo Independiente de la Plataforma (PIM)?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="xq3" value="0" /> Es el archivo binario compilado optimizado con Native AOT.</label>
+            <label class="quiz-option"><input type="radio" name="xq3" value="1" /> Es una base de datos relacional con claves for&aacute;neas configuradas.</label>
+            <label class="quiz-option"><input type="radio" name="xq3" value="2" /> Modela la l&oacute;gica del sistema y sus reglas de negocio puras, sin detalles de implementaci&oacute;n tecnol&oacute;gica ni dependencias de plataforma.</label>
+            <label class="quiz-option"><input type="radio" name="xq3" value="3" /> Es el contenedor Docker que aloja el servidor de aplicaciones.</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            El PIM (Platform-Independent Model) describe la estructura y comportamiento del sistema sin ninguna referencia a C#, Java, SQL o sistemas operativos. El generador MDA lo traduce a uno o m&aacute;s PSM (Platform-Specific Models).
+          </div>
+        </div>
+
+        <!-- Reactivo 4 -->
+        <div class="quiz-card" data-correct="3">
+          <p class="quiz-question">
+            4. &iquest;Cu&aacute;l es el componente de la tr&iacute;ada de xUML responsable de proveer las acciones operativas ejecutables cuando ocurre un evento de transici&oacute;n?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="xq4" value="0" /> El Modelo de Dominio exclusivamente.</label>
+            <label class="quiz-option"><input type="radio" name="xq4" value="1" /> El Diagrama de Paquetes.</label>
+            <label class="quiz-option"><input type="radio" name="xq4" value="2" /> La documentaci&oacute;n del WBS en formato XML.</label>
+            <label class="quiz-option"><input type="radio" name="xq4" value="3" /> El Modelo de Estados (M&aacute;quinas de Estados Finitas).</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            Las m&aacute;quinas de estados en xUML definen formalmente las acciones que se disparan al ingresar a un estado, al salir de &eacute;l o durante la transici&oacute;n gatillada por un evento externo, dotando de dinamismo ejecutable al sistema.
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-eval-xuml" style="margin-top:16px;">Calificar Evaluaci&oacute;n</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="module-footer">
+    <div class="module-nav-bar"></div>
+  </footer>
+
+  <script src="../shared/modules-data.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script>
+    // Tab switching logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.dataset.tab);
+        if (target) target.classList.add('active');
+      });
+    });
+
+    // SIMULADOR INTERACTIVO MDA
+    const domainModels = {
+      order: {
+        states: ['Creado', 'Pagado', 'Despachado', 'Cancelado'],
+        events: [
+          { name: 'Pagar()', to: 'Pagado' },
+          { name: 'Despachar()', to: 'Despachado' },
+          { name: 'Cancelar()', to: 'Cancelado' }
+        ],
+        spec: `// MODELO DE DOMINIO: E-Commerce Retail
+Domain: VentasOnline {
+  Entity: Pedido
+  Boundary: GatewayPagos, AlmacenCentral
+}
+
+// MODELO DE CLASES:
+Class Pedido {
+  + Guid Id
+  + String ClienteId
+  + Decimal Total
+  + EstadoPedido Estado
+  + DateTime FechaCreacion
+}
+
+// MODELO DE ESTADOS:
+StateMachine PedidoLifecycle {
+  InitialState: Creado
+  Transition Creado -> Pagado on Event(Pagar)
+  Transition Pagado -> Despachado on Event(Despachar)
+  Transition Creado -> Cancelado on Event(Cancelar)
+}`,
+        csharp: `namespace Inegi.Spc.Ventas;
+
+public enum EstadoPedido { Creado, Pagado, Despachado, Cancelado }
+
+public class Pedido
+{
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public string ClienteId { get; set; } = string.Empty;
+    public decimal Total { get; set; }
+    public EstadoPedido Estado { get; private set; } = EstadoPedido.Creado;
+
+    public void Pagar()
+    {
+        if (Estado != EstadoPedido.Creado)
+            throw new InvalidOperationException("Solo pedidos Creados pueden pagarse.");
+        Estado = EstadoPedido.Pagado;
+        // Accion xUML: NotificarAlmacen();
+    }
+
+    public void Despachar()
+    {
+        if (Estado != EstadoPedido.Pagado)
+            throw new InvalidOperationException("No se puede despachar un pedido no pagado.");
+        Estado = EstadoPedido.Despachado;
+    }
+
+    public void Cancelar()
+    {
+        if (Estado == EstadoPedido.Despachado)
+            throw new InvalidOperationException("No se puede cancelar un pedido ya enviado.");
+        Estado = EstadoPedido.Cancelado;
+    }
+}`
+      },
+      dam: {
+        states: ['Normal', 'Alerta', 'Desfogue', 'Cerrada'],
+        events: [
+          { name: 'SubirNivel()', to: 'Alerta' },
+          { name: 'AbrirCompuerta()', to: 'Desfogue' },
+          { name: 'Estabilizar()', to: 'Normal' }
+        ],
+        spec: `// MODELO DE DOMINIO: Seguridad Hidráulica
+Domain: ControlPresa {
+  Entity: CompuertaAlivio
+  Boundary: SensorUltrasonico, ActuadorHidraulico
+}
+
+// MODELO DE CLASES:
+Class CompuertaAlivio {
+  + Int32 PresaId
+  + Double NivelAguaMetros
+  + EstadoCompuerta Estado
+  + Double AperturaPorcentaje
+}
+
+// MODELO DE ESTADOS:
+StateMachine CompuertaLifecycle {
+  InitialState: Normal
+  Transition Normal -> Alerta on Event(SubirNivel) [Nivel > 85.0]
+  Transition Alerta -> Desfogue on Event(AbrirCompuerta)
+  Transition Desfogue -> Normal on Event(Estabilizar) [Nivel <= 70.0]
+}`,
+        csharp: `namespace Inegi.Spc.Hidraulica;
+
+public enum EstadoCompuerta { Normal, Alerta, Desfogue, Cerrada }
+
+public class CompuertaAlivio
+{
+    public int PresaId { get; init; }
+    public double NivelAguaMetros { get; set; }
+    public EstadoCompuerta Estado { get; private set; } = EstadoCompuerta.Normal;
+    public double AperturaPorcentaje { get; private set; }
+
+    public void SubirNivel(double nuevoNivel)
+    {
+        NivelAguaMetros = nuevoNivel;
+        if (nuevoNivel > 85.0 && Estado == EstadoCompuerta.Normal)
+            Estado = EstadoCompuerta.Alerta;
+    }
+
+    public void AbrirCompuerta()
+    {
+        if (Estado != EstadoCompuerta.Alerta)
+            throw new InvalidOperationException("Compuerta solo opera en Alerta.");
+        Estado = EstadoCompuerta.Desfogue;
+        AperturaPorcentaje = 75.0;
+    }
+
+    public void Estabilizar()
+    {
+        Estado = EstadoCompuerta.Normal;
+        AperturaPorcentaje = 0.0;
+    }
+}`
+      }
+    };
+
+    let activeStateIdx = 0;
+    let currentModelKey = 'order';
+
+    function loadXUMLModel() {
+      currentModelKey = document.getElementById('select-domain-model').value;
+      const model = domainModels[currentModelKey];
+      activeStateIdx = 0;
+
+      document.getElementById('xuml-spec-console').textContent = model.spec;
+      document.getElementById('csharp-output-console').textContent = '// Pulsa "Compilar Modelo xUML -> C#" para generar el código.';
+
+      // Render FSM
+      renderFSM();
+    }
+
+    function renderFSM() {
+      const model = domainModels[currentModelKey];
+      const fsmBox = document.getElementById('fsm-container');
+      fsmBox.innerHTML = '';
+
+      model.states.forEach((st, idx) => {
+        const node = document.createElement('div');
+        node.className = `fsm-state-node ${idx === activeStateIdx ? 'active-state' : ''}`;
+        node.innerHTML = `<span>● ${st}</span>`;
+        fsmBox.appendChild(node);
+      });
+
+      // Update buttons
+      model.events.forEach((evt, i) => {
+        const btn = document.getElementById(`btn-fire-evt${i + 1}`);
+        if (btn) {
+          btn.innerText = `Evento: ${evt.name}`;
+          btn.style.display = 'inline-block';
+        }
+      });
+      // Hide unused buttons
+      for (let i = model.events.length; i < 3; i++) {
+        const btn = document.getElementById(`btn-fire-evt${i + 1}`);
+        if (btn) btn.style.display = 'none';
+      }
+    }
+
+    function fireFSMEvent(evtNum) {
+      const model = domainModels[currentModelKey];
+      const evt = model.events[evtNum - 1];
+      if (!evt) return;
+
+      const targetIdx = model.states.indexOf(evt.to);
+      if (targetIdx !== -1) {
+        activeStateIdx = targetIdx;
+        renderFSM();
+      }
+    }
+
+    function compileXUMLToCSharp() {
+      const model = domainModels[currentModelKey];
+      const out = document.getElementById('csharp-output-console');
+      out.textContent = "// [COMPILADOR MDA]: Traduciendo PIM -> PSM C# 12...\n\n" + model.csharp;
+    }
+
+    loadXUMLModel();
+
+    // QUIZ LOGIC
+    document.getElementById('btn-eval-xuml').addEventListener('click', () => {
+      const cards = document.querySelectorAll('#xuml-quiz .quiz-card');
+      let score = 0;
+
+      cards.forEach(card => {
+        const correctVal = card.dataset.correct;
+        const selected = card.querySelector('input[type="radio"]:checked');
+        const feedback = card.querySelector('.quiz-feedback');
+
+        if (selected) {
+          if (selected.value === correctVal) {
+            score++;
+            card.style.borderColor = 'var(--accent-green)';
+          } else {
+            card.style.borderColor = 'var(--accent-red)';
+          }
+        } else {
+          card.style.borderColor = 'var(--accent-red)';
+        }
+
+        if (feedback) feedback.style.display = 'block';
+      });
+
+      alert(`Resultado de la Evaluaci\u00F3n: ${score} de ${cards.length} aciertos.`);
+    });
+  </script>
+</body>
+</html>

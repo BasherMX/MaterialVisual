@@ -244,8 +244,11 @@
         <button class="tab-btn" onclick="switchTab('tab-circuit-breaker')">
           <span>⚡</span> 4. Resiliencia: Circuit Breaker
         </button>
+        <button class="tab-btn" onclick="switchTab('tab-ecosystem-libraries')">
+          <span>📚</span> 5. Librerías Ecosistema .NET 8 (Mark J. Price)
+        </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 5. Laboratorio de Evaluación SPC
+          <span>🎯</span> 6. Laboratorio de Evaluación SPC
         </button>
       </nav>
 
@@ -547,7 +550,104 @@
         </div>
       </section>
 
-      <!-- Pestaña 5: Laboratorio de Evaluación SPC -->
+      <!-- Pestaña 5: Librerías de Ecosistema .NET 8 (Mark J. Price) -->
+      <section id="tab-ecosystem-libraries" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>📚</span> Librerías Esenciales del Ecosistema .NET 8 (Mark J. Price)</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            En su obra canónica <em>Apps and Services with .NET 8</em>, <strong>Mark J. Price</strong> destaca tres librerías de infraestructura estándar de la industria que resuelven problemas críticos de multiplataforma, observabilidad y resiliencia en servidores de producción:
+          </p>
+
+          <div class="srv-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));">
+            <!-- 1. Six Labors ImageSharp -->
+            <div class="srv-card" style="border-color: rgba(0, 240, 255, 0.4);">
+              <span style="font:700 0.68rem 'Courier New', monospace; color:var(--srv-cyan); border:1px solid var(--srv-cyan); padding:2px 8px; border-radius:4px;">GRÁFICOS MULTIPLATAFORMA</span>
+              <h3 style="color:var(--srv-cyan); margin:6px 0 8px; font-size:1.15rem;">Six Labors ImageSharp</h3>
+              <p style="font:0.84rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Librería estándar moderna <strong>100% código administrado C#</strong> para procesamiento y manipulación de imágenes 2D en servidores y microservicios.
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px;">
+                <li><strong>El Problema Resuelto:</strong> <code>System.Drawing.Common</code> dependía internamente de <strong>GDI+</strong> nativo de Windows. Desde .NET 6+, Microsoft la marcó como obsoleta y lanza <code>PlatformNotSupportedException</code> en Linux/macOS.</li>
+                <li><strong>Capacidades:</strong> Redimensionar, recortar, marcas de agua, filtros, compresión JPEG/PNG/WebP sin fugas de memoria nativa.</li>
+                <li><strong>Totalmente Asíncrona:</strong> Métodos nativos <code>SaveAsJpegAsync</code> y <code>LoadAsync</code> para no bloquear hilos en ASP.NET Core.</li>
+              </ul>
+            </div>
+
+            <!-- 2. Serilog -->
+            <div class="srv-card" style="border-color: rgba(255, 215, 0, 0.4);">
+              <span style="font:700 0.68rem 'Courier New', monospace; color:var(--srv-gold); border:1px solid var(--srv-gold); padding:2px 8px; border-radius:4px;">LOGGING ESTRUCTURADO</span>
+              <h3 style="color:var(--srv-gold); margin:6px 0 8px; font-size:1.15rem;">Serilog</h3>
+              <p style="font:0.84rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Librería de facto para <strong>Logging Estructurado</strong> (*Structured Logging*) mediante plantillas de mensajes enriquecidas (*Message Templates*).
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px;">
+                <li><strong>El Salto Cualitativo:</strong> Los logs de texto plano concatenado son imposibles de filtrar o indexar. Serilog preserva los valores como pares clave-valor fuertemente tipados.</li>
+                <li><strong>Sintaxis:</strong> <code>Log.Information("Pedido {OrderId} procesado para {UserId}", id, user);</code>.</li>
+                <li><strong>Sinks Desacoplados:</strong> Exporta a Seq, Elasticsearch, Azure Application Insights, AWS CloudWatch o archivos JSON rotativos sin tocar la lógica de negocio.</li>
+              </ul>
+            </div>
+
+            <!-- 3. Polly -->
+            <div class="srv-card" style="border-color: rgba(0, 255, 170, 0.4);">
+              <span style="font:700 0.68rem 'Courier New', monospace; color:var(--srv-green); border:1px solid var(--srv-green); padding:2px 8px; border-radius:4px;">RESILIENCIA & TOLERANCIA A FALLOS</span>
+              <h3 style="color:var(--srv-green); margin:6px 0 8px; font-size:1.15rem;">Polly</h3>
+              <p style="font:0.84rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Framework de resiliencia y manejo de fallos transitorios que permite definir políticas declarativas y fluidas para llamadas HTTP, SQL y RPC.
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px;">
+                <li><strong>Políticas Reactivas:</strong> <em>Retry</em> (Reintentos con retroceso exponencial y Jitter aleatorio) y <em>Circuit Breaker</em> (protección de sobrecarga).</li>
+                <li><strong>Políticas Proactivas:</strong> <em>Timeout</em>, <em>Rate Limiter</em> y <em>Hedging</em> (disparar peticiones redundantes paralelas).</li>
+                <li><strong>Integración en .NET 8:</strong> Adoptada oficialmente por Microsoft mediante <code>Microsoft.Extensions.Resilience</code> (paquete <code>Microsoft.Extensions.Http.Resilience</code>).</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Demostrador Interactivo de Logging Estructurado con Serilog -->
+          <div style="background:#080812; border:1px solid rgba(255, 215, 0, 0.25); border-radius:8px; padding:18px; margin-top:24px;">
+            <h4 style="color:var(--srv-gold); margin:0 0 10px; font-size:1.05rem;">Simulador en Vivo: Logging Tradicional vs. Logging Estructurado (Serilog)</h4>
+            <p style="font:0.85rem Verdana, sans-serif; color:var(--muted); margin-bottom:14px;">
+              Modifica los parámetros para ver cómo Serilog transforma un mensaje en un documento JSON enriquecido para Seq o Elasticsearch:
+            </p>
+            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="font:700 0.72rem 'Courier New', monospace; color:var(--muted); display:block;">USER ID:</label>
+                <input type="text" id="log-input-user" value="USR-9482" style="background:#121124; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 10px; border-radius:4px; font:0.85rem 'Courier New', monospace;" oninput="updateSerilogPreview()" />
+              </div>
+              <div>
+                <label style="font:700 0.72rem 'Courier New', monospace; color:var(--muted); display:block;">ORDER ID:</label>
+                <input type="text" id="log-input-order" value="ORD-2026-X" style="background:#121124; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 10px; border-radius:4px; font:0.85rem 'Courier New', monospace;" oninput="updateSerilogPreview()" />
+              </div>
+              <div>
+                <label style="font:700 0.72rem 'Courier New', monospace; color:var(--muted); display:block;">MONTO ($):</label>
+                <input type="number" id="log-input-amount" value="1450.75" style="background:#121124; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 10px; border-radius:4px; font:0.85rem 'Courier New', monospace;" oninput="updateSerilogPreview()" />
+              </div>
+            </div>
+
+            <div class="data-table-wrap" style="margin-top:12px;">
+              <table class="compare-table">
+                <thead>
+                  <tr>
+                    <th>Log Tradicional (Texto Plano `Console.WriteLine`)</th>
+                    <th>Log Estructurado con Serilog (JSON Payload para Seq)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font:0.8rem 'Courier New', monospace; color:var(--srv-coral); vertical-align:top;" id="log-preview-plain">
+                      [INFO] Usuario USR-9482 completó orden ORD-2026-X con total $1,450.75.
+                    </td>
+                    <td style="font:0.78rem 'Courier New', monospace; color:var(--srv-green); vertical-align:top;">
+                      <pre id="log-preview-json" style="margin:0; white-space:pre-wrap;"></pre>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 6: Laboratorio de Evaluación SPC -->
       <section id="tab-quiz" class="content-panel">
         <div class="matrix-card">
           <h2><span>🎯</span> Laboratorio de Evaluación Formativa (INEGI - SPC)</h2>
@@ -812,8 +912,56 @@
           ],
           correct: 0,
           feedback: "Exacto. Cuando el circuito está Abierto (Open), no se emite ninguna llamada a la red. El cliente recibe una excepción BrokenCircuitException instantánea (fail-fast), lo que evita la saturación de hilos del llamador y da un respiro al servicio colapsado para que pueda recuperarse."
+        },
+        {
+          question: "¿Por qué en .NET 8 (Mark J. Price) se recomienda 'Six Labors ImageSharp' para manipular imágenes en microservicios en lugar de 'System.Drawing.Common'?",
+          options: [
+            "Porque ImageSharp es 100% código administrado C# multiplataforma, mientras que System.Drawing.Common depende de GDI+ nativo de Windows y falla en Linux con PlatformNotSupportedException.",
+            "Porque ImageSharp solo permite renderizar fuentes TrueType en Word.",
+            "Porque System.Drawing.Common fue prohibida por el estándar SQL ANSI.",
+            "Porque ImageSharp duplica el consumo de CPU para evitar que el Garbage Collector se ejecute."
+          ],
+          correct: 0,
+          feedback: "¡Correcto! En .NET 6+ Microsoft restringió System.Drawing.Common exclusivamente a Windows debido a problemas de estabilidad y seguridad con libgdiplus en Linux. Six Labors ImageSharp es la librería moderna independiente del sistema operativo."
+        },
+        {
+          question: "¿Cuál es la principal ventaja arquitectónica de utilizar 'Serilog' para Logging Estructurado (Structured Logging) frente a la salida tradicional de texto plano?",
+          options: [
+            "Emite plantillas de mensajes con propiedades semánticas en JSON, permitiendo consultas e indexación precisa de campos (ej. OrderId, UserId) en motores como Seq o Elasticsearch.",
+            "Elimina la necesidad de escribir pruebas unitarias de software.",
+            "Encripta automáticamente los archivos de disco mediante llaves RSA de 4096 bits.",
+            "Convierte los logs en código binario gRPC directamente en la tarjeta de red."
+          ],
+          correct: 0,
+          feedback: "¡Exacto! El logging estructurado sustituye cadenas concatenadas amorfas por eventos con propiedades semánticas enriquecidas en JSON, facilitando búsquedas analíticas instantáneas en plataformas de observabilidad."
         }
       ];
+
+      function updateSerilogPreview() {
+        const u = document.getElementById('log-input-user').value || 'USR-ANON';
+        const o = document.getElementById('log-input-order').value || 'ORD-NONE';
+        const a = parseFloat(document.getElementById('log-input-amount').value) || 0;
+
+        document.getElementById('log-preview-plain').innerText = `[INFO] Usuario ${u} completó orden ${o} con total $${a.toFixed(2)}.`;
+
+        const jsonEvent = {
+          Timestamp: new Date().toISOString(),
+          Level: "Information",
+          MessageTemplate: "Usuario {UserId} completó orden {OrderId} con total {Amount:C}",
+          Properties: {
+            UserId: u,
+            OrderId: o,
+            Amount: a,
+            SourceContext: "OrderProcessingService",
+            Environment: "Production",
+            Host: "inegi-api-pod-88"
+          }
+        };
+
+        document.getElementById('log-preview-json').innerText = JSON.stringify(jsonEvent, null, 2);
+      }
+
+      setTimeout(updateSerilogPreview, 100);
 
       let currentQuizIdx = 0;
       let quizScore = 0;

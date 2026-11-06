@@ -261,8 +261,11 @@
         <button class="tab-btn" onclick="switchTab('tab-throughput')">
           <span>⚡</span> 4. Rendimiento & Multiplexación
         </button>
+        <button class="tab-btn" onclick="switchTab('tab-signalr-transcoding')">
+          <span>🔄</span> 5. SignalR vs gRPC & JSON Transcoding
+        </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 5. Laboratorio de Evaluación
+          <span>🎯</span> 6. Laboratorio de Evaluación
         </button>
       </nav>
 
@@ -523,7 +526,132 @@ message FacturaRequest {
         </div>
       </section>
 
-      <!-- Pestaña 5: Laboratorio de Diagnóstico (Quiz) -->
+      <!-- Pestaña 5: SignalR vs gRPC & JSON Transcoding -->
+      <section id="tab-signalr-transcoding" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🔄</span> Comunicación Web en ASP.NET Core: SignalR vs. gRPC</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            En la arquitectura moderna de .NET, la elección del canal de comunicación depende de quiénes son los interlocutores (navegadores vs microservicios backend) y la naturaleza del flujo (pub/sub en tiempo real vs RPC binario estricto).
+          </p>
+
+          <div class="causal-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:24px;">
+            <!-- SignalR Card -->
+            <div style="background:var(--panel-dark); border:1px solid rgba(0, 255, 255, 0.3); border-radius:8px; padding:20px; position:relative;">
+              <div style="font:700 0.75rem 'Courier New', monospace; color:var(--grpc-cyan); text-transform:uppercase; margin-bottom:8px;">
+                Tiempo Real &bull; Clientes Web & Móviles
+              </div>
+              <h3 style="color:#fff; margin:0 0 10px; font-size:1.2rem;">ASP.NET Core SignalR</h3>
+              <p style="font:0.85rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Abstracción de alto nivel para <strong>comunicación bidireccional en tiempo real</strong> entre clientes (JavaScript en navegadores, Blazor, Xamarin/.NET MAUI) y el servidor.
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px; margin-bottom:12px;">
+                <li><strong>Transporte Primario:</strong> WebSockets nativos (full-duplex, baja latencia).</li>
+                <li><strong>Fallback Automático:</strong> Degrada transparentemente a <em>Server-Sent Events (SSE)</em> o <em>Long Polling</em> si proxies, firewalls corporativos o navegadores antiguos bloquean WebSockets.</li>
+                <li><strong>Modelo de Abstracción:</strong> <code>Hub</code> y <code>Hub&lt;T&gt;</code> con soporte para grupos de difusión (<code>Clients.Group("sala1")</code>) y reconexión automática.</li>
+                <li><strong>Casos de Uso:</strong> Chats, pizarras colaborativas, tableros Kanban, subastas en vivo y notificaciones push.</li>
+              </ul>
+            </div>
+
+            <!-- gRPC Card -->
+            <div style="background:var(--panel-dark); border:1px solid rgba(0, 255, 170, 0.3); border-radius:8px; padding:20px; position:relative;">
+              <div style="font:700 0.75rem 'Courier New', monospace; color:var(--grpc-green); text-transform:uppercase; margin-bottom:8px;">
+                Alto Rendimiento &bull; Backend a Backend
+              </div>
+              <h3 style="color:#fff; margin:0 0 10px; font-size:1.2rem;">gRPC (HTTP/2 + Protobuf)</h3>
+              <p style="font:0.85rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Protocolo de llamada a procedimientos remotos de <strong>altísima velocidad</strong> concebido para comunicación entre microservicios de backend (tráfico East-West).
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px; margin-bottom:12px;">
+                <li><strong>Transporte:</strong> HTTP/2 estricto obligatorio con multiplexación por streams binarios.</li>
+                <li><strong>Carga Útil:</strong> Protocol Buffers fuertemente tipado (ahorro masivo de CPU y ancho de banda).</li>
+                <li><strong>Limitación en Navegadores:</strong> Las APIs estándar de JavaScript de los navegadores (como <code>fetch</code> o <code>XMLHttpRequest</code>) no permiten control directo sobre frames HTTP/2 binarios, requiriendo gRPC-Web con un proxy intermediario (ej. Envoy).</li>
+                <li><strong>Casos de Uso:</strong> Redes de microservicios, pipelines de telemetría IoT, procesamiento masivo interbancario.</li>
+              </ul>
+            </div>
+
+            <!-- gRPC JSON Transcoding Card -->
+            <div style="background:var(--panel-dark); border:1px solid rgba(255, 215, 0, 0.3); border-radius:8px; padding:20px; position:relative;">
+              <div style="font:700 0.75rem 'Courier New', monospace; color:var(--grpc-gold); text-transform:uppercase; margin-bottom:8px;">
+                Interoperabilidad REST &bull; .NET 7/8+
+              </div>
+              <h3 style="color:#fff; margin:0 0 10px; font-size:1.2rem;">gRPC JSON Transcoding</h3>
+              <p style="font:0.85rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Mecanismo oficial que permite <strong>exponer servicios gRPC como APIs REST tradicionales con JSON</strong> sin escribir controladores MVC adicionales.
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px; margin-bottom:12px;">
+                <li><strong>Cómo Funciona:</strong> Se anota el contrato <code>.proto</code> con reglas de enrutamiento HTTP (<code>google.api.http</code>), asignando métodos gRPC a verbos (GET, POST) y URIs REST.</li>
+                <li><strong>El Pipeline:</strong> ASP.NET Core intercepta peticiones HTTP/1.1 REST en JSON, las traduce en memoria al formato gRPC/Protobuf nativo, invoca el servicio y convierte la respuesta de vuelta a JSON.</li>
+                <li><strong>&iexcl;Trampa Clave de Examen SPC!:</strong> <em>NO es una solución de streaming pub/sub para navegadores</em>. Es un puente de compatibilidad REST para clientes que no soportan gRPC/HTTP/2.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Tabla Comparativa Canónica -->
+          <h3>Tabla de Decisión Arquitectónica (Guía Oficial SPC)</h3>
+          <div class="data-table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Criterio Técnico</th>
+                  <th>ASP.NET Core SignalR</th>
+                  <th>gRPC Puro</th>
+                  <th>gRPC JSON Transcoding</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Propósito Principal</strong></td>
+                  <td>Empuje de datos en tiempo real (Pub/Sub) a navegadores/apps</td>
+                  <td>Comunicación RPC de ultra alto rendimiento entre servicios</td>
+                  <td>Consumo de servicios gRPC mediante REST/JSON clásico</td>
+                </tr>
+                <tr>
+                  <td><strong>Protocolo de Red</strong></td>
+                  <td>WebSockets con fallback a SSE o Long Polling</td>
+                  <td>HTTP/2 obligatorio</td>
+                  <td>HTTP/1.1 o HTTP/2 estándar (REST)</td>
+                </tr>
+                <tr>
+                  <td><strong>Formato de Serialización</strong></td>
+                  <td>JSON o MessagePack (opcional)</td>
+                  <td>Protobuf binario</td>
+                  <td>JSON estándar</td>
+                </tr>
+                <tr>
+                  <td><strong>Soporte Nativo en Navegador</strong></td>
+                  <td>Total e integrado (cliente <code>@microsoft/signalr</code>)</td>
+                  <td>Requiere gRPC-Web + Proxy</td>
+                  <td>Total y directo mediante <code>fetch()</code> o <code>axios</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Capacidad Pub/Sub Multiusuario</strong></td>
+                  <td><strong>Sí</strong> (Grupos, conexiones individuales, broadcast)</td>
+                  <td>No por defecto (requiere streaming bidireccional punto a punto)</td>
+                  <td><strong>No</strong> (Es un modelo Request/Response clásico REST)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Selector Interactivo de Escenarios -->
+          <div style="background:#080812; border:1px solid rgba(0, 255, 255, 0.2); border-radius:8px; padding:18px; margin-top:20px;">
+            <h4 style="color:var(--grpc-cyan); margin:0 0 10px; font-size:1.05rem;">Simulador de Decisión: ¿Qué tecnología debes utilizar?</h4>
+            <p style="font:0.85rem Verdana, sans-serif; color:var(--muted); margin-bottom:14px;">
+              Selecciona un requerimiento de negocio para evaluar la justificación de diseño recomendada por los evaluadores de arquitectura:
+            </p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+              <button class="btn-theme" style="padding:8px 14px; font-size:0.8rem; cursor:pointer;" onclick="showCommVerdict('chat')">💬 Chat y Dashboard en Navegador</button>
+              <button class="btn-theme" style="padding:8px 14px; font-size:0.8rem; cursor:pointer;" onclick="showCommVerdict('microservices')">🚀 50 Microservicios Internos de Alta Frecuencia</button>
+              <button class="btn-theme" style="padding:8px 14px; font-size:0.8rem; cursor:pointer;" onclick="showCommVerdict('public-api')">🌐 Exponer Servicio gRPC a Terceros vía REST/JSON</button>
+            </div>
+            <div id="comm-verdict-box" style="padding:14px; border-radius:6px; background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.2); font:0.86rem/1.6 Verdana, sans-serif; color:var(--ink);">
+              Haz clic en uno de los escenarios para ver la recomendación técnica.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 6: Laboratorio de Diagnóstico (Quiz) -->
       <section id="tab-quiz" class="content-panel">
         <div class="matrix-card">
           <h2><span>🎯</span> Laboratorio de Evaluación: gRPC & Streaming</h2>
@@ -786,8 +914,44 @@ message FacturaRequest {
           ],
           correct: 0,
           feedback: "¡Excelente! La serialización binaria ultrarrápida y el tipado estricto hacen de gRPC el estándar de facto para la comunicación interna entre microservicios (East-West traffic)."
+        },
+        {
+          q: "¿Por qué ASP.NET Core SignalR es la solución idónea para notificaciones y chats en navegadores web en lugar de gRPC?",
+          options: [
+            "Porque proporciona una abstracción pub/sub de tiempo real basada en WebSockets con negociación y fallback automático a SSE y Long Polling.",
+            "Porque SignalR no requiere servidor web y transmite los paquetes directamente por UDP peer-to-peer.",
+            "Porque gRPC solo admite conexiones satelitales y prohíbe el protocolo TCP.",
+            "Porque SignalR elimina el uso de JavaScript en los navegadores."
+          ],
+          correct: 0,
+          feedback: "¡Correcto! SignalR maneja automáticamente la conexión bidireccional mediante WebSockets y, si la red o el proxy intermedio bloquean WebSockets, degrada transparentemente a SSE o Long Polling, ofreciendo soporte universal para navegadores."
+        },
+        {
+          q: "¿Cuál es el propósito fundamental de 'gRPC JSON Transcoding' en ASP.NET Core?",
+          options: [
+            "Permitir que un servicio gRPC sea invocado como una API REST tradicional con JSON a partir de anotaciones en el archivo .proto.",
+            "Convertir gRPC en un servidor de streaming pub/sub para navegadores web mediante WebSockets.",
+            "Traducir automáticamente código C# en scripts de Python en tiempo de ejecución.",
+            "Comprimir la base de datos SQL Server en archivos JSON binarios."
+          ],
+          correct: 0,
+          feedback: "¡Exacto! gRPC JSON Transcoding es una característica para interoperabilidad REST: expone tus métodos gRPC como endpoints REST/JSON anotados con google.api.http, permitiendo que clientes heterogéneos sin cliente gRPC consuman la misma lógica de negocio."
         }
       ];
+
+      window.showCommVerdict = function (scenario) {
+        const box = document.getElementById('comm-verdict-box');
+        if (scenario === 'chat') {
+          box.innerHTML = '<strong style=\"color:var(--grpc-cyan);\">Recomendación: ASP.NET Core SignalR</strong><br/>' +
+            'Un chat o panel interactivo en navegadores requiere empuje inmediato de eventos hacia múltiples clientes conectados (grupos, broadcast). SignalR abstrae WebSockets con reconexión automática y degradación a SSE/Long-Polling, evitando lidiar con la falta de soporte directo de HTTP/2 en JavaScript puro.';
+        } else if (scenario === 'microservices') {
+          box.innerHTML = '<strong style=\"color:var(--grpc-green);\">Recomendación: gRPC Puro (HTTP/2 + Protobuf)</strong><br/>' +
+            'Para tráfico interno backend a backend, la máxima velocidad, bajo uso de CPU y el ahorro de ancho de banda son críticos. La multiplexación en un único socket TCP y el contrato tipado en el archivo <code>.proto</code> proporcionan la máxima eficiencia.';
+        } else if (scenario === 'public-api') {
+          box.innerHTML = '<strong style=\"color:var(--grpc-gold);\">Recomendación: gRPC JSON Transcoding</strong><br/>' +
+            'Mantiene una única implementación gRPC de alto rendimiento en el servidor mientras genera automáticamente endpoints REST con JSON para desarrolladores externos, clientes móviles antiguos o herramientas como Postman y cURL.';
+        }
+      };
 
       let currentQuizIdx = 0;
       let quizScore = 0;

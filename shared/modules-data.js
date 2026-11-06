@@ -323,11 +323,11 @@
         "category": "Arquitectura & Web",
         "badge": "20 · gRPC & Streaming",
         "title": "gRPC & Patrones de Streaming",
-        "desc": "Protocolo de alto rendimiento basado en HTTP/2 y Protocol Buffers. Explora Unary, Server, Client y Bidirectional Streaming frente a REST.",
+        "desc": "Protocolo de alto rendimiento basado en HTTP/2 y Protocol Buffers. Explora Unary, Server, Client y Bidirectional Streaming, SignalR vs gRPC y gRPC JSON Transcoding.",
         "features": [
-            "Simulador reactivo de los 4 canales de streaming gRPC",
-            "Duelo de tamaño en bytes: Protocol Buffers vs JSON",
-            "Multiplexación HTTP/2 y erradicación del bloqueo de cabeza de línea"
+            "Simulador reactivo de los 4 canales de streaming gRPC y multiplexación HTTP/2",
+            "Duelo SignalR (WebSockets en navegadores) vs gRPC (microservicios backend)",
+            "gRPC JSON Transcoding: exposición de servicios gRPC como REST/JSON estándar"
         ],
         "btnId": "btn-goto-grpc"
     },
@@ -371,11 +371,11 @@
         "category": "Ingeniería de Software",
         "badge": "23 · Calidad & V&V",
         "title": "Error, Defecto, Falla & V&V",
-        "desc": "Cadena causal formal IEEE (Error humano ➔ Defecto en código ➔ Falla en runtime) y marco de Barry Boehm para Verificación vs Validación.",
+        "desc": "Cadena causal formal IEEE (Error humano ➔ Defecto en código ➔ Falla en runtime), doctrina Boehm para V&V y taxonomía SWEBOK v4 (Monkey vs Smoke Testing).",
         "features": [
-            "Simulador reactivo de inyección de defectos y activación en runtime",
-            "Matriz 2x2 interactiva de Verificación vs Validación (Doctrina Boehm)",
-            "Casos paradigmáticos reales: monitores hospitalarios y misiones espaciales"
+            "Simulador reactivo de inyección de defectos y activación de fallas en runtime",
+            "Matriz 2x2 interactiva de Verificación vs Validación (Doctrina Barry Boehm)",
+            "Laboratorio SWEBOK v4: Chaos Monkey estocástico vs Smoke Testing en CI/CD"
         ],
         "btnId": "btn-goto-quality-vv"
     },
@@ -419,10 +419,10 @@
         "category": "Arquitectura & Backend",
         "badge": "26 · Resiliencia & Servicios",
         "title": "Servicios de Fondo, Resiliencia & Caché",
-        "desc": "BackgroundService e IHostedService en .NET, cancelación cooperativa y apagado elegante (Graceful Shutdown), IMemoryCache vs Redis y Circuit Breaker con Polly.",
+        "desc": "BackgroundService e IHostedService en .NET, cancelación cooperativa, IMemoryCache vs Redis, Circuit Breaker y suite de librerías .NET 8 (ImageSharp, Serilog, Polly).",
         "features": [
             "Simulador de ciclo de vida del Host y cancelación cooperativa con SIGTERM y CancellationToken",
-            "Comparador de caché en memoria vs distribuida con expiración absoluta vs deslizante",
+            "Librerías Mark J. Price: Six Labors ImageSharp, logging estructurado Serilog y resiliencia Polly",
             "Máquina de estados en vivo del Circuit Breaker (Closed, Open, Half-Open) ante fallas HTTP"
         ],
         "btnId": "btn-goto-services-resilience"
@@ -458,6 +458,22 @@
             "Laboratorio evaluativo con reactivos oficiales de cálculo de direcciones físicas"
         ],
         "btnId": "btn-goto-cairo-matrix-loc"
+    },
+    {
+        "id": "29",
+        "slug": "29-modelado-sistema-executable-uml-sommerville",
+        "filename": "29-modelado-sistema-executable-uml-sommerville.html",
+        "theme": "theme-purple",
+        "category": "Ingeniería de Software",
+        "badge": "29 · xUML & Modelado",
+        "title": "Executable UML (xUML) · Ian Sommerville",
+        "desc": "El subconjunto formal estricto de UML para compilación MDA directa a código: Modelos de Dominio, Modelos de Clases y Máquinas de Estados. Por qué se excluyen Secuencia y Casos de Uso.",
+        "features": [
+            "La tríada formal canónica de Sommerville: Dominio + Clases + Estados = Código Ejecutable",
+            "Compilador interactivo de especificación xUML a código C# 12/.NET en tiempo real",
+            "Análisis de justificación formal de exclusión de diagramas de Secuencia y Casos de Uso"
+        ],
+        "btnId": "btn-goto-xuml-sommerville"
     }
 ];
 });

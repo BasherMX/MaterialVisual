@@ -859,6 +859,40 @@
       ],
       correctOption: 0
     },
+    {
+      id: "fc-20-04",
+      moduleId: "20",
+      moduleTitle: "gRPC & Patrones de Streaming",
+      category: "Arquitectura & Web",
+      question: "¿Por qué ASP.NET Core SignalR es la tecnología idónea para tableros en vivo y chats en navegadores frente a gRPC?",
+      answer: "SignalR proporciona una abstracción pub/sub de tiempo real sobre WebSockets con degradación automática a Server-Sent Events o Long Polling para navegadores.",
+      explanation: "Los navegadores web estándar no exponen control sobre frames HTTP/2 de bajo nivel para clientes gRPC nativos. SignalR abstrae conexiones persistentes con WebSockets nativos y fallback automático, ofreciendo Hubs y grupos de difusión ideales para clientes web heterogéneos.",
+      authorRef: "ASP.NET Core Architecture Team & SPC INEGI",
+      options: [
+        "Proporciona una abstracción pub/sub de tiempo real sobre WebSockets con degradación automática a SSE o Long Polling para navegadores",
+        "SignalR opera directamente sin servidor web enviando paquetes UDP peer-to-peer",
+        "gRPC está prohibido en servidores Linux y contenedores de Kubernetes",
+        "SignalR no requiere conexiones de red y funciona por infrarrojos"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-20-05",
+      moduleId: "20",
+      moduleTitle: "gRPC & Patrones de Streaming",
+      category: "Arquitectura & Web",
+      question: "¿Qué es fundamentalmente 'gRPC JSON Transcoding' en ASP.NET Core y qué limitación arquitectónica debe tenerse clara en evaluaciones técnicas?",
+      answer: "Es un mecanismo para exponer servicios gRPC como APIs REST tradicionales con JSON; NO es una solución de streaming pub/sub para navegadores.",
+      explanation: "gRPC JSON Transcoding permite que clientes REST tradicionales (cURL, Postman, apps legadas) invoquen servicios gRPC mediante peticiones HTTP/1.1 y payloads JSON mapeados con anotaciones google.api.http. Su propósito es interoperabilidad REST, no empuje de eventos en tiempo real.",
+      authorRef: "Microsoft ASP.NET Core Documentation & SPC INEGI",
+      options: [
+        "Mecanismo para exponer servicios gRPC como APIs REST tradicionales con JSON; NO es streaming pub/sub para navegadores",
+        "Un middleware que convierte bases de datos SQL Server en documentos de MongoDB",
+        "Un protocolo de compresión que sustituye HTTPS por sockets TCP sin cifrar",
+        "Una herramienta que traduce automáticamente código C# en lenguaje Python"
+      ],
+      correctOption: 0
+    },
 
     // Módulo 21: GraphQL & HotChocolate: Over/Under-fetching
     {
@@ -985,6 +1019,23 @@
         "El código fuente no compila debido a errores de sintaxis en el compilador Roslyn",
         "El sistema fue aprobado por los usuarios finales pero el equipo de desarrollo se niega a entregar el repositorio de Git",
         "El software tiene cero defectos estáticos pero excede el límite de memoria RAM del servidor"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-23-04",
+      moduleId: "23",
+      moduleTitle: "Error, Defecto, Falla & V&V",
+      category: "Ingeniería de Software",
+      question: "En la taxonomía de pruebas de SWEBOK v4, ¿cuál es la diferencia metodológica entre 'Monkey Testing' y 'Smoke Testing'?",
+      answer: "Smoke Testing es un conjunto mínimo y estructurado para validar que el build realiza funciones vitales antes de QA; Monkey Testing es estocástico y no estructurado para forzar caídas del sistema.",
+      explanation: "El Smoke Testing (Build Verification Test) es el primer filtro en CI/CD; si falla, la versión se rechaza inmediatamente (fail-fast). El Monkey Testing introduce clics rápidos y entradas aleatorias caóticas sin plan prefijado para detectar cuelgues, excepciones y fugas de memoria.",
+      authorRef: "SWEBOK v4 (Software Testing) & IEEE Computer Society",
+      options: [
+        "Smoke Testing es un conjunto mínimo y estructurado para validar funciones vitales del build; Monkey Testing es caótico y estocástico para forzar crashes",
+        "Monkey Testing se ejecuta exclusivamente en navegadores web; Smoke Testing solo se aplica a bases de datos SQL",
+        "Smoke Testing requiere la intervención manual de usuarios; Monkey Testing se realiza mediante inspección estática del código",
+        "Son términos sinónimos definidos en la norma ISO 9001 para auditorías de calidad"
       ],
       correctOption: 0
     },
@@ -1185,6 +1236,40 @@
       ],
       correctOption: 0
     },
+    {
+      id: "fc-26-04",
+      moduleId: "26",
+      moduleTitle: "Servicios de Fondo, Resiliencia & Caché",
+      category: "Arquitectura & Backend",
+      question: "En el ecosistema .NET 8 (Mark J. Price), ¿por qué se utiliza 'Six Labors ImageSharp' para procesar imágenes en servidores en lugar de 'System.Drawing.Common'?",
+      answer: "ImageSharp es 100% código administrado C# y multiplataforma; System.Drawing.Common depende de GDI+ nativo de Windows y falla en Linux con PlatformNotSupportedException.",
+      explanation: "Desde .NET 6, Microsoft restringió System.Drawing.Common exclusivamente a Windows debido a graves problemas de estabilidad y fugas de memoria con libgdiplus en Linux. ImageSharp es la librería moderna estándar para redimensionar y manipular gráficos de forma asíncrona en microservicios.",
+      authorRef: "Mark J. Price (Apps and Services with .NET 8) & Microsoft",
+      options: [
+        "ImageSharp es 100% administrado C# multiplataforma; System.Drawing.Common depende de GDI+ nativo de Windows y falla en Linux",
+        "System.Drawing.Common no soporta archivos de imagen en formato JPEG o PNG",
+        "ImageSharp duplica el consumo de RAM para desactivar el recolector de basura",
+        "System.Drawing.Common fue prohibida por las normas ISO de desarrollo web"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-26-05",
+      moduleId: "26",
+      moduleTitle: "Servicios de Fondo, Resiliencia & Caché",
+      category: "Arquitectura & Backend",
+      question: "¿Cuál es el valor arquitectónico del Logging Estructurado con 'Serilog' frente a escribir texto concatenado tradicional?",
+      answer: "Preserva las propiedades del evento como pares clave-valor estructurados en JSON mediante Message Templates, permitiendo búsquedas e indexación precisa en Seq o Elasticsearch.",
+      explanation: "Al usar plantillas como 'Usuario {UserId} realizó pedido {OrderId}', Serilog no concatena cadenas opacas, sino que emite un documento enriquecido con metadatos contextuales (UserId, OrderId, Timestamp) que los motores de observabilidad pueden filtrar y agregar numéricamente.",
+      authorRef: "Mark J. Price & Serilog Architectural Guidelines",
+      options: [
+        "Preserva propiedades clave-valor en JSON mediante Message Templates para indexación precisa en plataformas como Seq o Elasticsearch",
+        "Reduce a cero la necesidad de crear índices en bases de datos relacionales SQL",
+        "Cifra automáticamente todo el código fuente del proyecto con llaves AES de 256 bits",
+        "Convierte los mensajes de log en comandos de PowerShell ejecutados por el Kernel"
+      ],
+      correctOption: 0
+    },
 
     // =========================================================================
     // BLOQUE 8: GESTIÓN AVANZADA Y ESTRUCTURAS DE DATOS (SPC INEGI)
@@ -1275,6 +1360,42 @@
         "LOC(A[i, j]) = POSINI + [ n * (j - 1) + (i - 1) ] * w",
         "LOC(A[i, j]) = POSINI + [ m * j + i ] * w",
         "LOC(A[i, j]) = POSINI + [ (j - 1) * n + (i - 1) * m ] * w"
+      ],
+      correctOption: 0
+    },
+
+    // Módulo 29: Executable UML (xUML) · Ian Sommerville (Cap. 5)
+    {
+      id: "fc-29-01",
+      moduleId: "29",
+      moduleTitle: "Executable UML (xUML) · Ian Sommerville",
+      category: "Ingeniería de Software",
+      question: "De acuerdo con Ian Sommerville (Cap. 5), ¿cuáles son los TRES modelos que conforman el subconjunto formal estricto de Executable UML (xUML) para compilar a código?",
+      answer: "Modelos de Dominio, Modelos de Clases y Modelos de Estados (State Machines).",
+      explanation: "La regla canónica de Sommerville es: Dominio (límites y entidades del mundo real) + Clases (atributos estáticos y asociaciones) + Estados (semántica dinámica y ciclo de vida) = Código Ejecutable. Ningún otro diagrama UML integra el estándar ejecutable formal.",
+      authorRef: "Ian Sommerville (Software Engineering - Cap. 5: Modelado del Sistema)",
+      options: [
+        "Modelos de Dominio, Modelos de Clases y Modelos de Estados (State Machines)",
+        "Diagramas de Casos de Uso, Diagramas de Secuencia y Diagramas de Componentes",
+        "Diagramas de Actividades, Diagramas de Despliegue y Diagramas de Paquetes",
+        "Diagramas de Entidad-Relación, Diagramas DFD y Diccionario de Datos"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-29-02",
+      moduleId: "29",
+      moduleTitle: "Executable UML (xUML) · Ian Sommerville",
+      category: "Ingeniería de Software",
+      question: "¿Por qué los Diagramas de Secuencia y los Diagramas de Casos de Uso quedan EXCLUIDOS del estándar de compilación en Executable UML (xUML)?",
+      answer: "Los Casos de Uso son requerimientos informales en texto, y los de Secuencia solo modelan escenarios parciales que colisionan y crean redundancia con las máquinas de estados.",
+      explanation: "Los Casos de Uso carecen de semántica computable precisa. Los diagramas de secuencia representan interacciones parciales aisladas; intentar compilar desde secuencias introduce ambigüedad lógica que choca directamente con la máquina de estados finita determinista.",
+      authorRef: "Ian Sommerville (Software Engineering: Executable UML)",
+      options: [
+        "Los Casos de Uso son informales y los de Secuencia solo modelan trazas parciales que generan colisión y redundancia con los Estados",
+        "Porque el compilador de C# prohíbe el uso de flechas de mensajes sincrónicos",
+        "Porque los casos de uso consumen excesivo espacio en disco duro al compilar",
+        "Porque los diagramas de secuencia solo son compatibles con bases de datos NoSQL"
       ],
       correctOption: 0
     }

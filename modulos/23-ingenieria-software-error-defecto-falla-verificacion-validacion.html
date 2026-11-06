@@ -262,8 +262,11 @@
         <button class="tab-btn" onclick="switchTab('tab-matrix-cases')">
           <span>🎯</span> 4. Matriz 2x2 & Casos Críticos
         </button>
+        <button class="tab-btn" onclick="switchTab('tab-swebok-testing')">
+          <span>🧪</span> 5. Taxonomía SWEBOK v4: Monkey vs Smoke
+        </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 5. Laboratorio de Evaluación
+          <span>🎯</span> 6. Laboratorio de Evaluación SPC
         </button>
       </nav>
 
@@ -603,7 +606,115 @@
         </div>
       </section>
 
-      <!-- Pestaña 5: Laboratorio de Evaluación -->
+      <!-- Pestaña 5: Taxonomía de Pruebas SWEBOK v4: Monkey vs Smoke -->
+      <section id="tab-swebok-testing" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🧪</span> Taxonomía de Pruebas en SWEBOK v4: Monkey vs. Smoke Testing</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            La <strong>Guía del Cuerpo de Conocimiento de Ingeniería de Software (SWEBOK v4)</strong> de la IEEE Computer Society clasifica las técnicas de prueba según su nivel de formalidad, automatización y objetivo en el ciclo de vida:
+          </p>
+
+          <div class="causal-grid" style="grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));">
+            <!-- 1. Smoke Testing -->
+            <div class="causal-card" style="border-color: rgba(0, 255, 170, 0.4);">
+              <span class="badge-causal" style="color:var(--sw-green); background:rgba(0, 255, 170, 0.15); border:1px solid var(--sw-green);">
+                VERIFICACIÓN DE COMPILACIÓN (BVT)
+              </span>
+              <h3 style="color:var(--sw-green); margin:6px 0 8px; font-size:1.15rem;">Smoke Testing (Pruebas de Humo)</h3>
+              <p style="font:0.84rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Conjunto <strong>mínimo, estructurado y automático</strong> de pruebas de verificación superficial (*Build Verification Tests*) que valida las funciones vitales y críticas de una versión recién compilada.
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px;">
+                <li><strong>Origen:</strong> Analogía de electrónica: <em>"Si enchufas el circuito y echa humo, apágalo inmediatamente sin medir nada más"</em>.</li>
+                <li><strong>Objetivo:</strong> Confirmar que el build es lo suficientemente estable como para someterlo a pruebas más costosas (pruebas de integración o funcionales completas).</li>
+                <li><strong>Regla Canónica SPC:</strong> <strong>Si el Smoke Test falla, la compilación se rechaza inmediatamente (*Fail-Fast*)</strong> y se devuelve a los programadores sin perder tiempo en QA formal.</li>
+              </ul>
+            </div>
+
+            <!-- 2. Monkey Testing -->
+            <div class="causal-card" style="border-color: rgba(255, 51, 102, 0.4);">
+              <span class="badge-causal" style="color:var(--sw-coral); background:rgba(255, 51, 102, 0.15); border:1px solid var(--sw-coral);">
+                PRUEBAS ESTOCÁSTICAS CAÓTICAS
+              </span>
+              <h3 style="color:var(--sw-coral); margin:6px 0 8px; font-size:1.15rem;">Monkey Testing (Pruebas del Mono)</h3>
+              <p style="font:0.84rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:12px;">
+                Pruebas <strong>no estructuradas, aleatorias y estocásticas</strong> donde se alimenta al software con flujos impredecibles sin un plan prefijado ni casos de prueba formales.
+              </p>
+              <ul style="font:0.8rem/1.6 Verdana, sans-serif; color:var(--muted); padding-left:18px;">
+                <li><strong>Analogía:</strong> Simula a un mono golpeando frenéticamente el teclado, clics rápidos y comandos absurdos.</li>
+                <li><strong>Objetivo:</strong> Forzar condiciones límite imprevistas que provoquen que el sistema truene (*crashes*), se congele (*deadlocks*), desborde buffers o manifieste fugas de memoria (*memory leaks*).</li>
+                <li><strong>Tipos:</strong> <em>Dumb Monkey</em> (aleatoriedad pura ciega) vs <em>Smart Monkey</em> (genera entradas erróneas guiadas por un modelo de estados o interfaz).</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Tabla Comparativa SWEBOK v4 -->
+          <h3>Cuadro Comparativo: Criterios Clave SWEBOK v4 / Examen SPC</h3>
+          <div class="data-table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Criterio</th>
+                  <th>Smoke Testing (Pruebas de Humo)</th>
+                  <th>Monkey Testing (Pruebas del Mono)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Estructura & Plan</strong></td>
+                  <td><strong>Altamente estructurado</strong> con casos de prueba definidos</td>
+                  <td><strong>Completamente desestructurado</strong> y estocástico</td>
+                </tr>
+                <tr>
+                  <td><strong>Momento de Ejecución</strong></td>
+                  <td>Inmediatamente tras compilar el build (primer filtro en CI/CD)</td>
+                  <td>Durante pruebas de estrés, estabilidad o post-integración</td>
+                </tr>
+                <tr>
+                  <td><strong>Profundidad</strong></td>
+                  <td>Superficial y amplio (cubre la ruta feliz básica de extremo a extremo)</td>
+                  <td>Caótico (bombardea entradas anormales y estados límite)</td>
+                </tr>
+                <tr>
+                  <td><strong>Acción ante Fallo</strong></td>
+                  <td><strong>Rechazo inmediato del build</strong> (Bloqueo del release)</td>
+                  <td>Registro del volcado de memoria (*crash dump*) para depuración</td>
+                </tr>
+                <tr>
+                  <td><strong>Automatización</strong></td>
+                  <td>Guiones automatizados deterministas</td>
+                  <td>Generadores de eventos pseudo-aleatorios (ej. UI/Application Monkey)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Simulador Interactivo: Monkey Bot vs Smoke CI/CD -->
+          <div style="background:#080812; border:1px solid rgba(187, 134, 252, 0.3); border-radius:8px; padding:18px; margin-top:24px;">
+            <h4 style="color:var(--sw-purple); margin:0 0 10px; font-size:1.05rem;">Simulador en Vivo: Pipeline CI/CD vs. Caos Estocástico</h4>
+            <p style="font:0.85rem Verdana, sans-serif; color:var(--muted); margin-bottom:14px;">
+              Experimenta la diferencia operativa entre un Smoke Test determinista y un Monkey Test caótico:
+            </p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+              <button class="btn-theme" style="padding:10px 18px; font-size:0.82rem; cursor:pointer;" onclick="runSmokeTestSuite()">
+                🚀 Ejecutar Smoke Test (Build Verification)
+              </button>
+              <button class="btn-theme" style="padding:10px 18px; font-size:0.82rem; cursor:pointer; border-color:var(--sw-coral); color:var(--sw-coral);" onclick="runMonkeyChaosTest()">
+                🐒 Liberar Monkey Test Caótico
+              </button>
+              <button class="btn-theme" style="padding:10px 14px; font-size:0.82rem; cursor:pointer;" onclick="resetTestingSim()">
+                🔄 Limpiar
+              </button>
+            </div>
+
+            <div id="test-execution-log" style="background:#04040a; border:1px solid rgba(255,255,255,0.12); border-radius:6px; padding:12px; font:0.8rem 'Courier New', monospace; color:var(--sw-green); min-height:100px; max-height:160px; overflow-y:auto;">
+              [LISTO]: Esperando orden de ejecución de pruebas...
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 6: Laboratorio de Evaluación SPC -->
       <section id="tab-quiz" class="content-panel">
         <div class="matrix-card">
           <h2><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
@@ -972,8 +1083,93 @@
           ],
           correct: 2,
           feedback: "Correcto. Las pruebas de aceptación con usuarios reales (UAT) y pilotos en campo comprueban si el software realmente satisface las necesidades del usuario final en su entorno operativo, lo cual es la esencia de la Validación."
+        },
+        {
+          question: "De acuerdo con la taxonomía de pruebas de SWEBOK v4, ¿cuál es la diferencia conceptual y metodológica clave entre 'Monkey Testing' y 'Smoke Testing'?",
+          options: [
+            "Smoke Testing es un conjunto mínimo y estructurado de pruebas para verificar que el build realiza funciones básicas vitales antes de pasar a QA; Monkey Testing es estocástico, no estructurado y bombardea entradas aleatorias para forzar caídas del sistema.",
+            "Monkey Testing se ejecuta exclusivamente en hardware de servidores de producción; Smoke Testing solo se aplica a código HTML en navegadores.",
+            "Smoke Testing busca exclusivamente desbordamientos de pila mediante fuerza bruta; Monkey Testing valida contratos formales con clientes.",
+            "Son sinónimos intercambiables según el estándar IEEE 829 para pruebas de integración."
+          ],
+          correct: 0,
+          feedback: "¡Exacto! El Smoke Testing (prueba de humo o verificación de compilación) es un filtro rápido y determinista que aprueba o rechaza el build de inmediato. El Monkey Testing es estocástico y caótico para cazar condiciones límite y memory leaks imprevistos."
+        },
+        {
+          question: "¿Cuál es la regla de oro operativa en un pipeline de integración continua (CI/CD) cuando falla una prueba de Smoke Testing?",
+          options: [
+            "La compilación (build) se rechaza de inmediato (fail-fast) y se detiene el proceso de prueba formal hasta que los desarrolladores reparen el defecto crítico.",
+            "El pipeline ignora el fallo y despliega directamente a producción para que los usuarios lo reporten.",
+            "Se convierte automáticamente la prueba en un Monkey Test para reintentar 10,000 veces.",
+            "Se incrementa el presupuesto del proyecto en un 15% según el estándar PMBOK."
+          ],
+          correct: 0,
+          feedback: "¡Correcto! Si el Smoke Test falla, significa que el software no realiza ni siquiera sus operaciones vitales básicas. Continuar con pruebas funcionales completas sería una pérdida total de tiempo y recursos para el equipo de control de calidad."
         }
       ];
+
+      // Simulador de Pruebas SWEBOK
+      let monkeyTimer = null;
+
+      function logTesting(msg) {
+        const log = document.getElementById('test-execution-log');
+        if (log) {
+          log.innerHTML += `<div>${msg}</div>`;
+          log.scrollTop = log.scrollHeight;
+        }
+      }
+
+      function resetTestingSim() {
+        if (monkeyTimer) clearInterval(monkeyTimer);
+        monkeyTimer = null;
+        const log = document.getElementById('test-execution-log');
+        if (log) log.innerHTML = '[LISTO]: Esperando orden de ejecución de pruebas...';
+      }
+
+      function runSmokeTestSuite() {
+        resetTestingSim();
+        logTesting('<span style="color:var(--sw-cyan); font-weight:700;">[SMOKE TEST CI/CD INICIADO]: Verificando Build #1042...</span>');
+        setTimeout(() => {
+          logTesting('[CHECK 1/3]: Servicio Web API levanta correctamente (HTTP 200 /health) &check;');
+        }, 300);
+        setTimeout(() => {
+          logTesting('[CHECK 2/3]: Conexión al motor de base de datos activa (Ping SQL: 4ms) &check;');
+        }, 700);
+        setTimeout(() => {
+          logTesting('[CHECK 3/3]: Autenticación y generación de JWT operativo &check;');
+        }, 1100);
+        setTimeout(() => {
+          logTesting('<span style="color:var(--sw-green); font-weight:700;">[SMOKE TEST EXITOSO]: Build verificado. Autorizado el pase a la suite formal de pruebas de QA.</span>');
+        }, 1500);
+      }
+
+      function runMonkeyChaosTest() {
+        resetTestingSim();
+        logTesting('<span style="color:var(--sw-coral); font-weight:700;">[CHAOS MONKEY LIBERADO]: Disparando eventos estocásticos y entradas aleatorias...</span>');
+        let iterations = 0;
+        const chaosEvents = [
+          "Clic rápido en Coordenada [X:1422, Y:89] (Botón 'Cancelar' x40 veces)",
+          "Entrada de texto Unicode desbordante: '\\u0000\\uFFFF' en campo 'Nombre'",
+          "Pulsación simultánea: ESC + ENTER + ALT + TAB a 50 ms",
+          "Inyección de payload numérico negativo en campo de edad: -999999999",
+          "Interrupción súbita de conexión de red durante envío de formulario",
+          "Redimensionamiento de viewport de 1920x1080 a 10x10 píxeles"
+        ];
+
+        monkeyTimer = setInterval(() => {
+          iterations++;
+          const evt = chaosEvents[Math.floor(Math.random() * chaosEvents.length)];
+          logTesting(`[MONKEY PASO ${iterations}]: ${evt}`);
+
+          if (iterations >= 5) {
+            clearInterval(monkeyTimer);
+            monkeyTimer = null;
+            setTimeout(() => {
+              logTesting('<span style="color:#ff0055; font-weight:700;">[EXCEPCIÓN DETONADA]: System.OutOfMemoryException forzada en renderizado! Crash dump generado con éxito.</span>');
+            }, 300);
+          }
+        }, 350);
+      }
 
       let currentQuizIdx = 0;
       let quizScore = 0;
