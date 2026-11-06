@@ -9,7 +9,7 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 ## ⚡ Herramienta Transversal de Repaso Activo
 
 - **[🗂️ Arena Flashcards Anki & Minijuego Cyber-Survival](modulos/anki-arena.html)**:
-  - Repaso de los 24 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
+  - Repaso de los 26 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
   - Combos por racha y recuperación de +1 Vida cada 5 aciertos consecutivos (máx. 3 vidas).
   - Modalidad de respuesta dual: **Autoevaluación Honesta** (por defecto) u **Opción Múltiple (A, B, C, D)** con post-mortem explicativo.
   - Generación procedural de audio sintetizado Web Audio API y diseño 100% Mobile-First con flip 3D.
@@ -51,6 +51,8 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 - **[18 · Inyección de Dependencias & C# 12](modulos/18-inyeccion-dependencias-constructores-primarios-csharp.html)**: Contenedor IoC en .NET, Transient vs Scoped vs Singleton, prevención de dependencias cautivas (*Captive Dependencies*) y Constructores Primarios en C# 12.
 - **[19 · EF Core: Concurrencia & Optimización](modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html)**: Concurrencia en `DbContext` y paralelización limpia con `Task.WhenAll` e `IDbContextFactory`, optimización de memoria con `.AsNoTracking()` vs `.AsNoTrackingWithIdentityResolution()` y rendimiento de runtime con **Native AOT** y JSON Source Generators vs JIT.
 - **[22 · JWT: Tokens & Criptografía](modulos/22-jwt-autenticacion-tokens-seguridad.html)**: Estándar RFC 7519 sin estado (Stateless). Anatomía de Header, Payload y Signature, diferenciación crucial entre firma digital y cifrado (JWS vs JWE), mitigación de XSS/CSRF con cookies `HttpOnly` y ciclo de vida seguro de Access Tokens y Refresh Tokens.
+- **[25 · Concurrencia de Bajo Nivel: Interlocked & Monitor](modulos/25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion.html)**: Ciclo Read-Modify-Write en CPU de `x++`, operaciones atómicas por hardware con `Interlocked`, descompilación interna de `lock` en `Monitor.Enter/Exit` con `try-finally`, y el duelo `Mutex` (Kernel, inter-proceso) vs `SemaphoreSlim` (throttling asíncrono intra-proceso).
+- **[26 · Servicios de Fondo, Resiliencia & Caché](modulos/26-servicios-segundo-plano-resiliencia-polly-cache-dotnet.html)**: Tareas continuas con `BackgroundService` e `IHostedService`, cancelación cooperativa y apagado elegante (*graceful shutdown*) con `CancellationToken`, estrategias de caché (`IMemoryCache` vs `IDistributedCache` con expiración absoluta y deslizante) y resiliencia con el patrón *Circuit Breaker* (Polly).
 
 ### 🧪 7. Ingeniería de Software, Calidad & Confiabilidad
 - **[23 · Error, Defecto, Falla & V&V](modulos/23-ingenieria-software-error-defecto-falla-verificacion-validacion.html)**: Cadena causal formal IEEE 610.12 (Error humano $\rightarrow$ Defecto en código $\rightarrow$ Falla observable en runtime), Teorema del Defecto Latente, y doctrina canónica de Barry Boehm para Verificación (*"¿Construimos el producto correctamente?"*) vs Validación (*"¿Construimos el producto correcto?"*).

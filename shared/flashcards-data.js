@@ -1023,6 +1023,116 @@
         "La cantidad de comentarios de documentación requeridos por cada millar de líneas de código fuente"
       ],
       correctOption: 0
+    },
+
+    // =========================================================================
+    // BLOQUE 8: CONCURRENCIA DE BAJO NIVEL, SERVICIOS DE HOSTING & RESILIENCIA
+    // =========================================================================
+
+    // Módulo 25: Concurrencia de Bajo Nivel: Interlocked & Monitor
+    {
+      id: "fc-25-01",
+      moduleId: "25",
+      moduleTitle: "Concurrencia de Bajo Nivel: Interlocked & Monitor",
+      category: "Arquitectura & Backend",
+      question: "¿Por qué la operación de incremento 'x++' no es segura en entornos multihilo y cómo lo resuelve 'Interlocked.Increment'?",
+      answer: "Porque 'x++' ejecuta tres pasos independientes en CPU (Read-Modify-Write: cargar a registro, incrementar en ALU y almacenar en memoria); 'Interlocked' ejecuta la operación de forma atómica a nivel de hardware.",
+      explanation: "Un cambio de contexto entre los 3 pasos de x++ provoca pérdida de operaciones y datos corruptos. Interlocked.Increment instruye directamente a la CPU para bloquear el bus de memoria durante la instrucción (ej. LOCK XADD en x86) garantizando atomicidad sin la sobrecarga de bloquear hilos (Lock-Free).",
+      authorRef: "Cuestionario SPC INEGI & Mark J. Price (C# Concurrency)",
+      options: [
+        "Porque x++ requiere tres pasos en CPU (Read-Modify-Write); Interlocked realiza la modificación atómica mediante instrucciones directas de hardware",
+        "Porque x++ convierte la variable en un tipo de referencia temporal en el Heap; Interlocked la mantiene en el Stack",
+        "Porque el recolector de basura suspende los hilos que ejecutan operadores unitarios; Interlocked desactiva el GC",
+        "Porque x++ ejecuta internamente un spin-lock infinito; Interlocked utiliza un Mutex del Kernel"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-25-02",
+      moduleId: "25",
+      moduleTitle: "Concurrencia de Bajo Nivel: Interlocked & Monitor",
+      category: "Arquitectura & Backend",
+      question: "¿Cuál es la transformación interna real que realiza el compilador de C# sobre un bloque 'lock(_syncRoot)'?",
+      answer: "Emite un bloque try-finally donde invoca Monitor.Enter al inicio y garantiza la invocación a Monitor.Exit en el bloque finally.",
+      explanation: "lock(obj) es azúcar sintáctico de C#. El bloque try-finally garantiza que Monitor.Exit se ejecute sin importar si ocurre una excepción no controlada, evitando deadlocks permanentes. Además, Monitor duerme el hilo en la cola del SO (no es un spin-lock que queme CPU).",
+      authorRef: "Cuestionario SPC INEGI / CLR via C# (Jeffrey Richter)",
+      options: [
+        "Emite un bloque try-finally donde invoca Monitor.Enter al ingresar y garantiza la invocación a Monitor.Exit en el bloque finally",
+        "Un bucle de espera activa (spin-lock) gestionado por TaskFactory que sondea continuamente una dirección de memoria",
+        "La creación de un SemaphoreSlim asíncrono con capacidad inicial 1",
+        "La invocación a un Mutex de Kernel que bloquea el proceso en el Administrador de Tareas"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-25-03",
+      moduleId: "25",
+      moduleTitle: "Concurrencia de Bajo Nivel: Interlocked & Monitor",
+      category: "Arquitectura & Backend",
+      question: "¿En qué se diferencian arquitectónicamente 'Mutex' y 'SemaphoreSlim' en .NET?",
+      answer: "Mutex es una primitiva de Kernel del SO con exclusión mutua de 1 hilo/proceso y thread ownership; SemaphoreSlim opera en espacio de usuario, regula N ranuras (throttling) y admite await WaitAsync().",
+      explanation: "Mutex puede ser nombrado para sincronizar procesos distintos en el SO (ej. aplicación de instancia única) pero es pesado. SemaphoreSlim es ligero, vive en memoria del proceso, no tiene propiedad de hilo y es la herramienta estándar para regular concurrencia asíncrona.",
+      authorRef: "Cuestionario SPC INEGI / Microsoft Threading Documentation",
+      options: [
+        "Mutex es de Kernel con exclusión de 1 hilo/proceso y thread ownership; SemaphoreSlim opera en espacio de usuario, regula N ranuras (throttling) y admite await WaitAsync()",
+        "Mutex solo funciona dentro del mismo proceso; SemaphoreSlim permite sincronizar múltiples procesos independientes en el sistema operativo",
+        "SemaphoreSlim bloquea hilos nativos de Windows; Mutex opera exclusivamente en la memoria RAM del CLR",
+        "Son idénticos; SemaphoreSlim es simplemente el nombre moderno que recibió el Mutex a partir de .NET 6"
+      ],
+      correctOption: 0
+    },
+
+    // Módulo 26: Servicios de Fondo, Resiliencia & Caché
+    {
+      id: "fc-26-01",
+      moduleId: "26",
+      moduleTitle: "Servicios de Fondo, Resiliencia & Caché",
+      category: "Arquitectura & Backend",
+      question: "¿Qué componente de Microsoft.Extensions.Hosting es la clase base abstracta recomendada para servicios de fondo de larga duración?",
+      answer: "BackgroundService, la cual implementa IHostedService y expone el método 'protected abstract Task ExecuteAsync(CancellationToken stoppingToken)'.",
+      explanation: "TaskFactory es solo una clase auxiliar para crear tareas en el ThreadPool, pero no un componente hospedado. BackgroundService se integra con el ciclo de vida del Host, gestionando el arranque y el apagado ordenado (graceful shutdown) mediante stoppingToken.",
+      authorRef: "Cuestionario SPC INEGI & Microsoft.Extensions.Hosting",
+      options: [
+        "BackgroundService, implementando IHostedService y exponiendo 'ExecuteAsync(CancellationToken stoppingToken)'",
+        "TaskFactory, invocando StartNew() con TaskCreationOptions.LongRunning",
+        "ThreadPoolWorker, configurando un Thread nativo de segundo plano",
+        "ProcessHostExecutor, heredando de System.Diagnostics.Process"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-26-02",
+      moduleId: "26",
+      moduleTitle: "Servicios de Fondo, Resiliencia & Caché",
+      category: "Arquitectura & Backend",
+      question: "¿Por qué se recomienda combinar 'AbsoluteExpiration' con 'SlidingExpiration' en una estrategia de memoria caché en .NET?",
+      answer: "Para evitar que un dato consultado de manera frecuente y continua renueve su tiempo indefinidamente y permanezca para siempre en memoria con información obsoleta.",
+      explanation: "La expiración deslizante (Sliding) renueva el temporizador en cada lectura. Sin un tope absoluto (AbsoluteExpiration), un flujo continuo de tráfico mantendrá el dato congelado en caché de por vida, sirviendo información desfasada de la base de datos.",
+      authorRef: "Cuestionario SPC INEGI & ASP.NET Core Caching Best Practices",
+      options: [
+        "Para evitar que un dato consultado continuamente renueve su tiempo indefinidamente y permanezca para siempre en memoria con información obsoleta",
+        "Para que la memoria de la caché se replique automáticamente en todos los nodos de Kubernetes sin usar Redis",
+        "Para reducir el consumo de CPU de la recolección de basura a cero",
+        "Para forzar que los datos se guarden en disco duro cifrados con AES-256"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-26-03",
+      moduleId: "26",
+      moduleTitle: "Servicios de Fondo, Resiliencia & Caché",
+      category: "Arquitectura & Backend",
+      question: "En el patrón Circuit Breaker con Polly, ¿cuál es el comportamiento exacto del sistema cuando el circuito está en estado 'Open' (Abierto)?",
+      answer: "Intercepta las llamadas salientes y responde con un fallo inmediato (fail-fast) sin enviar tráfico de red hacia el servicio remoto colapsado.",
+      explanation: "El estado Abierto protege tanto al cliente (libera hilos inmediatamente sin esperar timeouts) como al servicio downstream (le permite recuperarse de la sobrecarga). Tras un tiempo de enfriamiento, pasa a Semi-Abierto (Half-Open) para enviar una llamada de prueba.",
+      authorRef: "Cuestionario SPC INEGI & Michael Nygard (Release It! / Polly)",
+      options: [
+        "Intercepta las llamadas salientes y responde con un fallo inmediato (fail-fast) sin enviar tráfico de red hacia el servicio remoto colapsado",
+        "Reinicia automáticamente el contenedor de Docker del servidor web llamador",
+        "Reintenta la llamada 100 veces por segundo hasta que el servidor remoto vuelva a estar en línea",
+        "Convierte automáticamente las peticiones HTTP REST en sockets binarios de gRPC"
+      ],
+      correctOption: 0
     }
   ];
 });

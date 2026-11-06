@@ -394,6 +394,38 @@
             "Matriz de decisión para seleccionar la métrica adecuada según el dominio"
         ],
         "btnId": "btn-goto-reliability-metrics"
+    },
+    {
+        "id": "25",
+        "slug": "25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion",
+        "filename": "25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion.html",
+        "theme": "theme-coral",
+        "category": "Arquitectura & Backend",
+        "badge": "25 · Concurrencia & CPU",
+        "title": "Concurrencia de Bajo Nivel: Interlocked & Monitor",
+        "desc": "Ciclo Read-Modify-Write en CPU de x++, operaciones atómicas de hardware con Interlocked, descompilación de lock en Monitor.Enter/Exit y Mutex vs SemaphoreSlim.",
+        "features": [
+            "Simulador de condiciones de carrera con 4 hilos en paralelo (x++ vs Interlocked vs lock)",
+            "Descompilación formal del compilador Roslyn y garantías de try-finally contra deadlocks",
+            "Laboratorio de regulación de caudal (Resource Throttling) con SemaphoreSlim asíncrono"
+        ],
+        "btnId": "btn-goto-concurrency-primitives"
+    },
+    {
+        "id": "26",
+        "slug": "26-servicios-segundo-plano-resiliencia-polly-cache-dotnet",
+        "filename": "26-servicios-segundo-plano-resiliencia-polly-cache-dotnet.html",
+        "theme": "theme-green",
+        "category": "Arquitectura & Backend",
+        "badge": "26 · Resiliencia & Servicios",
+        "title": "Servicios de Fondo, Resiliencia & Caché",
+        "desc": "BackgroundService e IHostedService en .NET, cancelación cooperativa y apagado elegante (Graceful Shutdown), IMemoryCache vs Redis y Circuit Breaker con Polly.",
+        "features": [
+            "Simulador de ciclo de vida del Host y cancelación cooperativa con SIGTERM y CancellationToken",
+            "Comparador de caché en memoria vs distribuida con expiración absoluta vs deslizante",
+            "Máquina de estados en vivo del Circuit Breaker (Closed, Open, Half-Open) ante fallas HTTP"
+        ],
+        "btnId": "btn-goto-services-resilience"
     }
 ];
 });
