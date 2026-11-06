@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Direccionamiento de Memoria en Matrices (Osvaldo Cairó) · MaterialVisual</title>
+  <link rel="stylesheet" href="../shared/theme.css" />
+  <style>
+    :root {
+      --accent: var(--accent-cyan);
+      --accent-glow: rgba(0, 240, 255, 0.25);
+    }
+
+    .matrix-grid {
+      display: inline-grid;
+      gap: 6px;
+      padding: 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      margin: 12px 0;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    .matrix-cell {
+      width: 52px;
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .matrix-cell:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .matrix-cell.selected {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .matrix-cell.skipped {
+      background: rgba(255, 184, 0, 0.12);
+      border-color: rgba(255, 184, 0, 0.4);
+      color: var(--accent-gold);
+    }
+
+    .ram-tape {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 12px 6px;
+      border: 1px dashed var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: #060913;
+      margin: 16px 0;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ram-block {
+      flex: 0 0 76px;
+      height: 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .ram-block .loc-addr {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .ram-block.highlight {
+      background: rgba(0, 240, 255, 0.25);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 12px var(--accent-glow);
+      transform: scale(1.05);
+      z-index: 2;
+    }
+
+    .ram-block.skipped-block {
+      background: rgba(255, 184, 0, 0.1);
+      border-color: rgba(255, 184, 0, 0.35);
+      color: var(--accent-gold);
+    }
+
+    .formula-banner {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.08), rgba(112, 0, 255, 0.08));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 18px 0;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .calc-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .calc-input-group label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .calc-input-group input, .calc-input-group select {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+
+    .calc-input-group input:focus, .calc-input-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .step-explain {
+      background: var(--bg-surface);
+      border-left: 3px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 12px 0;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body class="theme-cyan">
+  <div class="top-nav-bar"></div>
+
+  <header class="module-header">
+    <div class="module-badge">Estructuras de Datos &middot; Osvaldo Cair&oacute;</div>
+    <h1 class="module-title">Direccionamiento de Memoria en Matrices $A[m \times n]$</h1>
+    <p class="module-desc">
+      C&oacute;mo el hardware y los compiladores proyectan estructuras bidimensionales sobre la memoria RAM f&iacute;sica lineal.
+      F&oacute;rmulas can&oacute;nicas de mapeo por Renglones (Row-Major) y Columnas (Column-Major), c&aacute;lculo de offsets y tama&ntilde;o de palabra ($w$).
+    </p>
+  </header>
+
+  <nav class="module-tabs" role="tablist">
+    <button class="tab-btn active" data-tab="tab-theory" role="tab">1. Teor&iacute;a &amp; Fundamentos Cair&oacute;</button>
+    <button class="tab-btn" data-tab="tab-row-major" role="tab">2. Por Renglones (Row-Major)</button>
+    <button class="tab-btn" data-tab="tab-col-major" role="tab">3. Por Columnas (Column-Major)</button>
+    <button class="tab-btn" data-tab="tab-simulator" role="tab">4. Simulador &amp; RAM Visualizer</button>
+    <button class="tab-btn" data-tab="tab-quiz" role="tab">5. Laboratorio SPC Evaluativo</button>
+  </nav>
+
+  <main class="module-content">
+    <!-- TAB 1: TEORÍA -->
+    <section id="tab-theory" class="tab-panel active" role="tabpanel">
+      <h2>1. El Problema del Mapeo 2D a Memoria 1D</h2>
+      <p>
+        En la obra cl&aacute;sica <em>Estructuras de Datos</em> de <strong>Osvaldo Cair&oacute;</strong>, se establece una premisa arquitect&oacute;nica fundamental: 
+        <strong>la memoria f&iacute;sica de una computadora es estrictamente lineal y unidimensional</strong> (una secuencia contigua de bytes con direcciones enteras consecutivas: $0, 1, 2, 3, \dots$).
+      </p>
+
+      <div class="card-grid">
+        <div class="concept-card">
+          <h3>La Matriz L&oacute;gica $A[m \times n]$</h3>
+          <p>
+            Una matriz consta de <strong>$m$ renglones (filas)</strong> y <strong>$n$ columnas</strong>. 
+            Cada elemento individual se designa como $A[i, j]$, donde:
+          </p>
+          <ul>
+            <li>$i$ es el &iacute;ndice de rengl&oacute;n ($1 \le i \le m$ en base 1; $0 \le i < m$ en base 0).</li>
+            <li>$j$ es el &iacute;ndice de columna ($1 \le j \le n$ en base 1; $0 \le j < n$ en base 0).</li>
+            <li>Total de elementos en la matriz: $m \times n$.</li>
+          </ul>
+        </div>
+
+        <div class="concept-card">
+          <h3>Variables de Direccionamiento F&iacute;sico</h3>
+          <p>Para calcular la posici&oacute;n f&iacute;sica en memoria se emplean cuatro par&aacute;metros can&oacute;nicos:</p>
+          <ul>
+            <li><strong>$POSINI$ (o DirBase):</strong> Direcci&oacute;n de memoria donde reside el primer elemento de la matriz ($A[1, 1]$ o $A[0, 0]$).</li>
+            <li><strong>$w$ (Word Size):</strong> N&uacute;mero de bytes o palabras que ocupa cada elemento del tipo de dato (ej. <code>int</code> = 4 bytes, <code>double</code> = 8 bytes).</li>
+            <li><strong>$m$:</strong> N&uacute;mero total de renglones declarados en la matriz.</li>
+            <li><strong>$n$:</strong> N&uacute;mero total de columnas declaradas en la matriz.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout warning">
+        <h4>&iexcl;Trampa Cl&aacute;sica de Examen de Oposici&oacute;n! (Base 1 vs Base 0)</h4>
+        <p>
+          En los libros te&oacute;ricos de algoritmos y reactivos del SPC (Cair&oacute;, Sedgewick, Knuth), 
+          <strong>los arreglos suelen expresarse con &iacute;ndices base 1</strong> ($1 \le i \le m$, $1 \le j \le n$). 
+          En C#, C++, Java y Python se usa <strong>base 0</strong>.
+        </p>
+        <p>
+          Si no restas el $-1$ en f&oacute;rmulas base 1, tu direcci&oacute;n tendr&aacute; un desplazamiento err&oacute;neo. 
+          En este m&oacute;dulo analizamos ambas con &eacute;nfasis en la doctrina de <strong>Cair&oacute; (Base 1)</strong>.
+        </p>
+      </div>
+
+      <div class="data-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Criterio</th>
+              <th>Row-Major Order (Por Renglones)</th>
+              <th>Column-Major Order (Por Columnas)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Disposici&oacute;n en RAM</strong></td>
+              <td>Se almacena el Rengl&oacute;n 1 completo, luego Rengl&oacute;n 2, etc.</td>
+              <td>Se almacena la Columna 1 completa, luego Columna 2, etc.</td>
+            </tr>
+            <tr>
+              <td><strong>Lenguajes que lo adoptan</strong></td>
+              <td>C, C++, C#, Java, Python, Rust, Pascal</td>
+              <td>Fortran, MATLAB, R, Julia</td>
+            </tr>
+            <tr>
+              <td><strong>Dimensi&oacute;n Cr&iacute;tica</strong></td>
+              <td>Requiere conocer <strong>$n$ (n&uacute;mero de columnas)</strong></td>
+              <td>Requiere conocer <strong>$m$ (n&uacute;mero de renglones)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>F&oacute;rmula Base 1 ($LOC$)</strong></td>
+              <td><code>POSINI + [n*(i - 1) + (j - 1)] * w</code></td>
+              <td><code>POSINI + [m*(j - 1) + (i - 1)] * w</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: ROW-MAJOR -->
+    <section id="tab-row-major" class="tab-panel" role="tabpanel">
+      <h2>2. Direccionamiento por Renglones (Row-Major Order)</h2>
+      <p>
+        En el orden por renglones, los elementos de la matriz se guardan secuencialmente en la memoria fila por fila. 
+        Para acceder a un elemento en el rengl&oacute;n $i$ y columna $j$, debemos:
+      </p>
+
+      <ol>
+        <li>Saltar todos los renglones previos completos: hay $(i - 1)$ renglones anteriores.</li>
+        <li>Cada rengl&oacute;n contiene exactamente <strong>$n$</strong> columnas (elementos). Por tanto, se saltan $(i - 1) \times n$ celdas.</li>
+        <li>Dentro del rengl&oacute;n actual $i$, nos desplazamos $(j - 1)$ columnas hacia adelante.</li>
+        <li>Multiplicar el total de celdas saltadas por el tama&ntilde;o de palabra $w$ y sumarlo a $POSINI$.</li>
+      </ol>
+
+      <div class="formula-banner">
+        <h3 style="margin-top:0; color:var(--accent);">F&oacute;rmula de Osvaldo Cair&oacute; (Row-Major &middot; Base 1)</h3>
+        <p style="font-size:1.25rem; font-family:var(--font-mono); margin:10px 0; color:#fff;">
+          <strong>LOC(A[i, j]) = POSINI + [ n &times; (i &minus; 1) + (j &minus; 1) ] &times; w</strong>
+        </p>
+        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:0;">
+          * Nota: La cantidad total de renglones ($m$) <strong>NO interviene</strong> en el c&aacute;lculo de la direcci&oacute;n; s&oacute;lo importa $n$ (el ancho de cada rengl&oacute;n).
+        </p>
+      </div>
+
+      <div class="card-grid">
+        <div class="concept-card">
+          <h3>Ejemplo Num&eacute;rico Can&oacute;nico SPC</h3>
+          <p>
+            Sea una matriz $A[4 \times 5]$ de n&uacute;meros enteros (4 bytes por elemento, $w = 4$), almacenada a partir de la direcci&oacute;n 
+            $POSINI = 1000$. Calcular la direcci&oacute;n f&iacute;sica de $A[3, 4]$ por renglones:
+          </p>
+          <div class="step-explain">
+            Datos:<br/>
+            m = 4, n = 5, POSINI = 1000, w = 4<br/>
+            Buscamos elemento: i = 3, j = 4<br/><br/>
+            Paso 1: Renglones completos previos = (i - 1) = 3 - 1 = 2<br/>
+            Paso 2: Celdas en renglones previos = 2 * n = 2 * 5 = 10 celdas<br/>
+            Paso 3: Celdas en rengl&oacute;n actual = (j - 1) = 4 - 1 = 3 celdas<br/>
+            Paso 4: Total de celdas previas = 10 + 3 = 13 celdas<br/>
+            Paso 5: Desplazamiento en bytes = 13 * 4 = 52 bytes<br/>
+            Paso 6: LOC(A[3, 4]) = 1000 + 52 = <strong>1052</strong>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3>Variante en Base 0 (C#, C, C++)</h3>
+          <p>
+            Si los &iacute;ndices van desde $0$ hasta $m-1$ y $0$ hasta $n-1$:
+          </p>
+          <div class="step-explain">
+            F&oacute;rmula Base 0:<br/>
+            <strong>LOC(A[i, j]) = POSINI + [ n &times; i + j ] &times; w</strong><br/><br/>
+            Para el mismo tercer rengl&oacute;n y cuarta columna l&oacute;gica (i=2, j=3):<br/>
+            Offset = (5 * 2 + 3) * 4 = (10 + 3) * 4 = 52<br/>
+            LOC = 1000 + 52 = <strong>1052</strong> &check;
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">
+            Observa c&oacute;mo ambas f&oacute;rmulas convergen exactamente en la misma celda f&iacute;sica.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: COLUMN-MAJOR -->
+    <section id="tab-col-major" class="tab-panel" role="tabpanel">
+      <h2>3. Direccionamiento por Columnas (Column-Major Order)</h2>
+      <p>
+        En el orden por columnas, los elementos se guardan columna por columna en la memoria continua. 
+        Este es el formato est&aacute;ndar en Fortran, MATLAB y bibliotecas de &aacute;lgebra lineal de alto rendimiento (BLAS, LAPACK).
+      </p>
+
+      <div class="formula-banner" style="border-color:var(--accent-purple); box-shadow:0 4px 20px rgba(112, 0, 255, 0.25);">
+        <h3 style="margin-top:0; color:var(--accent-purple);">F&oacute;rmula de Osvaldo Cair&oacute; (Column-Major &middot; Base 1)</h3>
+        <p style="font-size:1.25rem; font-family:var(--font-mono); margin:10px 0; color:#fff;">
+          <strong>LOC(A[i, j]) = POSINI + [ m &times; (j &minus; 1) + (i &minus; 1) ] &times; w</strong>
+        </p>
+        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:0;">
+          * Aqu&iacute; el factor cr&iacute;tico es <strong>$m$ (total de renglones)</strong>, pues cada columna completa mide $m$ elementos de alto.
+        </p>
+      </div>
+
+      <div class="card-grid">
+        <div class="concept-card">
+          <h3>Ejemplo Num&eacute;rico Can&oacute;nico SPC (Columnas)</h3>
+          <p>
+            Misma matriz $A[4 \times 5]$, $w = 4$ bytes, $POSINI = 1000$. Calcular la direcci&oacute;n f&iacute;sica de $A[3, 4]$ por columnas:
+          </p>
+          <div class="step-explain" style="border-left-color:var(--accent-purple);">
+            Datos:<br/>
+            m = 4, n = 5, POSINI = 1000, w = 4<br/>
+            Buscamos elemento: i = 3, j = 4<br/><br/>
+            Paso 1: Columnas completas previas = (j - 1) = 4 - 1 = 3<br/>
+            Paso 2: Celdas en columnas previas = 3 * m = 3 * 4 = 12 celdas<br/>
+            Paso 3: Celdas en columna actual = (i - 1) = 3 - 1 = 2 celdas<br/>
+            Paso 4: Total de celdas previas = 12 + 2 = 14 celdas<br/>
+            Paso 5: Desplazamiento en bytes = 14 * 4 = 56 bytes<br/>
+            Paso 6: LOC(A[3, 4]) = 1000 + 56 = <strong>1056</strong>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3>Comparaci&oacute;n Cr&iacute;tica de Resultados</h3>
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Elemento</th>
+                  <th>Row-Major ($n=5$)</th>
+                  <th>Column-Major ($m=4$)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>$A[1, 1]$</td>
+                  <td>1000</td>
+                  <td>1000</td>
+                </tr>
+                <tr>
+                  <td>$A[1, 2]$</td>
+                  <td>1004</td>
+                  <td>1016 (salta 4 celdas)</td>
+                </tr>
+                <tr>
+                  <td>$A[2, 1]$</td>
+                  <td>1020 (salta 5 celdas)</td>
+                  <td>1004</td>
+                </tr>
+                <tr>
+                  <td><strong>$A[3, 4]$</strong></td>
+                  <td><strong>1052</strong></td>
+                  <td><strong>1056</strong></td>
+                </tr>
+                <tr>
+                  <td>$A[4, 5]$ (Fin)</td>
+                  <td>1076</td>
+                  <td>1076</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">
+            El primer ($A[1, 1]$) y el &uacute;ltimo ($A[m, n]$) elemento siempre comparten exactamente la misma direcci&oacute;n f&iacute;sica; 
+            los elementos intermedios divergen completamente seg&uacute;n el orden de almacenamiento.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SIMULADOR -->
+    <section id="tab-simulator" class="tab-panel" role="tabpanel">
+      <h2>4. Simulador Interactivo &amp; Mapeo en Memoria RAM</h2>
+      <p>
+        Configura las dimensiones de la matriz, la direcci&oacute;n inicial $POSINI$ y el tama&ntilde;o de palabra $w$. 
+        Haz clic en cualquier celda de la cuadr&iacute;cula 2D para ver c&oacute;mo se proyecta en la cinta de memoria f&iacute;sica continua 1D.
+      </p>
+
+      <div class="calc-controls">
+        <div class="calc-input-group">
+          <label for="input-m">Renglones (m)</label>
+          <input type="number" id="input-m" value="3" min="2" max="6" />
+        </div>
+        <div class="calc-input-group">
+          <label for="input-n">Columnas (n)</label>
+          <input type="number" id="input-n" value="4" min="2" max="6" />
+        </div>
+        <div class="calc-input-group">
+          <label for="input-posini">POSINI (Dec / Hex)</label>
+          <input type="number" id="input-posini" value="2000" step="10" />
+        </div>
+        <div class="calc-input-group">
+          <label for="input-w">Tama&ntilde;o w (bytes)</label>
+          <select id="input-w">
+            <option value="1">1 byte (byte / char)</option>
+            <option value="2">2 bytes (short)</option>
+            <option value="4" selected>4 bytes (int / float)</option>
+            <option value="8">8 bytes (double / long)</option>
+          </select>
+        </div>
+        <div class="calc-input-group">
+          <label for="input-order">Orden de Almacenamiento</label>
+          <select id="input-order">
+            <option value="row" selected>Row-Major (Por Renglones)</option>
+            <option value="col">Column-Major (Por Columnas)</option>
+          </select>
+        </div>
+        <div class="calc-input-group">
+          <label for="input-base">Indexaci&oacute;n</label>
+          <select id="input-base">
+            <option value="1" selected>Base 1 (Cair&oacute; SPC)</option>
+            <option value="0">Base 0 (C# / C++)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:14px;">
+        <div>
+          <span style="font-size:0.85rem; color:var(--text-muted);">Celda Seleccionada: </span>
+          <strong id="lbl-selected-cell" style="color:var(--accent); font-family:var(--font-mono); font-size:1.05rem;">A[2, 3]</strong>
+        </div>
+        <div>
+          <span style="font-size:0.85rem; color:var(--text-muted);">Direcci&oacute;n Calculada: </span>
+          <strong id="lbl-calculated-loc" style="color:var(--accent-green); font-family:var(--font-mono); font-size:1.15rem;">LOC = 2024</strong>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <h4 style="margin-bottom:6px;">Matriz L&oacute;gica 2D (Haz clic en una celda)</h4>
+        <div id="matrix-container" class="matrix-grid"></div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <h4 style="margin-bottom:6px;">Memoria RAM Continua 1D (Proyecci&oacute;n F&iacute;sica de Hardware)</h4>
+        <div id="ram-container" class="ram-tape"></div>
+      </div>
+
+      <div id="calc-step-trace" class="step-explain" style="margin-top:16px;">
+        <!-- Trace generado dinámicamente -->
+      </div>
+    </section>
+
+    <!-- TAB 5: QUIZ SPC -->
+    <section id="tab-quiz" class="tab-panel" role="tabpanel">
+      <h2>5. Laboratorio de Evaluaci&oacute;n SPC &middot; Direccionamiento de Arreglos</h2>
+      <p>
+        Resuelve estos 4 reactivos de alta complejidad con base en la bibliograf&iacute;a oficial de Osvaldo Cair&oacute; y 
+        evaluaciones t&eacute;cnicas del Servicio Profesional de Carrera (INEGI).
+      </p>
+
+      <div class="quiz-container" id="cairo-quiz">
+        <!-- Reactivo 1 -->
+        <div class="quiz-card" data-correct="1">
+          <p class="quiz-question">
+            1. Sea una matriz $A[5 \times 6]$ almacenada por renglones (Row-Major) en base 1, con $POSINI = 1000$ y cada elemento ocupando $w = 2$ bytes. 
+            &iquest;Cu&aacute;l es la direcci&oacute;n de memoria f&iacute;sica de $A[4, 3]$?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="cq1" value="0" /> 1038</label>
+            <label class="quiz-option"><input type="radio" name="cq1" value="1" /> 1040</label>
+            <label class="quiz-option"><input type="radio" name="cq1" value="2" /> 1046</label>
+            <label class="quiz-option"><input type="radio" name="cq1" value="3" /> 1050</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            F&oacute;rmula: $LOC = POSINI + [n(i - 1) + (j - 1)] \times w$.<br/>
+            $n = 6$, $i = 4$, $j = 3$, $w = 2$, $POSINI = 1000$.<br/>
+            Desplazamiento = $[6 \times (4 - 1) + (3 - 1)] \times 2 = [6 \times 3 + 2] \times 2 = [18 + 2] \times 2 = 20 \times 2 = 40$.<br/>
+            $LOC = 1000 + 40 = 1040$.
+          </div>
+        </div>
+
+        <!-- Reactivo 2 -->
+        <div class="quiz-card" data-correct="2">
+          <p class="quiz-question">
+            2. Si la misma matriz anterior $A[5 \times 6]$ ($POSINI = 1000$, $w = 2$) fuera almacenada en orden por columnas (Column-Major) en base 1, 
+            &iquest;cu&aacute;l ser&iacute;a la direcci&oacute;n de $A[4, 3]$?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="cq2" value="0" /> 1024</label>
+            <label class="quiz-option"><input type="radio" name="cq2" value="1" /> 1032</label>
+            <label class="quiz-option"><input type="radio" name="cq2" value="2" /> 1026</label>
+            <label class="quiz-option"><input type="radio" name="cq2" value="3" /> 1040</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            F&oacute;rmula: $LOC = POSINI + [m(j - 1) + (i - 1)] \times w$.<br/>
+            $m = 5$, $i = 4$, $j = 3$, $w = 2$, $POSINI = 1000$.<br/>
+            Desplazamiento = $[5 \times (3 - 1) + (4 - 1)] \times 2 = [5 \times 2 + 3] \times 2 = [10 + 3] \times 2 = 13 \times 2 = 26$.<br/>
+            $LOC = 1000 + 26 = 1026$.
+          </div>
+        </div>
+
+        <!-- Reactivo 3 -->
+        <div class="quiz-card" data-correct="0">
+          <p class="quiz-question">
+            3. Al calcular la direcci&oacute;n f&iacute;sica de un elemento en un arreglo bidimensional almacenado por renglones (Row-Major), 
+            &iquest;por qu&eacute; el n&uacute;mero de renglones totales ($m$) es irrelevante para la funci&oacute;n de direccionamiento?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="cq3" value="0" /> Porque para saltar renglones completos s&oacute;lo se necesita conocer cu&aacute;ntas columnas ($n$) tiene cada rengl&oacute;n.</label>
+            <label class="quiz-option"><input type="radio" name="cq3" value="1" /> Porque el compilador infiere $m$ autom&aacute;ticamente a partir del valor de $w$.</label>
+            <label class="quiz-option"><input type="radio" name="cq3" value="2" /> Porque en Row-Major los renglones se almacenan de manera discontinua mediante apuntadores.</label>
+            <label class="quiz-option"><input type="radio" name="cq3" value="3" /> Porque la memoria RAM colapsa la dimensi&oacute;n $m$ a un solo byte f&iacute;sico.</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            En Row-Major, para saltar los $(i-1)$ renglones previos, la &uacute;nica informaci&oacute;n de ancho necesaria es el n&uacute;mero de elementos por fila ($n$). 
+            El l&iacute;mite total $m$ sirve para validar que no haya desbordamiento de &iacute;ndice (bounds checking), pero no participa en la aritm&eacute;tica del offset.
+          </div>
+        </div>
+
+        <!-- Reactivo 4 -->
+        <div class="quiz-card" data-correct="3">
+          <p class="quiz-question">
+            4. En una matriz $A[m \times n]$, &iquest;qu&eacute; elementos tienen garantizada exactamente la misma direcci&oacute;n de memoria tanto en Row-Major como en Column-Major?
+          </p>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="radio" name="cq4" value="0" /> Todos los elementos de la diagonal principal ($i = j$).</label>
+            <label class="quiz-option"><input type="radio" name="cq4" value="1" /> Ninguno, sus disposiciones son siempre mutuamente excluyentes.</label>
+            <label class="quiz-option"><input type="radio" name="cq4" value="2" /> S&oacute;lo el elemento central de matrices impares.</label>
+            <label class="quiz-option"><input type="radio" name="cq4" value="3" /> El primer elemento ($A[1, 1]$) y el &uacute;ltimo elemento ($A[m, n]$).</label>
+          </div>
+          <div class="quiz-feedback">
+            <strong>Explicaci&oacute;n:</strong><br/>
+            El primer elemento ($A[1, 1]$) tiene offset 0 en ambos esquemas ($LOC = POSINI$). 
+            El &uacute;ltimo elemento ($A[m, n]$) tiene siempre un offset de $(m \times n - 1) \times w$ bytes, pues independientemente de c&oacute;mo se ordenen internamente las celdas, 
+            ambos esquemas deben recorrer la totalidad de las celdas anteriores antes de alcanzar la &uacute;ltima.
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-eval-cairo" style="margin-top:16px;">Calificar Evaluaci&oacute;n</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="module-footer">
+    <div class="module-nav-bar"></div>
+  </footer>
+
+  <script src="../shared/modules-data.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script>
+    // Tab switching logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.dataset.tab);
+        if (target) target.classList.add('active');
+      });
+    });
+
+    // SIMULADOR INTERACTIVO
+    let currentI = 2;
+    let currentJ = 3;
+
+    function renderMatrixSimulator() {
+      const m = parseInt(document.getElementById('input-m').value, 10);
+      const n = parseInt(document.getElementById('input-n').value, 10);
+      const posini = parseInt(document.getElementById('input-posini').value, 10);
+      const w = parseInt(document.getElementById('input-w').value, 10);
+      const order = document.getElementById('input-order').value;
+      const base = parseInt(document.getElementById('input-base').value, 10);
+
+      // Bounds check for current selection
+      const minIdx = base === 1 ? 1 : 0;
+      const maxI = base === 1 ? m : m - 1;
+      const maxJ = base === 1 ? n : n - 1;
+
+      if (currentI < minIdx || currentI > maxI) currentI = minIdx;
+      if (currentJ < minIdx || currentJ > maxJ) currentJ = minIdx;
+
+      document.getElementById('lbl-selected-cell').textContent = `A[${currentI}, ${currentJ}]`;
+
+      // Matrix Grid 2D
+      const matrixContainer = document.getElementById('matrix-container');
+      matrixContainer.innerHTML = '';
+      matrixContainer.style.gridTemplateColumns = `repeat(${n}, 52px)`;
+
+      // RAM Tape 1D
+      const ramContainer = document.getElementById('ram-container');
+      ramContainer.innerHTML = '';
+
+      // Calculation formula
+      let cellOffset = 0;
+      let traceHtml = '';
+
+      if (order === 'row') {
+        if (base === 1) {
+          const rowsSkipped = currentI - 1;
+          const colsSkipped = currentJ - 1;
+          cellOffset = n * rowsSkipped + colsSkipped;
+          traceHtml = `<strong>Orden por Renglones (Row-Major &middot; Base 1):</strong><br/>` +
+            `&bull; Renglones previos completos saltados: (i - 1) = (${currentI} - 1) = <strong>${rowsSkipped}</strong> renglones.<br/>` +
+            `&bull; Celdas en renglones saltados: ${rowsSkipped} &times; n = ${rowsSkipped} &times; ${n} = <strong>${rowsSkipped * n}</strong> celdas.<br/>` +
+            `&bull; Celdas previas en el rengl&oacute;n actual: (j - 1) = (${currentJ} - 1) = <strong>${colsSkipped}</strong> celdas.<br/>` +
+            `&bull; Offset de celdas acumuladas = ${rowsSkipped * n} + ${colsSkipped} = <strong>${cellOffset}</strong> celdas.<br/>` +
+            `&bull; Desplazamiento en memoria = ${cellOffset} celdas &times; ${w} bytes = <strong>${cellOffset * w}</strong> bytes.<br/>` +
+            `&bull; <strong>LOC(A[${currentI}, ${currentJ}]) = ${posini} + ${cellOffset * w} = ${posini + cellOffset * w}</strong>`;
+        } else {
+          cellOffset = n * currentI + currentJ;
+          traceHtml = `<strong>Orden por Renglones (Row-Major &middot; Base 0):</strong><br/>` +
+            `&bull; Renglones previos: i = <strong>${currentI}</strong> renglones (${currentI} &times; ${n} = ${currentI * n} celdas).<br/>` +
+            `&bull; Columnas en rengl&oacute;n actual: j = <strong>${currentJ}</strong> celdas.<br/>` +
+            `&bull; Offset de celdas acumuladas = ${cellOffset} celdas.<br/>` +
+            `&bull; Desplazamiento en bytes = ${cellOffset} &times; ${w} = <strong>${cellOffset * w}</strong> bytes.<br/>` +
+            `&bull; <strong>LOC(A[${currentI}, ${currentJ}]) = ${posini} + ${cellOffset * w} = ${posini + cellOffset * w}</strong>`;
+        }
+      } else {
+        // Col-major
+        if (base === 1) {
+          const colsSkipped = currentJ - 1;
+          const rowsSkipped = currentI - 1;
+          cellOffset = m * colsSkipped + rowsSkipped;
+          traceHtml = `<strong>Orden por Columnas (Column-Major &middot; Base 1):</strong><br/>` +
+            `&bull; Columnas previas completas saltadas: (j - 1) = (${currentJ} - 1) = <strong>${colsSkipped}</strong> columnas.<br/>` +
+            `&bull; Celdas en columnas saltadas: ${colsSkipped} &times; m = ${colsSkipped} &times; ${m} = <strong>${colsSkipped * m}</strong> celdas.<br/>` +
+            `&bull; Celdas previas en la columna actual: (i - 1) = (${currentI} - 1) = <strong>${rowsSkipped}</strong> celdas.<br/>` +
+            `&bull; Offset de celdas acumuladas = ${colsSkipped * m} + ${rowsSkipped} = <strong>${cellOffset}</strong> celdas.<br/>` +
+            `&bull; Desplazamiento en memoria = ${cellOffset} celdas &times; ${w} bytes = <strong>${cellOffset * w}</strong> bytes.<br/>` +
+            `&bull; <strong>LOC(A[${currentI}, ${currentJ}]) = ${posini} + ${cellOffset * w} = ${posini + cellOffset * w}</strong>`;
+        } else {
+          cellOffset = m * currentJ + currentI;
+          traceHtml = `<strong>Orden por Columnas (Column-Major &middot; Base 0):</strong><br/>` +
+            `&bull; Columnas previas: j = <strong>${currentJ}</strong> columnas (${currentJ} &times; ${m} = ${currentJ * m} celdas).<br/>` +
+            `&bull; Renglones en columna actual: i = <strong>${currentI}</strong> celdas.<br/>` +
+            `&bull; Offset de celdas acumuladas = ${cellOffset} celdas.<br/>` +
+            `&bull; Desplazamiento en bytes = ${cellOffset} &times; ${w} = <strong>${cellOffset * w}</strong> bytes.<br/>` +
+            `&bull; <strong>LOC(A[${currentI}, ${currentJ}]) = ${posini} + ${cellOffset * w} = ${posini + cellOffset * w}</strong>`;
+        }
+      }
+
+      const calculatedLoc = posini + (cellOffset * w);
+      document.getElementById('lbl-calculated-loc').textContent = `LOC = ${calculatedLoc}`;
+      document.getElementById('calc-step-trace').innerHTML = traceHtml;
+
+      // Populate 2D Matrix
+      for (let r = minIdx; r <= maxI; r++) {
+        for (let c = minIdx; c <= maxJ; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'matrix-cell';
+          cell.innerHTML = `<span>[${r},${c}]</span>`;
+
+          const isSelected = (r === currentI && c === currentJ);
+          if (isSelected) {
+            cell.classList.add('selected');
+          } else {
+            // Check if cell was skipped before target
+            let thisOffset = 0;
+            if (order === 'row') {
+              thisOffset = base === 1 ? (n * (r - 1) + (c - 1)) : (n * r + c);
+            } else {
+              thisOffset = base === 1 ? (m * (c - 1) + (r - 1)) : (m * c + r);
+            }
+            if (thisOffset < cellOffset) {
+              cell.classList.add('skipped');
+            }
+          }
+
+          cell.addEventListener('click', () => {
+            currentI = r;
+            currentJ = c;
+            renderMatrixSimulator();
+          });
+          matrixContainer.appendChild(cell);
+        }
+      }
+
+      // Populate RAM 1D Tape
+      const totalCells = m * n;
+      for (let k = 0; k < totalCells; k++) {
+        let r, c;
+        if (order === 'row') {
+          if (base === 1) {
+            r = Math.floor(k / n) + 1;
+            c = (k % n) + 1;
+          } else {
+            r = Math.floor(k / n);
+            c = k % n;
+          }
+        } else {
+          if (base === 1) {
+            c = Math.floor(k / m) + 1;
+            r = (k % m) + 1;
+          } else {
+            c = Math.floor(k / m);
+            r = k % m;
+          }
+        }
+
+        const block = document.createElement('div');
+        block.className = 'ram-block';
+        const blkAddr = posini + (k * w);
+        block.innerHTML = `<strong>A[${r},${c}]</strong><span class="loc-addr">${blkAddr}</span>`;
+
+        if (k === cellOffset) {
+          block.classList.add('highlight');
+          // auto scroll
+          setTimeout(() => {
+            block.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          }, 50);
+        } else if (k < cellOffset) {
+          block.classList.add('skipped-block');
+        }
+
+        block.addEventListener('click', () => {
+          currentI = r;
+          currentJ = c;
+          renderMatrixSimulator();
+        });
+
+        ramContainer.appendChild(block);
+      }
+    }
+
+    ['input-m', 'input-n', 'input-posini', 'input-w', 'input-order', 'input-base'].forEach(id => {
+      document.getElementById(id).addEventListener('change', renderMatrixSimulator);
+      document.getElementById(id).addEventListener('input', renderMatrixSimulator);
+    });
+
+    renderMatrixSimulator();
+
+    // QUIZ LOGIC
+    document.getElementById('btn-eval-cairo').addEventListener('click', () => {
+      const cards = document.querySelectorAll('#cairo-quiz .quiz-card');
+      let score = 0;
+
+      cards.forEach(card => {
+        const correctVal = card.dataset.correct;
+        const selected = card.querySelector('input[type="radio"]:checked');
+        const feedback = card.querySelector('.quiz-feedback');
+
+        if (selected) {
+          if (selected.value === correctVal) {
+            score++;
+            card.style.borderColor = 'var(--accent-green)';
+          } else {
+            card.style.borderColor = 'var(--accent-red)';
+          }
+        } else {
+          card.style.borderColor = 'var(--accent-red)';
+        }
+
+        if (feedback) feedback.style.display = 'block';
+      });
+
+      alert(`Resultado de la Evaluaci\u00F3n: ${score} de ${cards.length} aciertos.`);
+    });
+  </script>
+</body>
+</html>

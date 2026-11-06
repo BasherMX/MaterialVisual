@@ -1,9 +1,54 @@
 /**
- * Material Visual · Enlazador Dinámico de Navegación entre Módulos
+ * Material Visual · Enlazador Dinámico de Navegación y Progreso entre Módulos
  * Construye automáticamente la barra 'Anterior | Índice | Siguiente'
- * basándose en el catálogo de MATERIAL_MODULES sin duplicar código.
+ * y gestiona el estado de módulos vistos/completados con persistencia en localStorage.
  */
 (function () {
+  const STORAGE_KEY = 'material_visual_completed_modules';
+
+  function getCompleted() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function isCompleted(moduleId) {
+    return getCompleted().includes(String(moduleId));
+  }
+
+  function toggle(moduleId) {
+    try {
+      let list = getCompleted();
+      const idStr = String(moduleId);
+      const idx = list.indexOf(idStr);
+      let newState = false;
+      if (idx !== -1) {
+        list.splice(idx, 1);
+        newState = false;
+      } else {
+        list.push(idStr);
+        newState = true;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('material-progress-updated', {
+        detail: { moduleId: idStr, isCompleted: newState, list: list }
+      }));
+      return newState;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  window.MATERIAL_PROGRESS = {
+    STORAGE_KEY: STORAGE_KEY,
+    getCompleted: getCompleted,
+    isCompleted: isCompleted,
+    toggle: toggle
+  };
+
   function initModuleNavigation() {
     if (!window.MATERIAL_MODULES || !Array.isArray(window.MATERIAL_MODULES)) {
       return;
@@ -26,21 +71,45 @@
     });
 
     if (currentIndex === -1) {
-      // Intentar por coincidencia de slug
       currentIndex = modules.findIndex(function (m) {
         return currentFile.toLowerCase().includes(m.slug.toLowerCase());
       });
     }
 
     if (currentIndex === -1) {
-      return; // No es un módulo reconocido
+      return;
     }
 
     const currentModule = modules[currentIndex];
     const prevModule = currentIndex > 0 ? modules[currentIndex - 1] : null;
-    const nextModule = currentIndex < modules.length - 1 ? modules[currentIndex + 1] : modules[0]; // ciclo o null
+    const nextModule = currentIndex < modules.length - 1 ? modules[currentIndex + 1] : modules[0];
 
-    // Buscar o crear la barra de navegación
+    // 1. Inyectar / Gestionar Botón de "Visto" en la parte superior
+    const backBtn = document.querySelector('.btn-back-index');
+    if (backBtn && !document.querySelector('.top-nav-bar')) {
+      const topBar = document.createElement('div');
+      topBar.className = 'top-nav-bar';
+      backBtn.parentNode.insertBefore(topBar, backBtn);
+      topBar.appendChild(backBtn);
+      backBtn.style.marginBottom = '0';
+
+      const toggleViewedTopBtn = document.createElement('button');
+      toggleViewedTopBtn.id = 'btn-toggle-viewed-top';
+      toggleViewedTopBtn.className = `btn-toggle-viewed ${isCompleted(currentModule.id) ? 'is-viewed' : ''}`;
+      toggleViewedTopBtn.innerHTML = isCompleted(currentModule.id)
+        ? `<span>✓</span> Módulo Visto`
+        : `<span>○</span> Marcar como Visto`;
+      toggleViewedTopBtn.title = "Marca este módulo como estudiado (se guarda en tu navegador)";
+
+      toggleViewedTopBtn.onclick = function () {
+        const completed = toggle(currentModule.id);
+        updateViewedButtons(completed);
+      };
+
+      topBar.appendChild(toggleViewedTopBtn);
+    }
+
+    // 2. Buscar o crear la barra de navegación inferior
     let navBar = document.querySelector('.module-nav-bar');
     if (!navBar) {
       navBar = document.createElement('nav');
@@ -55,7 +124,6 @@
       }
     }
 
-    // Títulos cortos para los botones de navegación
     function getShortTitle(mod) {
       if (!mod) return '';
       const parts = mod.title.split(':');
@@ -63,7 +131,6 @@
       return `${mod.id} · ${base.trim()}`;
     }
 
-    // Construir contenido HTML de navegación
     const prevHtml = prevModule
       ? `<a href="${prevModule.filename}" class="btn-nav-standard btn-nav-prev" title="${prevModule.title}">← Anterior: ${getShortTitle(prevModule)}</a>`
       : `<a href="../index.html" class="btn-nav-standard btn-nav-home">← Volver al Inicio</a>`;
@@ -74,12 +141,35 @@
 
     navBar.innerHTML = `
       <div class="nav-left">${prevHtml}</div>
-      <div class="nav-center" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+      <div class="nav-center" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:center;">
         <a href="../index.html" class="btn-nav-standard btn-nav-home">Índice Principal 🏠</a>
+        <button id="btn-toggle-viewed-bottom" class="btn-toggle-viewed ${isCompleted(currentModule.id) ? 'is-viewed' : ''}" style="min-height:36px; padding:6px 14px; font-size:0.78rem;">
+          ${isCompleted(currentModule.id) ? '✓ Visto' : 'Marcar Visto ○'}
+        </button>
         <a href="anki-arena.html?modulo=${currentModule.id}" class="btn-nav-standard" style="background:rgba(121,40,202,0.25); border-color:var(--purple); color:#e7f6ff;" title="Entrenar este tema en la Arena Flashcards">🗂️ Arena Flashcards</a>
       </div>
       <div class="nav-right">${nextHtml}</div>
     `;
+
+    const bottomBtn = document.getElementById('btn-toggle-viewed-bottom');
+    if (bottomBtn) {
+      bottomBtn.onclick = function () {
+        const completed = toggle(currentModule.id);
+        updateViewedButtons(completed);
+      };
+    }
+
+    function updateViewedButtons(completed) {
+      const topBtn = document.getElementById('btn-toggle-viewed-top');
+      if (topBtn) {
+        topBtn.className = `btn-toggle-viewed ${completed ? 'is-viewed' : ''}`;
+        topBtn.innerHTML = completed ? `<span>✓</span> Módulo Visto` : `<span>○</span> Marcar como Visto`;
+      }
+      if (bottomBtn) {
+        bottomBtn.className = `btn-toggle-viewed ${completed ? 'is-viewed' : ''}`;
+        bottomBtn.innerHTML = completed ? '✓ Visto' : 'Marcar Visto ○';
+      }
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -88,4 +178,5 @@
     initModuleNavigation();
   }
 })();
+
 

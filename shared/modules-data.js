@@ -426,6 +426,38 @@
             "Máquina de estados en vivo del Circuit Breaker (Closed, Open, Half-Open) ante fallas HTTP"
         ],
         "btnId": "btn-goto-services-resilience"
+    },
+    {
+        "id": "27",
+        "slug": "27-estimacion-pert-ruta-critica-validacion-haynes",
+        "filename": "27-estimacion-pert-ruta-critica-validacion-haynes.html",
+        "theme": "theme-gold",
+        "category": "Gestión de Proyectos",
+        "badge": "27 · Estimación PERT & Validación",
+        "title": "Estimación PERT & Validación de Estrategia",
+        "desc": "Fórmulas matemáticas de PERT (Te, varianza y desviación estándar), actividades ficticias (dummy) en diagramas de red y los tres métodos formales de validación estratégica de Haynes.",
+        "features": [
+            "Calculadora de distribución Beta con 3 estimadores (To, Tm, Tp) y cálculo probabilístico de holguras",
+            "Diagramador de red AOA con flechas punteadas para actividades dummy (0 tiempo, 0 recursos)",
+            "Matriz de validación de estrategia en fase de definición: Mercado, Ensayo piloto y Simulación"
+        ],
+        "btnId": "btn-goto-pert-haynes"
+    },
+    {
+        "id": "28",
+        "slug": "28-direccionamiento-memoria-matrices-cairo",
+        "filename": "28-direccionamiento-memoria-matrices-cairo.html",
+        "theme": "theme-cyan",
+        "category": "Estructuras & Algoritmos",
+        "badge": "28 · Memoria & Matrices",
+        "title": "Direccionamiento de Memoria en Matrices A[m×n]",
+        "desc": "Mapeo de matrices bidimensionales a memoria RAM física lineal según Osvaldo Cairó. Fórmulas de Row-Major vs Column-Major, cálculo de offsets y tamaño de palabra w.",
+        "features": [
+            "Visualizador de proyección 2D a cinta 1D continua de RAM con resaltado de bytes y offsets",
+            "Calculadora matemática paso a paso para Base 1 (Cairó / SPC) y Base 0 (C# / C++)",
+            "Laboratorio evaluativo con reactivos oficiales de cálculo de direcciones físicas"
+        ],
+        "btnId": "btn-goto-cairo-matrix-loc"
     }
 ];
 });

@@ -412,7 +412,10 @@
 
         <div class="meta-status-row">
           <span id="modules-counter">Cargando catálogo...</span>
-          <span style="color:var(--muted);">Total registrado: <strong id="total-badge" style="color:var(--green);">0</strong></span>
+          <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+            <span style="color:var(--muted);">Total: <strong id="total-badge" style="color:var(--green);">0</strong></span>
+            <span style="color:var(--muted);">Vistos: <strong id="completed-badge" style="color:var(--green);">0</strong></span>
+          </div>
         </div>
       </section>
 
@@ -454,6 +457,8 @@
         <li><a href="modulos/24-ingenieria-software-metricas-confiabilidad-rocof-pofod-mttf-kloc.html">24 · Confiabilidad & Métricas: Métricas de Confiabilidad: ROCOF, POFOD & MTTF</a></li>
         <li><a href="modulos/25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion.html">25 · Concurrencia & CPU: Concurrencia de Bajo Nivel: Interlocked & Monitor</a></li>
         <li><a href="modulos/26-servicios-segundo-plano-resiliencia-polly-cache-dotnet.html">26 · Resiliencia & Servicios: Servicios de Fondo, Resiliencia & Caché</a></li>
+        <li><a href="modulos/27-estimacion-pert-ruta-critica-validacion-haynes.html">27 · Estimación PERT & Validación: Estimación PERT & Validación de Estrategia (Haynes)</a></li>
+        <li><a href="modulos/28-direccionamiento-memoria-matrices-cairo.html">28 · Memoria & Matrices: Direccionamiento de Memoria en Matrices A[m×n] (Cairó)</a></li>
         </ul>
       </div>
     </noscript>
@@ -463,8 +468,9 @@
     </footer>
     </main>
 
-    <!-- Datos Centralizados de los Módulos -->
+    <!-- Datos Centralizados de los Módulos y Navegación / Progreso -->
     <script src="shared/modules-data.js"></script>
+    <script src="shared/nav.js"></script>
     <script>
       (function () {
         const modules = window.MATERIAL_MODULES || [];
@@ -475,9 +481,18 @@
         const chipsContainer = document.getElementById('category-chips-container');
         const counterEl = document.getElementById('modules-counter');
         const totalBadge = document.getElementById('total-badge');
+        const completedBadge = document.getElementById('completed-badge');
         const searchInput = document.getElementById('search-input');
 
-        if (totalBadge) totalBadge.innerText = modules.length;
+        function updateProgressStats() {
+          const completedList = window.MATERIAL_PROGRESS ? window.MATERIAL_PROGRESS.getCompleted() : [];
+          if (totalBadge) totalBadge.innerText = modules.length;
+          if (completedBadge) {
+            const count = modules.filter(m => completedList.includes(String(m.id))).length;
+            const pct = modules.length ? Math.round((count / modules.length) * 100) : 0;
+            completedBadge.innerHTML = `${count} / ${modules.length} <span style="font-size:0.75rem; color:var(--muted); font-weight:normal;">(${pct}%)</span>`;
+          }
+        }
 
         // Extraer categorías únicas
         const categories = ['all', ...new Set(modules.map(m => m.category).filter(Boolean))];
@@ -503,6 +518,7 @@
 
         function renderGrid() {
           container.innerHTML = '';
+          const completedList = window.MATERIAL_PROGRESS ? window.MATERIAL_PROGRESS.getCompleted() : [];
 
           const filtered = modules.filter(m => {
             const matchCategory = activeCategory === 'all' || m.category === activeCategory;
@@ -534,12 +550,22 @@
           }
 
           filtered.forEach(m => {
+            const isViewed = completedList.includes(String(m.id));
             const card = document.createElement('article');
-            card.className = `module-card ${m.theme}`;
+            card.className = `module-card ${m.theme} ${isViewed ? 'is-viewed-card' : ''}`;
 
             const featuresHtml = m.features.map(f => `<li>${f}</li>`).join('');
 
             card.innerHTML = `
+              <button
+                class="btn-card-check ${isViewed ? 'is-viewed' : ''}"
+                data-mod-id="${m.id}"
+                title="${isViewed ? 'Módulo completado. Clic para marcar como pendiente' : 'Marcar módulo como visto'}"
+                aria-label="Alternar visto módulo ${m.title}"
+              >
+                <span>${isViewed ? '✓' : '○'}</span>
+                <span>${isViewed ? 'Visto' : 'Marcar'}</span>
+              </button>
               <div>
                 <span class="badge badge-theme">${m.badge}</span>
                 <h2 class="module-title">${m.title}</h2>
@@ -559,6 +585,22 @@
             `;
             container.appendChild(card);
           });
+
+          // Conectar eventos de palomita
+          container.querySelectorAll('.btn-card-check').forEach(btn => {
+            btn.onclick = function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              const modId = btn.getAttribute('data-mod-id');
+              if (window.MATERIAL_PROGRESS) {
+                window.MATERIAL_PROGRESS.toggle(modId);
+                renderGrid();
+                updateProgressStats();
+              }
+            };
+          });
+
+          updateProgressStats();
         }
 
         window.resetSearch = function () {
@@ -575,6 +617,10 @@
             renderGrid();
           });
         }
+
+        window.addEventListener('material-progress-updated', () => {
+          renderGrid();
+        });
 
         // Inicializar
         renderChips();

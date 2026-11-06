@@ -802,6 +802,23 @@
       ],
       correctOption: 0
     },
+    {
+      id: "fc-19-05",
+      moduleId: "19",
+      moduleTitle: "EF Core: Concurrencia & Optimización",
+      category: "Arquitectura & Backend",
+      question: "En el modelo relacional canónico Northwind utilizado por Mark J. Price para EF Core, ¿cuál es la estructura de clave de la tabla Order Details?",
+      answer: "Posee una clave primaria compuesta (OrderID, ProductID) y actúa como tabla de unión (junction table) N:M entre Orders y Products.",
+      explanation: "En Northwind, Order Details modela cada renglón de compra vinculando una Orden con un Producto específico junto con atributos transaccionales propios (UnitPrice, Quantity, Discount). Su clave primaria compuesta requiere configuración Fluent API con HasKey(od => new { od.OrderID, od.ProductID }).",
+      authorRef: "Mark J. Price (Apps and Services with .NET 8) & Microsoft",
+      options: [
+        "Clave primaria compuesta por (OrderID, ProductID), actuando como tabla de unión N:M entre Orders y Products",
+        "Clave primaria autoincremental simple llamada OrderDetailId sin claves foráneas",
+        "Una clave GUID generada en el cliente con relación 1:1 estricta hacia Categories",
+        "No posee clave primaria porque almacena documentos JSON no estructurados"
+      ],
+      correctOption: 0
+    },
 
     // =========================================================================
     // BLOQUE 6: APIS MODERNAS, STREAMING & SEGURIDAD
@@ -1081,6 +1098,40 @@
       ],
       correctOption: 0
     },
+    {
+      id: "fc-25-04",
+      moduleId: "25",
+      moduleTitle: "Concurrencia de Bajo Nivel: Interlocked & Monitor",
+      category: "Arquitectura & Backend",
+      question: "¿Qué representa fundamentalmente una 'Task' en comparación con el manejo directo de objetos de la clase 'Thread'?",
+      answer: "Task es una promesa o abstracción de alto nivel de una operación asíncrona que gestiona el ThreadPool, mientras Thread mapea directamente a un hilo nativo del SO de 1 MB de stack.",
+      explanation: "Un Thread nativo es pesado en consumo de memoria (1 MB) y tiempo de cambio de contexto (context switch). Task desacopla el trabajo del hilo físico subyacente, permitiendo que miles de tareas reutilicen de forma eficiente un grupo acotado de hilos de trabajo gestionados por el CLR.",
+      authorRef: "Cuestionario SPC INEGI & SWEBOK v4 / Stephen Cleary",
+      options: [
+        "Una abstracción de alto nivel de una operación asíncrona gestionada por el ThreadPool, a diferencia de un hilo nativo del SO con 1 MB de stack",
+        "Un proceso independiente aislado en el Kernel con su propio espacio de memoria virtual protegido",
+        "Un bucle de hardware que ejecuta microcódigo directamente en el procesador",
+        "Una estructura de datos que solo funciona en aplicaciones monohilo de interfaz gráfica"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-25-05",
+      moduleId: "25",
+      moduleTitle: "Concurrencia de Bajo Nivel: Interlocked & Monitor",
+      category: "Arquitectura & Backend",
+      question: "En escenarios multihilo en C#, ¿por qué es peligroso disparar eventos dentro de un bloque 'lock'?",
+      answer: "Porque invoca código externo desconocido con el cerrojo retenido, abriendo un riesgo crítico de inversión de bloqueos y Deadlock.",
+      explanation: "Los suscriptores del evento pueden intentar adquirir otro lock o sincronizarse con un hilo principal que a su vez espera el lock original. El patrón seguro consiste en tomar una copia local de la referencia con 'MyEvent?.Invoke(...)', o notificar a los suscriptores fuera de la sección crítica.",
+      authorRef: "Cuestionario SPC INEGI & Framework Design Guidelines (Kwalina & Abrams)",
+      options: [
+        "Porque invoca código externo arbitrario con el cerrojo retenido, provocando inversión de dependencias y riesgo crítico de Deadlock",
+        "Porque el compilador de C# genera un error CS0103 en tiempo de compilación impidiendo compilar el ensamblado",
+        "Porque los eventos eliminan automáticamente la memoria de los suscriptores",
+        "Porque la clase MulticastDelegate no admite más de un hilo registrado a la vez"
+      ],
+      correctOption: 0
+    },
 
     // Módulo 26: Servicios de Fondo, Resiliencia & Caché
     {
@@ -1131,6 +1182,99 @@
         "Reinicia automáticamente el contenedor de Docker del servidor web llamador",
         "Reintenta la llamada 100 veces por segundo hasta que el servidor remoto vuelva a estar en línea",
         "Convierte automáticamente las peticiones HTTP REST en sockets binarios de gRPC"
+      ],
+      correctOption: 0
+    },
+
+    // =========================================================================
+    // BLOQUE 8: GESTIÓN AVANZADA Y ESTRUCTURAS DE DATOS (SPC INEGI)
+    // =========================================================================
+
+    // Módulo 27: Estimación PERT & Validación de Estrategia (Marion E. Haynes)
+    {
+      id: "fc-27-01",
+      moduleId: "27",
+      moduleTitle: "Estimación PERT & Validación de Estrategia",
+      category: "Gestión de Proyectos",
+      question: "¿Cuáles son las fórmulas canónicas de PERT para calcular el Tiempo Esperado (Te), Desviación Estándar (σ) y Varianza (σ²)?",
+      answer: "Te = (To + 4Tm + Tp) / 6;  σ = (Tp - To) / 6;  σ² = ((Tp - To) / 6)².",
+      explanation: "PERT asume una distribución probabilística Beta. El tiempo más probable (Tm) recibe una ponderación cuádruple (4), y el rango completo de dispersión (Tp - To) se divide entre 6 desviaciones estándar que abarcan el 99.7% del área bajo la curva normal.",
+      authorRef: "Marion E. Haynes & Guía SPC INEGI",
+      options: [
+        "Te = (To + 4Tm + Tp) / 6; σ = (Tp - To) / 6; σ² = ((Tp - To) / 6)²",
+        "Te = (To + Tm + Tp) / 3; σ = (Tp - To) / 2; σ² = (Tp - To)²",
+        "Te = (2To + 3Tm + Tp) / 5; σ = Tm / 6; σ² = Tm² / 36",
+        "Te = (To + 6Tm + Tp) / 8; σ = (Tp - To) / 4; σ² = ((Tp - To) / 4)²"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-27-02",
+      moduleId: "27",
+      moduleTitle: "Estimación PERT & Validación de Estrategia",
+      category: "Gestión de Proyectos",
+      question: "En diagramas de red PERT (método flechas AOA), ¿cuál es la definición, consumo y propósito de una Actividad Ficticia (Dummy)?",
+      answer: "Se dibuja con flecha punteada, consume 0 tiempo y 0 recursos, y su único propósito es señalar precedencia lógica y evitar duplicidad de nodos.",
+      explanation: "Una actividad ficticia o dummy no representa trabajo real. Sirve para modelar dependencias lógicas complejas y asegurar que cada actividad quede identificada de forma unívoca por su par de nodos (nodo origen y nodo fin) sin compartir ambos a la vez.",
+      authorRef: "Marion E. Haynes (Administración de Proyectos) & SPC INEGI",
+      options: [
+        "Se dibuja con flecha punteada, consume 0 tiempo y 0 recursos, y solo señala precedencia lógica evitando nodos compartidos",
+        "Es una tarea de contingencia que consume el 10% del presupuesto y 5 días de holgura",
+        "Una actividad realizada por un subcontratista externo con duración variable no cuantificable",
+        "Un hito de facturación que consume tiempo de auditoría pero no recursos técnicos"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-27-03",
+      moduleId: "27",
+      moduleTitle: "Estimación PERT & Validación de Estrategia",
+      category: "Gestión de Proyectos",
+      question: "Según Marion E. Haynes en la Fase de Definición (Capítulo 1), ¿cuáles son los TRES métodos formales para validar una estrategia ('¿Funcionará?')?",
+      answer: "1) Estudio de mercado, 2) Ensayo de ejemplo (prueba piloto en campo) y 3) Simulación por computadora.",
+      explanation: "Haynes cita exactamente estos tres métodos para verificar la viabilidad de la solución antes de comprometer fondos y recursos en la planeación y ejecución del proyecto.",
+      authorRef: "Marion E. Haynes (Administración de Proyectos - Cap. 1) & SPC INEGI",
+      options: [
+        "1) Estudio de mercado, 2) Ensayo de ejemplo (prueba piloto en campo) y 3) Simulación por computadora",
+        "1) Lluvia de ideas, 2) Diagrama de Ishikawa y 3) Matriz FODA",
+        "1) Entrevistas a usuarios, 2) Historias de usuario ágiles y 3) Integración continua",
+        "1) Análisis de costo-beneficio, 2) Retorno de inversión (ROI) y 3) Tasa interna de retorno (TIR)"
+      ],
+      correctOption: 0
+    },
+
+    // Módulo 28: Direccionamiento de Memoria en Matrices (Osvaldo Cairó)
+    {
+      id: "fc-28-01",
+      moduleId: "28",
+      moduleTitle: "Direccionamiento de Memoria en Matrices A[m×n]",
+      category: "Estructuras & Algoritmos",
+      question: "En una matriz A[m×n] con base 1, ¿cuál es la fórmula canónica de Osvaldo Cairó para calcular la dirección de memoria por renglones (Row-Major)?",
+      answer: "LOC(A[i, j]) = POSINI + [ n * (i - 1) + (j - 1) ] * w.",
+      explanation: "Para alcanzar el renglón i se saltan (i - 1) renglones completos de n columnas cada uno. Luego se suman (j - 1) celdas en el renglón actual y el total acumulado de celdas se multiplica por el tamaño de palabra w.",
+      authorRef: "Osvaldo Cairó (Estructuras de Datos) & SPC INEGI",
+      options: [
+        "LOC(A[i, j]) = POSINI + [ n * (i - 1) + (j - 1) ] * w",
+        "LOC(A[i, j]) = POSINI + [ m * (i - 1) + (j - 1) ] * w",
+        "LOC(A[i, j]) = POSINI + [ n * i + j ] * w",
+        "LOC(A[i, j]) = POSINI + [ (i - 1) + (j - 1) ] * (m * n * w)"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-28-02",
+      moduleId: "28",
+      moduleTitle: "Direccionamiento de Memoria en Matrices A[m×n]",
+      category: "Estructuras & Algoritmos",
+      question: "En una matriz A[m×n] con base 1, ¿cuál es la fórmula canónica de Osvaldo Cairó para calcular la dirección de memoria por columnas (Column-Major)?",
+      answer: "LOC(A[i, j]) = POSINI + [ m * (j - 1) + (i - 1) ] * w.",
+      explanation: "Para alcanzar la columna j se saltan (j - 1) columnas completas, cada una de longitud m (número de renglones). Luego se suman (i - 1) celdas en la columna actual y se multiplica por el factor de tamaño de elemento w.",
+      authorRef: "Osvaldo Cairó (Estructuras de Datos) & SPC INEGI",
+      options: [
+        "LOC(A[i, j]) = POSINI + [ m * (j - 1) + (i - 1) ] * w",
+        "LOC(A[i, j]) = POSINI + [ n * (j - 1) + (i - 1) ] * w",
+        "LOC(A[i, j]) = POSINI + [ m * j + i ] * w",
+        "LOC(A[i, j]) = POSINI + [ (j - 1) * n + (i - 1) * m ] * w"
       ],
       correctOption: 0
     }

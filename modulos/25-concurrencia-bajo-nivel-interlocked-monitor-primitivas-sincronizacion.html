@@ -233,8 +233,11 @@
         <button class="tab-btn" onclick="switchTab('tab-mutex-semaphore')">
           <span>⚔️</span> 4. Mutex vs SemaphoreSlim
         </button>
+        <button class="tab-btn" onclick="switchTab('tab-events-task')">
+          <span>⚡</span> 5. Eventos Multihilo & Task vs Thread
+        </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 5. Laboratorio de Evaluación SPC
+          <span>🎯</span> 6. Laboratorio de Evaluación SPC
         </button>
       </nav>
 
@@ -564,7 +567,112 @@ public void ProcesarTransferencia()
         </div>
       </section>
 
-      <!-- Pestaña 5: Laboratorio de Evaluación SPC -->
+      <!-- Pestaña 5: Eventos Multihilo & Task vs Thread -->
+      <section id="tab-events-task" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>⚡</span> Task vs Thread & Manejo Seguro de Eventos en Multihilo</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
+            Dos preguntas clave del estándar SWEBOK v4 y del examen SPC para Jefatura de Departamento evalúan la distinción entre abstracciones asíncronas y los riesgos de sincronización en eventos de C#:
+          </p>
+
+          <!-- 1. Task vs Thread -->
+          <h3 style="color:var(--cpu-cyan); margin:0 0 10px; font-size:1.1rem;">
+            🧵 1. La Clase <code>Task</code> vs Objetos <code>Thread</code> Nativos
+          </h3>
+          <p style="font:0.86rem/1.6 Verdana, sans-serif; color:var(--ink); margin-bottom:14px;">
+            En .NET clásico, los desarrolladores instanciaban directamente la clase <code>System.Threading.Thread</code>. La introducción de la <em>Task Parallel Library (TPL)</em> y la clase <code>Task</code> cambió por completo este paradigma:
+          </p>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Criterio Técnico</th>
+                  <th><code>Thread</code> (Hilo Físico de SO)</th>
+                  <th><code>Task</code> (Promesa Asíncrona TPL)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>¿Qué representa?</strong></td>
+                  <td style="color:var(--cpu-coral);">Un hilo de ejecución nativo real gestionado por el Kernel del Sistema Operativo.</td>
+                  <td style="color:var(--cpu-green);">Una <strong>abstracción de alto nivel de una operación asíncrona / trabajo futuro</strong>.</td>
+                </tr>
+                <tr>
+                  <td><strong>Costo de Memoria</strong></td>
+                  <td style="color:var(--cpu-coral);">Pesado: Reserva por defecto <strong>1 MB de memoria de Stack</strong> por hilo en Windows.</td>
+                  <td style="color:var(--cpu-green);">Ultraligero: Un pequeño objeto en el Heap (~100 bytes) gestionado por el ThreadPool.</td>
+                </tr>
+                <tr>
+                  <td><strong>Ciclo de Vida</strong></td>
+                  <td>Creación costosa con llamadas al Kernel. Mapeo 1:1 con hilos del SO.</td>
+                  <td>Reutiliza hilos de trabajo existentes en el <code>ThreadPool</code> (Thread Pooling sin creación de hilos).</td>
+                </tr>
+                <tr>
+                  <td><strong>Retorno de Valores</strong></td>
+                  <td>No devuelve valores directamente (requiere variables compartidas o callbacks).</td>
+                  <td>Retorno tipado natural con <code>Task&lt;TResult&gt;</code> y soporte para <code>await</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong>Composición & Control</strong></td>
+                  <td>Inflexible: Difícil encadenar o cancelar limpiamente.</td>
+                  <td>Potente: <code>Task.WhenAll</code>, <code>Task.WhenAny</code>, <code>ContinueWith</code> y <code>CancellationToken</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 2. Eventos Multihilo y Peligro de lock -->
+          <div style="margin-top:28px;">
+            <h3 style="color:var(--cpu-gold); margin:0 0 10px; font-size:1.1rem;">
+              📢 2. ¿Por qué los Eventos no son Thread-Safe y qué riesgo surge con <code>lock</code>?
+            </h3>
+            <p style="font:0.86rem/1.6 Verdana, sans-serif; color:var(--ink); margin-bottom:16px;">
+              En C#, un <code>event</code> encapsula internamente un delegado multidifusión (<code>MulticastDelegate</code>). En aplicaciones multihilo ocurren dos patologías críticas:
+            </p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+              <!-- Peligro 1: NullReference -->
+              <div style="background:#090915; border:1px solid rgba(255, 51, 102, 0.35); border-radius:6px; padding:16px;">
+                <span style="font:700 0.72rem 'Courier New', monospace; color:var(--cpu-coral);">PATOLOGÍA 1: RACE CONDITION EN INVOCACIÓN</span>
+                <h4 style="color:var(--cpu-coral); margin:6px 0 8px;">NullReferenceException al desuscribir</h4>
+                <p style="font:0.82rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:8px;">
+                  El código ingenuo comprueba <code>if (OnCambio != null)</code>. Si el Hilo B desuscribe el manejador (<code>OnCambio -= handler</code>) entre el chequeo y la invocación, <code>OnCambio</code> pasa a ser <code>null</code> y detona un crash en tiempo de ejecución.
+                </p>
+                <div style="background:#05050d; padding:8px; border-radius:4px; font:0.75rem 'Courier New', monospace; color:var(--cpu-green);">
+                  // Solución atómica en C# 6+ (asigna referencia local al stack):<br />
+                  OnCambio?.Invoke(this, e);
+                </div>
+              </div>
+
+              <!-- Peligro 2: Deadlock por Lock -->
+              <div style="background:#090915; border:1px solid rgba(255, 215, 0, 0.35); border-radius:6px; padding:16px;">
+                <span style="font:700 0.72rem 'Courier New', monospace; color:var(--cpu-gold);">PATOLOGÍA 2: EL RIESGO MORTAL DE LOCK</span>
+                <h4 style="color:var(--cpu-gold); margin:6px 0 8px;">Deadlock por Invocación a Código Externo</h4>
+                <p style="font:0.82rem/1.5 Verdana, sans-serif; color:var(--ink); margin-bottom:8px;">
+                  Si intentas proteger el evento envolviendo su invocación en un bloque <code>lock(_syncRoot)</code>, estás cediendo el control a manejadores de terceros sin saber qué hacen.
+                </p>
+                <div style="background:#05050d; padding:8px; border-radius:4px; font:0.75rem 'Courier New', monospace; color:#ffd700;">
+                  // ¡ANTIPATRÓN PELIGROSO!<br />
+                  lock (_syncRoot) {<br />
+                  &nbsp;&nbsp;OnCambio?.Invoke(this, e); // Puede invocar UI Dispatcher u otro lock<br />
+                  } // DEADLOCK INEVITABLE
+                </div>
+              </div>
+            </div>
+
+            <!-- Regla Doctrinal -->
+            <div style="background:#0c0a1a; border-left:4px solid var(--cpu-purple); padding:16px; border-radius:4px;">
+              <h4 style="color:var(--cpu-purple); margin:0 0 6px; font-size:0.95rem;">💡 Regla de Oro Doctrinal (SWEBOK & Framework Design Guidelines)</h4>
+              <p style="font:0.84rem/1.5 Verdana, sans-serif; color:var(--ink); margin:0;">
+                <strong>"Nunca invoques código externo, delegados o eventos dentro de una sección crítica protegida por un lock."</strong> Si el suscriptor del evento intenta comunicarse con el hilo de interfaz de usuario (WPF/WinForms/MAUI) o adquirir un recurso que a su vez espera liberar <code>_syncRoot</code>, se produce un <strong>bloqueo mutuo circular (Deadlock)</strong> irresoluble. La práctica recomendada es obtener una copia del delegado y dispararlo <em>fuera</em> del bloque de sincronización.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña 6: Laboratorio de Evaluación SPC -->
       <section id="tab-quiz" class="content-panel">
         <div class="matrix-card">
           <h2><span>🎯</span> Laboratorio de Evaluación Formativa (INEGI - SPC)</h2>
@@ -826,6 +934,28 @@ public void ProcesarTransferencia()
           ],
           correct: 1,
           feedback: "Correcto. Al bloquear sobre 'this' o 'typeof(T)', el objeto de bloqueo es accesible públicamente fuera de la clase. Si otra parte del sistema bloquea sobre la misma instancia o tipo (el cual es compartido a nivel de AppDomain), se producen condiciones de Deadlock imposibles de depurar. La regla de oro es usar siempre: private readonly object _syncRoot = new();"
+        },
+        {
+          question: "La clase Task fue introducida en .NET para facilitar el trabajo asíncrono. ¿Qué representa fundamentalmente una Task en comparación con el manejo directo de objetos de la clase Thread?",
+          options: [
+            "Representa una abstracción de alto nivel de una operación asíncrona (promesa de trabajo futuro) ejecutada sobre el ThreadPool, frente a un Thread que representa un hilo físico nativo pesado del SO con 1MB de pila.",
+            "Representa un proceso independiente del sistema operativo con su propio espacio de direcciones virtuales aislado.",
+            "Es un hilo nativo de Windows que solo puede ejecutarse en el núcleo primario de la CPU.",
+            "Es una estructura que reemplaza completamente a las bases de datos relacionales en memoria."
+          ],
+          correct: 0,
+          feedback: "Exacto. Un Thread representa un hilo físico del SO, pesado (1MB de stack por defecto) y costoso de crear. Una Task es una abstracción de alto nivel (TPL) de una operación asíncrona; es ultraligera, se ejecuta sobre el ThreadPool reutilizando hilos existentes y admite retorno de valores, continuación y cancelación cooperativa."
+        },
+        {
+          question: "Respecto al manejo de eventos en .NET en escenarios multihilo, ¿por qué los eventos no son intrínsecamente seguros para hilos (thread-safe) y qué riesgo directo surge al intentar protegerlos con bloques lock inapropiados?",
+          options: [
+            "Porque los delegados son tipos de valor que mutan en el Stack; y usar lock desactiva el garbage collector.",
+            "Porque un suscriptor puede desuscribirse entre la verificación de nulidad y la invocación provocando NullReferenceException (solucionado con ?.); y envolver la invocación en lock cede el control a código externo que puede intentar adquirir otro bloqueo o sincronizar con la UI, provocando Deadlocks.",
+            "Porque los eventos solo pueden ser invocados desde métodos estáticos marcados con async.",
+            "Porque C# prohíbe asociar más de un manejador a un mismo evento si la aplicación tiene más de un núcleo de procesador."
+          ],
+          correct: 1,
+          feedback: "Correcto. Un evento encapsula un MulticastDelegate; si se desuscribe el último manejador entre el chequeo y la invocación, se lanza NullReferenceException (evitado en C# 6+ con ?.Invoke()). Intentar solucionarlo con lock(_syncRoot) es un antipatrón crítico: invocar código de terceros dentro de un lock puede generar Deadlocks inmediatos si el manejador tarda o intenta sincronizar con el hilo de UI."
         }
       ];
 

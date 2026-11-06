@@ -441,6 +441,68 @@ builder.Services.ConfigureHttpJsonOptions(options => {
 return await ctx.Clientes.ToListAsync();</code></pre>
             </div>
           </div>
+
+          <!-- Sección Northwind Database -->
+          <div style="background:#090915; border:1px solid rgba(0, 255, 255, 0.25); border-radius:8px; padding:18px; margin-top:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <h3 style="color:var(--ef-cyan); margin:0; font-size:1.15rem;">
+                📦 El Modelo de Referencia Canónico: Base de Datos Northwind (Mark J. Price)
+              </h3>
+              <span class="badge-lifetime badge-scoped" style="border-color:var(--ef-gold); color:var(--ef-gold);">ESTÁNDAR SPC / MICROSOFT</span>
+            </div>
+            <p style="font:0.86rem/1.6 Verdana, sans-serif; color:var(--ink); margin-bottom:14px;">
+              En la bibliografía oficial de evaluación de .NET (Mark J. Price, <em>"C# and .NET Modern Cross-Platform Development"</em>) y en las pruebas del Servicio Profesional de Carrera, <strong>Northwind</strong> es el esquema relacional estándar para modelar consultas, relaciones y optimización de Entity Framework Core:
+            </p>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-bottom:16px;">
+              <div style="background:#06060e; padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+                <strong style="color:var(--ef-gold); font-size:0.82rem;">TABLAS MAESTRAS (1:N)</strong>
+                <ul style="font:0.78rem/1.5 Verdana, sans-serif; color:var(--muted); margin:6px 0 0; padding-left:16px;">
+                  <li><code>Categories</code> (1) ➔ (N) <code>Products</code></li>
+                  <li><code>Suppliers</code> (1) ➔ (N) <code>Products</code></li>
+                  <li><code>Customers</code> (1) ➔ (N) <code>Orders</code></li>
+                </ul>
+              </div>
+
+              <div style="background:#06060e; padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+                <strong style="color:var(--ef-coral); font-size:0.82rem;">TABLA DE ROMPIMIENTO M:N</strong>
+                <p style="font:0.78rem/1.5 Verdana, sans-serif; color:var(--ink); margin:6px 0 0;">
+                  <code>Order Details</code> resuelve la relación muchos a muchos entre <code>Orders</code> y <code>Products</code> con clave primaria compuesta: <strong>(OrderId, ProductId)</strong>.
+                </p>
+              </div>
+
+              <div style="background:#06060e; padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+                <strong style="color:var(--ef-green); font-size:0.82rem;">CONSULTAS DE ALTO RENDIMIENTO</strong>
+                <p style="font:0.78rem/1.5 Verdana, sans-serif; color:var(--muted); margin:6px 0 0;">
+                  Uso de <code>.Include()</code> con carga ansiosa y <code>.AsNoTracking()</code> para evitar tracking en reportes masivos de ventas.
+                </p>
+              </div>
+            </div>
+
+            <!-- Código Northwind DbContext -->
+            <pre style="margin:0; background:#06060c; border:1px solid rgba(0,255,255,0.2); border-radius:6px; padding:12px; font:0.78rem 'Courier New', monospace; color:#e7f6ff; overflow-x:auto;"><code>public class NorthwindContext : DbContext
+{
+    public DbSet&lt;Category&gt; Categories { get; set; }
+    public DbSet&lt;Product&gt; Products { get; set; }
+    public DbSet&lt;Order&gt; Orders { get; set; }
+    public DbSet&lt;OrderDetail&gt; OrderDetails { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Configuración de clave compuesta para la entidad intermedia de Northwind
+        modelBuilder.Entity&lt;OrderDetail&gt;()
+            .HasKey(od =&gt; new { od.OrderId, od.ProductId });
+    }
+}
+
+// Consulta optimizada sin ChangeTracker en Northwind:
+var reporte = await db.Orders
+    .AsNoTracking()
+    .Include(o =&gt; o.OrderDetails)
+    .ThenInclude(od =&gt; od.Product)
+    .Where(o =&gt; o.OrderDate &gt;= fechaInicio)
+    .ToListAsync();</code></pre>
+          </div>
         </div>
       </section>
 

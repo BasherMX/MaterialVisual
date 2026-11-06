@@ -9,7 +9,7 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 ## ⚡ Herramienta Transversal de Repaso Activo
 
 - **[🗂️ Arena Flashcards Anki & Minijuego Cyber-Survival](modulos/anki-arena.html)**:
-  - Repaso de los 26 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
+  - Repaso de los 28 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
   - Combos por racha y recuperación de +1 Vida cada 5 aciertos consecutivos (máx. 3 vidas).
   - Modalidad de respuesta dual: **Autoevaluación Honesta** (por defecto) u **Opción Múltiple (A, B, C, D)** con post-mortem explicativo.
   - Generación procedural de audio sintetizado Web Audio API y diseño 100% Mobile-First con flip 3D.
@@ -23,6 +23,7 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 - **[02 · Greedy vs Divide & Conquer](modulos/02-algoritmos-greedy-divide-venceras.html)**: Optimización voraz vs recursión estructurada (Mochila fraccionaria, Merge Sort, teoremas).
 - **[03 · Árboles AVL: Equilibrio en Movimiento](modulos/03-arboles-avl-autobalanceo.html)**: Árboles binarios auto-balanceados, factor de balance y rotaciones simples/dobles (LL, RR, LR, RL).
 - **[04 · Explorador de Grafos: BFS vs DFS](modulos/04-bfs-dfs-recorridos-interactivos.html)**: Recorridos en grafos, Cola FIFO vs Pila LIFO, detección de ciclos y caminos mínimos.
+- **[28 · Direccionamiento de Memoria en Matrices A[m×n]](modulos/28-direccionamiento-memoria-matrices-cairo.html)**: Mapeo de estructuras bidimensionales sobre memoria RAM física continua (Osvaldo Cairó). Fórmulas de orden por renglones (Row-Major) y columnas (Column-Major), cálculo de offsets con tamaño de palabra $w$ en base 1 y base 0, y simulador interactivo de celdas a memoria lineal.
 
 ### 🗄️ 2. Bases de Datos y Almacenamiento de Información
 - **[05 · Arquitectura ANSI/SPARC de Tres Niveles](modulos/05-arquitectura-ansi-sparc-tres-niveles.html)**: Nivel Externo, Conceptual/Lógico e Interno, mapeos e independencias físicas/lógicas (Doctrina Oppel).
@@ -46,12 +47,13 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 ### 📈 5. Gestión de Proyectos y Dirección de Software
 - **[16 · El Triángulo de Hierro: Triple Restricción](modulos/16-triangulo-de-hierro-gestion-proyectos.html)**: Balance dinámico entre Alcance, Tiempo y Costo/Recursos con impacto en Calidad.
 - **[17 · EDT / WBS: Descomposición del Trabajo](modulos/17-edt-wbs-descomposicion-trabajo.html)**: Estructura jerárquica de entregables, Regla del 100%, código de numeración decimal y diccionario WBS (Marion E. Haynes & PMBOK).
+- **[27 · Estimación PERT & Validación de Estrategia](modulos/27-estimacion-pert-ruta-critica-validacion-haynes.html)**: Fórmulas matemáticas de distribución Beta de PERT ($T_e$, desviación estándar $\sigma$ y varianza $\sigma^2$), definición y uso de Actividades Ficticias (*Dummy Activity*, consumo 0 tiempo y 0 recursos con flecha punteada), y los 3 métodos formales de validación estratégica en la Fase de Definición según Marion E. Haynes (Estudio de mercado, Ensayo de ejemplo/prueba piloto y Simulación por computadora).
 
 ### ⚙️ 6. Arquitectura Backend, C# 12 & Seguridad
 - **[18 · Inyección de Dependencias & C# 12](modulos/18-inyeccion-dependencias-constructores-primarios-csharp.html)**: Contenedor IoC en .NET, Transient vs Scoped vs Singleton, prevención de dependencias cautivas (*Captive Dependencies*) y Constructores Primarios en C# 12.
-- **[19 · EF Core: Concurrencia & Optimización](modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html)**: Concurrencia en `DbContext` y paralelización limpia con `Task.WhenAll` e `IDbContextFactory`, optimización de memoria con `.AsNoTracking()` vs `.AsNoTrackingWithIdentityResolution()` y rendimiento de runtime con **Native AOT** y JSON Source Generators vs JIT.
+- **[19 · EF Core: Concurrencia & Optimización](modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html)**: Concurrencia en `DbContext` y paralelización limpia con `Task.WhenAll` e `IDbContextFactory`, optimización de memoria con `.AsNoTracking()` vs `.AsNoTrackingWithIdentityResolution()`, base de datos relacional canónica `Northwind` (Mark J. Price) y rendimiento de runtime con **Native AOT** y JSON Source Generators vs JIT.
 - **[22 · JWT: Tokens & Criptografía](modulos/22-jwt-autenticacion-tokens-seguridad.html)**: Estándar RFC 7519 sin estado (Stateless). Anatomía de Header, Payload y Signature, diferenciación crucial entre firma digital y cifrado (JWS vs JWE), mitigación de XSS/CSRF con cookies `HttpOnly` y ciclo de vida seguro de Access Tokens y Refresh Tokens.
-- **[25 · Concurrencia de Bajo Nivel: Interlocked & Monitor](modulos/25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion.html)**: Ciclo Read-Modify-Write en CPU de `x++`, operaciones atómicas por hardware con `Interlocked`, descompilación interna de `lock` en `Monitor.Enter/Exit` con `try-finally`, y el duelo `Mutex` (Kernel, inter-proceso) vs `SemaphoreSlim` (throttling asíncrono intra-proceso).
+- **[25 · Concurrencia de Bajo Nivel: Interlocked & Monitor](modulos/25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion.html)**: Ciclo Read-Modify-Write en CPU de `x++`, operaciones atómicas por hardware con `Interlocked`, descompilación interna de `lock` en `Monitor.Enter/Exit` con `try-finally`, duelo `Mutex` vs `SemaphoreSlim`, abstracción `Task` vs hilo nativo `Thread`, y riesgos de inversión de bloqueos (Deadlock) en eventos multihilo.
 - **[26 · Servicios de Fondo, Resiliencia & Caché](modulos/26-servicios-segundo-plano-resiliencia-polly-cache-dotnet.html)**: Tareas continuas con `BackgroundService` e `IHostedService`, cancelación cooperativa y apagado elegante (*graceful shutdown*) con `CancellationToken`, estrategias de caché (`IMemoryCache` vs `IDistributedCache` con expiración absoluta y deslizante) y resiliencia con el patrón *Circuit Breaker* (Polly).
 
 ### 🧪 7. Ingeniería de Software, Calidad & Confiabilidad
