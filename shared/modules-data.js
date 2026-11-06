@@ -362,6 +362,38 @@
             "Ciclo de vida y rotación segura de Access Tokens y Refresh Tokens"
         ],
         "btnId": "btn-goto-jwt"
+    },
+    {
+        "id": "23",
+        "slug": "23-ingenieria-software-error-defecto-falla-verificacion-validacion",
+        "filename": "23-ingenieria-software-error-defecto-falla-verificacion-validacion.html",
+        "theme": "theme-purple",
+        "category": "Ingeniería de Software",
+        "badge": "23 · Calidad & V&V",
+        "title": "Error, Defecto, Falla & V&V",
+        "desc": "Cadena causal formal IEEE (Error humano ➔ Defecto en código ➔ Falla en runtime) y marco de Barry Boehm para Verificación vs Validación.",
+        "features": [
+            "Simulador reactivo de inyección de defectos y activación en runtime",
+            "Matriz 2x2 interactiva de Verificación vs Validación (Doctrina Boehm)",
+            "Casos paradigmáticos reales: monitores hospitalarios y misiones espaciales"
+        ],
+        "btnId": "btn-goto-quality-vv"
+    },
+    {
+        "id": "24",
+        "slug": "24-ingenieria-software-metricas-confiabilidad-rocof-pofod-mttf-kloc",
+        "filename": "24-ingenieria-software-metricas-confiabilidad-rocof-pofod-mttf-kloc.html",
+        "theme": "theme-green",
+        "category": "Ingeniería de Software",
+        "badge": "24 · Confiabilidad & Métricas",
+        "title": "Métricas de Confiabilidad: ROCOF, POFOD & MTTF",
+        "desc": "Ingeniería cuantitativa de confiabilidad (SRE): evaluación de POFOD, ROCOF, MTTF, MTTR, disponibilidad en nueves y densidad de defectos por KLOC.",
+        "features": [
+            "Calculadora reactiva en tiempo real con sliders de telemetría y nueves",
+            "Presets guiados de la industria: NASA, Frenos ABS, FinTech y Apps móviles",
+            "Matriz de decisión para seleccionar la métrica adecuada según el dominio"
+        ],
+        "btnId": "btn-goto-reliability-metrics"
     }
 ];
 });

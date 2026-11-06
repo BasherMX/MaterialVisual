@@ -2,14 +2,14 @@
 
 🚀 **Sitio en vivo:** https://bashermx.github.io/MaterialVisual/
 
-Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, Arquitectura de Software, Bases de Datos y Gestión de Proyectos. Todos los módulos cuentan con simuladores reactivos en tiempo real, trazabilidad paso a paso, diseño Mobile-First y laboratorios de evaluación formativa (quizzes).
+Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, Arquitectura de Software, Bases de Datos, Gestión de Proyectos e Ingeniería de Software. Todos los módulos cuentan con simuladores reactivos en tiempo real, trazabilidad paso a paso, diseño Mobile-First y laboratorios de evaluación formativa (quizzes).
 
 ---
 
 ## ⚡ Herramienta Transversal de Repaso Activo
 
 - **[🗂️ Arena Flashcards Anki & Minijuego Cyber-Survival](modulos/anki-arena.html)**:
-  - Repaso de los 22 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
+  - Repaso de los 24 temas con **Spaced Repetition** (método Anki) y minijuego arcade de **3 Vidas (❤️❤️❤️)**.
   - Combos por racha y recuperación de +1 Vida cada 5 aciertos consecutivos (máx. 3 vidas).
   - Modalidad de respuesta dual: **Autoevaluación Honesta** (por defecto) u **Opción Múltiple (A, B, C, D)** con post-mortem explicativo.
   - Generación procedural de audio sintetizado Web Audio API y diseño 100% Mobile-First con flip 3D.
@@ -51,6 +51,10 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 - **[18 · Inyección de Dependencias & C# 12](modulos/18-inyeccion-dependencias-constructores-primarios-csharp.html)**: Contenedor IoC en .NET, Transient vs Scoped vs Singleton, prevención de dependencias cautivas (*Captive Dependencies*) y Constructores Primarios en C# 12.
 - **[19 · EF Core: Concurrencia & Optimización](modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html)**: Concurrencia en `DbContext` y paralelización limpia con `Task.WhenAll` e `IDbContextFactory`, optimización de memoria con `.AsNoTracking()` vs `.AsNoTrackingWithIdentityResolution()` y rendimiento de runtime con **Native AOT** y JSON Source Generators vs JIT.
 - **[22 · JWT: Tokens & Criptografía](modulos/22-jwt-autenticacion-tokens-seguridad.html)**: Estándar RFC 7519 sin estado (Stateless). Anatomía de Header, Payload y Signature, diferenciación crucial entre firma digital y cifrado (JWS vs JWE), mitigación de XSS/CSRF con cookies `HttpOnly` y ciclo de vida seguro de Access Tokens y Refresh Tokens.
+
+### 🧪 7. Ingeniería de Software, Calidad & Confiabilidad
+- **[23 · Error, Defecto, Falla & V&V](modulos/23-ingenieria-software-error-defecto-falla-verificacion-validacion.html)**: Cadena causal formal IEEE 610.12 (Error humano $\rightarrow$ Defecto en código $\rightarrow$ Falla observable en runtime), Teorema del Defecto Latente, y doctrina canónica de Barry Boehm para Verificación (*"¿Construimos el producto correctamente?"*) vs Validación (*"¿Construimos el producto correcto?"*).
+- **[24 · Métricas de Confiabilidad: ROCOF, POFOD & MTTF](modulos/24-ingenieria-software-metricas-confiabilidad-rocof-pofod-mttf-kloc.html)**: Ingeniería de confiabilidad cuantitativa (SRE): cálculo probabilístico de POFOD para demandas de emergencia, frecuencia continua con ROCOF, durabilidad y failover con MTTF/MTBF, disponibilidad porcentual en "nueves", KLOC y densidad de defectos.
 
 ---
 

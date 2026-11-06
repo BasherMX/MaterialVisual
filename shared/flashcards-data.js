@@ -913,6 +913,116 @@
         "Porque Google Chrome bloquea cualquier petición HTTP que no incluya una cookie de sesión activa"
       ],
       correctOption: 0
+    },
+
+    // =========================================================================
+    // BLOQUE 7: INGENIERÍA DE SOFTWARE, CALIDAD & CONFIABILIDAD
+    // =========================================================================
+
+    // Módulo 23: Error, Defecto, Falla & V&V
+    {
+      id: "fc-23-01",
+      moduleId: "23",
+      moduleTitle: "Error, Defecto, Falla & V&V",
+      category: "Ingeniería de Software",
+      question: "En la taxonomía formal IEEE 610.12 e ISTQB, ¿cuál es la diferencia entre un Error, un Defecto (Bug/Fault) y una Falla (Failure)?",
+      answer: "El Error es la equivocación humana mental; el Defecto es la imperfección estática en el código o documento; y la Falla es la divergencia dinámica observable en tiempo de ejecución.",
+      explanation: "La cadena causal es: Acción errónea del ser humano (Error) ➔ inyecta una anomalía pasiva en el artefacto (Defecto) ➔ que al ejecutarse bajo ciertas condiciones de entrada detona una manifestación externa incorrecta del sistema (Falla). Un defecto puede permanecer latente indefinidamente si el camino de ejecución no es recorrido.",
+      authorRef: "Estándar IEEE 610.12 / ISO/IEC 24765",
+      options: [
+        "El Error es la equivocación mental humana; el Defecto es la anomalía estática en el código; y la Falla es la manifestación dinámica observable en tiempo de ejecución",
+        "Los tres términos son sinónimos absolutos y pueden utilizarse indistintamente según el lenguaje de programación",
+        "El Error ocurre en tiempo de ejecución; el Defecto es causado por el hardware; y la Falla es la omisión de comentarios en el código",
+        "Una Falla es cometida por el cliente; un Error es detectado por el compilador; y un Defecto solo ocurre en bases de datos relacionales"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-23-02",
+      moduleId: "23",
+      moduleTitle: "Error, Defecto, Falla & V&V",
+      category: "Ingeniería de Software",
+      question: "Según la doctrina clásica de Barry Boehm y el estándar IEEE 1012, ¿cuál es la distinción entre Verificación y Validación?",
+      answer: "Verificación compara el producto contra su especificación técnica formal ('¿Construimos el producto correctamente?'); Validación lo evalúa contra la necesidad real del usuario ('¿Construimos el producto correcto?').",
+      explanation: "La Verificación es interna y orientada a procesos/documentos previos (inspecciones de diseño, análisis estático, pruebas unitarias). La Validación es externa y orientada al cliente en su entorno operativo auténtico (pruebas de aceptación UAT, pruebas beta con usuarios reales).",
+      authorRef: "Barry Boehm (Software Engineering Economics, 1981)",
+      options: [
+        "Verificación compara el producto contra su especificación formal ('¿Construimos el producto correctamente?'); Validación lo evalúa contra la necesidad real del usuario ('¿Construimos el producto correcto?')",
+        "Verificación la realiza el cliente final; Validación la realizan exclusivamente los ingenieros de software mediante compiladores",
+        "Verificación consiste en ejecutar pruebas de penetración de seguridad; Validación es medir el tiempo de respuesta de las APIs REST",
+        "Verificación ocurre únicamente después del lanzamiento a producción; Validación ocurre durante la fase inicial de licitación de contratos"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-23-03",
+      moduleId: "23",
+      moduleTitle: "Error, Defecto, Falla & V&V",
+      category: "Ingeniería de Software",
+      question: "¿Qué ocurre en un proyecto de software cuando el sistema está 'Verificado con éxito' pero 'NO está Validado'?",
+      answer: "El software cumple con exactitud toda la especificación técnica escrita, pero es inútil para el usuario porque la especificación inicial estaba mal concebida o desfasada.",
+      explanation: "Se conoce metafóricamente como 'la operación fue un éxito pero el paciente falleció'. El código pasa todas las pruebas unitarias y cumple los requerimientos al pie de la letra, pero no resuelve la necesidad operativa real del cliente (falta de validación temprana con prototipos y usuarios reales).",
+      authorRef: "IEEE Standard for System and Software Verification and Validation",
+      options: [
+        "El software cumple con exactitud la especificación escrita, pero no le sirve al usuario porque la especificación estaba mal concebida o incompleta",
+        "El código fuente no compila debido a errores de sintaxis en el compilador Roslyn",
+        "El sistema fue aprobado por los usuarios finales pero el equipo de desarrollo se niega a entregar el repositorio de Git",
+        "El software tiene cero defectos estáticos pero excede el límite de memoria RAM del servidor"
+      ],
+      correctOption: 0
+    },
+
+    // Módulo 24: Métricas de Confiabilidad: ROCOF, POFOD & MTTF
+    {
+      id: "fc-24-01",
+      moduleId: "24",
+      moduleTitle: "Métricas de Confiabilidad: ROCOF, POFOD & MTTF",
+      category: "Ingeniería de Software",
+      question: "¿Cuándo es POFOD (Probability of Failure on Demand) la métrica adecuada de confiabilidad en lugar de ROCOF?",
+      answer: "En sistemas que permanecen en espera y solo se activan ante eventos críticos puntuales (discretos), como un airbag o la parada de emergencia de un reactor.",
+      explanation: "En sistemas de protección a demanda, la duración del tiempo inactivo en reposo no refleja la fiabilidad. La métrica crítica es la probabilidad matemática de que el sistema falle en el instante exacto en que se le exige intervenir.",
+      authorRef: "Ian Sommerville (Software Engineering: Dependability)",
+      options: [
+        "En sistemas que permanecen en reposo y solo se activan ante eventos discretos críticos (airbags, frenos de emergencia, paradas de seguridad)",
+        "En servidores web de streaming que transmiten audio y video 24/7 sin interrupción",
+        "En motores de bases de datos relacionales con réplicas activas en la nube",
+        "Únicamente en aplicaciones móviles que funcionan sin conexión a Internet"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-24-02",
+      moduleId: "24",
+      moduleTitle: "Métricas de Confiabilidad: ROCOF, POFOD & MTTF",
+      category: "Ingeniería de Software",
+      question: "¿Cómo se calcula la Disponibilidad Operativa (A) de un sistema a partir de su MTTF y MTTR, y qué significa lograr 'Cinco Nueves' (99.999%)?",
+      answer: "A = MTTF / (MTTF + MTTR); 'Cinco Nueves' significa que el sistema solo tolera aproximadamente 5.26 minutos de caída total acumulada al año.",
+      explanation: "La disponibilidad representa la fracción de tiempo en que el sistema está 100% operativo. Cinco nueves (99.999%) es el estándar de misión crítica (telecomunicaciones y aeroespacial) y exige conmutación por error (failover) automatizada sin esperar a operadores humanos.",
+      authorRef: "Roger S. Pressman / Software Reliability Engineering",
+      options: [
+        "A = MTTF / (MTTF + MTTR); Cinco Nueves tolera un máximo aproximado de 5.26 minutos de caída total acumulada en todo un año",
+        "A = MTTF × MTTR; Cinco Nueves indica que el sistema fallará exactamente 5 veces cada 999 horas de operación",
+        "A = MTTR / MTTF; Cinco Nueves significa que el equipo de soporte técnico resolverá cualquier bug en 5 minutos o menos",
+        "A = (MTTF + MTTR) / 100; Cinco Nueves equivale a un 50% de probabilidad de fallo en transacciones concurrentes"
+      ],
+      correctOption: 0
+    },
+    {
+      id: "fc-24-03",
+      moduleId: "24",
+      moduleTitle: "Métricas de Confiabilidad: ROCOF, POFOD & MTTF",
+      category: "Ingeniería de Software",
+      question: "¿Qué mide la métrica de 'Densidad de Defectos' expresada en función de KLOC (Kilo Lines Of Code)?",
+      answer: "La cantidad de defectos normalizada por cada 1,000 líneas de código fuente (Defectos / KLOC) para comparar la calidad entre módulos de distinto tamaño.",
+      explanation: "Normalizar por KLOC permite evaluar la madurez de los procesos de desarrollo. Según Steve McConnell, el software comercial regular promedia entre 1 y 5 defectos por KLOC, mientras que el software de alta criticidad exige menos de 0.5 o 0.1 defectos por KLOC.",
+      authorRef: "Steve McConnell (Code Complete) & Roger Pressman",
+      options: [
+        "La cantidad de defectos normalizada por cada 1,000 líneas de código fuente (Defectos / KLOC) para comparar la calidad entre módulos",
+        "La velocidad de escritura de código de los programadores medida en líneas de código por día de trabajo",
+        "El tiempo que tarda el compilador en convertir 1,000 líneas de código C# en binario ejecutable",
+        "La cantidad de comentarios de documentación requeridos por cada millar de líneas de código fuente"
+      ],
+      correctOption: 0
     }
   ];
 });
