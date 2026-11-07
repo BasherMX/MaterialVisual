@@ -778,6 +778,26 @@ D) Requiere Task.Run obligatoriamente.
     let isTimerPaused = false;
     let currentAuditFilter = 'all';
 
+    // Generador criptográficamente seguro y de alta entropía para aleatorización pura
+    function cryptoRandom() {
+      if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+        const buf = new Uint32Array(1);
+        window.crypto.getRandomValues(buf);
+        return buf[0] / (0xffffffff + 1);
+      }
+      return Math.random();
+    }
+
+    // Algoritmo de barajado Fisher-Yates insesgado y de distribución uniforme estricta
+    function shuffleArray(array) {
+      if (!Array.isArray(array)) return array;
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(cryptoRandom() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
     // Normalizador universal de reactivos (maneja opciones como strings u objetos { text, isCorrect })
     function normalizeExamQuestions(rawQuestions, doShuffle) {
       if (!Array.isArray(rawQuestions)) return [];
@@ -837,12 +857,9 @@ D) Requiere Task.Run obligatoriamente.
           opts[qCorrectIdx].isCorrect = true;
         }
 
-        // Barajar opciones si se solicita
+        // Barajar opciones si se solicita (garantiza distribución uniforme en incisos A, B, C, D)
         if (doShuffle) {
-          for (let i = opts.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [opts[i], opts[j]] = [opts[j], opts[i]];
-          }
+          shuffleArray(opts);
         }
 
         return {
@@ -941,22 +958,35 @@ D) Requiere Task.Run obligatoriamente.
               <span class="exam-meta-pill">🎯 Mínimo: ${ex.passingScore || 80} pts</span>
             </div>
 
-            <!-- Selector Rápido de Tiempo para esta sesión -->
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap; background:rgba(8,7,18,0.7); padding:8px 12px; border-radius:6px; border:1px solid var(--line);">
-              <label for="time-cfg-${ex.id}" style="font-size:0.74rem; color:var(--muted); font-family:'Courier New', monospace; font-weight:700;">⏱️ DURACIÓN SESIÓN:</label>
-              <select id="time-cfg-${ex.id}" style="background:#121124; border:1px solid var(--cyan); color:var(--cyan); border-radius:4px; padding:4px 8px; font:700 0.78rem 'Courier New', monospace; outline:none; cursor:pointer;">
-                <option value="${defMinutes}">Tiempo del examen (${defMinutes === 0 ? 'Sin límite' : defMinutes + ' min'})</option>
-                <option value="15">15 minutos (Sprint rápido)</option>
-                <option value="30">30 minutos (Modo exprés)</option>
-                <option value="45">45 minutos</option>
-                <option value="60">60 minutos (1 hora estándar)</option>
-                <option value="90">90 minutos (1.5 horas)</option>
-                <option value="120">120 minutos (2 horas)</option>
-                <option value="150">150 minutos (2.5 horas)</option>
-                <option value="180">180 minutos (3 horas)</option>
-                <option value="custom">✏️ Personalizado (Escribir)...</option>
-                <option value="0">⏳ Sin límite de tiempo (Modo estudio)</option>
-              </select>
+            <!-- Selector Rápido de Tiempo y Aleatorización para esta sesión -->
+            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px; background:rgba(8,7,18,0.7); padding:10px 14px; border-radius:6px; border:1px solid var(--line);">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <label for="time-cfg-${ex.id}" style="font-size:0.74rem; color:var(--muted); font-family:'Courier New', monospace; font-weight:700;">⏱️ DURACIÓN SESIÓN:</label>
+                <select id="time-cfg-${ex.id}" style="background:#121124; border:1px solid var(--cyan); color:var(--cyan); border-radius:4px; padding:4px 8px; font:700 0.78rem 'Courier New', monospace; outline:none; cursor:pointer;">
+                  <option value="${defMinutes}">Tiempo del examen (${defMinutes === 0 ? 'Sin límite' : defMinutes + ' min'})</option>
+                  <option value="15">15 minutos (Sprint rápido)</option>
+                  <option value="30">30 minutos (Modo exprés)</option>
+                  <option value="45">45 minutos</option>
+                  <option value="60">60 minutos (1 hora estándar)</option>
+                  <option value="90">90 minutos (1.5 horas)</option>
+                  <option value="120">120 minutos (2 horas)</option>
+                  <option value="150">150 minutos (2.5 horas)</option>
+                  <option value="180">180 minutos (3 horas)</option>
+                  <option value="custom">✏️ Personalizado (Escribir)...</option>
+                  <option value="0">⏳ Sin límite de tiempo (Modo estudio)</option>
+                </select>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; font-size:0.75rem; color:var(--ink); font-family:'Courier New', monospace;">
+                <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
+                  <input type="checkbox" id="shuffle-q-${ex.id}" checked style="accent-color:var(--cyan); cursor:pointer;" />
+                  <span>🔀 Preguntas Aleatorias</span>
+                </label>
+                <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
+                  <input type="checkbox" id="shuffle-opt-${ex.id}" checked style="accent-color:var(--cyan); cursor:pointer;" />
+                  <span>🔀 Opciones Aleatorias</span>
+                </label>
+              </div>
             </div>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;">
@@ -982,7 +1012,14 @@ D) Requiere Task.Run obligatoriamente.
     function startExamWithConfig(examId) {
       const sel = document.getElementById(`time-cfg-${examId}`);
       const val = sel ? sel.value : undefined;
-      startExamSession(examId, val);
+
+      const chkQ = document.getElementById(`shuffle-q-${examId}`);
+      const shuffleQ = chkQ ? chkQ.checked : true;
+
+      const chkOpt = document.getElementById(`shuffle-opt-${examId}`);
+      const shuffleOpt = chkOpt ? chkOpt.checked : true;
+
+      startExamSession(examId, val, shuffleQ, shuffleOpt);
     }
 
     function editCustomExamParams(examId) {
@@ -1038,7 +1075,7 @@ D) Requiere Task.Run obligatoriamente.
       }
     }
 
-    function startExamSession(examId, selectedTimeStr) {
+    function startExamSession(examId, selectedTimeStr, shouldShuffleQuestions, shouldShuffleOptions) {
       const exam = allExams.find(e => e.id === examId);
       if (!exam) return;
 
@@ -1075,14 +1112,16 @@ D) Requiere Task.Run obligatoriamente.
         secondsLeft = totalExamSeconds;
       }
 
-      // Normalizar preguntas y barajar opciones de forma robusta
-      currentQuestions = normalizeExamQuestions(exam.questions, exam.shuffleOptions !== false);
+      // Por defecto barajar tanto preguntas como opciones de manera criptográfica insesgada
+      const doShuffleOpts = (shouldShuffleOptions !== undefined) ? shouldShuffleOptions : (exam.shuffleOptions !== false);
+      const doShuffleQ = (shouldShuffleQuestions !== undefined) ? shouldShuffleQuestions : true;
 
-      if (exam.shuffleQuestions) {
-        for (let i = currentQuestions.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
-        }
+      // Normalizar preguntas y barajar opciones (con trazabilidad estricta de isCorrect)
+      currentQuestions = normalizeExamQuestions(exam.questions, doShuffleOpts);
+
+      // Barajar el orden de los reactivos con Fisher-Yates insesgado
+      if (doShuffleQ) {
+        shuffleArray(currentQuestions);
       }
 
       startExamTimer();
@@ -1274,7 +1313,7 @@ D) Requiere Task.Run obligatoriamente.
 
       document.getElementById('session-question-counter').innerText = `Reactivo ${currentQIdx + 1} de ${currentQuestions.length}`;
       document.getElementById('lbl-question-tag').innerText = `REACTIVO ${currentQIdx + 1}`;
-      document.getElementById('lbl-question-module').innerText = q.moduleRef ? `Módulo ${q.moduleRef}` : 'Técnico';
+      document.getElementById('lbl-question-module').innerText = (q.moduleRef ? `Módulo ${q.moduleRef}` : 'Técnico') + (q.originalNumber ? ` (Orig. #${q.originalNumber})` : '');
       document.getElementById('lbl-question-text').innerText = q.text;
 
       const flagIndicator = document.getElementById('lbl-flag-indicator');
@@ -1472,6 +1511,7 @@ D) Requiere Task.Run obligatoriamente.
             <div style="display:flex; gap:8px; align-items:center;">
               <span class="exam-meta-pill" style="color:var(--cyan);">#${idx + 1}</span>
               ${q.moduleRef ? `<span class="exam-meta-pill">Módulo ${q.moduleRef}</span>` : ''}
+              ${q.originalNumber ? `<span class="exam-meta-pill" style="color:var(--muted); font-size:0.7rem;">Reactivo Original #${q.originalNumber}</span>` : ''}
               ${statusBadge}
               ${flagPill}
             </div>
