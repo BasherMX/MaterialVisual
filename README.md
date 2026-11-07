@@ -26,7 +26,7 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 ## Catálogo de Módulos (Organizados por Área Temática)
 
 ### 🧩 1. Ciencias de la Computación, Algoritmos y Estructuras de Datos
-- **[01 · Complejidad Computacional: Big O](modulos/01-complejidades-computacionales.html)**: Notación asintótica O(1) a O(2ⁿ), análisis de operaciones elementales y trampas comunes.
+- **[01 · Complejidad Computacional: Big O](modulos/01-complejidades-computacionales.html)**: Notación asintótica O(1) a O(2ⁿ), análisis de operaciones elementales, trampas comunes y **Carrera de Algoritmos en tiempo real** con cronómetro empírico de microsegundos (`performance.now()`).
 - **[02 · Greedy vs Divide & Conquer](modulos/02-algoritmos-greedy-divide-venceras.html)**: Optimización voraz vs recursión estructurada (Mochila fraccionaria, Merge Sort, teoremas).
 - **[03 · Árboles AVL: Equilibrio en Movimiento](modulos/03-arboles-avl-autobalanceo.html)**: Árboles binarios auto-balanceados, factor de balance y rotaciones simples/dobles (LL, RR, LR, RL).
 - **[04 · Explorador de Grafos: BFS vs DFS](modulos/04-bfs-dfs-recorridos-interactivos.html)**: Recorridos en grafos, Cola FIFO vs Pila LIFO, detección de ciclos y caminos mínimos.
@@ -39,6 +39,7 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
 - **[08 · Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL)](modulos/08-taxonomia-sublenguajes-sql-ddl-dml-dcl-tcl.html)**: Familias del estándar SQL, duelo DELETE vs TRUNCATE vs DROP, gobernanza de permisos y puntos de control `SAVEPOINT`.
 - **[09 · Propiedades ACID y Axiomas de Armstrong](modulos/09-acid-y-axiomas-de-armstrong.html)**: Garantías transaccionales (Atomicidad, Consistencia, Aislamiento, Durabilidad con WAL) y motor de inferencia de dependencias funcionales (Reflexividad, Aumento, Transitividad).
 - **[10 · Diseño Físico: Índices y Árboles B+](modulos/10-diseno-fisico-indices-arbol-b-plus.html)**: Estructuras de almacenamiento en disco, Índices Clustered vs Non-Clustered y visualizador de Árbol B+ interactivo con división de nodos (*split*).
+- **[30 · Estructuras de Indexación: Árbol B+ vs Tablas Hash](modulos/30-estructuras-indexacion-arbol-bplus-vs-hash.html)**: Laboratorio comparativo en tiempo real de estructuras físicas de acceso. Inserción de tuplas sincronizada en pantalla dividida, división de nodos (*splits*), dispersión en buckets, resolución de colisiones (*Separate Chaining* vs *Linear Probing*) y duelo de rendimiento entre búsquedas puntuales $O(1)$ y escaneos de rango $O(\log N + K)$.
 
 ### 🌐 3. Arquitectura de Software y Protocolos Web
 - **[11 · Métodos HTTP y Códigos de Estado Estándar](modulos/11-metodos-http-y-codigos-de-estado.html)**: Semántica RFC 9110, métodos seguros e idempotentes (GET, POST, PUT, DELETE, PATCH) y bloques 1xx-5xx.

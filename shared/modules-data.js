@@ -474,6 +474,22 @@
             "Análisis de justificación formal de exclusión de diagramas de Secuencia y Casos de Uso"
         ],
         "btnId": "btn-goto-xuml-sommerville"
+    },
+    {
+        "id": "30",
+        "slug": "30-estructuras-indexacion-arbol-bplus-vs-hash",
+        "filename": "30-estructuras-indexacion-arbol-bplus-vs-hash.html",
+        "theme": "theme-gold",
+        "category": "Bases de Datos",
+        "badge": "30 · Indexación & Algoritmos",
+        "title": "Estructuras de Indexación: Árbol B+ vs Tablas Hash",
+        "desc": "Laboratorio comparativo interactivo de estructuras físicas de acceso: inserción de tuplas en tiempo real, división de nodos (splits), dispersión en buckets, resolución de colisiones y rendimiento en búsquedas puntuales vs rangos.",
+        "features": [
+            "Lienzo dual en pantalla dividida: inserción sincronizada de tuplas en Árbol B+ y Tabla Hash",
+            "Simulador de resolución de colisiones hash: Separate Chaining vs Open Addressing (Linear Probing)",
+            "Duelo de consultas de bases de datos: Búsqueda puntual O(1) vs Escaneo de rangos con hojas enlazadas"
+        ],
+        "btnId": "btn-goto-bplus-vs-hash"
     }
 ];
 });

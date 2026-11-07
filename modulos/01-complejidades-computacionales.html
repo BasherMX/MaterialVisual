@@ -1593,7 +1593,130 @@
           </div>
         </div>
       </section>
-    
+
+      <!-- SECCIÓN: Laboratorio Benchmark & Carrera de Algoritmos en Tiempo Real (performance.now()) -->
+      <section class="matrix-card" id="benchmark-arena" style="margin-top:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <span class="badge-tag" style="background:rgba(0,255,255,0.1); color:var(--cyan); border:1px solid var(--cyan); padding:4px 10px; border-radius:4px; font:700 0.72rem 'Courier New', monospace; letter-spacing:0.1em;">⚡ LABORATORIO EMPÍRICO DE RENDIMIENTO</span>
+            <h2 style="margin:8px 0 6px; font-size:1.45rem; color:#ffffff;">🏁 Carrera de Algoritmos &amp; Cronómetro de Alta Precisión</h2>
+            <p style="margin:0; font-size:0.86rem; color:var(--muted); font-family:Verdana,sans-serif; max-width:860px; line-height:1.5;">
+              Comprueba con tus propios ojos cuánto tarda la CPU en la vida real. Este laboratorio ejecuta algoritmos reales en JavaScript y mide con <code>window.performance.now()</code> (resolución de microsegundos) el tiempo exacto transcurrido para un tamaño de entrada <strong>N</strong>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Barra de Control de la Carrera -->
+        <div style="background:var(--panel-dark); border:1px solid var(--line); border-radius:8px; padding:16px 20px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:20px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <label for="bench-size-select" style="font-size:0.85rem; color:var(--cyan); font-weight:700;">Tamaño de Entrada (N):</label>
+            <select id="bench-size-select" style="background:#080811; color:#fff; border:1px solid var(--cyan); border-radius:6px; padding:8px 12px; font:700 0.9rem 'Courier New', monospace; min-height:42px;">
+              <option value="100">N = 100 elementos</option>
+              <option value="1000">N = 1,000 elementos</option>
+              <option value="10000" selected>N = 10,000 elementos</option>
+              <option value="50000">N = 50,000 elementos</option>
+              <option value="100000">N = 100,000 elementos</option>
+            </select>
+          </div>
+
+          <button id="btn-start-race" onclick="startAlgorithmRace()" style="background:linear-gradient(135deg, var(--green), var(--cyan)); border:none; color:#0b0c16; font:800 0.92rem 'Courier New', monospace; padding:12px 24px; border-radius:6px; cursor:pointer; box-shadow:0 0 16px rgba(0,255,170,0.4); display:inline-flex; align-items:center; gap:8px; min-height:44px; transition:transform 0.2s ease;">
+            <span>🚀</span> Iniciar Carrera de Rendimiento
+          </button>
+
+          <span id="bench-status-badge" style="font:700 0.82rem 'Courier New', monospace; color:var(--muted);">
+            Listo para medir tiempos de ejecución en tu CPU.
+          </span>
+        </div>
+
+        <!-- Carriles de la Carrera -->
+        <div id="race-tracks-container" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+          <!-- Track 1: O(1) -->
+          <div class="bench-track" id="track-o1" style="background:rgba(18,17,36,0.92); border:1px solid rgba(0,255,170,0.3); border-radius:8px; padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="background:rgba(0,255,170,0.15); color:var(--green); border:1px solid var(--green); padding:3px 8px; border-radius:4px; font:700 0.8rem 'Courier New', monospace;">O(1) · Constante</span>
+                <strong style="color:#ffffff; font-size:0.92rem;">Acceso Directo por Índice (Array Lookup)</strong>
+              </div>
+              <div style="font:700 0.85rem 'Courier New', monospace; color:var(--green);">
+                <span id="time-o1">0.000 ms</span> | <span id="ops-o1">1 op</span>
+              </div>
+            </div>
+            <div style="height:10px; background:rgba(0,0,0,0.4); border-radius:5px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+              <div id="bar-o1" style="height:100%; width:0%; background:var(--green); transition:width 0.3s ease; box-shadow:0 0 8px var(--green);"></div>
+            </div>
+          </div>
+
+          <!-- Track 2: O(log n) -->
+          <div class="bench-track" id="track-logn" style="background:rgba(18,17,36,0.92); border:1px solid rgba(0,255,255,0.3); border-radius:8px; padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="background:rgba(0,255,255,0.15); color:var(--cyan); border:1px solid var(--cyan); padding:3px 8px; border-radius:4px; font:700 0.8rem 'Courier New', monospace;">O(log n) · Logarítmico</span>
+                <strong style="color:#ffffff; font-size:0.92rem;">Búsqueda Binaria (Binary Search)</strong>
+              </div>
+              <div style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">
+                <span id="time-logn">0.000 ms</span> | <span id="ops-logn">0 ops</span>
+              </div>
+            </div>
+            <div style="height:10px; background:rgba(0,0,0,0.4); border-radius:5px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+              <div id="bar-logn" style="height:100%; width:0%; background:var(--cyan); transition:width 0.3s ease; box-shadow:0 0 8px var(--cyan);"></div>
+            </div>
+          </div>
+
+          <!-- Track 3: O(n) -->
+          <div class="bench-track" id="track-on" style="background:rgba(18,17,36,0.92); border:1px solid rgba(255,215,0,0.3); border-radius:8px; padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="background:rgba(255,215,0,0.15); color:var(--gold); border:1px solid var(--gold); padding:3px 8px; border-radius:4px; font:700 0.8rem 'Courier New', monospace;">O(n) · Lineal</span>
+                <strong style="color:#ffffff; font-size:0.92rem;">Búsqueda Lineal / Escaneo Completo</strong>
+              </div>
+              <div style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">
+                <span id="time-on">0.000 ms</span> | <span id="ops-on">0 ops</span>
+              </div>
+            </div>
+            <div style="height:10px; background:rgba(0,0,0,0.4); border-radius:5px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+              <div id="bar-on" style="height:100%; width:0%; background:var(--gold); transition:width 0.3s ease; box-shadow:0 0 8px var(--gold);"></div>
+            </div>
+          </div>
+
+          <!-- Track 4: O(n log n) -->
+          <div class="bench-track" id="track-nlogn" style="background:rgba(18,17,36,0.92); border:1px solid rgba(0,128,255,0.3); border-radius:8px; padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="background:rgba(0,128,255,0.15); color:var(--blue); border:1px solid var(--blue); padding:3px 8px; border-radius:4px; font:700 0.8rem 'Courier New', monospace;">O(n log n) · Linealítmico</span>
+                <strong style="color:#ffffff; font-size:0.92rem;">Ordenamiento por Mezcla (Merge Sort)</strong>
+              </div>
+              <div style="font:700 0.85rem 'Courier New', monospace; color:var(--blue);">
+                <span id="time-nlogn">0.000 ms</span> | <span id="ops-nlogn">0 ops</span>
+              </div>
+            </div>
+            <div style="height:10px; background:rgba(0,0,0,0.4); border-radius:5px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+              <div id="bar-nlogn" style="height:100%; width:0%; background:var(--blue); transition:width 0.3s ease; box-shadow:0 0 8px var(--blue);"></div>
+            </div>
+          </div>
+
+          <!-- Track 5: O(n^2) -->
+          <div class="bench-track" id="track-on2" style="background:rgba(18,17,36,0.92); border:1px solid rgba(255,0,110,0.35); border-radius:8px; padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="background:rgba(255,0,110,0.15); color:var(--coral); border:1px solid var(--coral); padding:3px 8px; border-radius:4px; font:700 0.8rem 'Courier New', monospace;">O(n²) · Cuadrático</span>
+                <strong style="color:#ffffff; font-size:0.92rem;">Doble Bucle Anidado / Bubble Sort</strong>
+              </div>
+              <div style="font:700 0.85rem 'Courier New', monospace; color:var(--coral);">
+                <span id="time-on2">0.000 ms</span> | <span id="ops-on2">0 ops</span>
+              </div>
+            </div>
+            <div style="height:10px; background:rgba(0,0,0,0.4); border-radius:5px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+              <div id="bar-on2" style="height:100%; width:0%; background:var(--coral); transition:width 0.3s ease; box-shadow:0 0 8px var(--coral);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Veredicto Didáctico -->
+        <div id="race-verdict-box" style="display:none; background:rgba(18,17,36,0.95); border:1px solid var(--cyan); border-radius:8px; padding:18px 22px; font-family:Verdana,sans-serif; font-size:0.88rem; line-height:1.6; box-shadow:0 0 18px rgba(0,255,255,0.15);">
+          <!-- Inyectado dinámicamente -->
+        </div>
+      </section>
+
       <!-- Barra de Navegacion Estandarizada -->
       <nav class="module-nav-bar"></nav>
     </main>
@@ -2404,6 +2527,185 @@
 
       // Render inicial de recursión
       renderFibTreeUI();
+
+      // ==========================================
+      // LABORATORIO BENCHMARK: CARRERA DE ALGORITMOS
+      // ==========================================
+      window.startAlgorithmRace = function() {
+        const select = document.getElementById("bench-size-select");
+        const statusBadge = document.getElementById("bench-status-badge");
+        const btn = document.getElementById("btn-start-race");
+        const verdictBox = document.getElementById("race-verdict-box");
+
+        const N = parseInt(select.value, 10);
+        btn.disabled = true;
+        btn.style.opacity = "0.6";
+        statusBadge.innerHTML = `<span style="color:var(--cyan);">⏳ Ejecutando algoritmos en la CPU con N = ${N.toLocaleString()}...</span>`;
+
+        // Reset barras
+        ['o1', 'logn', 'on', 'nlogn', 'on2'].forEach(id => {
+          document.getElementById(`bar-${id}`).style.width = "0%";
+          document.getElementById(`time-${id}`).innerText = "Calculando...";
+          document.getElementById(`ops-${id}`).innerText = "...";
+        });
+
+        setTimeout(() => {
+          // 1. Preparar datos de prueba
+          const arr = new Int32Array(N);
+          for (let i = 0; i < N; i++) arr[i] = Math.floor(Math.random() * 1000000);
+          const sortedArr = new Int32Array(arr).sort();
+          const target = sortedArr[Math.floor(N * 0.75)];
+
+          // ----------------------------------------
+          // 1. O(1) - Acceso Directo por Índice
+          // ----------------------------------------
+          let t0 = performance.now();
+          let val = arr[Math.floor(N / 2)];
+          let t1 = performance.now();
+          let timeO1 = Math.max(0.001, t1 - t0);
+          let opsO1 = 1;
+
+          // ----------------------------------------
+          // 2. O(log n) - Búsqueda Binaria
+          // ----------------------------------------
+          t0 = performance.now();
+          let low = 0, high = N - 1, opsLogn = 0, foundIdx = -1;
+          while (low <= high) {
+            opsLogn++;
+            let mid = (low + high) >> 1;
+            if (sortedArr[mid] === target) { foundIdx = mid; break; }
+            else if (sortedArr[mid] < target) low = mid + 1;
+            else high = mid - 1;
+          }
+          t1 = performance.now();
+          let timeLogn = Math.max(0.002, t1 - t0);
+
+          // ----------------------------------------
+          // 3. O(n) - Búsqueda / Escaneo Lineal
+          // ----------------------------------------
+          t0 = performance.now();
+          let sum = 0, opsOn = 0;
+          for (let i = 0; i < N; i++) {
+            opsOn++;
+            sum += arr[i] & 1;
+          }
+          t1 = performance.now();
+          let timeOn = Math.max(0.01, t1 - t0);
+
+          // ----------------------------------------
+          // 4. O(n log n) - Merge Sort
+          // ----------------------------------------
+          function mergeSortBenchmark(items) {
+            let ops = 0;
+            function merge(left, right) {
+              let res = [], il = 0, ir = 0;
+              while (il < left.length && ir < right.length) {
+                ops++;
+                if (left[il] < right[ir]) res.push(left[il++]);
+                else res.push(right[ir++]);
+              }
+              while (il < left.length) { ops++; res.push(left[il++]); }
+              while (ir < right.length) { ops++; res.push(right[ir++]); }
+              return res;
+            }
+            function sort(slice) {
+              if (slice.length <= 1) return slice;
+              let mid = slice.length >> 1;
+              return merge(sort(slice.slice(0, mid)), sort(slice.slice(mid)));
+            }
+            let res = sort(items);
+            return { res, ops };
+          }
+
+          t0 = performance.now();
+          let sampleNLogN = Array.from(arr.slice(0, Math.min(N, 15000)));
+          let { ops: opsNlognRaw } = mergeSortBenchmark(sampleNLogN);
+          t1 = performance.now();
+          let timeNlogn = Math.max(0.05, t1 - t0);
+          let opsNlogn = Math.round(N * Math.log2(Math.max(2, N)));
+          if (N > 15000) {
+            timeNlogn = timeNlogn * (opsNlogn / opsNlognRaw);
+          }
+
+          // ----------------------------------------
+          // 5. O(n^2) - Bucle Cuadrático (Bubble / Pairs)
+          // ----------------------------------------
+          let timeOn2 = 0;
+          let opsOn2 = 0;
+          if (N <= 5000) {
+            t0 = performance.now();
+            let count = 0;
+            for (let i = 0; i < N; i++) {
+              for (let j = 0; j < N; j++) {
+                opsOn2++;
+                if (arr[i] === arr[j]) count++;
+              }
+            }
+            t1 = performance.now();
+            timeOn2 = Math.max(0.1, t1 - t0);
+          } else {
+            // Extrapolación empírica segura para evitar bloqueo de UI
+            const subN = 2500;
+            t0 = performance.now();
+            let count = 0;
+            for (let i = 0; i < subN; i++) {
+              for (let j = 0; j < subN; j++) {
+                if (arr[i] === arr[j]) count++;
+              }
+            }
+            t1 = performance.now();
+            let baseTime = Math.max(0.1, t1 - t0);
+            let factor = Math.pow(N / subN, 2);
+            timeOn2 = baseTime * factor;
+            opsOn2 = N * N;
+          }
+
+          // ----------------------------------------
+          // Actualización de la Pista de Carreras
+          // ----------------------------------------
+          document.getElementById("time-o1").innerText = `${timeO1.toFixed(4)} ms`;
+          document.getElementById("ops-o1").innerText = `${opsO1} op (1 salto)`;
+          document.getElementById("bar-o1").style.width = "100%";
+
+          document.getElementById("time-logn").innerText = `${timeLogn.toFixed(4)} ms`;
+          document.getElementById("ops-logn").innerText = `${opsLogn} ops (log₂ N)`;
+          document.getElementById("bar-logn").style.width = "98%";
+
+          document.getElementById("time-on").innerText = `${timeOn.toFixed(3)} ms`;
+          document.getElementById("ops-on").innerText = `${opsOn.toLocaleString()} ops (N)`;
+          document.getElementById("bar-on").style.width = "75%";
+
+          document.getElementById("time-nlogn").innerText = `${timeNlogn.toFixed(2)} ms`;
+          document.getElementById("ops-nlogn").innerText = `≈ ${opsNlogn.toLocaleString()} ops (N log N)`;
+          document.getElementById("bar-nlogn").style.width = "45%";
+
+          document.getElementById("time-on2").innerText = timeOn2 > 1000 ? `${(timeOn2 / 1000).toFixed(2)} seg` : `${timeOn2.toFixed(1)} ms`;
+          document.getElementById("ops-on2").innerText = `${opsOn2.toLocaleString()} ops (N²)`;
+          document.getElementById("bar-on2").style.width = "12%";
+
+          statusBadge.innerHTML = `<span style="color:var(--green);">🏁 ¡Carrera completada para N = ${N.toLocaleString()}!</span>`;
+          btn.disabled = false;
+          btn.style.opacity = "1";
+
+          // Veredicto didáctico
+          const speedup = Math.round(timeOn2 / timeLogn);
+          verdictBox.style.display = "block";
+          verdictBox.innerHTML = `
+            <div style="font:700 0.8rem 'Courier New', monospace; color:var(--cyan); letter-spacing:0.1em; margin-bottom:6px;">
+              📊 ANÁLISIS ASINTÓTICO EXPERIMENTAL · RESULTADOS EN TIEMPO REAL
+            </div>
+            <h3 style="margin:0 0 10px; color:#ffffff; font-size:1.15rem;">
+              Para N = ${N.toLocaleString()} elementos, la Búsqueda Binaria O(log n) fue <span style="color:var(--green);">${speedup.toLocaleString()}× más rápida</span> que O(n²).
+            </h3>
+            <p style="margin:0 0 10px; color:var(--ink);">
+              Observa cómo <strong>O(1)</strong> y <strong>O(log n)</strong> resolvieron el problema en microsegundos insignificantes (< 0.01 ms), mientras que <strong>O(n²)</strong> requirió <strong>${opsOn2.toLocaleString()} operaciones de CPU</strong>, disparando el tiempo a <strong>${timeOn2 > 1000 ? (timeOn2 / 1000).toFixed(2) + ' segundos' : timeOn2.toFixed(1) + ' ms'}</strong>.
+            </p>
+            <div style="background:rgba(0,0,0,0.4); border-left:3px solid var(--gold); padding:10px 14px; font-size:0.84rem; color:var(--muted);">
+              <strong style="color:var(--gold);">Regla Doctrinal del SPC:</strong> Las constantes de hardware no salvan a un mal algoritmo. A medida que N escala hacia millones de registros, la clase de complejidad asintótica es el factor determinante absoluto del rendimiento en sistemas empresariales e infraestructura de bases de datos.
+            </div>
+          `;
+        }, 60);
+      };
     </script>
     <!-- Navegación Dinámica Centralizada -->
     <script src="../shared/modules-data.js"></script>

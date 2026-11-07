@@ -15,7 +15,7 @@
       title: "Examen Integrador Nacional SPC · Ciencias de la Computación & Arquitectura de Sistemas",
       badge: "EXAMEN INTEGRAL OFICIAL",
       category: "Evaluación Integral",
-      description: "30 reactivos de alta exigencia técnica que abarcan los 29 módulos formativos de la plataforma: algoritmos, bases de datos relacionales, arquitectura backend en .NET 8, concurrencia de hardware, métricas de confiabilidad, gestión de proyectos (Haynes) y modelado formal (Sommerville / Cairó).",
+      description: "30 reactivos de alta exigencia técnica que abarcan los 30 módulos formativos de la plataforma: algoritmos, bases de datos relacionales, arquitectura backend en .NET 8, concurrencia de hardware, métricas de confiabilidad, gestión de proyectos (Haynes) y modelado formal (Sommerville / Cairó).",
       author: "Comité Técnico Evaluador SPC / INEGI",
       version: "2.4",
       timeLimitMinutes: 60,
