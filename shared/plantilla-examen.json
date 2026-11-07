@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Plantilla Canónica de Examen para MaterialVisual",
-  "description": "Formato JSON estándar para importar y crear exámenes personalizados en el Simulador de Exámenes SPC.",
+  "description": "Formato JSON estándar para importar y crear exámenes personalizados en el Simulador de Exámenes Técnicos.",
   "id": "mi-examen-personalizado-01",
   "title": "Evaluación Técnica Especializada: Concurrencia y Arquitectura",
   "category": "Arquitectura & Backend",
-  "description": "Cuestionario de evaluación técnica con 10 reactivos de opción múltiple conforme al estándar SPC e INEGI.",
+  "description": "Cuestionario de evaluación técnica con 10 reactivos de opción múltiple conforme a estándares profesionales de arquitectura de software e ingeniería.",
   "timeLimitMinutes": 45,
   "passingScore": 80,
   "immediateFeedback": false,

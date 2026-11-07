@@ -79,3 +79,9 @@ Al crear un nuevo módulo (ej. `modulos/XX-nombre.html`):
    - Comprobar que en pantallas móviles de 320px a 375px no exista desbordamiento ni elementos inaccesibles.
 5. **Control de Versiones:**
    - Ejecutar `git add .`, `git commit` descriptivo y `git push origin main`.
+
+---
+
+## 6. Prohibición de Referencias Institucionales o Convocatorias
+Queda terminantemente prohibido incluir referencias a "SPC", "Servicio Profesional de Carrera", "INEGI", "CENEVAL" o procesos/convocatorias específicas de oposición en títulos, textos, badges, metadatos, comentarios de código o reactivos.
+- Sustituir siempre por terminología técnica profesional y universal: "Evaluación Técnica", "Certificación Técnica", "Laboratorio Evaluativo", "Examen de Arquitectura e Ingeniería de Software", etc.

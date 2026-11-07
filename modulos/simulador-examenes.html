@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulador de Exámenes SPC & CENEVAL · MaterialVisual</title>
+  <title>Simulador de Exámenes Técnicos & Arquitectura · MaterialVisual</title>
   <link rel="stylesheet" href="../shared/theme.css" />
   <style>
     /* ==========================================================================
-       Simulador de Exámenes SPC & CENEVAL · System Design Oficial MaterialVisual
+       Simulador de Exámenes Técnicos & Arquitectura · System Design Oficial MaterialVisual
        ========================================================================== */
 
     :root {
@@ -440,8 +440,8 @@
 
     <header class="module-header">
       <div>
-        <p class="eyebrow">SERVICIO PROFESIONAL DE CARRERA · EVALUACIÓN TÉCNICA OFICIAL</p>
-        <h1>Simulador de Exámenes SPC &amp; CENEVAL</h1>
+        <p class="eyebrow">INGENIERÍA &amp; ARQUITECTURA DE SOFTWARE · EVALUACIÓN TÉCNICA OFICIAL</p>
+        <h1>Simulador de Exámenes Técnicos &amp; Arquitectura</h1>
       </div>
       <p class="intro">
         Banco formal de evaluaciones técnicas cronometradas. Resuelve el Examen Integrador de 30 reactivos con barajado dinámico de incisos, auditoría post-mortem y gestor para importar cuestionarios personalizados.
@@ -787,7 +787,7 @@ D) Requiere Task.Run obligatoriamente.
             </div>
             <h3 style="margin:0 0 10px; color:#ffffff; font-size:1.2rem; font-family:'Courier New', monospace;">${ex.title}</h3>
             <p style="font-size:0.86rem; color:var(--muted); line-height:1.55; margin-bottom:16px; font-family:Verdana,sans-serif;">
-              ${ex.description || 'Evaluación de opción múltiple estructurada conforme a la doctrina oficial del SPC.'}
+              ${ex.description || 'Evaluación de opción múltiple estructurada conforme a estándares profesionales de ingeniería y arquitectura de software.'}
             </p>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;">
               <span class="exam-meta-pill">📝 ${ex.questions.length} Reactivos</span>
@@ -975,7 +975,7 @@ D) Requiere Task.Run obligatoriamente.
 
       document.getElementById('session-question-counter').innerText = `Reactivo ${currentQIdx + 1} de ${currentQuestions.length}`;
       document.getElementById('lbl-question-tag').innerText = `REACTIVO ${currentQIdx + 1}`;
-      document.getElementById('lbl-question-module').innerText = q.moduleRef ? `Módulo ${q.moduleRef}` : 'SPC';
+      document.getElementById('lbl-question-module').innerText = q.moduleRef ? `Módulo ${q.moduleRef}` : 'Técnico';
       document.getElementById('lbl-question-text').innerText = q.text;
 
       const flagIndicator = document.getElementById('lbl-flag-indicator');
@@ -1091,12 +1091,12 @@ D) Requiere Task.Run obligatoriamente.
       bannerContainer.innerHTML = `
         <div class="dictamen-banner ${isApproved ? 'approved' : 'failed'}">
           <div style="font:700 0.78rem 'Courier New', monospace; letter-spacing:0.12em; color:${isApproved ? 'var(--green)' : 'var(--coral)'}; margin-bottom:6px;">
-            ${isApproved ? 'RESULTADO SATISFACTORIO · SERVICIO PROFESIONAL DE CARRERA' : 'EVALUACIÓN DIAGNÓSTICA · REQUIERE REFUERZO TÉCNICO'}
+            ${isApproved ? 'RESULTADO SATISFACTORIO · EVALUACIÓN TÉCNICA PROFESIONAL' : 'EVALUACIÓN DIAGNÓSTICA · REQUIERE REFUERZO TÉCNICO'}
           </div>
           <h2 class="dictamen-title">${isApproved ? '🏆 CANDIDATO IDÓNEO · APROBADO' : '⚠️ NO IDÓNEO · REQUIERE REFUERZO'}</h2>
           <p style="font-size:0.95rem; max-width:760px; margin:0 auto; line-height:1.6; color:#ffffff; font-family:Verdana,sans-serif;">
             ${isApproved
-              ? `Has alcanzado una puntuación de <strong>${score} / 100</strong>, superando satisfactoriamente el umbral mínimo de competencia requerido (<strong>${passing} pts</strong>) para puestos de Jefatura y Desarrollo en INEGI.`
+              ? `Has alcanzado una puntuación de <strong>${score} / 100</strong>, superando satisfactoriamente el umbral mínimo de competencia requerido (<strong>${passing} pts</strong>) para roles avanzados de Arquitectura y Desarrollo de Software.`
               : `Has obtenido una puntuación de <strong>${score} / 100</strong> (umbral mínimo requerido: <strong>${passing} pts</strong>). Identifica los reactivos en falla a continuación para repasar la doctrina oficial antes de tu examen presencial.`
             }
           </p>

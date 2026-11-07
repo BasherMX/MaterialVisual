@@ -14,8 +14,8 @@ Laboratorio didáctico interactivo de Ciencias de la Computación, Algoritmos, A
   - Modalidad de respuesta dual: **Autoevaluación Honesta** (por defecto) u **Opción Múltiple (A, B, C, D)** con post-mortem explicativo.
   - Generación procedural de audio sintetizado Web Audio API y diseño 100% Mobile-First con flip 3D.
 
-- **[📝 Simulador de Exámenes SPC & CENEVAL](modulos/simulador-examenes.html)**:
-  - **Examen Integrador Nacional de 30 Reactivos** de alta exigencia técnica conforme al estándar formal de oposición del Servicio Profesional de Carrera (INEGI).
+- **[📝 Simulador de Exámenes de Arquitectura & Software](modulos/simulador-examenes.html)**:
+  - **Examen Integrador de 30 Reactivos de alta exigencia técnica conforme a estándares profesionales de ingeniería de software y arquitectura de sistemas.
   - **Motor de Evaluación Avanzado:** Temporizador regresivo configurable con alertas de tiempo, opciones barajadas estocásticamente en cada sesión rastreando la clave correcta, cuadrícula táctil de reactivos (1..30) y marcado de preguntas para revisión (🚩).
   - **Prevención de Omisiones:** Modal interactivo de advertencia ante reactivos sin contestar al intentar finalizar.
   - **Auditoría Post-Mortem Detallada:** Calificación 0-100, dictamen técnico formal (umbral mínimo 80 pts) y desglose pregunta por pregunta con tu respuesta vs la correcta, justificación formal y referencias bibliográficas canónicas.

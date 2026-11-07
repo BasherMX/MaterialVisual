@@ -247,7 +247,7 @@
         <span>⚙️</span> 4. Compilador MDA Interactivo
       </button>
       <button class="tab-btn" onclick="switchXumlTab('tab-quiz')">
-        <span>🎯</span> 5. Laboratorio Evaluativo SPC
+        <span>🎯</span> 5. Laboratorio Evaluativo xUML
       </button>
     </nav>
 
@@ -360,7 +360,7 @@
       <div class="matrix-card">
         <h2><span>⚠️</span> 3. ¿Por qué se Excluyen Diagramas de Secuencia y Casos de Uso?</h2>
         <p style="font-size:0.92rem; line-height:1.6; color:var(--muted); margin-bottom:20px;">
-          Este es uno de los <strong>reactivos más frecuentes y tramposos en exámenes del SPC (INEGI)</strong>. Muchos desarrolladores asumen intuitivamente que para compilar código se necesitan diagramas de flujo o de secuencia, pero Sommerville aclara por qué la doctrina formal los excluye:
+          Este es uno de los <strong>reactivos más frecuentes en evaluaciones de arquitectura de software</strong>. Muchos desarrolladores asumen intuitivamente que para compilar código se necesitan diagramas de flujo o de secuencia, pero Sommerville aclara por qué la doctrina formal los excluye:
         </p>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
@@ -459,12 +459,12 @@
       </div>
     </section>
 
-    <!-- TAB 5: QUIZ FORMATIVO SPC -->
+    <!-- TAB 5: QUIZ FORMATIVO xUML -->
     <section id="tab-quiz" class="content-panel">
       <div class="matrix-card">
-        <h2><span>🎯</span> 5. Laboratorio de Diagnóstico: Evaluación Técnica SPC</h2>
+        <h2><span>🎯</span> 5. Laboratorio de Diagnóstico: Evaluación Técnica xUML</h2>
         <p style="font-size:0.92rem; line-height:1.6; color:var(--muted); margin-bottom:22px;">
-          Reactivos de alta complejidad con base en la obra de Ian Sommerville y las guías de evaluación del Servicio Profesional de Carrera (INEGI).
+          Reactivos de alta complejidad con base en la obra de Ian Sommerville y estándares internacionales de ingeniería de software.
         </p>
 
         <div id="quiz-list-container" style="display:flex; flex-direction:column; gap:18px;">
@@ -563,7 +563,7 @@ StateMachine PedidoLifecycle {
   Transition Pagado -> Despachado on Event(Despachar)
   Transition Creado -> Cancelado on Event(Cancelar)
 }`,
-        csharp: `namespace Inegi.Spc.Ventas;
+        csharp: `namespace App.Dominio.Ventas;
 
 public enum EstadoPedido { Creado, Pagado, Despachado, Cancelado }
 
@@ -626,7 +626,7 @@ StateMachine SensorLifecycle {
   Transition Muestreando -> AlertaTermica on Event(DetectarCalor)
   Transition AlertaTermica -> Inactivo on Event(Apagar)
 }`,
-        csharp: `namespace Inegi.Spc.IoT;
+        csharp: `namespace App.Dominio.IoT;
 
 public enum EstadoSensor { Inactivo, Muestreando, AlertaTermica, Mantenimiento }
 
@@ -682,14 +682,14 @@ StateMachine AuthLifecycle {
   Transition CredencialesValidas -> AutenticadoMFA on Event(ValidarToken)
   Transition CredencialesValidas -> Bloqueado on Event(ExcederIntentos)
 }`,
-        csharp: `namespace Inegi.Spc.Seguridad;
+        csharp: `namespace App.Dominio.Seguridad;
 
 public enum EstadoSesion { Anonimo, CredencialesValidas, AutenticadoMFA, Bloqueado }
 
 public class SesionUsuario
 {
     public Guid SesionId { get; init; } = Guid.NewGuid();
-    public string Usuario { get; set; } = "operador@inegi.gob.mx";
+    public string Usuario { get; set; } = "operador@enterprise.com";
     public EstadoSesion Estado { get; private set; } = EstadoSesion.Anonimo;
 
     public void Login()

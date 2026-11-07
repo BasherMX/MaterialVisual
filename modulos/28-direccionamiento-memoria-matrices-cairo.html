@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Direccionamiento de Memoria en Matrices (Osvaldo Cairó) · MaterialVisual</title>
-  <meta name="description" content="Simulador interactivo y formalización matemática del direccionamiento de matrices en memoria RAM (Row-Major vs Column-Major, Base 1 Cairó vs Base 0) para preparación SPC e ingeniería de software." />
+  <meta name="description" content="Simulador interactivo y formalización matemática del direccionamiento de matrices en memoria RAM (Row-Major vs Column-Major, Base 1 Cairó vs Base 0) para arquitectura de sistemas e ingeniería de software." />
   <link rel="stylesheet" href="../shared/theme.css" />
   <style>
     p, li {
@@ -344,7 +344,7 @@
       <button class="tab-btn" onclick="switchTab('tab-row-major')">2. Por Renglones (Row-Major)</button>
       <button class="tab-btn" onclick="switchTab('tab-col-major')">3. Por Columnas (Column-Major)</button>
       <button class="tab-btn" onclick="switchTab('tab-simulator')">4. Simulador &amp; RAM Visualizer</button>
-      <button class="tab-btn" onclick="switchTab('tab-quiz')">5. Laboratorio SPC Evaluativo</button>
+      <button class="tab-btn" onclick="switchTab('tab-quiz')">5. Laboratorio Evaluativo</button>
     </nav>
 
     <!-- TAB 1: TEORÍA -->
@@ -384,7 +384,7 @@
       <div class="callout-warning">
         <h4>⚠️ ¡Trampa Clásica de Examen de Oposición! (Base 1 vs Base 0)</h4>
         <p>
-          En los libros teóricos de algoritmos y reactivos del SPC (Cairó, Sedgewick, Knuth), 
+          En los libros teóricos de algoritmos y evaluaciones técnicas (Cairó, Sedgewick, Knuth), 
           <strong>los arreglos suelen expresarse con índices base 1</strong> (1 &le; i &le; m, 1 &le; j &le; n). 
           En C#, C++, Java y Python se usa <strong>base 0</strong>.
         </p>
@@ -456,7 +456,7 @@
 
       <div class="card-grid">
         <div class="concept-card">
-          <h3>Ejemplo Numérico Canónico SPC</h3>
+          <h3>Ejemplo Numérico Canónico</h3>
           <p>
             Sea una matriz <strong>A[4 &times; 5]</strong> de números enteros (4 bytes por elemento, w = 4), almacenada a partir de la dirección 
             <strong>POSINI = 1000</strong>. Calcular la dirección física de <strong>A[3, 4]</strong> por renglones:
@@ -513,7 +513,7 @@
 
       <div class="card-grid">
         <div class="concept-card">
-          <h3>Ejemplo Numérico Canónico SPC (Columnas)</h3>
+          <h3>Ejemplo Numérico Canónico (Columnas)</h3>
           <p>
             Misma matriz <strong>A[4 &times; 5]</strong>, w = 4 bytes, POSINI = 1000. Calcular la dirección física de <strong>A[3, 4]</strong> por columnas:
           </p>
@@ -618,7 +618,7 @@
         <div class="calc-input-group">
           <label for="input-base">Indexación</label>
           <select id="input-base">
-            <option value="1" selected>Base 1 (Cairó SPC)</option>
+            <option value="1" selected>Base 1 (Cairó)</option>
             <option value="0">Base 0 (C# / C++)</option>
           </select>
         </div>
@@ -650,12 +650,12 @@
       </div>
     </section>
 
-    <!-- TAB 5: QUIZ SPC -->
+    <!-- TAB 5: QUIZ FORMATIVO -->
     <section id="tab-quiz" class="content-panel" role="tabpanel">
-      <h2>5. Laboratorio de Evaluación SPC &middot; Direccionamiento de Arreglos</h2>
+      <h2>5. Laboratorio de Evaluación Técnica &middot; Direccionamiento de Arreglos</h2>
       <p>
         Resuelve estos 4 reactivos de alta complejidad con base en la bibliografía oficial de Osvaldo Cairó y 
-        evaluaciones técnicas del Servicio Profesional de Carrera (INEGI).
+        evaluaciones técnicas de desarrollo de software y arquitectura.
       </p>
 
       <div id="cairo-quiz">

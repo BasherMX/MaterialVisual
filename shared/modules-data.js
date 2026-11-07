@@ -454,7 +454,7 @@
         "desc": "Mapeo de matrices bidimensionales a memoria RAM física lineal según Osvaldo Cairó. Fórmulas de Row-Major vs Column-Major, cálculo de offsets y tamaño de palabra w.",
         "features": [
             "Visualizador de proyección 2D a cinta 1D continua de RAM con resaltado de bytes y offsets",
-            "Calculadora matemática paso a paso para Base 1 (Cairó / SPC) y Base 0 (C# / C++)",
+            "Calculadora matemática paso a paso para Base 1 (Cairó) y Base 0 (C# / C++)",
             "Laboratorio evaluativo con reactivos oficiales de cálculo de direcciones físicas"
         ],
         "btnId": "btn-goto-cairo-matrix-loc"

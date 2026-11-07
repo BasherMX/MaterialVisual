@@ -22,4 +22,7 @@ Este repositorio contiene visualizadores interactivos para Ciencias de la Comput
 5. **Flujo de Publicación:**
    - Todo nuevo módulo debe agregarse a `shared/modules-data.js`, al `<noscript>` de `index.html` y al listado de `README.md`.
    - Validar sintaxis con Node.js y realizar commit + push a `main` al finalizar.
+6. **Prohibición Estricta de Referencias Institucionales o Convocatorias:**
+   - Queda estrictamente prohibido mencionar o hacer alusión a "SPC", "Servicio Profesional de Carrera", "INEGI", "CENEVAL" o entidades/convocatorias gubernamentales o de oposición en cualquier parte del proyecto (código, contenido HTML, comentarios, títulos, metadatos, badges, reactivos o documentación).
+   - Utilizar exclusivamente terminología técnica, universal y neutral: "Evaluación Técnica", "Certificación Técnica", "Simulador de Exámenes de Arquitectura e Ingeniería", "Examen Integrador Técnico", "Laboratorio Evaluativo Formativo", etc.
 

@@ -248,7 +248,7 @@
           <span>📚</span> 5. Librerías Ecosistema .NET 8 (Mark J. Price)
         </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 6. Laboratorio de Evaluación SPC
+          <span>🎯</span> 6. Laboratorio de Evaluación Técnica
         </button>
       </nav>
 
@@ -647,12 +647,12 @@
         </div>
       </section>
 
-      <!-- Pestaña 6: Laboratorio de Evaluación SPC -->
+      <!-- Pestaña 6: Laboratorio de Evaluación Técnica -->
       <section id="tab-quiz" class="content-panel">
         <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación Formativa (INEGI - SPC)</h2>
+          <h2><span>🎯</span> Laboratorio de Evaluación Formativa: Resiliencia & Microservicios</h2>
           <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu dominio sobre BackgroundService, cancelación cooperativa, estrategias de caché y resiliencia con reactivos basados en el estándar del Servicio Profesional de Carrera:
+            Pon a prueba tu dominio sobre BackgroundService, cancelación cooperativa, estrategias de caché y resiliencia con reactivos de alta exigencia técnica:
           </p>
 
           <div class="quiz-card">
@@ -866,7 +866,7 @@
       }
 
       // ==========================================
-      // 4. LABORATORIO DE EVALUACIÓN (QUIZ SPC - INEGI)
+      // 4. LABORATORIO DE EVALUACIÓN (QUIZ DE RESILIENCIA Y CACHÉ)
       // ==========================================
       const quizQuestions = [
         {
@@ -954,7 +954,7 @@
             Amount: a,
             SourceContext: "OrderProcessingService",
             Environment: "Production",
-            Host: "inegi-api-pod-88"
+            Host: "cloud-api-pod-88"
           }
         };
 
@@ -1031,7 +1031,7 @@
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--srv-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación SPC Completado</h3>
+            <h3 style="color:var(--srv-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Técnica Completado</h3>
             <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>

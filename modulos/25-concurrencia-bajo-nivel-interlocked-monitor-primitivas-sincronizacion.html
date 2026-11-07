@@ -237,7 +237,7 @@
           <span>⚡</span> 5. Eventos Multihilo & Task vs Thread
         </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 6. Laboratorio de Evaluación SPC
+          <span>🎯</span> 6. Laboratorio de Evaluación Técnica
         </button>
       </nav>
 
@@ -447,7 +447,7 @@ public void ProcesarTransferencia()
             </div>
           </div>
 
-          <!-- Los 3 Conceptos Clave del Examen SPC -->
+          <!-- Los 3 Conceptos Clave de Evaluación Técnica -->
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:24px;">
             <div style="background:#090915; border:1px solid rgba(255,255,255,0.12); border-radius:6px; padding:16px;">
               <h4 style="color:var(--cpu-gold); margin:0 0 8px; font-size:0.95rem;">1. ¿Por qué el bloque finally?</h4>
@@ -572,7 +572,7 @@ public void ProcesarTransferencia()
         <div class="matrix-card">
           <h2><span>⚡</span> Task vs Thread & Manejo Seguro de Eventos en Multihilo</h2>
           <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
-            Dos preguntas clave del estándar SWEBOK v4 y del examen SPC para Jefatura de Departamento evalúan la distinción entre abstracciones asíncronas y los riesgos de sincronización en eventos de C#:
+            Dos preguntas clave del estándar SWEBOK v4 y de evaluaciones avanzadas de concurrencia evalúan la distinción entre abstracciones asíncronas y los riesgos de sincronización en eventos de C#:
           </p>
 
           <!-- 1. Task vs Thread -->
@@ -672,12 +672,12 @@ public void ProcesarTransferencia()
         </div>
       </section>
 
-      <!-- Pestaña 6: Laboratorio de Evaluación SPC -->
+      <!-- Pestaña 6: Laboratorio de Evaluación Técnica -->
       <section id="tab-quiz" class="content-panel">
         <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación Formativa (INEGI - SPC)</h2>
+          <h2><span>🎯</span> Laboratorio de Evaluación Formativa: Concurrencia Avanzada</h2>
           <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu dominio sobre atomicidad, descompilación de lock y selección de primitivas multihilo con reactivos basados en el estándar del Servicio Profesional de Carrera:
+            Pon a prueba tu dominio sobre atomicidad, descompilación de lock y selección de primitivas multihilo con reactivos basados en el estándares profesionales de ingeniería de software multihilo:
           </p>
 
           <div class="quiz-card">
@@ -888,7 +888,7 @@ public void ProcesarTransferencia()
       }
 
       // ==========================================
-      // 3. LABORATORIO DE EVALUACIÓN (QUIZ SPC - INEGI)
+      // 3. LABORATORIO DE EVALUACIÓN (QUIZ DE CONCURRENCIA)
       // ==========================================
       const quizQuestions = [
         {
@@ -1027,7 +1027,7 @@ public void ProcesarTransferencia()
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--cpu-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación SPC Completado</h3>
+            <h3 style="color:var(--cpu-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Técnica Completado</h3>
             <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>

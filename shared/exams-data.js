@@ -1,5 +1,5 @@
 /**
- * Material Visual · Banco Canónico de Exámenes Integradores (SPC / CENEVAL)
+ * Material Visual · Banco Canónico de Exámenes Integradores de Arquitectura e Ingeniería
  * Provee evaluaciones formales de opción múltiple estructuradas conforme a la bibliografía oficial.
  */
 (function (root, factory) {
@@ -11,12 +11,12 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   return [
     {
-      id: "examen-integrador-spc-2026",
-      title: "Examen Integrador Nacional SPC · Ciencias de la Computación & Arquitectura de Sistemas",
+      id: "examen-integrador-tech-2026",
+      title: "Examen Integrador Profesional · Ciencias de la Computación & Arquitectura de Sistemas",
       badge: "EXAMEN INTEGRAL OFICIAL",
       category: "Evaluación Integral",
       description: "30 reactivos de alta exigencia técnica que abarcan los 30 módulos formativos de la plataforma: algoritmos, bases de datos relacionales, arquitectura backend en .NET 8, concurrencia de hardware, métricas de confiabilidad, gestión de proyectos (Haynes) y modelado formal (Sommerville / Cairó).",
-      author: "Comité Técnico Evaluador SPC / INEGI",
+      author: "Comité Técnico de Arquitectura de Software",
       version: "2.4",
       timeLimitMinutes: 60,
       passingScore: 80,
@@ -27,7 +27,7 @@
       questions: [
         // 1. Módulo 01: Big O
         {
-          id: "spc-q01",
+          id: "tech-q01",
           number: 1,
           moduleRef: "01",
           text: "Al analizar la complejidad computacional temporal en el peor de los casos (Worst Case) de un algoritmo recursivo que divide el problema en dos mitades y realiza una recombinación lineal de los elementos (como Merge Sort), ¿cuál es la notación asintótica estricta correspondiente según el Teorema Maestro?",
@@ -43,7 +43,7 @@
         },
         // 2. Módulo 02: Greedy vs D&C
         {
-          id: "spc-q02",
+          id: "tech-q02",
           number: 2,
           moduleRef: "02",
           text: "En la resolución del clásico problema de la Mochila (Knapsack Problem), ¿bajo qué condición matemática estricta garantiza un enfoque voraz (Greedy) la obtención de la solución óptima global?",
@@ -59,7 +59,7 @@
         },
         // 3. Módulo 03: Árboles AVL
         {
-          id: "spc-q03",
+          id: "tech-q03",
           number: 3,
           moduleRef: "03",
           text: "En un árbol binario de búsqueda balanceado AVL, tras insertar un nodo en el subárbol derecho del hijo izquierdo de la raíz provocando un factor de equilibrio de -2 (o desbalance Izquierda-Derecha), ¿qué operación de reestructuración matemática restaura el invariante AVL?",
@@ -75,7 +75,7 @@
         },
         // 4. Módulo 04: Grafos BFS vs DFS
         {
-          id: "spc-q04",
+          id: "tech-q04",
           number: 4,
           moduleRef: "04",
           text: "Si se requiere determinar el camino más corto en número de aristas entre dos vértices dentro de un grafo no ponderado, ¿cuál es el algoritmo de exploración óptimo y qué estructura de datos requiere?",
@@ -91,7 +91,7 @@
         },
         // 5. Módulo 05: ANSI/SPARC 3 Niveles
         {
-          id: "spc-q05",
+          id: "tech-q05",
           number: 5,
           moduleRef: "05",
           text: "Dentro de la arquitectura canónica ANSI/SPARC de tres niveles para DBMS (doctrina Oppel), ¿qué nivel define la estructura lógica global de toda la base de datos para la comunidad de usuarios, ocultando los detalles físicos de almacenamiento en disco?",
@@ -107,7 +107,7 @@
         },
         // 6. Módulo 06: Modelado Conceptual ERD
         {
-          id: "spc-q06",
+          id: "tech-q06",
           number: 6,
           moduleRef: "06",
           text: "En el diseño conceptual de bases de datos mediante Diagramas Entidad-Relación (ERD), ¿qué caracteriza formalmente a una 'Entidad Débil' y cómo se representa en la notación canónica de Peter Chen?",
@@ -123,7 +123,7 @@
         },
         // 7. Módulo 07: Normalización
         {
-          id: "spc-q07",
+          id: "tech-q07",
           number: 7,
           moduleRef: "07",
           text: "Una tabla relacional ya se encuentra en Primera Forma Normal (1FN) y posee una clave primaria compuesta por dos atributos (A, B). Si un atributo no clave C depende funcionalmente únicamente de A (A ➔ C), ¿qué anomalía formal se presenta y cómo se alcanza la Segunda Forma Normal (2FN)?",
@@ -139,7 +139,7 @@
         },
         // 8. Módulo 08: Sublenguajes SQL
         {
-          id: "spc-q08",
+          id: "tech-q08",
           number: 8,
           moduleRef: "08",
           text: "En la taxonomía formal del estándar SQL ANSI/ISO, ¿cuál es la diferencia técnica de ejecución y registro transaccional entre las sentencias 'DELETE FROM Clientes;' y 'TRUNCATE TABLE Clientes;'?",
@@ -155,7 +155,7 @@
         },
         // 9. Módulo 09: ACID & Axiomas de Armstrong
         {
-          id: "spc-q09",
+          id: "tech-q09",
           number: 9,
           moduleRef: "09",
           text: "Dentro del conjunto canónico de los Axiomas de Armstrong para inferir dependencias funcionales en bases de datos relacionales, ¿qué establece la regla de 'Aumento' (Augmentation)?",
@@ -171,7 +171,7 @@
         },
         // 10. Módulo 10: Índices & B+ Tree
         {
-          id: "spc-q10",
+          id: "tech-q10",
           number: 10,
           moduleRef: "10",
           text: "¿Cuál es la característica arquitectónica de almacenamiento que diferencia a un Índice Agrupado (Clustered Index) de un Índice No Agrupado (Non-Clustered Index) en un motor relacional como SQL Server o PostgreSQL?",
@@ -187,7 +187,7 @@
         },
         // 11. Módulo 11: HTTP Semantics RFC 9110
         {
-          id: "spc-q11",
+          id: "tech-q11",
           number: 11,
           moduleRef: "11",
           text: "De acuerdo con el estándar RFC 9110 (HTTP Semantics), ¿cuál de los siguientes métodos de petición se define formalmente como 'Idempotente pero NO Seguro'?",
@@ -203,7 +203,7 @@
         },
         // 12. Módulo 12: Modelo de Madurez de Richardson
         {
-          id: "spc-q12",
+          id: "tech-q12",
           number: 12,
           moduleRef: "12",
           text: "En el Modelo de Madurez de Richardson para APIs REST, ¿qué capacidad técnica distingue a una API que alcanza el Nivel 3 ('La Gloria de REST') frente a una de Nivel 2?",
@@ -219,7 +219,7 @@
         },
         // 13. Módulo 13: POO & Despacho Dinámico
         {
-          id: "spc-q13",
+          id: "tech-q13",
           number: 13,
           moduleRef: "13",
           text: "En el paradigma de Programación Orientada a Objetos implementado en la máquina virtual CLR de .NET, ¿a través de qué estructura en memoria se resuelve en tiempo de ejecución la invocación de un método sobreescrito ('override') mediante polimorfismo dinámico?",
@@ -235,7 +235,7 @@
         },
         // 14. Módulo 14: Patrones de Diseño GoF
         {
-          id: "spc-q14",
+          id: "tech-q14",
           number: 14,
           moduleRef: "14",
           text: "Si se requiere permitir que un objeto altere su comportamiento dinámicamente cuando su estado interno cambia, de modo que parezca haber cambiado de clase (eliminando largas cadenas anidadas de 'switch' o 'if-else'), ¿qué patrón de diseño GoF es el indicado?",
@@ -251,7 +251,7 @@
         },
         // 15. Módulo 15: Theo Mandel UI/UX
         {
-          id: "spc-q15",
+          id: "tech-q15",
           number: 15,
           moduleRef: "15",
           text: "¿Cuáles son las Tres Reglas de Oro para el diseño de interfaces humano-computadora formuladas por Theo Mandel y citadas en la ingeniería de software?",
@@ -267,7 +267,7 @@
         },
         // 16. Módulo 16: Triángulo de Hierro & Brooks
         {
-          id: "spc-q16",
+          id: "tech-q16",
           number: 16,
           moduleRef: "16",
           text: "¿Qué postula la célebre Ley de Brooks sobre la gestión de cronogramas en proyectos de ingeniería de software con retrasos?",
@@ -283,7 +283,7 @@
         },
         // 17. Módulo 17: EDT / WBS Regla del 100%
         {
-          id: "spc-q17",
+          id: "tech-q17",
           number: 17,
           moduleRef: "17",
           text: "En la gestión del alcance según Marion E. Haynes y el PMI, ¿en qué consiste la 'Regla del 100%' al construir la Estructura de Descomposición del Trabajo (EDT / WBS)?",
@@ -299,7 +299,7 @@
         },
         // 18. Módulo 18: Inyección de Dependencias & C# 12
         {
-          id: "spc-q18",
+          id: "tech-q18",
           number: 18,
           moduleRef: "18",
           text: "En el contenedor de Inyección de Dependencias de ASP.NET Core, ¿qué grave patología arquitectónica ocurre si un servicio registrado como 'Singleton' recibe inyectado en su constructor a un servicio registrado con ciclo de vida 'Scoped'?",
@@ -315,7 +315,7 @@
         },
         // 19. Módulo 19: EF Core & Northwind
         {
-          id: "spc-q19",
+          id: "tech-q19",
           number: 19,
           moduleRef: "19",
           text: "Al ejecutar consultas paralelas con 'Task.WhenAll' sobre Entity Framework Core, ¿por qué es mandatorio utilizar 'IDbContextFactory<TContext>' en lugar de inyectar una única instancia de 'DbContext'?",
@@ -331,7 +331,7 @@
         },
         // 20. Módulo 20: gRPC & Streaming
         {
-          id: "spc-q20",
+          id: "tech-q20",
           number: 20,
           moduleRef: "20",
           text: "¿Qué característica de HTTP/2 permite a gRPC transmitir cientos de solicitudes remotas concurrentes en ambas direcciones sin sufrir el problema de Bloqueo de Cabeza de Línea (Head-of-Line Blocking) a nivel de aplicación que aqueja a HTTP/1.1?",
@@ -347,7 +347,7 @@
         },
         // 21. Módulo 21: GraphQL Over/Under-fetching
         {
-          id: "spc-q21",
+          id: "tech-q21",
           number: 21,
           moduleRef: "21",
           text: "En el diseño de interfaces de servicios web, ¿qué patología de red define el término 'Under-fetching' y cómo la resuelve formalmente GraphQL?",
@@ -363,7 +363,7 @@
         },
         // 22. Módulo 22: JWT RFC 7519
         {
-          id: "spc-q22",
+          id: "tech-q22",
           number: 22,
           moduleRef: "22",
           text: "Respecto a la seguridad criptográfica del estándar JSON Web Token (RFC 7519), ¿cuál es la distinción fundamental entre un token firmado (JWS) y un token cifrado (JWE)?",
@@ -379,7 +379,7 @@
         },
         // 23. Módulo 23: IEEE 610.12 (Error, Defecto, Falla)
         {
-          id: "spc-q23",
+          id: "tech-q23",
           number: 23,
           moduleRef: "23",
           text: "De acuerdo con el estándar IEEE 610.12 y la ingeniería de software formal, ¿cuál es la relación causal precisa entre Error, Defecto (Bug) y Falla?",
@@ -395,7 +395,7 @@
         },
         // 24. Módulo 24: Métricas de Confiabilidad SRE
         {
-          id: "spc-q24",
+          id: "tech-q24",
           number: 24,
           moduleRef: "24",
           text: "Si un sistema bancario de misión crítica tiene un objetivo de disponibilidad del 99.99% ('cuatro nueves') en un año calendario continuo (365 días), ¿cuál es el tiempo máximo acumulado de inactividad permitido (Downtime Error Budget)?",
@@ -411,7 +411,7 @@
         },
         // 25. Módulo 25: Concurrencia de Bajo Nivel
         {
-          id: "spc-q25",
+          id: "tech-q25",
           number: 25,
           moduleRef: "25",
           text: "Respecto al manejo de eventos en C# en entornos multihilo, ¿por qué es una mala práctica invocar los delegados de un evento dentro de un bloque 'lock (_syncRoot)'?",
@@ -427,7 +427,7 @@
         },
         // 26. Módulo 26: BackgroundService & Resiliencia
         {
-          id: "spc-q26",
+          id: "tech-q26",
           number: 26,
           moduleRef: "26",
           text: "En un servicio en segundo plano de .NET 8 que hereda de 'BackgroundService', ¿cuál es el mecanismo estándar para responder adecuadamente a una señal de apagado ordenado (Graceful Shutdown) enviada por el Host (SIGTERM)?",
@@ -443,7 +443,7 @@
         },
         // 27. Módulo 27: Estimación PERT & Validación Haynes
         {
-          id: "spc-q27",
+          id: "tech-q27",
           number: 27,
           moduleRef: "27",
           text: "De acuerdo con las fórmulas matemáticas canónicas de PERT (distribución Beta) expuestas por Marion E. Haynes, si una tarea tiene tiempo optimista To = 4 días, más probable Tm = 7 días y pesimista Tp = 16 días, ¿cuál es su Tiempo Esperado (Te) y su Varianza (σ²)?",
@@ -459,7 +459,7 @@
         },
         // 28. Módulo 28: Direccionamiento Matrices Cairó
         {
-          id: "spc-q28",
+          id: "tech-q28",
           number: 28,
           moduleRef: "28",
           text: "Sea una matriz bidimensional A[4 x 6] con almacenamiento en base 1, alojada en memoria RAM a partir de la dirección base POSINI = 2000. Si cada elemento ocupa w = 4 bytes (tipo int) y se almacena en Orden por Renglones (Row-Major Order), según las fórmulas de Osvaldo Cairó, ¿cuál es la dirección física de A[3, 5]?",
@@ -475,7 +475,7 @@
         },
         // 29. Módulo 29: Executable UML Sommerville
         {
-          id: "spc-q29",
+          id: "tech-q29",
           number: 29,
           moduleRef: "29",
           text: "De acuerdo con Ian Sommerville (Cap. 5: Modelado del Sistema), ¿cuáles son los TRES modelos indispensables que constituyen el subconjunto formal estricto de Executable UML (xUML) para que un diseño pueda compilarse directamente a código ejecutable?",
@@ -491,7 +491,7 @@
         },
         // 30. Módulo 30 / Transversal: SWEBOK v4 & Web
         {
-          id: "spc-q30",
+          id: "tech-q30",
           number: 30,
           moduleRef: "23/20",
           text: "Al contrastar técnicas de calidad de software según SWEBOK v4 y arquitecturas de comunicación en ASP.NET Core, ¿cuál de las siguientes afirmaciones es TÉCNICAMENTE CORRECTA?",

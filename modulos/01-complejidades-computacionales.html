@@ -2701,7 +2701,7 @@
               Observa cómo <strong>O(1)</strong> y <strong>O(log n)</strong> resolvieron el problema en microsegundos insignificantes (< 0.01 ms), mientras que <strong>O(n²)</strong> requirió <strong>${opsOn2.toLocaleString()} operaciones de CPU</strong>, disparando el tiempo a <strong>${timeOn2 > 1000 ? (timeOn2 / 1000).toFixed(2) + ' segundos' : timeOn2.toFixed(1) + ' ms'}</strong>.
             </p>
             <div style="background:rgba(0,0,0,0.4); border-left:3px solid var(--gold); padding:10px 14px; font-size:0.84rem; color:var(--muted);">
-              <strong style="color:var(--gold);">Regla Doctrinal del SPC:</strong> Las constantes de hardware no salvan a un mal algoritmo. A medida que N escala hacia millones de registros, la clase de complejidad asintótica es el factor determinante absoluto del rendimiento en sistemas empresariales e infraestructura de bases de datos.
+              <strong style="color:var(--gold);">Regla Doctrinal de Análisis Algorítmico:</strong> Las constantes de hardware no salvan a un mal algoritmo. A medida que N escala hacia millones de registros, la clase de complejidad asintótica es el factor determinante absoluto del rendimiento en sistemas empresariales e infraestructura de bases de datos.
             </div>
           `;
         }, 60);

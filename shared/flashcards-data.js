@@ -867,7 +867,7 @@
       question: "¿Por qué ASP.NET Core SignalR es la tecnología idónea para tableros en vivo y chats en navegadores frente a gRPC?",
       answer: "SignalR proporciona una abstracción pub/sub de tiempo real sobre WebSockets con degradación automática a Server-Sent Events o Long Polling para navegadores.",
       explanation: "Los navegadores web estándar no exponen control sobre frames HTTP/2 de bajo nivel para clientes gRPC nativos. SignalR abstrae conexiones persistentes con WebSockets nativos y fallback automático, ofreciendo Hubs y grupos de difusión ideales para clientes web heterogéneos.",
-      authorRef: "ASP.NET Core Architecture Team & SPC INEGI",
+      authorRef: "ASP.NET Core Architecture Team & Estándares Técnicos",
       options: [
         "Proporciona una abstracción pub/sub de tiempo real sobre WebSockets con degradación automática a SSE o Long Polling para navegadores",
         "SignalR opera directamente sin servidor web enviando paquetes UDP peer-to-peer",
@@ -884,7 +884,7 @@
       question: "¿Qué es fundamentalmente 'gRPC JSON Transcoding' en ASP.NET Core y qué limitación arquitectónica debe tenerse clara en evaluaciones técnicas?",
       answer: "Es un mecanismo para exponer servicios gRPC como APIs REST tradicionales con JSON; NO es una solución de streaming pub/sub para navegadores.",
       explanation: "gRPC JSON Transcoding permite que clientes REST tradicionales (cURL, Postman, apps legadas) invoquen servicios gRPC mediante peticiones HTTP/1.1 y payloads JSON mapeados con anotaciones google.api.http. Su propósito es interoperabilidad REST, no empuje de eventos en tiempo real.",
-      authorRef: "Microsoft ASP.NET Core Documentation & SPC INEGI",
+      authorRef: "Microsoft ASP.NET Core Documentation & Estándares Técnicos",
       options: [
         "Mecanismo para exponer servicios gRPC como APIs REST tradicionales con JSON; NO es streaming pub/sub para navegadores",
         "Un middleware que convierte bases de datos SQL Server en documentos de MongoDB",
@@ -1106,7 +1106,7 @@
       question: "¿Por qué la operación de incremento 'x++' no es segura en entornos multihilo y cómo lo resuelve 'Interlocked.Increment'?",
       answer: "Porque 'x++' ejecuta tres pasos independientes en CPU (Read-Modify-Write: cargar a registro, incrementar en ALU y almacenar en memoria); 'Interlocked' ejecuta la operación de forma atómica a nivel de hardware.",
       explanation: "Un cambio de contexto entre los 3 pasos de x++ provoca pérdida de operaciones y datos corruptos. Interlocked.Increment instruye directamente a la CPU para bloquear el bus de memoria durante la instrucción (ej. LOCK XADD en x86) garantizando atomicidad sin la sobrecarga de bloquear hilos (Lock-Free).",
-      authorRef: "Cuestionario SPC INEGI & Mark J. Price (C# Concurrency)",
+      authorRef: "Cuestionario de Certificación Técnica & Mark J. Price (C# Concurrency)",
       options: [
         "Porque x++ requiere tres pasos en CPU (Read-Modify-Write); Interlocked realiza la modificación atómica mediante instrucciones directas de hardware",
         "Porque x++ convierte la variable en un tipo de referencia temporal en el Heap; Interlocked la mantiene en el Stack",
@@ -1123,7 +1123,7 @@
       question: "¿Cuál es la transformación interna real que realiza el compilador de C# sobre un bloque 'lock(_syncRoot)'?",
       answer: "Emite un bloque try-finally donde invoca Monitor.Enter al inicio y garantiza la invocación a Monitor.Exit en el bloque finally.",
       explanation: "lock(obj) es azúcar sintáctico de C#. El bloque try-finally garantiza que Monitor.Exit se ejecute sin importar si ocurre una excepción no controlada, evitando deadlocks permanentes. Además, Monitor duerme el hilo en la cola del SO (no es un spin-lock que queme CPU).",
-      authorRef: "Cuestionario SPC INEGI / CLR via C# (Jeffrey Richter)",
+      authorRef: "Cuestionario de Certificación Técnica / CLR via C# (Jeffrey Richter)",
       options: [
         "Emite un bloque try-finally donde invoca Monitor.Enter al ingresar y garantiza la invocación a Monitor.Exit en el bloque finally",
         "Un bucle de espera activa (spin-lock) gestionado por TaskFactory que sondea continuamente una dirección de memoria",
@@ -1140,7 +1140,7 @@
       question: "¿En qué se diferencian arquitectónicamente 'Mutex' y 'SemaphoreSlim' en .NET?",
       answer: "Mutex es una primitiva de Kernel del SO con exclusión mutua de 1 hilo/proceso y thread ownership; SemaphoreSlim opera en espacio de usuario, regula N ranuras (throttling) y admite await WaitAsync().",
       explanation: "Mutex puede ser nombrado para sincronizar procesos distintos en el SO (ej. aplicación de instancia única) pero es pesado. SemaphoreSlim es ligero, vive en memoria del proceso, no tiene propiedad de hilo y es la herramienta estándar para regular concurrencia asíncrona.",
-      authorRef: "Cuestionario SPC INEGI / Microsoft Threading Documentation",
+      authorRef: "Cuestionario de Certificación Técnica / Microsoft Threading Documentation",
       options: [
         "Mutex es de Kernel con exclusión de 1 hilo/proceso y thread ownership; SemaphoreSlim opera en espacio de usuario, regula N ranuras (throttling) y admite await WaitAsync()",
         "Mutex solo funciona dentro del mismo proceso; SemaphoreSlim permite sincronizar múltiples procesos independientes en el sistema operativo",
@@ -1157,7 +1157,7 @@
       question: "¿Qué representa fundamentalmente una 'Task' en comparación con el manejo directo de objetos de la clase 'Thread'?",
       answer: "Task es una promesa o abstracción de alto nivel de una operación asíncrona que gestiona el ThreadPool, mientras Thread mapea directamente a un hilo nativo del SO de 1 MB de stack.",
       explanation: "Un Thread nativo es pesado en consumo de memoria (1 MB) y tiempo de cambio de contexto (context switch). Task desacopla el trabajo del hilo físico subyacente, permitiendo que miles de tareas reutilicen de forma eficiente un grupo acotado de hilos de trabajo gestionados por el CLR.",
-      authorRef: "Cuestionario SPC INEGI & SWEBOK v4 / Stephen Cleary",
+      authorRef: "Cuestionario de Certificación Técnica & SWEBOK v4 / Stephen Cleary",
       options: [
         "Una abstracción de alto nivel de una operación asíncrona gestionada por el ThreadPool, a diferencia de un hilo nativo del SO con 1 MB de stack",
         "Un proceso independiente aislado en el Kernel con su propio espacio de memoria virtual protegido",
@@ -1174,7 +1174,7 @@
       question: "En escenarios multihilo en C#, ¿por qué es peligroso disparar eventos dentro de un bloque 'lock'?",
       answer: "Porque invoca código externo desconocido con el cerrojo retenido, abriendo un riesgo crítico de inversión de bloqueos y Deadlock.",
       explanation: "Los suscriptores del evento pueden intentar adquirir otro lock o sincronizarse con un hilo principal que a su vez espera el lock original. El patrón seguro consiste en tomar una copia local de la referencia con 'MyEvent?.Invoke(...)', o notificar a los suscriptores fuera de la sección crítica.",
-      authorRef: "Cuestionario SPC INEGI & Framework Design Guidelines (Kwalina & Abrams)",
+      authorRef: "Cuestionario de Certificación Técnica & Framework Design Guidelines (Kwalina & Abrams)",
       options: [
         "Porque invoca código externo arbitrario con el cerrojo retenido, provocando inversión de dependencias y riesgo crítico de Deadlock",
         "Porque el compilador de C# genera un error CS0103 en tiempo de compilación impidiendo compilar el ensamblado",
@@ -1193,7 +1193,7 @@
       question: "¿Qué componente de Microsoft.Extensions.Hosting es la clase base abstracta recomendada para servicios de fondo de larga duración?",
       answer: "BackgroundService, la cual implementa IHostedService y expone el método 'protected abstract Task ExecuteAsync(CancellationToken stoppingToken)'.",
       explanation: "TaskFactory es solo una clase auxiliar para crear tareas en el ThreadPool, pero no un componente hospedado. BackgroundService se integra con el ciclo de vida del Host, gestionando el arranque y el apagado ordenado (graceful shutdown) mediante stoppingToken.",
-      authorRef: "Cuestionario SPC INEGI & Microsoft.Extensions.Hosting",
+      authorRef: "Cuestionario de Certificación Técnica & Microsoft.Extensions.Hosting",
       options: [
         "BackgroundService, implementando IHostedService y exponiendo 'ExecuteAsync(CancellationToken stoppingToken)'",
         "TaskFactory, invocando StartNew() con TaskCreationOptions.LongRunning",
@@ -1210,7 +1210,7 @@
       question: "¿Por qué se recomienda combinar 'AbsoluteExpiration' con 'SlidingExpiration' en una estrategia de memoria caché en .NET?",
       answer: "Para evitar que un dato consultado de manera frecuente y continua renueve su tiempo indefinidamente y permanezca para siempre en memoria con información obsoleta.",
       explanation: "La expiración deslizante (Sliding) renueva el temporizador en cada lectura. Sin un tope absoluto (AbsoluteExpiration), un flujo continuo de tráfico mantendrá el dato congelado en caché de por vida, sirviendo información desfasada de la base de datos.",
-      authorRef: "Cuestionario SPC INEGI & ASP.NET Core Caching Best Practices",
+      authorRef: "Cuestionario de Certificación Técnica & ASP.NET Core Caching Best Practices",
       options: [
         "Para evitar que un dato consultado continuamente renueve su tiempo indefinidamente y permanezca para siempre en memoria con información obsoleta",
         "Para que la memoria de la caché se replique automáticamente en todos los nodos de Kubernetes sin usar Redis",
@@ -1227,7 +1227,7 @@
       question: "En el patrón Circuit Breaker con Polly, ¿cuál es el comportamiento exacto del sistema cuando el circuito está en estado 'Open' (Abierto)?",
       answer: "Intercepta las llamadas salientes y responde con un fallo inmediato (fail-fast) sin enviar tráfico de red hacia el servicio remoto colapsado.",
       explanation: "El estado Abierto protege tanto al cliente (libera hilos inmediatamente sin esperar timeouts) como al servicio downstream (le permite recuperarse de la sobrecarga). Tras un tiempo de enfriamiento, pasa a Semi-Abierto (Half-Open) para enviar una llamada de prueba.",
-      authorRef: "Cuestionario SPC INEGI & Michael Nygard (Release It! / Polly)",
+      authorRef: "Cuestionario de Certificación Técnica & Michael Nygard (Release It! / Polly)",
       options: [
         "Intercepta las llamadas salientes y responde con un fallo inmediato (fail-fast) sin enviar tráfico de red hacia el servicio remoto colapsado",
         "Reinicia automáticamente el contenedor de Docker del servidor web llamador",
@@ -1272,7 +1272,7 @@
     },
 
     // =========================================================================
-    // BLOQUE 8: GESTIÓN AVANZADA Y ESTRUCTURAS DE DATOS (SPC INEGI)
+    // BLOQUE 8: GESTIÓN AVANZADA Y ESTRUCTURAS DE DATOS
     // =========================================================================
 
     // Módulo 27: Estimación PERT & Validación de Estrategia (Marion E. Haynes)
@@ -1284,7 +1284,7 @@
       question: "¿Cuáles son las fórmulas canónicas de PERT para calcular el Tiempo Esperado (Te), Desviación Estándar (σ) y Varianza (σ²)?",
       answer: "Te = (To + 4Tm + Tp) / 6;  σ = (Tp - To) / 6;  σ² = ((Tp - To) / 6)².",
       explanation: "PERT asume una distribución probabilística Beta. El tiempo más probable (Tm) recibe una ponderación cuádruple (4), y el rango completo de dispersión (Tp - To) se divide entre 6 desviaciones estándar que abarcan el 99.7% del área bajo la curva normal.",
-      authorRef: "Marion E. Haynes & Guía SPC INEGI",
+      authorRef: "Marion E. Haynes & Estándares de Gestión de Proyectos",
       options: [
         "Te = (To + 4Tm + Tp) / 6; σ = (Tp - To) / 6; σ² = ((Tp - To) / 6)²",
         "Te = (To + Tm + Tp) / 3; σ = (Tp - To) / 2; σ² = (Tp - To)²",
@@ -1301,7 +1301,7 @@
       question: "En diagramas de red PERT (método flechas AOA), ¿cuál es la definición, consumo y propósito de una Actividad Ficticia (Dummy)?",
       answer: "Se dibuja con flecha punteada, consume 0 tiempo y 0 recursos, y su único propósito es señalar precedencia lógica y evitar duplicidad de nodos.",
       explanation: "Una actividad ficticia o dummy no representa trabajo real. Sirve para modelar dependencias lógicas complejas y asegurar que cada actividad quede identificada de forma unívoca por su par de nodos (nodo origen y nodo fin) sin compartir ambos a la vez.",
-      authorRef: "Marion E. Haynes (Administración de Proyectos) & SPC INEGI",
+      authorRef: "Marion E. Haynes (Administración de Proyectos) & Estándares Técnicos",
       options: [
         "Se dibuja con flecha punteada, consume 0 tiempo y 0 recursos, y solo señala precedencia lógica evitando nodos compartidos",
         "Es una tarea de contingencia que consume el 10% del presupuesto y 5 días de holgura",
@@ -1318,7 +1318,7 @@
       question: "Según Marion E. Haynes en la Fase de Definición (Capítulo 1), ¿cuáles son los TRES métodos formales para validar una estrategia ('¿Funcionará?')?",
       answer: "1) Estudio de mercado, 2) Ensayo de ejemplo (prueba piloto en campo) y 3) Simulación por computadora.",
       explanation: "Haynes cita exactamente estos tres métodos para verificar la viabilidad de la solución antes de comprometer fondos y recursos en la planeación y ejecución del proyecto.",
-      authorRef: "Marion E. Haynes (Administración de Proyectos - Cap. 1) & SPC INEGI",
+      authorRef: "Marion E. Haynes (Administración de Proyectos - Cap. 1) & Estándares Técnicos",
       options: [
         "1) Estudio de mercado, 2) Ensayo de ejemplo (prueba piloto en campo) y 3) Simulación por computadora",
         "1) Lluvia de ideas, 2) Diagrama de Ishikawa y 3) Matriz FODA",
@@ -1337,7 +1337,7 @@
       question: "En una matriz A[m×n] con base 1, ¿cuál es la fórmula canónica de Osvaldo Cairó para calcular la dirección de memoria por renglones (Row-Major)?",
       answer: "LOC(A[i, j]) = POSINI + [ n * (i - 1) + (j - 1) ] * w.",
       explanation: "Para alcanzar el renglón i se saltan (i - 1) renglones completos de n columnas cada uno. Luego se suman (j - 1) celdas en el renglón actual y el total acumulado de celdas se multiplica por el tamaño de palabra w.",
-      authorRef: "Osvaldo Cairó (Estructuras de Datos) & SPC INEGI",
+      authorRef: "Osvaldo Cairó (Estructuras de Datos) & Estándares Técnicos",
       options: [
         "LOC(A[i, j]) = POSINI + [ n * (i - 1) + (j - 1) ] * w",
         "LOC(A[i, j]) = POSINI + [ m * (i - 1) + (j - 1) ] * w",
@@ -1354,7 +1354,7 @@
       question: "En una matriz A[m×n] con base 1, ¿cuál es la fórmula canónica de Osvaldo Cairó para calcular la dirección de memoria por columnas (Column-Major)?",
       answer: "LOC(A[i, j]) = POSINI + [ m * (j - 1) + (i - 1) ] * w.",
       explanation: "Para alcanzar la columna j se saltan (j - 1) columnas completas, cada una de longitud m (número de renglones). Luego se suman (i - 1) celdas en la columna actual y se multiplica por el factor de tamaño de elemento w.",
-      authorRef: "Osvaldo Cairó (Estructuras de Datos) & SPC INEGI",
+      authorRef: "Osvaldo Cairó (Estructuras de Datos) & Estándares Técnicos",
       options: [
         "LOC(A[i, j]) = POSINI + [ m * (j - 1) + (i - 1) ] * w",
         "LOC(A[i, j]) = POSINI + [ n * (j - 1) + (i - 1) ] * w",
