@@ -627,9 +627,12 @@
         <div id="audit-questions-list" style="display:flex; flex-direction:column; gap:18px;"></div>
       </div>
 
-      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <button class="btn-theme" onclick="switchExamTab('tab-hub')" style="background:rgba(34,33,61,0.9); border:1px solid var(--line); color:var(--cyan); padding:12px 20px; border-radius:6px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;">
           ← Volver al Centro de Exámenes
+        </button>
+        <button class="btn-theme" onclick="downloadResultsReportMarkdown()" style="background:rgba(0,255,255,0.12); border:1px solid var(--cyan); color:var(--cyan); padding:12px 22px; border-radius:6px; cursor:pointer; font:800 0.85rem 'Courier New', monospace; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 14px rgba(0,255,255,0.25);">
+          📥 Descargar Informe de Resultados (.md)
         </button>
         <button class="btn-theme" onclick="restartCurrentExam()" style="background:linear-gradient(135deg, var(--green), var(--cyan)); border:none; color:#000; padding:12px 24px; border-radius:6px; cursor:pointer; font:800 0.88rem 'Courier New', monospace; box-shadow:0 0 16px rgba(0,255,170,0.4);">
           🔄 Reintentar este Examen
@@ -777,6 +780,7 @@ D) Requiere Task.Run obligatoriamente.
     let isUnlimitedTime = false;
     let isTimerPaused = false;
     let currentAuditFilter = 'all';
+    let lastExamSessionResult = null;
 
     // Generador criptográficamente seguro y de alta entropía para aleatorización pura
     function cryptoRandom() {
@@ -1422,6 +1426,19 @@ D) Requiere Task.Run obligatoriamente.
       const passing = currentExam.passingScore || 80;
       const isApproved = (score >= passing);
 
+      lastExamSessionResult = {
+        currentExam: currentExam,
+        currentQuestions: currentQuestions,
+        userAnswers: Object.assign({}, userAnswers),
+        hits: hits,
+        total: total,
+        score: score,
+        passing: passing,
+        isApproved: isApproved,
+        timeSpentSec: timeSpentSec,
+        finishedAt: new Date()
+      };
+
       saveExamScore(currentExam.id, score, timeSpentSec);
 
       // UI Dictamen
@@ -1569,6 +1586,107 @@ D) Requiere Task.Run obligatoriamente.
     function restartCurrentExam() {
       if (currentExam) {
         startExamSession(currentExam.id);
+      }
+    }
+
+    function downloadResultsReportMarkdown() {
+      if (!lastExamSessionResult || !lastExamSessionResult.currentQuestions) {
+        alert("No hay resultados de evaluación disponibles para descargar. Completa un examen primero.");
+        return;
+      }
+
+      const { currentExam, currentQuestions, userAnswers, hits, total, score, passing, isApproved, timeSpentSec, finishedAt } = lastExamSessionResult;
+
+      const minSpent = Math.floor(timeSpentSec / 60);
+      const secSpent = timeSpentSec % 60;
+      const timeStr = `${String(minSpent).padStart(2, '0')}:${String(secSpent).padStart(2, '0')}`;
+      const examDate = (finishedAt instanceof Date ? finishedAt : new Date()).toLocaleString('es-MX', {
+        dateStyle: 'full',
+        timeStyle: 'medium'
+      });
+
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+      let md = `# Informe de Evaluación Técnica · Resultados de Examen\n\n`;
+      md += `**Instrumento:** ${currentExam.title || 'Evaluación Técnica de Sistemas'}\n`;
+      md += `**Fecha de Aplicación:** ${examDate}\n`;
+      md += `**Dictamen Final:** ${isApproved ? '🏆 CANDIDATO IDÓNEO · APROBADO' : '⚠️ EVALUACIÓN DIAGNÓSTICA · REQUIERE REFUERZO'}\n`;
+      md += `**Calificación Obtenida:** ${score} / 100 pts (Puntaje Mínimo Requerido: ${passing} pts)\n`;
+      md += `**Efectividad Global:** ${hits} de ${total} reactivos acertados (${Math.round((hits / total) * 100)}%)\n`;
+      md += `**Reactivos con Error u Omitidos:** ${total - hits}\n`;
+      md += `**Tiempo Total Empleado:** ${timeStr} min\n\n`;
+      md += `---\n\n`;
+      md += `## Resumen Ejecutivo de Competencias\n\n`;
+      if (isApproved) {
+        md += `> El evaluado superó satisfactoriamente el umbral aprobatorio (${score} >= ${passing}), demostrando dominio sólido de los conceptos de ingeniería de software, arquitectura de sistemas, gestión de proyectos, estructuras algorítmicas y bases de datos requeridos por la bibliografía oficial.\n\n`;
+      } else {
+        md += `> El evaluado obtuvo una calificación de ${score} pts, ubicándose por debajo del umbral de aprobación técnica (${passing} pts). Se recomienda focalizar el estudio en los temas y reactivos marcados con error en el desglose inferior.\n\n`;
+      }
+
+      md += `---\n\n`;
+      md += `## Desglose Detallado Reactivo por Reactivo\n\n`;
+
+      currentQuestions.forEach((q, idx) => {
+        const ans = userAnswers[idx];
+        const isHit = ans && ans.isCorrect;
+        const isAnswered = ans !== undefined;
+        const correctOpt = q.options.find(o => o.isCorrect);
+
+        md += `### Reactivo ${idx + 1}${q.moduleRef ? ` · [Eje Temático: ${q.moduleRef}]` : ''}\n\n`;
+        md += `**Planteamiento:**\n${q.text}\n\n`;
+        md += `**Opciones presentadas:**\n`;
+        q.options.forEach((opt, oIdx) => {
+          const letter = letters[oIdx] || (oIdx + 1);
+          md += `- **[${letter}]** ${opt.text}\n`;
+        });
+        md += `\n`;
+
+        const userOptionIdx = ans ? ans.selectedOptionIdx : -1;
+        const userLetter = userOptionIdx >= 0 ? (letters[userOptionIdx] || userOptionIdx + 1) : null;
+        const correctIdx = q.options.findIndex(o => o.isCorrect);
+        const correctLetter = correctIdx >= 0 ? (letters[correctIdx] || correctIdx + 1) : 'N/A';
+
+        md += `**Auditoría de Respuesta:**\n`;
+        if (isHit) {
+          md += `- **Resultado:** ✅ **CORRECTO**\n`;
+          md += `- **Opción seleccionada:** [${userLetter}] ${ans.selectedText}\n`;
+        } else if (isAnswered) {
+          md += `- **Resultado:** ❌ **INCORRECTO**\n`;
+          md += `- **Opción seleccionada por el evaluado:** [${userLetter}] ${ans.selectedText}\n`;
+          md += `- **Respuesta correcta oficial:** [${correctLetter}] ${correctOpt ? correctOpt.text : ''}\n`;
+        } else {
+          md += `- **Resultado:** ⚠️ **NO RESPONDIDA (OMITIDA)**\n`;
+          md += `- **Respuesta correcta oficial:** [${correctLetter}] ${correctOpt ? correctOpt.text : ''}\n`;
+        }
+        md += `\n`;
+
+        if (q.feedback) {
+          md += `**Justificación Doctrinal:**\n> ${q.feedback}\n\n`;
+        }
+        if (q.reference) {
+          md += `**Referencia Bibliográfica Oficial:**\n*Fuente:* ${q.reference}\n\n`;
+        }
+        md += `---\n\n`;
+      });
+
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const titleSlug = (currentExam.title || 'examen')
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      a.href = url;
+      a.download = `informe-${titleSlug}-${dateStr}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      if (typeof showQuickToast === 'function') {
+        showQuickToast("📥 Informe de resultados en Markdown descargado exitosamente.");
       }
     }
 
