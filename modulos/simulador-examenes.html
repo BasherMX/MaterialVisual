@@ -169,6 +169,28 @@
       animation: pulseDangerTimer 1s infinite alternate;
     }
 
+    .timer-ctrl-btn {
+      background: rgba(18, 17, 36, 0.9);
+      border: 1px solid var(--line);
+      color: var(--cyan);
+      padding: 6px 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      font: 700 0.78rem "Courier New", monospace;
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .timer-ctrl-btn:hover {
+      background: rgba(0, 255, 255, 0.15);
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
     @keyframes pulseDangerTimer {
       0% { transform: scale(1); box-shadow: 0 0 6px var(--exam-coral); }
       100% { transform: scale(1.04); box-shadow: 0 0 18px var(--exam-coral); }
@@ -492,13 +514,26 @@
           <strong id="session-question-counter" style="color:#ffffff; font-size:1.15rem; font-family:'Courier New', monospace;">Reactivo 1 de 30</strong>
         </div>
 
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-          <button class="btn-theme" id="btn-flag-question" onclick="toggleCurrentFlag()" style="background:rgba(18, 17, 36, 0.9); border:1px solid var(--line); color:var(--gold); padding:8px 14px; border-radius:6px; cursor:pointer; font:700 0.82rem 'Courier New', monospace; min-height:42px;">
-            <span>🚩</span> Marcar para Revisión
-          </button>
-          <div class="hud-timer" id="hud-timer-display">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div class="hud-timer" id="hud-timer-display" title="Tiempo de examen">
             <span>⏱️</span> <span id="timer-text">60:00</span>
           </div>
+
+          <div style="display:inline-flex; gap:6px;">
+            <button class="btn-theme timer-ctrl-btn" onclick="adjustExamTime(15)" title="Añadir 15 minutos al examen">
+              +15m
+            </button>
+            <button class="btn-theme timer-ctrl-btn" onclick="togglePauseExamTimer()" id="btn-pause-timer" title="Pausar o reanudar cronómetro">
+              ⏸️
+            </button>
+            <button class="btn-theme timer-ctrl-btn" onclick="toggleUnlimitedExamTimer()" id="btn-unlimited-timer" title="Alternar modo sin límite de tiempo">
+              ⏳ Sin límite
+            </button>
+          </div>
+
+          <button class="btn-theme" id="btn-flag-question" onclick="toggleCurrentFlag()" style="background:rgba(18, 17, 36, 0.9); border:1px solid var(--line); color:var(--gold); padding:8px 14px; border-radius:6px; cursor:pointer; font:700 0.82rem 'Courier New', monospace; min-height:38px;">
+            <span>🚩</span> Marcar
+          </button>
         </div>
       </div>
 
@@ -657,6 +692,25 @@ D) Requiere Task.Run obligatoriamente.
           </button>
         </div>
 
+        <!-- Parámetros de Configuración de Tiempo y Aprobación -->
+        <div style="display:flex; gap:16px; margin-bottom:14px; flex-wrap:wrap; align-items:center; background:rgba(8,7,18,0.7); padding:12px 16px; border-radius:6px; border:1px solid var(--line);">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label for="import-default-time" style="font-size:0.76rem; color:var(--muted); font-family:'Courier New', monospace; font-weight:700;">⏱️ TIEMPO LÍMITE (MINUTOS):</label>
+            <input type="number" id="import-default-time" value="60" min="0" max="300" style="width:75px; background:#121124; border:1px solid var(--cyan); color:#fff; border-radius:4px; padding:6px 8px; font:700 0.85rem 'Courier New', monospace;" title="0 = Sin límite de tiempo" />
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label for="import-default-passing" style="font-size:0.76rem; color:var(--muted); font-family:'Courier New', monospace; font-weight:700;">🎯 MÍNIMO APROBATORIO (PTS):</label>
+            <input type="number" id="import-default-passing" value="80" min="40" max="100" style="width:70px; background:#121124; border:1px solid var(--line); color:#fff; border-radius:4px; padding:6px 8px; font:700 0.85rem 'Courier New', monospace;" />
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label for="import-default-shuffle" style="font-size:0.76rem; color:var(--muted); font-family:'Courier New', monospace; font-weight:700;">🔀 BARAJAR OPCIONES:</label>
+            <select id="import-default-shuffle" style="background:#121124; border:1px solid var(--line); color:#fff; border-radius:4px; padding:6px 8px; font:700 0.8rem 'Courier New', monospace;">
+              <option value="true" selected>Sí (Aleatorio)</option>
+              <option value="false">No (Fijo A,B,C,D)</option>
+            </select>
+          </div>
+        </div>
+
         <textarea id="txt-exam-import" rows="14" style="width:100%; background:rgba(10,9,22,0.95); border:1px solid var(--line); color:#e7f6ff; font-family:'Courier New', monospace; font-size:0.84rem; padding:16px; border-radius:8px; box-sizing:border-box; resize:vertical; outline:none;" placeholder="Pega aquí tu contenido en formato JSON o Markdown rápido..."></textarea>
       </div>
 
@@ -719,7 +773,89 @@ D) Requiere Task.Run obligatoriamente.
     let examTimerInterval = null;
     let secondsLeft = 0;
     let totalExamSeconds = 0;
+    let elapsedSeconds = 0;
+    let isUnlimitedTime = false;
+    let isTimerPaused = false;
     let currentAuditFilter = 'all';
+
+    // Normalizador universal de reactivos (maneja opciones como strings u objetos { text, isCorrect })
+    function normalizeExamQuestions(rawQuestions, doShuffle) {
+      if (!Array.isArray(rawQuestions)) return [];
+
+      return rawQuestions.map((q, idx) => {
+        const qText = q.text || q.question || q.pregunta || q.prompt || '';
+        const feedback = q.feedback || q.explanation || q.retroalimentacion || q.explicacion || '';
+        const reference = q.reference || q.referencia || q.bibliografia || '';
+        const moduleRef = q.moduleRef || q.topic || q.tema || '';
+
+        // Detectar índice correcto si viene a nivel reactivo
+        let qCorrectIdx = -1;
+        if (typeof q.correct === 'number') {
+          qCorrectIdx = q.correct;
+        } else if (typeof q.correct === 'string') {
+          const letterIdx = ['a', 'b', 'c', 'd', 'e'].indexOf(q.correct.trim().toLowerCase());
+          if (letterIdx >= 0) qCorrectIdx = letterIdx;
+          else if (!isNaN(parseInt(q.correct, 10))) qCorrectIdx = parseInt(q.correct, 10);
+        } else if (typeof q.correctAnswer === 'string') {
+          const letterIdx = ['a', 'b', 'c', 'd', 'e'].indexOf(q.correctAnswer.trim().toLowerCase());
+          if (letterIdx >= 0) qCorrectIdx = letterIdx;
+        }
+
+        const rawOpts = Array.isArray(q.options) ? q.options : [];
+        let opts = rawOpts.map((opt, oIdx) => {
+          let optText = '';
+          let isCorrect = false;
+
+          if (typeof opt === 'string') {
+            optText = opt;
+            isCorrect = (oIdx === qCorrectIdx);
+          } else if (opt && typeof opt === 'object') {
+            optText = opt.text || opt.texto || opt.option || opt.opcion || opt.label || opt.value || '';
+            if (typeof opt.isCorrect === 'boolean') {
+              isCorrect = opt.isCorrect;
+            } else if (typeof opt.correct === 'boolean') {
+              isCorrect = opt.correct;
+            } else if (typeof opt.is_correct === 'boolean') {
+              isCorrect = opt.is_correct;
+            } else {
+              isCorrect = (oIdx === qCorrectIdx);
+            }
+          } else {
+            optText = String(opt || '');
+            isCorrect = (oIdx === qCorrectIdx);
+          }
+
+          return {
+            text: String(optText),
+            originalIdx: oIdx,
+            isCorrect: Boolean(isCorrect)
+          };
+        });
+
+        // Asegurar que al menos una opción esté marcada como correcta si qCorrectIdx es válido
+        if (!opts.some(o => o.isCorrect) && qCorrectIdx >= 0 && qCorrectIdx < opts.length) {
+          opts[qCorrectIdx].isCorrect = true;
+        }
+
+        // Barajar opciones si se solicita
+        if (doShuffle) {
+          for (let i = opts.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [opts[i], opts[j]] = [opts[j], opts[i]];
+          }
+        }
+
+        return {
+          id: q.id || `q-${idx}`,
+          moduleRef: moduleRef,
+          text: qText,
+          options: opts,
+          feedback: feedback,
+          reference: reference,
+          originalNumber: q.number || idx + 1
+        };
+      });
+    }
 
     function loadExamsFromStorage() {
       let canonical = (window.MATERIAL_EXAMS && Array.isArray(window.MATERIAL_EXAMS)) ? window.MATERIAL_EXAMS : [];
@@ -730,7 +866,15 @@ D) Requiere Task.Run obligatoriamente.
       } catch (e) {
         console.error("Error al leer custom exams:", e);
       }
-      allExams = [...canonical, ...custom];
+
+      allExams = [...canonical, ...custom].map(ex => {
+        return {
+          ...ex,
+          timeLimitMinutes: (ex.timeLimitMinutes !== undefined ? ex.timeLimitMinutes : 60),
+          passingScore: (ex.passingScore !== undefined ? ex.passingScore : 80),
+          questions: ex.questions || []
+        };
+      });
     }
 
     function saveCustomExams(list) {
@@ -778,6 +922,8 @@ D) Requiere Task.Run obligatoriamente.
         card.className = 'exam-hub-card';
 
         const highBadge = sc ? `<span class="exam-meta-pill" style="color:var(--green); border-color:var(--green);">🏆 Récord: ${sc.highScore}/100</span>` : '<span class="exam-meta-pill">Sin intentos</span>';
+        const defMinutes = (ex.timeLimitMinutes !== undefined ? ex.timeLimitMinutes : 60);
+        const timeDisplay = defMinutes === 0 ? '⏳ Sin límite' : `⏱️ ${defMinutes} Minutos`;
 
         card.innerHTML = `
           <div>
@@ -789,25 +935,93 @@ D) Requiere Task.Run obligatoriamente.
             <p style="font-size:0.86rem; color:var(--muted); line-height:1.55; margin-bottom:16px; font-family:Verdana,sans-serif;">
               ${ex.description || 'Evaluación de opción múltiple estructurada conforme a estándares profesionales de ingeniería y arquitectura de software.'}
             </p>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
               <span class="exam-meta-pill">📝 ${ex.questions.length} Reactivos</span>
-              <span class="exam-meta-pill">⏱️ ${ex.timeLimitMinutes || 60} Minutos</span>
+              <span class="exam-meta-pill">${timeDisplay}</span>
               <span class="exam-meta-pill">🎯 Mínimo: ${ex.passingScore || 80} pts</span>
+            </div>
+
+            <!-- Selector Rápido de Tiempo para esta sesión -->
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap; background:rgba(8,7,18,0.7); padding:8px 12px; border-radius:6px; border:1px solid var(--line);">
+              <label for="time-cfg-${ex.id}" style="font-size:0.74rem; color:var(--muted); font-family:'Courier New', monospace; font-weight:700;">⏱️ DURACIÓN SESIÓN:</label>
+              <select id="time-cfg-${ex.id}" style="background:#121124; border:1px solid var(--cyan); color:var(--cyan); border-radius:4px; padding:4px 8px; font:700 0.78rem 'Courier New', monospace; outline:none; cursor:pointer;">
+                <option value="${defMinutes}">Tiempo del examen (${defMinutes === 0 ? 'Sin límite' : defMinutes + ' min'})</option>
+                <option value="15">15 minutos (Sprint rápido)</option>
+                <option value="30">30 minutos (Modo exprés)</option>
+                <option value="45">45 minutos</option>
+                <option value="60">60 minutos (1 hora estándar)</option>
+                <option value="90">90 minutos (1.5 horas)</option>
+                <option value="120">120 minutos (2 horas)</option>
+                <option value="150">150 minutos (2.5 horas)</option>
+                <option value="180">180 minutos (3 horas)</option>
+                <option value="custom">✏️ Personalizado (Escribir)...</option>
+                <option value="0">⏳ Sin límite de tiempo (Modo estudio)</option>
+              </select>
             </div>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;">
-            <button class="btn-theme" onclick="startExamSession('${ex.id}')" style="background:linear-gradient(135deg, var(--gold), var(--coral)); border:none; color:#0b0c16; font:800 0.85rem 'Courier New', monospace; padding:10px 18px; border-radius:6px; cursor:pointer; box-shadow:0 0 14px rgba(255,215,0,0.3);">
+            <button class="btn-theme" onclick="startExamWithConfig('${ex.id}')" style="background:linear-gradient(135deg, var(--gold), var(--coral)); border:none; color:#0b0c16; font:800 0.85rem 'Courier New', monospace; padding:10px 18px; border-radius:6px; cursor:pointer; box-shadow:0 0 14px rgba(255,215,0,0.3);">
               Iniciar Examen ➔
             </button>
-            ${isCustom ? `
-              <button class="btn-theme" onclick="deleteCustomExam('${ex.id}')" style="background:rgba(255,0,110,0.1); border:1px solid var(--coral); color:var(--coral); font:700 0.78rem 'Courier New', monospace; padding:8px 12px; border-radius:6px; cursor:pointer;">
-                🗑️ Eliminar
-              </button>
-            ` : ''}
+            <div style="display:inline-flex; gap:8px;">
+              ${isCustom ? `
+                <button class="btn-theme" onclick="editCustomExamParams('${ex.id}')" title="Configurar tiempo o puntaje predeterminado de este cuestionario" style="background:rgba(0,255,255,0.1); border:1px solid var(--cyan); color:var(--cyan); font:700 0.78rem 'Courier New', monospace; padding:8px 12px; border-radius:6px; cursor:pointer;">
+                  ⚙️ Configurar
+                </button>
+                <button class="btn-theme" onclick="deleteCustomExam('${ex.id}')" title="Eliminar este cuestionario" style="background:rgba(255,0,110,0.1); border:1px solid var(--coral); color:var(--coral); font:700 0.78rem 'Courier New', monospace; padding:8px 12px; border-radius:6px; cursor:pointer;">
+                  🗑️
+                </button>
+              ` : ''}
+            </div>
           </div>
         `;
         container.appendChild(card);
       });
+    }
+
+    function startExamWithConfig(examId) {
+      const sel = document.getElementById(`time-cfg-${examId}`);
+      const val = sel ? sel.value : undefined;
+      startExamSession(examId, val);
+    }
+
+    function editCustomExamParams(examId) {
+      const ex = allExams.find(e => e.id === examId);
+      if (!ex) return;
+
+      const newTime = prompt(`Configurar tiempo límite en minutos para "${ex.title}":\n(Ingresa 0 para "Sin Límite")`, String(ex.timeLimitMinutes || 60));
+      if (newTime === null) return;
+      const parsedTime = parseInt(newTime, 10);
+      if (isNaN(parsedTime) || parsedTime < 0) {
+        alert("Por favor ingresa un número válido de minutos.");
+        return;
+      }
+
+      const newPassing = prompt(`Configurar puntaje mínimo aprobatorio (0 - 100) para "${ex.title}":`, String(ex.passingScore || 80));
+      if (newPassing === null) return;
+      const parsedPassing = parseInt(newPassing, 10);
+      if (isNaN(parsedPassing) || parsedPassing <= 0 || parsedPassing > 100) {
+        alert("Puntaje inválido.");
+        return;
+      }
+
+      ex.timeLimitMinutes = parsedTime;
+      ex.passingScore = parsedPassing;
+
+      // Persistir en localStorage
+      try {
+        const raw = localStorage.getItem(CUSTOM_EXAMS_KEY);
+        let list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex(e => e.id === examId);
+        if (idx >= 0) {
+          list[idx].timeLimitMinutes = parsedTime;
+          list[idx].passingScore = parsedPassing;
+          saveCustomExams(list);
+          showQuickToast("✅ Parámetros del examen actualizados correctamente.");
+        }
+      } catch (err) {
+        alert("Error al actualizar: " + err.message);
+      }
     }
 
     function switchExamTab(tabId) {
@@ -824,7 +1038,7 @@ D) Requiere Task.Run obligatoriamente.
       }
     }
 
-    function startExamSession(examId) {
+    function startExamSession(examId, selectedTimeStr) {
       const exam = allExams.find(e => e.id === examId);
       if (!exam) return;
 
@@ -832,32 +1046,37 @@ D) Requiere Task.Run obligatoriamente.
       currentQIdx = 0;
       userAnswers = {};
       flaggedQuestions.clear();
+      elapsedSeconds = 0;
+      isTimerPaused = false;
 
-      // Clonar y barajar reactivos si está activo shuffleOptions
-      currentQuestions = exam.questions.map((q, idx) => {
-        let opts = q.options.map((text, oIdx) => ({
-          text: text,
-          originalIdx: oIdx,
-          isCorrect: oIdx === q.correct
-        }));
+      // Determinar tiempo de la sesión
+      let minutes = (exam.timeLimitMinutes !== undefined ? exam.timeLimitMinutes : 60);
 
-        if (exam.shuffleOptions !== false) {
-          for (let i = opts.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [opts[i], opts[j]] = [opts[j], opts[i]];
+      if (selectedTimeStr !== undefined && selectedTimeStr !== '') {
+        if (selectedTimeStr === 'custom') {
+          const input = prompt("Ingresa el tiempo límite para este examen en minutos (ej. 45 o 90):", String(minutes));
+          if (input !== null) {
+            const parsed = parseInt(input, 10);
+            if (!isNaN(parsed) && parsed >= 0) minutes = parsed;
           }
+        } else {
+          const parsed = parseInt(selectedTimeStr, 10);
+          if (!isNaN(parsed)) minutes = parsed;
         }
+      }
 
-        return {
-          id: q.id || `q-${idx}`,
-          moduleRef: q.moduleRef || '',
-          text: q.text,
-          options: opts,
-          feedback: q.feedback || '',
-          reference: q.reference || '',
-          originalNumber: q.number || idx + 1
-        };
-      });
+      if (minutes === 0) {
+        isUnlimitedTime = true;
+        totalExamSeconds = 0;
+        secondsLeft = 0;
+      } else {
+        isUnlimitedTime = false;
+        totalExamSeconds = minutes * 60;
+        secondsLeft = totalExamSeconds;
+      }
+
+      // Normalizar preguntas y barajar opciones de forma robusta
+      currentQuestions = normalizeExamQuestions(exam.questions, exam.shuffleOptions !== false);
 
       if (exam.shuffleQuestions) {
         for (let i = currentQuestions.length - 1; i > 0; i--) {
@@ -866,16 +1085,23 @@ D) Requiere Task.Run obligatoriamente.
         }
       }
 
-      // Preparar cronómetro
-      const minutes = exam.timeLimitMinutes || 60;
-      totalExamSeconds = minutes * 60;
-      secondsLeft = totalExamSeconds;
       startExamTimer();
 
       // UI
       document.getElementById('btn-tab-session').style.display = 'inline-flex';
       document.getElementById('btn-tab-results').style.display = 'none';
       document.getElementById('session-exam-title').innerText = exam.title;
+
+      const btnPause = document.getElementById('btn-pause-timer');
+      if (btnPause) {
+        btnPause.innerHTML = '⏸️';
+        btnPause.style.borderColor = 'var(--gold)';
+        btnPause.style.color = 'var(--gold)';
+      }
+      const btnUnl = document.getElementById('btn-unlimited-timer');
+      if (btnUnl) {
+        btnUnl.innerHTML = isUnlimitedTime ? '⏱️ Activar Límite' : '⏳ Sin límite';
+      }
 
       renderQuestionNavGrid();
       renderCurrentQuestion();
@@ -884,33 +1110,106 @@ D) Requiere Task.Run obligatoriamente.
 
     function startExamTimer() {
       if (examTimerInterval) clearInterval(examTimerInterval);
+      isTimerPaused = false;
       updateTimerDisplay();
 
       examTimerInterval = setInterval(() => {
-        secondsLeft--;
-        updateTimerDisplay();
+        if (isTimerPaused) return;
 
-        if (secondsLeft <= 0) {
-          clearInterval(examTimerInterval);
-          alert("⏱️ El tiempo límite ha expirado. El examen se calificará automáticamente.");
-          confirmFinishExamNow();
+        elapsedSeconds++;
+
+        if (!isUnlimitedTime) {
+          secondsLeft--;
+          updateTimerDisplay();
+
+          if (secondsLeft <= 0) {
+            clearInterval(examTimerInterval);
+            alert("⏱️ El tiempo límite ha expirado. El examen se calificará automáticamente.");
+            confirmFinishExamNow();
+          }
+        } else {
+          updateTimerDisplay();
         }
       }, 1000);
     }
 
     function updateTimerDisplay() {
-      const min = Math.floor(secondsLeft / 60);
-      const sec = secondsLeft % 60;
       const display = document.getElementById('timer-text');
       const box = document.getElementById('hud-timer-display');
       if (!display || !box) return;
 
-      display.innerText = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+      if (isUnlimitedTime) {
+        const min = Math.floor(elapsedSeconds / 60);
+        const sec = elapsedSeconds % 60;
+        display.innerText = `⏳ ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        box.classList.remove('danger');
+        return;
+      }
+
+      const min = Math.floor(Math.max(0, secondsLeft) / 60);
+      const sec = Math.max(0, secondsLeft) % 60;
+      display.innerText = `${isTimerPaused ? '⏸️ ' : ''}${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+
       if (secondsLeft <= 300) {
         box.classList.add('danger');
       } else {
         box.classList.remove('danger');
       }
+    }
+
+    function adjustExamTime(addedMinutes) {
+      if (isUnlimitedTime) {
+        alert("El examen se encuentra actualmente en modo 'Sin límite de tiempo'.");
+        return;
+      }
+      const addedSec = addedMinutes * 60;
+      secondsLeft += addedSec;
+      totalExamSeconds += addedSec;
+      updateTimerDisplay();
+      showQuickToast(`⏱️ Se añadieron +${addedMinutes} minutos a la sesión.`);
+    }
+
+    function togglePauseExamTimer() {
+      isTimerPaused = !isTimerPaused;
+      const btn = document.getElementById('btn-pause-timer');
+      if (btn) {
+        btn.innerHTML = isTimerPaused ? '▶️' : '⏸️';
+        btn.style.borderColor = isTimerPaused ? 'var(--green)' : 'var(--gold)';
+        btn.style.color = isTimerPaused ? 'var(--green)' : 'var(--gold)';
+      }
+      updateTimerDisplay();
+      showQuickToast(isTimerPaused ? "⏸️ Cronómetro pausado." : "▶️ Cronómetro reanudado.");
+    }
+
+    function toggleUnlimitedExamTimer() {
+      isUnlimitedTime = !isUnlimitedTime;
+      const btn = document.getElementById('btn-unlimited-timer');
+      if (btn) {
+        btn.innerHTML = isUnlimitedTime ? '⏱️ Activar Límite' : '⏳ Sin límite';
+      }
+      if (!isUnlimitedTime && secondsLeft <= 0) {
+        secondsLeft = 1800; // 30 min por defecto al reactivar
+        totalExamSeconds = 1800;
+      }
+      updateTimerDisplay();
+      showQuickToast(isUnlimitedTime ? "⏳ Modo sin límite activado." : "⏱️ Límite de tiempo reactivado.");
+    }
+
+    function showQuickToast(msg) {
+      let toast = document.getElementById('exam-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'exam-toast';
+        toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:9999; background:rgba(18,17,36,0.95); border:1px solid var(--cyan); color:#fff; padding:12px 20px; border-radius:8px; font:700 0.85rem "Courier New", monospace; box-shadow:0 8px 24px rgba(0,255,255,0.3); transition:all 0.3s ease; transform:translateY(100px); opacity:0; pointer-events:none;';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.transform = 'translateY(100px)';
+        toast.style.opacity = '0';
+      }, 3200);
     }
 
     function renderQuestionNavGrid() {
@@ -1068,7 +1367,7 @@ D) Requiere Task.Run obligatoriamente.
       closeIncompleteModal();
       if (examTimerInterval) clearInterval(examTimerInterval);
 
-      const timeSpentSec = totalExamSeconds - secondsLeft;
+      const timeSpentSec = isUnlimitedTime ? elapsedSeconds : Math.max(1, totalExamSeconds - Math.max(0, secondsLeft));
       finishExamSession(timeSpentSec);
     }
 
@@ -1320,6 +1619,22 @@ D) Una instrucción de salto condicional con goto.
             alert("El JSON no cuenta con los atributos obligatorios 'title' y 'questions'.");
             return;
           }
+
+          const defaultTime = parseInt(document.getElementById('import-default-time').value, 10);
+          const defaultPassing = parseInt(document.getElementById('import-default-passing').value, 10);
+          const defaultShuffle = document.getElementById('import-default-shuffle').value === 'true';
+
+          if (parsedExam.timeLimitMinutes === undefined) {
+            parsedExam.timeLimitMinutes = isNaN(defaultTime) ? 60 : defaultTime;
+          }
+          if (parsedExam.passingScore === undefined) {
+            parsedExam.passingScore = isNaN(defaultPassing) ? 80 : defaultPassing;
+          }
+          if (parsedExam.shuffleOptions === undefined) {
+            parsedExam.shuffleOptions = defaultShuffle;
+          }
+
+          parsedExam.questions = normalizeExamQuestions(parsedExam.questions, false);
         } catch (e) {
           alert("Error de sintaxis en el JSON: " + e.message);
           return;
