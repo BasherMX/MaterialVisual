@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulador de Exámenes Técnicos & Arquitectura · MaterialVisual</title>
+  <link rel="manifest" href="../manifest.json" />
+  <meta name="theme-color" content="#00ffaa" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192.png" />
   <link rel="stylesheet" href="../shared/theme.css" />
   <style>
     /* ==========================================================================
@@ -553,11 +556,17 @@
       <!-- Caja del Reactivo Actual -->
       <div class="question-display-box">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <div>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
             <span class="exam-meta-pill" id="lbl-question-tag" style="color:var(--gold); border-color:rgba(255, 215, 0, 0.4);">REACTIVO 1</span>
-            <span class="exam-meta-pill" id="lbl-question-module" style="margin-left:6px;">Módulo</span>
+            <span class="exam-meta-pill" id="lbl-question-module" style="margin-left:2px;">Módulo</span>
+            <span class="exam-meta-pill" id="lbl-question-pace-pill" style="display:none; color:var(--cyan); border-color:var(--cyan); font-size:0.7rem;">⏱️ 0s</span>
           </div>
-          <span id="lbl-flag-indicator" style="display:none; color:var(--gold); font:700 0.82rem 'Courier New', monospace;">🚩 Marcado para Revisión</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span id="lbl-flag-indicator" style="display:none; color:var(--gold); font:700 0.82rem 'Courier New', monospace;">🚩 Marcado para Revisión</span>
+            <div id="lbl-pace-warning" style="display:none; background:rgba(255,215,0,0.18); border:1px solid var(--gold); color:var(--gold); padding:4px 10px; border-radius:6px; font:700 0.74rem 'Courier New', monospace; animation:pulseWarning 1.2s infinite alternate;">
+              ⏱️ +75s: ¡Técnica 3 Pasadas! Marca 🚩 y avanza
+            </div>
+          </div>
         </div>
 
         <div class="question-prompt" id="lbl-question-text"></div>
@@ -631,11 +640,14 @@
         <button class="btn-theme" onclick="switchExamTab('tab-hub')" style="background:rgba(34,33,61,0.9); border:1px solid var(--line); color:var(--cyan); padding:12px 20px; border-radius:6px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;">
           ← Volver al Centro de Exámenes
         </button>
+        <button id="btn-retry-failed" class="btn-theme" onclick="startFailedQuestionsRetry()" style="background:linear-gradient(135deg, var(--gold), var(--coral)); border:none; color:#0b0c16; padding:12px 22px; border-radius:6px; cursor:pointer; font:800 0.88rem 'Courier New', monospace; box-shadow:0 0 16px rgba(255,215,0,0.35); display:inline-flex; align-items:center; gap:8px;">
+          🎯 Reintentar solo Fallados (<span id="lbl-failed-retry-count">0</span>)
+        </button>
         <button class="btn-theme" onclick="downloadResultsReportMarkdown()" style="background:rgba(0,255,255,0.12); border:1px solid var(--cyan); color:var(--cyan); padding:12px 22px; border-radius:6px; cursor:pointer; font:800 0.85rem 'Courier New', monospace; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 14px rgba(0,255,255,0.25);">
-          📥 Descargar Informe de Resultados (.md)
+          📥 Descargar Informe (.md)
         </button>
         <button class="btn-theme" onclick="restartCurrentExam()" style="background:linear-gradient(135deg, var(--green), var(--cyan)); border:none; color:#000; padding:12px 24px; border-radius:6px; cursor:pointer; font:800 0.88rem 'Courier New', monospace; box-shadow:0 0 16px rgba(0,255,170,0.4);">
-          🔄 Reintentar este Examen
+          🔄 Reintentar Todo
         </button>
       </div>
     </section>
@@ -781,6 +793,9 @@ D) Requiere Task.Run obligatoriamente.
     let isTimerPaused = false;
     let currentAuditFilter = 'all';
     let lastExamSessionResult = null;
+    let questionElapsedSeconds = 0;
+    let questionTimerInterval = null;
+    let isPaceWarningActive = true;
 
     // Generador criptográficamente seguro y de alta entropía para aleatorización pura
     function cryptoRandom() {
@@ -994,9 +1009,14 @@ D) Requiere Task.Run obligatoriamente.
             </div>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;">
-            <button class="btn-theme" onclick="startExamWithConfig('${ex.id}')" style="background:linear-gradient(135deg, var(--gold), var(--coral)); border:none; color:#0b0c16; font:800 0.85rem 'Courier New', monospace; padding:10px 18px; border-radius:6px; cursor:pointer; box-shadow:0 0 14px rgba(255,215,0,0.3);">
-              Iniciar Examen ➔
-            </button>
+            <div style="display:inline-flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-theme" onclick="startExamWithConfig('${ex.id}')" style="background:linear-gradient(135deg, var(--gold), var(--coral)); border:none; color:#0b0c16; font:800 0.85rem 'Courier New', monospace; padding:10px 18px; border-radius:6px; cursor:pointer; box-shadow:0 0 14px rgba(255,215,0,0.3);">
+                Iniciar Examen ➔
+              </button>
+              <button class="btn-theme" onclick="exportExamToNotebookLM('${ex.id}')" title="Exportar este banco a Markdown estructurado para Google NotebookLM" style="background:rgba(0,255,170,0.1); border:1px solid var(--green); color:var(--green); font:700 0.78rem 'Courier New', monospace; padding:8px 12px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+                📤 NotebookLM (.md)
+              </button>
+            </div>
             <div style="display:inline-flex; gap:8px;">
               ${isCustom ? `
                 <button class="btn-theme" onclick="editCustomExamParams('${ex.id}')" title="Configurar tiempo o puntaje predeterminado de este cuestionario" style="background:rgba(0,255,255,0.1); border:1px solid var(--cyan); color:var(--cyan); font:700 0.78rem 'Courier New', monospace; padding:8px 12px; border-radius:6px; cursor:pointer;">
@@ -1311,7 +1331,55 @@ D) Requiere Task.Run obligatoriamente.
       updateQuestionNavStatus();
     }
 
+    function startQuestionPaceTimer() {
+      if (questionTimerInterval) clearInterval(questionTimerInterval);
+      questionElapsedSeconds = 0;
+      updateQuestionPaceUI();
+
+      questionTimerInterval = setInterval(() => {
+        if (isTimerPaused) return;
+        questionElapsedSeconds++;
+        updateQuestionPaceUI();
+      }, 1000);
+    }
+
+    function updateQuestionPaceUI() {
+      const pill = document.getElementById('lbl-question-pace-pill');
+      const warning = document.getElementById('lbl-pace-warning');
+      const flagBtn = document.getElementById('btn-flag-question');
+      if (!pill) return;
+
+      pill.style.display = 'inline-flex';
+      pill.innerText = `⏱️ ${questionElapsedSeconds}s`;
+
+      if (questionElapsedSeconds < 60) {
+        pill.style.color = 'var(--cyan)';
+        pill.style.borderColor = 'var(--cyan)';
+        if (warning) warning.style.display = 'none';
+        if (flagBtn && !flaggedQuestions.has(currentQIdx)) {
+          flagBtn.style.animation = 'none';
+          flagBtn.style.borderColor = 'var(--line)';
+        }
+      } else if (questionElapsedSeconds >= 60 && questionElapsedSeconds < 75) {
+        pill.style.color = 'var(--gold)';
+        pill.style.borderColor = 'var(--gold)';
+        if (warning) warning.style.display = 'none';
+      } else {
+        // >= 75 segundos: Alerta de Técnica de 3 Pasadas
+        pill.style.color = 'var(--coral)';
+        pill.style.borderColor = 'var(--coral)';
+        if (warning && userAnswers[currentQIdx] === undefined) {
+          warning.style.display = 'inline-flex';
+        }
+        if (flagBtn && !flaggedQuestions.has(currentQIdx) && userAnswers[currentQIdx] === undefined) {
+          flagBtn.style.animation = 'pulseWarning 1s infinite alternate';
+          flagBtn.style.borderColor = 'var(--gold)';
+        }
+      }
+    }
+
     function renderCurrentQuestion() {
+      startQuestionPaceTimer();
       const q = currentQuestions[currentQIdx];
       if (!q) return;
 
@@ -1409,6 +1477,7 @@ D) Requiere Task.Run obligatoriamente.
     function confirmFinishExamNow() {
       closeIncompleteModal();
       if (examTimerInterval) clearInterval(examTimerInterval);
+      if (questionTimerInterval) clearInterval(questionTimerInterval);
 
       const timeSpentSec = isUnlimitedTime ? elapsedSeconds : Math.max(1, totalExamSeconds - Math.max(0, secondsLeft));
       finishExamSession(timeSpentSec);
@@ -1465,6 +1534,18 @@ D) Requiere Task.Run obligatoriamente.
       document.getElementById('stat-hits-count').innerText = `${hits} / ${total}`;
       const wrongCount = total - hits;
       document.getElementById('stat-wrong-count').innerText = `${wrongCount} falla${wrongCount === 1 ? '' : 's'}`;
+
+      // Configurar botón "Reintentar solo Fallados"
+      const btnRetryFailed = document.getElementById('btn-retry-failed');
+      const lblFailedCount = document.getElementById('lbl-failed-retry-count');
+      if (btnRetryFailed && lblFailedCount) {
+        lblFailedCount.innerText = wrongCount;
+        if (wrongCount === 0) {
+          btnRetryFailed.style.display = 'none';
+        } else {
+          btnRetryFailed.style.display = 'inline-flex';
+        }
+      }
 
       const minSpent = Math.floor(timeSpentSec / 60);
       const secSpent = timeSpentSec % 60;
@@ -1688,6 +1769,125 @@ D) Requiere Task.Run obligatoriamente.
       if (typeof showQuickToast === 'function') {
         showQuickToast("📥 Informe de resultados en Markdown descargado exitosamente.");
       }
+    }
+
+    function startFailedQuestionsRetry() {
+      if (!lastExamSessionResult || !lastExamSessionResult.currentQuestions) {
+        alert("No hay resultados de sesión para extraer reactivos fallados.");
+        return;
+      }
+
+      const { currentExam, currentQuestions, userAnswers } = lastExamSessionResult;
+      const failed = [];
+
+      currentQuestions.forEach((q, idx) => {
+        const ans = userAnswers[idx];
+        if (!ans || !ans.isCorrect) {
+          failed.push(q);
+        }
+      });
+
+      if (failed.length === 0) {
+        alert("¡Excelente! No tuviste ningún reactivo fallado en esta sesión.");
+        return;
+      }
+
+      const retryExamId = 'retry-failed-' + Date.now();
+      const retryExam = {
+        id: retryExamId,
+        title: `🎯 Refuerzo Quirúrgico · ${failed.length} Fallos (${currentExam.title})`,
+        category: "Refuerzo Adaptativo",
+        description: `Batería de refuerzo enfocada en los ${failed.length} reactivos que presentaban error en la sesión previa. Opciones barajadas para afianzar la doctrina técnica.`,
+        author: "Generador de Refuerzo Adaptativo",
+        version: "1.0",
+        timeLimitMinutes: Math.max(10, Math.ceil(failed.length * 2)),
+        passingScore: 100,
+        immediateFeedback: false,
+        shuffleOptions: true,
+        shuffleQuestions: true,
+        totalQuestions: failed.length,
+        questions: failed
+      };
+
+      // Registrar temporalmente en allExams
+      allExams = allExams.filter(e => e.id !== retryExamId);
+      allExams.unshift(retryExam);
+
+      showQuickToast(`🎯 Iniciando sesión de refuerzo con ${failed.length} reactivos fallados...`);
+      startExamSession(retryExamId, String(retryExam.timeLimitMinutes), true, true);
+    }
+
+    function exportExamToNotebookLM(examId) {
+      const ex = allExams.find(e => e.id === examId);
+      if (!ex) {
+        alert("Examen no encontrado.");
+        return;
+      }
+
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      let md = `# Banco de Conocimiento Técnico & Preguntas de Autoevaluación\n`;
+      md += `## Documento Fuente Optimizado para Google NotebookLM\n\n`;
+      md += `**Título del Instrumento:** ${ex.title}\n`;
+      md += `**Total de Reactivos Especializados:** ${ex.questions.length}\n`;
+      md += `**Categoría Temática:** ${ex.category || 'Ingeniería & Arquitectura de Software'}\n`;
+      md += `**Descripción:** ${ex.description || 'Banco doctrinal para preparación de evaluaciones de arquitectura de software.'}\n\n`;
+      md += `> Este documento está estructurado conceptualmente para que NotebookLM pueda sintetizar guías de inmersión, resúmenes temáticos y episodios conversacionales de audio basados en la bibliografía oficial.\n\n`;
+      md += `---\n\n`;
+
+      ex.questions.forEach((q, idx) => {
+        const rawOpts = q.options || [];
+        let correctText = '';
+        const distractors = [];
+
+        rawOpts.forEach((opt, oIdx) => {
+          const optText = typeof opt === 'string' ? opt : (opt.text || '');
+          let isCorr = false;
+          if (typeof opt === 'object' && opt.isCorrect) isCorr = true;
+          else if (q.correct === oIdx) isCorr = true;
+
+          if (isCorr) {
+            correctText = optText;
+          } else {
+            distractors.push(optText);
+          }
+        });
+
+        md += `### Concepto ${idx + 1}: ${q.moduleRef || 'Núcleo Técnico'}\n\n`;
+        md += `**Pregunta de Evaluación:**\n${q.text || q.question || ''}\n\n`;
+        md += `**Respuesta Canónica & Definición:**\n${correctText || '(Ver opciones)'}\n\n`;
+        if (q.feedback || q.explanation) {
+          md += `**Justificación Doctrinal & Fundamento:**\n> ${q.feedback || q.explanation}\n\n`;
+        }
+        if (distractors.length > 0) {
+          md += `**Distractores y Confusiones Típicas en la Industria:**\n`;
+          distractors.forEach((d, dIdx) => {
+            md += `- *Distractor común:* ${d}\n`;
+          });
+          md += `\n`;
+        }
+        if (q.reference) {
+          md += `**Fuente Bibliográfica Oficial:**\n*Cita:* ${q.reference}\n\n`;
+        }
+        md += `---\n\n`;
+      });
+
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const slug = (ex.title || 'examen')
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      a.href = url;
+      a.download = `notebooklm-fuente-${slug}-${dateStr}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showQuickToast("📤 Archivo Markdown para NotebookLM generado exitosamente.");
     }
 
     function deleteCustomExam(examId) {

@@ -178,6 +178,18 @@
   } else {
     initModuleNavigation();
   }
+
+  // Registro global de Service Worker para PWA Offline
+  if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+    window.addEventListener('load', function () {
+      const swPath = window.location.pathname.includes('/modulos/') ? '../sw.js' : './sw.js';
+      navigator.serviceWorker.register(swPath).then(function (reg) {
+        // SW registrado exitosamente
+      }).catch(function (err) {
+        console.warn('Registro SW no completado:', err);
+      });
+    });
+  }
 })();
 
 
