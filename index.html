@@ -179,6 +179,67 @@
         transform: translateY(-2px);
       }
 
+      /* Bloques Canónicos Temáticos */
+      .canonical-blocks-container {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .canonical-block-section {
+        background: rgba(18, 17, 36, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 22px 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .canonical-block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: rgba(22, 21, 40, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+      }
+
+      .block-title-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .block-name-title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        font-family: 'Courier New', monospace;
+      }
+
+      .block-ref-tag {
+        font: 700 0.72rem "Courier New", monospace;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 3px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .block-count-badge {
+        font: 700 0.76rem "Courier New", monospace;
+        color: var(--cyan);
+        background: rgba(0, 255, 255, 0.1);
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+      }
+
       /* Barra de Filtros y Búsqueda */
       .controls-bar {
         display: flex;
@@ -521,11 +582,11 @@
           <span class="anki-hero-badge">⚡ HERRAMIENTA TRANSVERSAL DE REPASO ACTIVO</span>
           <h2 class="anki-hero-title">🗂️ Arena Flashcards Anki & Cyber-Survival</h2>
           <p class="anki-hero-desc">
-            Pon a prueba tu retención y dominio conceptual en los <strong>30 temas</strong> de la plataforma. Juega en modo arcade de <strong>3 vidas (❤️❤️❤️)</strong> con combos y recuperación por racha, o repasa con el método clásico <strong>Anki</strong> de repetición espaciada.
+            Pon a prueba tu retención y dominio conceptual en los <strong>36 temas</strong> organizados en los <strong>6 Bloques Canónicos</strong> de la bibliografía oficial. Juega en modo arcade de <strong>3 vidas (❤️❤️❤️)</strong> con combos y recuperación por racha, o repasa con el método clásico <strong>Anki</strong> de repetición espaciada.
           </p>
           <div class="anki-hero-tags">
             <span>❤️ 3 Vidas & Combos</span>
-            <span>💡 Autoevaluación o Opción Múltiple</span>
+            <span>💡 36 Temas Canónicos</span>
             <span>🎧 Audio Sintetizado Web</span>
             <span>📱 100% Mobile-First</span>
           </div>
@@ -545,7 +606,7 @@
             type="text"
             id="search-input"
             class="search-input"
-            placeholder="Buscar por concepto o palabra clave (ej. AVL, REST, SQL, ACID, Big O, GoF, Normalización)..."
+            placeholder="Buscar por concepto o palabra clave (ej. AVL, REST, SQL, ACID, Big O, GoF, Requerimientos, Android, Event Loop, BI)..."
             aria-label="Buscar módulos"
           />
         </div>
@@ -557,16 +618,16 @@
         <div class="meta-status-row">
           <span id="modules-counter">Cargando catálogo...</span>
           <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
-            <span style="color:var(--muted);">Total: <strong id="total-badge" style="color:var(--green);">0</strong></span>
+            <span style="color:var(--muted);">Total: <strong id="total-badge" style="color:var(--green);">36</strong></span>
             <span style="color:var(--muted);">Vistos: <strong id="completed-badge" style="color:var(--green);">0</strong></span>
           </div>
         </div>
       </section>
 
-      <!-- Contenedor Dinámico de Tarjetas -->
-      <section class="modules-grid" id="modules-grid-container" aria-label="Módulos de visualización">
-        <!-- Renderizado dinámicamente a partir de MATERIAL_MODULES -->
-      </section>
+      <!-- Contenedor Dinámico Organizado por los 6 Bloques Canónicos -->
+      <div class="canonical-blocks-container" id="canonical-blocks-container" aria-label="Módulos organizados en 6 Bloques Canónicos">
+        <!-- Renderizado dinámicamente agrupado por los 6 bloques canónicos -->
+      </div>
 
       <!-- Bloque Transversal de Evaluación: Simulador de Exámenes Técnicos & Arquitectura (Al final de todas las tarjetas) -->
       <section class="exam-hero-banner" aria-label="Simulador de Exámenes Técnicos">
@@ -574,14 +635,14 @@
           <span class="exam-hero-badge">📝 INGENIERÍA &amp; ARQUITECTURA DE SOFTWARE · EVALUACIÓN TÉCNICA</span>
           <h2 class="exam-hero-title">🎯 Simulador de Exámenes Técnicos &amp; Arquitectura</h2>
           <p class="exam-hero-desc">
-            Evalúa tu dominio técnico en los <strong>30 temas</strong> con el <strong>Examen Integrador Oficial de 30 reactivos</strong>. Incluye temporizador regresivo, aleatorización dinámica de incisos (A, B, C, D), marcado de dudas (🚩), dictamen de idoneidad técnica (mínimo 80 pts) y gestor para <strong>crear o importar tus propios cuestionarios</strong>.
+            Evalúa tu dominio técnico en los <strong>36 temas</strong> con el <strong>Simulacro Maestro Nacional de 50 reactivos calibrados</strong>. Incluye temporizador regresivo configurable, técnica de 3 pasadas (alerta de 75s), aleatorización pura (Fisher-Yates) de preguntas y opciones, marcado de dudas (🚩), reintento exclusivo de preguntas falladas, exportador hacia Markdown para NotebookLM y gestor para importar evaluaciones personalizadas.
           </p>
           <div class="exam-hero-tags">
-            <span>⏱️ 30 Reactivos Cronometrados</span>
-            <span>🔀 Opciones Aleatorias Dinámicas</span>
-            <span>🚩 Marcado &amp; Salto Directo</span>
-            <span>📊 Dictamen Técnico &amp; Auditoría</span>
-            <span>💾 Importador JSON &amp; Markdown</span>
+            <span>⏱️ 50 Reactivos Cronometrados</span>
+            <span>🔀 Aleatorización Criptográfica A/B/C/D</span>
+            <span>🚩 Técnica 3 Pasadas (75s)</span>
+            <span>🎯 Reintento de Falladas</span>
+            <span>📤 Exportador NotebookLM</span>
           </div>
         </div>
         <div class="exam-hero-action">
@@ -595,46 +656,72 @@
       <noscript>
       <div style="background:#22213d; padding:20px; border-radius:8px; border:1px solid #00ffff; margin-bottom:24px;">
         <h3 style="color:#00ffff; margin-top:0;">Catálogo de Módulos (Acceso sin JavaScript)</h3>
-        <p style="color:#9aa8c2;">Este portal requiere JavaScript para los filtros en vivo. Puedes acceder directamente a cualquier módulo a continuación:</p>
-        <ul style="color:#e7f6ff; line-height:1.8;">
-        <li><a href="modulos/anki-arena.html" style="color:var(--cyan); font-weight:700;">⚡ 🗂️ Arena Flashcards Anki & Cyber-Survival (Herramienta Transversal de Repaso)</a></li>
-        <li><a href="modulos/simulador-examenes.html" style="color:var(--gold); font-weight:700;">📝 🎯 Simulador de Exámenes Técnicos &amp; Arquitectura (Evaluaciones Cronometradas y Creador)</a></li>
-        <li><a href="modulos/01-complejidades-computacionales.html">01 · Análisis Algorítmico: Complejidad Computacional: Big O</a></li>
-        <li><a href="modulos/02-algoritmos-greedy-divide-venceras.html">02 · Paradigmas Algorítmicos: Greedy vs Divide & Conquer</a></li>
-        <li><a href="modulos/03-arboles-avl-autobalanceo.html">03 · Estructura Dinámica: Árboles AVL: Equilibrio en Movimiento</a></li>
-        <li><a href="modulos/04-bfs-dfs-recorridos-interactivos.html">04 · Exploración de Grafos: Explorador de Grafos: BFS vs DFS</a></li>
-        <li><a href="modulos/05-arquitectura-ansi-sparc-tres-niveles.html">05 · Arquitectura DBMS: Arquitectura ANSI/SPARC de Tres Niveles</a></li>
-        <li><a href="modulos/06-modelado-conceptual-erd-diagramas.html">06 · Modelado de Datos: Modelado Conceptual ERD y Notaciones</a></li>
-        <li><a href="modulos/07-normalizacion-bases-datos.html">07 · Diseño Relacional: Normalización de Bases de Datos (1FN - BCNF)</a></li>
-        <li><a href="modulos/08-taxonomia-sublenguajes-sql-ddl-dml-dcl-tcl.html">08 · Estándar SQL: Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL)</a></li>
-        <li><a href="modulos/09-acid-y-axiomas-de-armstrong.html">09 · Transacciones & Teoría: Propiedades ACID y Axiomas de Armstrong</a></li>
-        <li><a href="modulos/10-diseno-fisico-indices-arbol-b-plus.html">10 · Almacenamiento Físico: Diseño Físico: Índices y Árboles B+</a></li>
-        <li><a href="modulos/11-metodos-http-y-codigos-de-estado.html">11 · Protocolos Web: Métodos HTTP y Códigos de Estado Estándar</a></li>
-        <li><a href="modulos/12-modelo-madurez-richardson-rest.html">12 · Arquitectura REST: Modelo de Madurez de Richardson</a></li>
-        <li><a href="modulos/13-programacion-orientada-objetos.html">13 · Paradigmas de Software: Programación Orientada a Objetos (POO)</a></li>
-        <li><a href="modulos/14-patrones-diseno-gof.html">14 · Arquitectura GoF: Patrones de Diseño GoF (Gang of Four)</a></li>
-        <li><a href="modulos/15-reglas-oro-theo-mandel-ui-ux.html">15 · Principios UI/UX: Las 3 Reglas de Oro de Theo Mandel</a></li>
-        <li><a href="modulos/16-triangulo-de-hierro-gestion-proyectos.html">16 · Dirección de Proyectos: El Triángulo de Hierro: Triple Restricción</a></li>
-        <li><a href="modulos/17-edt-wbs-descomposicion-trabajo.html">17 · Gestión del Alcance: EDT / WBS: Descomposición del Trabajo</a></li>
-        <li><a href="modulos/18-inyeccion-dependencias-constructores-primarios-csharp.html">18 · Arquitectura & Backend: Inyección de Dependencias & C# 12</a></li>
-        <li><a href="modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html">19 · EF Core & Concurrencia: EF Core: Concurrencia & Optimización</a></li>
-        <li><a href="modulos/20-grpc-patrones-comunicacion-streaming.html">20 · gRPC & Streaming: gRPC & Patrones de Streaming</a></li>
-        <li><a href="modulos/21-graphql-over-under-fetching-hotchocolate.html">21 · GraphQL & APIs: GraphQL & HotChocolate: Over/Under-fetching</a></li>
-        <li><a href="modulos/22-jwt-autenticacion-tokens-seguridad.html">22 · Seguridad & Autenticación: JWT: Tokens & Criptografía</a></li>
-        <li><a href="modulos/23-ingenieria-software-error-defecto-falla-verificacion-validacion.html">23 · Calidad & V&V: Error, Defecto, Falla & V&V</a></li>
-        <li><a href="modulos/24-ingenieria-software-metricas-confiabilidad-rocof-pofod-mttf-kloc.html">24 · Confiabilidad & Métricas: Métricas de Confiabilidad: ROCOF, POFOD & MTTF</a></li>
-        <li><a href="modulos/25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion.html">25 · Concurrencia & CPU: Concurrencia de Bajo Nivel: Interlocked & Monitor</a></li>
-        <li><a href="modulos/26-servicios-segundo-plano-resiliencia-polly-cache-dotnet.html">26 · Resiliencia & Servicios: Servicios de Fondo, Resiliencia & Caché</a></li>
-        <li><a href="modulos/27-estimacion-pert-ruta-critica-validacion-haynes.html">27 · Estimación PERT & Validación: Estimación PERT & Validación de Estrategia (Haynes)</a></li>
-        <li><a href="modulos/28-direccionamiento-memoria-matrices-cairo.html">28 · Memoria & Matrices: Direccionamiento de Memoria en Matrices A[m×n] (Cairó)</a></li>
-        <li><a href="modulos/29-modelado-sistema-executable-uml-sommerville.html">29 · xUML & Modelado: Executable UML (xUML) · Ian Sommerville</a></li>
-        <li><a href="modulos/30-estructuras-indexacion-arbol-bplus-vs-hash.html">30 · Indexación &amp; Algoritmos: Estructuras de Indexación: Árbol B+ vs Tablas Hash</a></li>
+        <p style="color:#9aa8c2;">Este portal requiere JavaScript para los filtros en vivo. Catálogo completo de los 36 módulos ordenados en los 6 Bloques Canónicos:</p>
+        
+        <h4 style="color:var(--gold); margin:14px 0 6px;">Bloque I · Gestión de Proyectos (Marion E. Haynes · Caps. 1, 2 y 3)</h4>
+        <ul style="color:#e7f6ff; line-height:1.7;">
+          <li><a href="modulos/16-triangulo-de-hierro-gestion-proyectos.html">01 · Triple Restricción: El Triángulo de Hierro</a></li>
+          <li><a href="modulos/17-edt-wbs-descomposicion-trabajo.html">02 · Gestión del Alcance: EDT / WBS: Descomposición del Trabajo</a></li>
+          <li><a href="modulos/27-estimacion-pert-ruta-critica-validacion-haynes.html">03 · Estimación PERT/CPM: Estimación PERT &amp; Validación de Estrategia</a></li>
+        </ul>
+
+        <h4 style="color:var(--cyan); margin:14px 0 6px;">Bloque II · Fundamentos de Programación &amp; Algoritmos (Joyanes, Cairó, Noback, MIT 6.006)</h4>
+        <ul style="color:#e7f6ff; line-height:1.7;">
+          <li><a href="modulos/01-complejidades-computacionales.html">04 · Análisis Algorítmico: Complejidad Computacional: Big O</a></li>
+          <li><a href="modulos/02-algoritmos-greedy-divide-venceras.html">05 · Paradigmas Algorítmicos: Greedy vs Divide &amp; Conquer</a></li>
+          <li><a href="modulos/03-arboles-avl-autobalanceo.html">06 · Estructura Dinámica: Árboles AVL: Equilibrio en Movimiento</a></li>
+          <li><a href="modulos/04-bfs-dfs-recorridos-interactivos.html">07 · Exploración de Grafos: Explorador de Grafos: BFS vs DFS</a></li>
+          <li><a href="modulos/13-programacion-orientada-objetos.html">08 · Paradigmas POO: Programación Orientada a Objetos (POO)</a></li>
+          <li><a href="modulos/14-patrones-diseno-gof.html">09 · Patrones GoF: Patrones de Diseño GoF (Gang of Four)</a></li>
+          <li><a href="modulos/28-direccionamiento-memoria-matrices-cairo.html">10 · Estructuras de Datos: Direccionamiento de Memoria en Matrices A[m×n] (Cairó)</a></li>
+        </ul>
+
+        <h4 style="color:var(--coral); margin:14px 0 6px;">Bloque III · Ingeniería de Software &amp; Calidad (Vazquez &amp; Simões, Pressman, Sommerville, Toledo)</h4>
+        <ul style="color:#e7f6ff; line-height:1.7;">
+          <li><a href="modulos/15-reglas-oro-theo-mandel-ui-ux.html">11 · Diseño UI/UX: Las 3 Reglas de Oro de Theo Mandel</a></li>
+          <li><a href="modulos/23-ingenieria-software-error-defecto-falla-verificacion-validacion.html">12 · Calidad &amp; V&amp;V: Error, Defecto, Falla &amp; V&amp;V (Toledo)</a></li>
+          <li><a href="modulos/24-ingenieria-software-metricas-confiabilidad-rocof-pofod-mttf-kloc.html">13 · Confiabilidad: Métricas de Confiabilidad: ROCOF, POFOD &amp; MTTF</a></li>
+          <li><a href="modulos/29-modelado-sistema-executable-uml-sommerville.html">14 · Modelado xUML: Executable UML (xUML) · Ian Sommerville</a></li>
+          <li><a href="modulos/31-ingenieria-requerimientos-reglas-negocio.html">15 · Requerimientos: Ingeniería de Requerimientos: Reglas de Negocio vs Requisitos Funcionales</a></li>
+          <li><a href="modulos/32-tecnicas-pruebas-caja-negra-blanca.html">16 · Técnicas de Pruebas: Caja Negra &amp; Caja Blanca (McCabe)</a></li>
+          <li><a href="modulos/35-modelos-procesos-espiral-boehm-rup.html">17 · Modelos de Procesos: Espiral de Boehm &amp; Fases de RUP</a></li>
+        </ul>
+
+        <h4 style="color:var(--green); margin:14px 0 6px;">Bloque IV · Plataformas de Programación &amp; Web (.NET 8, Android, JavaScript/Web, REST, gRPC)</h4>
+        <ul style="color:#e7f6ff; line-height:1.7;">
+          <li><a href="modulos/11-metodos-http-y-codigos-de-estado.html">18 · Protocolos Web: Métodos HTTP y Códigos de Estado Estándar</a></li>
+          <li><a href="modulos/12-modelo-madurez-richardson-rest.html">19 · Arquitectura REST: Modelo de Madurez de Richardson</a></li>
+          <li><a href="modulos/18-inyeccion-dependencias-constructores-primarios-csharp.html">20 · Arquitectura .NET 8: Inyección de Dependencias &amp; C# 12</a></li>
+          <li><a href="modulos/19-efcore-concurrencia-dbcontextfactory-optimizacion.html">21 · EF Core &amp; Concurrencia: EF Core: Concurrencia &amp; Optimización</a></li>
+          <li><a href="modulos/20-grpc-patrones-comunicacion-streaming.html">22 · gRPC &amp; Streaming: gRPC &amp; Patrones de Streaming</a></li>
+          <li><a href="modulos/21-graphql-over-under-fetching-hotchocolate.html">23 · GraphQL &amp; APIs: GraphQL &amp; HotChocolate: Over/Under-fetching</a></li>
+          <li><a href="modulos/22-jwt-autenticacion-tokens-seguridad.html">24 · Seguridad &amp; JWT: JWT: Tokens &amp; Criptografía</a></li>
+          <li><a href="modulos/25-concurrencia-bajo-nivel-interlocked-monitor-primitivas-sincronizacion.html">25 · Concurrencia: Concurrencia de Bajo Nivel: Interlocked &amp; Monitor</a></li>
+          <li><a href="modulos/26-servicios-segundo-plano-resiliencia-polly-cache-dotnet.html">26 · Resiliencia &amp; Caché: Servicios de Fondo, Resiliencia &amp; Caché</a></li>
+          <li><a href="modulos/33-arquitectura-android-componentes-ciclo-vida.html">27 · Arquitectura Android: Componentes ABCD &amp; Ciclo de Vida</a></li>
+          <li><a href="modulos/34-javascript-concurrente-event-loop-web-security.html">28 · JavaScript &amp; Seguridad: Event Loop, Microtasks &amp; CORS/CSP</a></li>
+        </ul>
+
+        <h4 style="color:var(--cyan); margin:14px 0 6px;">Bloque V · Bases de Datos Relacionales &amp; Físicas (Catherine Ricardo, Mercedes Marqués, Andy Oppel)</h4>
+        <ul style="color:#e7f6ff; line-height:1.7;">
+          <li><a href="modulos/05-arquitectura-ansi-sparc-tres-niveles.html">29 · Arquitectura DBMS: Arquitectura ANSI/SPARC de Tres Niveles</a></li>
+          <li><a href="modulos/06-modelado-conceptual-erd-diagramas.html">30 · Modelado de Datos: Modelado Conceptual ERD y Notaciones</a></li>
+          <li><a href="modulos/07-normalizacion-bases-datos.html">31 · Diseño Relacional: Normalización de Bases de Datos (1FN - BCNF)</a></li>
+          <li><a href="modulos/08-taxonomia-sublenguajes-sql-ddl-dml-dcl-tcl.html">32 · Estándar SQL: Taxonomía de Sublenguajes SQL (DDL, DML, DCL, TCL)</a></li>
+          <li><a href="modulos/09-acid-y-axiomas-de-armstrong.html">33 · Transacciones &amp; Teoría: Propiedades ACID y Axiomas de Armstrong</a></li>
+          <li><a href="modulos/10-diseno-fisico-indices-arbol-b-plus.html">34 · Almacenamiento Físico: Diseño Físico: Índices y Árboles B+</a></li>
+          <li><a href="modulos/30-estructuras-indexacion-arbol-bplus-vs-hash.html">35 · Indexación Comparativa: Árbol B+ vs Tablas Hash</a></li>
+        </ul>
+
+        <h4 style="color:var(--gold); margin:14px 0 6px;">Bloque VI · Business Intelligence &amp; Información Electrónica (Luis Joyanes Aguilar)</h4>
+        <ul style="color:#e7f6ff; line-height:1.7;">
+          <li><a href="modulos/36-business-intelligence-data-warehouse-etl.html">36 · Modelado Dimensional &amp; BI: Business Intelligence &amp; Data Warehouse: Kimball vs Inmon &amp; ETL/ELT</a></li>
         </ul>
       </div>
     </noscript>
 
     <footer class="global-footer">
-      Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software, Bases de Datos, Gestión de Proyectos, Arquitectura Web e Ingeniería de Software
+      Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software, Bases de Datos, Gestión de Proyectos, Arquitectura Web e Ingeniería de Software · 36 Módulos en 6 Bloques Canónicos
     </footer>
     </main>
 
@@ -647,12 +734,64 @@
         let activeCategory = 'all';
         let searchQuery = '';
 
-        const container = document.getElementById('modules-grid-container');
+        const container = document.getElementById('canonical-blocks-container');
         const chipsContainer = document.getElementById('category-chips-container');
         const counterEl = document.getElementById('modules-counter');
         const totalBadge = document.getElementById('total-badge');
         const completedBadge = document.getElementById('completed-badge');
         const searchInput = document.getElementById('search-input');
+
+        // Definición Canónica Oficial de los 6 Bloques Temáticos
+        const canonicalBlocks = [
+          {
+            id: 'bloque-1',
+            category: 'Gestión de Proyectos',
+            numberRoman: 'Bloque I',
+            name: 'Bloque I · Gestión de Proyectos',
+            ref: 'Marion E. Haynes · Caps. 1, 2 y 3 (Alcance, Costo, Tiempo y Calidad)',
+            color: 'var(--gold)'
+          },
+          {
+            id: 'bloque-2',
+            category: 'Fundamentos & Algoritmos',
+            numberRoman: 'Bloque II',
+            name: 'Bloque II · Fundamentos de Programación & Algoritmos',
+            ref: 'Joyanes, Cairó, Noback, Dathan/Ramnath, MIT 6.006, Cardona',
+            color: 'var(--cyan)'
+          },
+          {
+            id: 'bloque-3',
+            category: 'Ingeniería de Software',
+            numberRoman: 'Bloque III',
+            name: 'Bloque III · Ingeniería de Software & Calidad',
+            ref: 'Vazquez & Simões, Pressman, Sommerville, Toledo, SWEBOK v4',
+            color: 'var(--coral)'
+          },
+          {
+            id: 'bloque-4',
+            category: 'Plataformas & Web',
+            numberRoman: 'Bloque IV',
+            name: 'Bloque IV · Plataformas de Programación & Web',
+            ref: '.NET 8, Android, JavaScript/Web, REST, gRPC (Price, Griffiths, MDN)',
+            color: 'var(--green)'
+          },
+          {
+            id: 'bloque-5',
+            category: 'Bases de Datos',
+            numberRoman: 'Bloque V',
+            name: 'Bloque V · Bases de Datos Relacionales & Físicas',
+            ref: 'Catherine Ricardo, Mercedes Marqués, Andy Oppel',
+            color: 'var(--cyan)'
+          },
+          {
+            id: 'bloque-6',
+            category: 'Business Intelligence & DWH',
+            numberRoman: 'Bloque VI',
+            name: 'Bloque VI · Business Intelligence & Información Electrónica',
+            ref: 'Luis Joyanes Aguilar · Inteligencia de Negocios y Analítica de Datos',
+            color: 'var(--gold)'
+          }
+        ];
 
         function updateProgressStats() {
           const completedList = window.MATERIAL_PROGRESS ? window.MATERIAL_PROGRESS.getCompleted() : [];
@@ -664,21 +803,30 @@
           }
         }
 
-        // Extraer categorías únicas
-        const categories = ['all', ...new Set(modules.map(m => m.category).filter(Boolean))];
-
         function renderChips() {
           chipsContainer.innerHTML = '';
-          categories.forEach(cat => {
+
+          // Chip "Todos"
+          const allBtn = document.createElement('button');
+          allBtn.className = `chip-btn ${activeCategory === 'all' ? 'active' : ''}`;
+          allBtn.innerText = `Todos los Bloques (${modules.length})`;
+          allBtn.onclick = () => {
+            activeCategory = 'all';
+            renderChips();
+            renderGrid();
+          };
+          chipsContainer.appendChild(allBtn);
+
+          // Chips para cada uno de los 6 bloques canónicos
+          canonicalBlocks.forEach(b => {
+            const bMods = modules.filter(m => m.blockId === b.id);
             const btn = document.createElement('button');
-            btn.className = `chip-btn ${cat === activeCategory ? 'active' : ''}`;
-            
-            let label = cat === 'all' ? 'Todos' : cat;
-            let count = cat === 'all' ? modules.length : modules.filter(m => m.category === cat).length;
-            btn.innerText = `${label} (${count})`;
+            btn.className = `chip-btn ${activeCategory === b.category ? 'active' : ''}`;
+            btn.innerText = `${b.numberRoman} (${bMods.length})`;
+            btn.title = b.name;
 
             btn.onclick = () => {
-              activeCategory = cat;
+              activeCategory = b.category;
               renderChips();
               renderGrid();
             };
@@ -690,21 +838,22 @@
           container.innerHTML = '';
           const completedList = window.MATERIAL_PROGRESS ? window.MATERIAL_PROGRESS.getCompleted() : [];
 
+          const q = searchQuery.toLowerCase().trim();
+
           const filtered = modules.filter(m => {
             const matchCategory = activeCategory === 'all' || m.category === activeCategory;
-            
-            const q = searchQuery.toLowerCase().trim();
             const matchSearch = !q ||
               m.title.toLowerCase().includes(q) ||
               m.desc.toLowerCase().includes(q) ||
               m.badge.toLowerCase().includes(q) ||
               m.category.toLowerCase().includes(q) ||
+              (m.blockName && m.blockName.toLowerCase().includes(q)) ||
               m.features.some(f => f.toLowerCase().includes(q));
 
             return matchCategory && matchSearch;
           });
 
-          counterEl.innerText = `Mostrando ${filtered.length} de ${modules.length} módulo${modules.length === 1 ? '' : 's'}`;
+          counterEl.innerText = `Mostrando ${filtered.length} de ${modules.length} módulos distribuidos en 6 Bloques Canónicos`;
 
           if (filtered.length === 0) {
             container.innerHTML = `
@@ -719,43 +868,75 @@
             return;
           }
 
-          filtered.forEach(m => {
-            const isViewed = completedList.includes(String(m.id));
-            const card = document.createElement('article');
-            card.className = `module-card ${m.theme} ${isViewed ? 'is-viewed-card' : ''}`;
+          // Agrupar los módulos filtrados por los 6 Bloques Canónicos
+          canonicalBlocks.forEach(b => {
+            const blockModules = filtered.filter(m => m.blockId === b.id);
+            if (blockModules.length === 0) return;
 
-            const featuresHtml = m.features.map(f => `<li>${f}</li>`).join('');
+            const section = document.createElement('section');
+            section.className = 'canonical-block-section';
+            section.id = `section-${b.id}`;
 
-            card.innerHTML = `
-              <div>
-                <div class="card-header-row">
-                  <span class="badge badge-theme">${m.badge}</span>
-                  <button
-                    class="btn-card-check ${isViewed ? 'is-viewed' : ''}"
-                    data-mod-id="${m.id}"
-                    title="${isViewed ? 'Módulo completado. Clic para marcar como pendiente' : 'Marcar módulo como visto'}"
-                    aria-label="Alternar visto módulo ${m.title}"
-                  >
-                    <span>${isViewed ? '✓' : '○'}</span>
-                    <span>${isViewed ? 'Visto' : 'Marcar'}</span>
-                  </button>
-                </div>
-                <h2 class="module-title">${m.title}</h2>
-                <p class="module-desc">${m.desc}</p>
-                <ul class="feature-list">
-                  ${featuresHtml}
-                </ul>
+            const header = document.createElement('div');
+            header.className = 'canonical-block-header';
+            header.style.borderLeft = `4px solid ${b.color}`;
+
+            header.innerHTML = `
+              <div class="block-title-row">
+                <h2 class="block-name-title" style="color:${b.color};">${b.name}</h2>
+                <span class="block-ref-tag">📚 ${b.ref}</span>
               </div>
-              <a
-                href="modulos/${m.filename}"
-                class="btn-launch btn-theme"
-                id="${m.btnId}"
-                aria-label="Abrir módulo ${m.title}"
-              >
-                Abrir Módulo <span>→</span>
-              </a>
+              <span class="block-count-badge" style="color:${b.color}; border-color:${b.color};">${blockModules.length} módulo${blockModules.length === 1 ? '' : 's'}</span>
             `;
-            container.appendChild(card);
+            section.appendChild(header);
+
+            const grid = document.createElement('div');
+            grid.className = 'modules-grid';
+
+            blockModules.forEach(m => {
+              const isViewed = completedList.includes(String(m.id));
+              const card = document.createElement('article');
+              card.className = `module-card ${m.theme} ${isViewed ? 'is-viewed-card' : ''}`;
+
+              const featuresHtml = m.features.map(f => `<li>${f}</li>`).join('');
+
+              // Limpiar número duplicado en badge
+              const cleanBadge = m.badge.replace(/^\d+\s*·\s*/, '');
+
+              card.innerHTML = `
+                <div>
+                  <div class="card-header-row">
+                    <span class="badge badge-theme">#${m.number} · ${cleanBadge}</span>
+                    <button
+                      class="btn-card-check ${isViewed ? 'is-viewed' : ''}"
+                      data-mod-id="${m.id}"
+                      title="${isViewed ? 'Módulo completado. Clic para marcar como pendiente' : 'Marcar módulo como visto'}"
+                      aria-label="Alternar visto módulo ${m.title}"
+                    >
+                      <span>${isViewed ? '✓' : '○'}</span>
+                      <span>${isViewed ? 'Visto' : 'Marcar'}</span>
+                    </button>
+                  </div>
+                  <h3 class="module-title" style="font-size:1.18rem;">${m.title}</h3>
+                  <p class="module-desc">${m.desc}</p>
+                  <ul class="feature-list">
+                    ${featuresHtml}
+                  </ul>
+                </div>
+                <a
+                  href="modulos/${m.filename}"
+                  class="btn-launch btn-theme"
+                  id="${m.btnId}"
+                  aria-label="Abrir módulo ${m.title}"
+                >
+                  Abrir Módulo #${m.number} <span>→</span>
+                </a>
+              `;
+              grid.appendChild(card);
+            });
+
+            section.appendChild(grid);
+            container.appendChild(section);
           });
 
           // Conectar eventos de palomita

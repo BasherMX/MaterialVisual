@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ingeniería de Requerimientos: Reglas de Negocio vs Requisitos Funcionales | Laboratorio Interactivo</title>
+    <meta
+      name="description"
+      content="Simulador interactivo de ingeniería de requerimientos basado en Vazquez & Simões, Pressman y SWEBOK v4. Clasificación ontológica de Reglas de Negocio vs Requisitos Funcionales, No Funcionales (IEEE 830 / ISO 29148) y Matriz de Trazabilidad RTM."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --rn-color: #ffd700;
+        --rf-color: #00ffff;
+        --rnf-color: #ff006e;
+        --test-color: #00ffaa;
+      }
+
+      p, li {
+        font-family: Verdana, sans-serif;
+      }
+
+      .content-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .content-panel.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Consola de Clasificación */
+      .req-console {
+        background: var(--panel-dark);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 22px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      .scenario-card {
+        background: rgba(18, 17, 36, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+      }
+
+      .classification-btn-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+
+      .btn-class-opt {
+        flex: 1 1 calc(33% - 12px);
+        min-height: 44px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font: 700 0.82rem "Courier New", monospace;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.8);
+        color: var(--ink);
+        transition: all 0.2s ease;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .btn-class-opt:hover {
+        transform: translateY(-2px);
+        border-color: var(--cyan);
+        color: #fff;
+      }
+
+      .btn-class-opt.active-rn {
+        background: rgba(255, 215, 0, 0.2);
+        border-color: var(--rn-color);
+        color: var(--rn-color);
+        box-shadow: 0 0 14px rgba(255, 215, 0, 0.3);
+      }
+
+      .btn-class-opt.active-rf {
+        background: rgba(0, 255, 255, 0.2);
+        border-color: var(--rf-color);
+        color: var(--rf-color);
+        box-shadow: 0 0 14px rgba(0, 255, 255, 0.3);
+      }
+
+      .btn-class-opt.active-rnf {
+        background: rgba(255, 0, 110, 0.2);
+        border-color: var(--rnf-color);
+        color: var(--rnf-color);
+        box-shadow: 0 0 14px rgba(255, 0, 110, 0.3);
+      }
+
+      /* Matriz RTM */
+      .rtm-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .rtm-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Verdana, sans-serif;
+        font-size: 0.84rem;
+        background: rgba(14, 13, 28, 0.95);
+      }
+
+      .rtm-table th {
+        background: rgba(34, 33, 61, 0.95);
+        color: var(--cyan);
+        font-family: "Courier New", monospace;
+        font-size: 0.8rem;
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 2px solid var(--line);
+      }
+
+      .rtm-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        vertical-align: top;
+      }
+
+      .rtm-table tr:hover td {
+        background: rgba(0, 255, 255, 0.04);
+      }
+
+      .badge-req {
+        display: inline-block;
+        font: 700 0.68rem "Courier New", monospace;
+        padding: 2px 7px;
+        border-radius: 4px;
+        border: 1px solid currentColor;
+        margin-bottom: 4px;
+      }
+
+      .badge-rn { color: var(--rn-color); background: rgba(255, 215, 0, 0.1); }
+      .badge-rf { color: var(--rf-color); background: rgba(0, 255, 255, 0.1); }
+      .badge-rnf { color: var(--rnf-color); background: rgba(255, 0, 110, 0.1); }
+      .badge-tc { color: var(--test-color); background: rgba(0, 255, 170, 0.1); }
+
+      /* Comparativa Doctrinal */
+      .doctrine-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+
+      .doctrine-box {
+        background: rgba(22, 21, 40, 0.9);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+      }
+
+      @media (max-width: 768px) {
+        .classification-btn-group {
+          flex-direction: column;
+        }
+        .btn-class-opt {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body data-module-id="31">
+    <main class="page">
+      <header>
+        <p class="eyebrow">Bloque III · Ingeniería de Software &amp; Calidad</p>
+        <h1>Ingeniería de Requerimientos: Reglas de Negocio vs Requisitos Funcionales</h1>
+        <p class="intro">
+          Laboratorio interactivo para dominar la ontología formal de la ingeniería de requisitos basada en Carlos E. Vazquez, Guilherme S. Simões, Roger S. Pressman y SWEBOK v4. Aprende a clasificar Reglas de Negocio, Requisitos Funcionales y No Funcionales (IEEE 830 / ISO 29148) y a construir matrices de trazabilidad bidireccional (RTM).
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación del Módulo -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="tab-btn active" onclick="switchReqTab('tab-classifier')">
+          <span>🎯</span> 1. Clasificador Interactivo
+        </button>
+        <button class="tab-btn" onclick="switchReqTab('tab-rtm')">
+          <span>📊</span> 2. Matriz de Trazabilidad (RTM)
+        </button>
+        <button class="tab-btn" onclick="switchReqTab('tab-standards')">
+          <span>📚</span> 3. Doctrinas IEEE 830 &amp; ISO 29148
+        </button>
+        <button class="tab-btn" onclick="switchReqTab('tab-quiz')">
+          <span>📝</span> 4. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+      <!-- TAB 1: CLASIFICADOR INTERACTIVO -->
+      <section id="tab-classifier" class="content-panel active">
+        <div class="req-console">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+            <div>
+              <h2 style="margin:0 0 4px; font-size:1.25rem; color:#fff;">Arena de Clasificación Ontológica en Tiempo Real</h2>
+              <p style="margin:0; font-size:0.84rem; color:var(--muted);">
+                Lee cada declaración de sistema y clasifícala correctamente. Recibirás el dictamen doctrinal inmediato.
+              </p>
+            </div>
+            <div style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);" id="classifier-score-lbl">
+              Progreso: <span id="lbl-score-hits">0</span> / <span id="lbl-score-total">0</span> acertados
+            </div>
+          </div>
+
+          <!-- Escenario Dinámico Actual -->
+          <div class="scenario-card" id="active-scenario-box">
+            <span class="badge-req" id="lbl-scenario-topic" style="color:var(--cyan); border-color:var(--cyan);">DOMINIO: TRANSACCIONES</span>
+            <h3 id="lbl-scenario-statement" style="color:#ffffff; font-size:1.15rem; margin:10px 0 14px; font-family:'Courier New', monospace; line-height:1.45;">
+              "El importe de cualquier transferencia bancaria electrónica que supere los $50,000 MXN requiere la autorización obligatoria de un segundo apoderado mancomunado."
+            </h3>
+            
+            <p style="font-size:0.8rem; color:var(--muted); margin-bottom:10px;">¿Qué tipo de elemento de software es esta declaración?</p>
+            <div class="classification-btn-group">
+              <button class="btn-class-opt" onclick="evaluateClassification('RN')">
+                <span>📜</span> Regla de Negocio (RN)
+              </button>
+              <button class="btn-class-opt" onclick="evaluateClassification('RF')">
+                <span>⚙️</span> Requisito Funcional (RF)
+              </button>
+              <button class="btn-class-opt" onclick="evaluateClassification('RNF')">
+                <span>⚡</span> Requisito No Funcional (RNF)
+              </button>
+            </div>
+
+            <div id="classifier-feedback" style="display:none; margin-top:16px; padding:14px; border-radius:6px; font-size:0.88rem; line-height:1.55;"></div>
+          </div>
+
+          <!-- Controles de Navegación del Clasificador -->
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <button class="btn-console btn-console-secondary" onclick="prevScenario()" id="btn-prev-scenario" disabled>
+              ← Caso Anterior
+            </button>
+            <div style="display:flex; gap:6px;" id="scenario-pills-container"></div>
+            <button class="btn-console btn-console-primary" onclick="nextScenario()" id="btn-next-scenario">
+              Siguiente Declaración →
+            </button>
+          </div>
+        </div>
+
+        <!-- Matriz Comparativa Rápida -->
+        <div class="doctrine-grid">
+          <div class="doctrine-box" style="border-top:3px solid var(--rn-color);">
+            <strong style="color:var(--rn-color); font-family:'Courier New', monospace; font-size:0.95rem;">📜 Regla de Negocio (RN)</strong>
+            <p style="font-size:0.83rem; color:var(--muted); margin:8px 0;">
+              <strong>Definición Vazquez &amp; Simões:</strong> Es una política, directriz, restricción o cálculo propio de la organización. <em>Existe aunque no haya software</em> ni computadoras. Rige la operación del negocio.
+            </p>
+            <div style="background:rgba(255,215,0,0.06); padding:8px 12px; border-radius:4px; font-size:0.78rem; color:#fff;">
+              <em>Ejemplo:</em> "Los empleados con más de 10 años de antigüedad reciben 20 días de vacaciones."
+            </div>
+          </div>
+
+          <div class="doctrine-box" style="border-top:3px solid var(--rf-color);">
+            <strong style="color:var(--rf-color); font-family:'Courier New', monospace; font-size:0.95rem;">⚙️ Requisito Funcional (RF)</strong>
+            <p style="font-size:0.83rem; color:var(--muted); margin:8px 0;">
+              <strong>Definición IEEE 830 / Pressman:</strong> Describe la función, entrada, cómputo y salida que el sistema informático debe ejecutar para automatizar o hacer cumplir una regla de negocio.
+            </p>
+            <div style="background:rgba(0,255,255,0.06); padding:8px 12px; border-radius:4px; font-size:0.78rem; color:#fff;">
+              <em>Ejemplo:</em> "El sistema debe bloquear el botón de dispersión y disparar una notificación de firma dual si el monto ingresado supera $50,000."
+            </div>
+          </div>
+
+          <div class="doctrine-box" style="border-top:3px solid var(--rnf-color);">
+            <strong style="color:var(--rnf-color); font-family:'Courier New', monospace; font-size:0.95rem;">⚡ Requisito No Funcional (RNF)</strong>
+            <p style="font-size:0.83rem; color:var(--muted); margin:8px 0;">
+              <strong>Definición SWEBOK v4 / ISO 29148:</strong> Especifica criterios de calidad, restricciones técnicas y niveles de servicio: rendimiento, disponibilidad, seguridad, latencia y tolerancia a fallos.
+            </p>
+            <div style="background:rgba(255,0,110,0.06); padding:8px 12px; border-radius:4px; font-size:0.78rem; color:#fff;">
+              <em>Ejemplo:</em> "La validación criptográfica de la firma del segundo apoderado debe completarse en menos de 800 ms bajo una carga de 500 req/s."
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: MATRIZ DE TRAZABILIDAD (RTM) -->
+      <section id="tab-rtm" class="content-panel">
+        <div class="req-console">
+          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Matriz de Trazabilidad de Requisitos (RTM Bidireccional)</h2>
+          <p style="margin:0 0 16px; font-size:0.84rem; color:var(--muted);">
+            Según Sommerville y Pressman, la trazabilidad garantiza que todo requisito funcional derive de una necesidad o política de negocio demostrable, cuente con sus atributos de calidad no funcionales y se valide mediante casos de prueba de aceptación.
+          </p>
+
+          <div class="rtm-table-wrap">
+            <table class="rtm-table">
+              <thead>
+                <tr>
+                  <th style="width:20%;">1. Regla de Negocio (Origen)</th>
+                  <th style="width:28%;">2. Requisito Funcional (IEEE 830)</th>
+                  <th style="width:28%;">3. Requisito No Funcional (ISO 29148)</th>
+                  <th style="width:24%;">4. Caso de Prueba (V&amp;V)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="badge-req badge-rn">RN-01 · POLÍTICA</span><br>
+                    <strong>Mancomunidad en Pagos:</strong> Toda transferencia &gt; $50,000 requiere 2 firmas digitales autorizadas.
+                  </td>
+                  <td>
+                    <span class="badge-req badge-rf">RF-101 · FUNCIÓN</span><br>
+                    El sistema suspenderá la ejecución de transferencias mayores a $50,000 y habilitará la cola de autorización para el segundo apoderado.
+                  </td>
+                  <td>
+                    <span class="badge-req badge-rnf">RNF-04 · SEGURIDAD</span><br>
+                    Las firmas deben autenticarse mediante certificados X.509 con SHA-256 en almacenamiento HSM.
+                  </td>
+                  <td>
+                    <span class="badge-req badge-tc">TC-01 · ACEPTACIÓN</span><br>
+                    Intentar dispersar $50,001 con 1 sola firma: el sistema debe responder HTTP 403 y registrar log de auditoría.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="badge-req badge-rn">RN-02 · FISCAL</span><br>
+                    <strong>Cálculo de IVA:</strong> Los servicios digitales de streaming causan una tasa general de retención del 16%.
+                  </td>
+                  <td>
+                    <span class="badge-req badge-rf">RF-204 · CÁLCULO</span><br>
+                    El motor de facturación calculará el 16% sobre el subtotal y generará el nodo <code>&lt;Traslado&gt;</code> en el XML CFDI.
+                  </td>
+                  <td>
+                    <span class="badge-req badge-rnf">RNF-12 · RENDIMIENTO</span><br>
+                    El timbrado fiscal y generación del XML no deberá demorar más de 1.2 segundos en el percentil 95 (P95).
+                  </td>
+                  <td>
+                    <span class="badge-req badge-tc">TC-14 · PRECISIÓN</span><br>
+                    Verificar redondeo bancario exacto a 2 decimales para transacciones con centavos fraccionarios.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="badge-req badge-rn">RN-03 · RETENCIÓN</span><br>
+                    <strong>Conservación Documental:</strong> Las bitácoras financieras deben conservarse intactas durante 5 años.
+                  </td>
+                  <td>
+                    <span class="badge-req badge-rf">RF-308 · PERSISTENCIA</span><br>
+                    El sistema archivará diariamente las transacciones a un almacén inmutable tipo WORM (Write Once, Read Many).
+                  </td>
+                  <td>
+                    <span class="badge-req badge-rnf">RNF-22 · CONFIABILIDAD</span><br>
+                    Disponibilidad del archivo histórico de 99.99% con replicación geográfica en zonas separadas por &gt; 100 km.
+                  </td>
+                  <td>
+                    <span class="badge-req badge-tc">TC-28 · RESILIENCIA</span><br>
+                    Simular corte en la región primaria de almacenamiento y validar lectura inmediata desde la réplica secundaria.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: ESTÁNDARES IEEE 830 & ISO 29148 -->
+      <section id="tab-standards" class="content-panel">
+        <div class="doctrine-grid">
+          <div class="doctrine-box">
+            <h3 style="color:var(--cyan); margin-top:0;">Estándar IEEE 830 (SRS - Software Requirements Specification)</h3>
+            <p style="font-size:0.84rem; color:var(--muted); line-height:1.55;">
+              Define la estructura canónica para documentar requisitos de software. Para que un requisito sea formalmente aceptable según IEEE 830 debe cumplir 8 características críticas:
+            </p>
+            <ul style="font-size:0.8rem; color:var(--ink); padding-left:18px; line-height:1.6;">
+              <li><strong>Correcto:</strong> Debe satisfacer una necesidad real del cliente.</li>
+              <li><strong>No ambiguo:</strong> Solo admite una única interpretación técnica estricta.</li>
+              <li><strong>Completo:</strong> Incluye entradas, salidas, respuestas a errores y restricciones.</li>
+              <li><strong>Consistente:</strong> No entra en contradicción con ningún otro requisito del documento.</li>
+              <li><strong>Clasificado por rango:</strong> Jerarquizado por prioridad e importancia para el negocio.</li>
+              <li><strong>Verificable:</strong> Existe un procedimiento de prueba objetivo para comprobar su cumplimiento.</li>
+              <li><strong>Modificable:</strong> Redactado sin redundancia para permitir cambios ágiles.</li>
+              <li><strong>Trazable:</strong> Se conoce su origen (Forward Traceability) y su implementación (Backward Traceability).</li>
+            </ul>
+          </div>
+
+          <div class="doctrine-box">
+            <h3 style="color:var(--gold); margin-top:0;">Taxonomía de Requisitos ISO/IEC/IEEE 29148 &amp; ISO 25010</h3>
+            <p style="font-size:0.84rem; color:var(--muted); line-height:1.55;">
+              La norma moderna 29148 reemplaza y armoniza los estándares previos, categorizando los Requisitos No Funcionales (Atributos de Calidad de Software):
+            </p>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:0.8rem;">
+              <div style="background:rgba(8,7,18,0.7); padding:8px 12px; border-left:3px solid var(--cyan);">
+                <strong style="color:var(--cyan);">Eficiencia de Desempeño:</strong> Tiempo de respuesta, latencia de red, rendimiento transaccional (TPS) y consumo de CPU/RAM.
+              </div>
+              <div style="background:rgba(8,7,18,0.7); padding:8px 12px; border-left:3px solid var(--green);">
+                <strong style="color:var(--green);">Confiabilidad &amp; Madurez:</strong> MTTF (Mean Time To Failure), POFOD (Probability of Failure on Demand) y tolerancia a fallos.
+              </div>
+              <div style="background:rgba(8,7,18,0.7); padding:8px 12px; border-left:3px solid var(--coral);">
+                <strong style="color:var(--coral);">Seguridad &amp; Confidencialidad:</strong> Cifrado de datos en tránsito/reposo, control RBAC y no repudio.
+              </div>
+              <div style="background:rgba(8,7,18,0.7); padding:8px 12px; border-left:3px solid var(--gold);">
+                <strong style="color:var(--gold);">Mantenibilidad &amp; Modularidad:</strong> Cohesión alta, acoplamiento bajo y facilidad de diagnóstico de errores.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
+      <section id="tab-quiz" class="content-panel">
+        <div class="req-console">
+          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Ingeniería de Requerimientos</h2>
+          <p style="margin:0 0 20px; font-size:0.84rem; color:var(--muted);">
+            Reactivos de opción múltiple estructurados con estricta simetría anti-sesgo y rigor doctrinal según Vazquez &amp; Simões y Pressman.
+          </p>
+
+          <!-- Q1 -->
+          <div class="scenario-card">
+            <span class="badge-req" style="color:var(--gold); border-color:var(--gold);">REACTIVO 1 · DOCTRINA VAZQUEZ &amp; SIMÕES</span>
+            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
+              ¿Cuál es la diferencia conceptual fundamental entre una Regla de Negocio y un Requisito Funcional dentro de la ingeniería de software?
+            </p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 0)">
+                A) La regla de negocio es una directriz de la organización preexistente y agnóstica de la tecnología; el requisito funcional define el comportamiento observable que el software debe ejecutar para satisfacer dicha directriz.
+              </button>
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 1)">
+                B) La regla de negocio se redacta obligatoriamente en código binario compilado; el requisito funcional se documenta únicamente mediante diagramas de Gantt y presupuestos contables de la dirección de sistemas.
+              </button>
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 2)">
+                C) La regla de negocio define la tasa de fallas admitida en producción por hora; el requisito funcional especifica exclusivamente los acuerdos salariales y contratos de tercerización de desarrolladores.
+              </button>
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 3)">
+                D) La regla de negocio describe los índices de B+ Tree en la base de datos; el requisito funcional define los protocolos de transporte TCP/IP en la capa de red del modelo OSI.
+              </button>
+            </div>
+            <div id="quiz-f1" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="scenario-card">
+            <span class="badge-req" style="color:var(--cyan); border-color:var(--cyan);">REACTIVO 2 · ESTÁNDAR IEEE 830</span>
+            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
+              Un analista redacta el siguiente requerimiento: <em>"El sistema de facturación debe ser intuitivo, muy rápido al procesar pagos y amigable con el usuario"</em>. Según el estándar IEEE 830, ¿por qué este enunciado es formalmente inaceptable?
+            </p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 0)">
+                A) Porque viola la regla de utilizar frameworks en la nube para la persistencia transaccional de pagos en microservicios distribuidos.
+              </button>
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 1)">
+                B) Porque adolece de ambigüedad subjetiva y carece de métricas verificables; no establece un umbral numérico de latencia ni criterios objetivos de prueba.
+              </button>
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 2)">
+                C) Porque las transferencias electrónicas no admiten la especificación de interfaces gráficas bajo ninguna metodología de software.
+              </button>
+              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 3)">
+                D) Porque la longitud del texto excede los límites admisibles estipulados para la sintaxis de casos de uso ejecutables de Sommerville.
+              </button>
+            </div>
+            <div id="quiz-f2" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="global-footer">
+        Laboratorio de Computación · Material Didáctico de Arquitectura &amp; Ingeniería de Software
+      </footer>
+    </main>
+
+    <script>
+      // Banco de Casos Didácticos para el Clasificador
+      const scenarios = [
+        {
+          id: 1,
+          topic: "DOMINIO: OPERACIONES BANCARIAS",
+          text: "\"El importe de cualquier transferencia bancaria electrónica que supere los $50,000 MXN requiere la autorización obligatoria de un segundo apoderado mancomunado.\"",
+          type: "RN",
+          explanation: "Es una Regla de Negocio (RN): Es una política financiera institucional. Existe independientemente de si la transferencia se hace en ventanilla en papel o mediante un portal web."
+        },
+        {
+          id: 2,
+          topic: "DOMINIO: SISTEMA TRANSACCIONAL",
+          text: "\"Al detectar una orden de pago mayor a $50,000 MXN, el software suspenderá la ejecución del lote y enviará una alerta push al dispositivo móvil del segundo firmante registrado.\"",
+          type: "RF",
+          explanation: "Es un Requisito Funcional (RF): Describe una acción, conducta específica, entrada y salida que el sistema de cómputo debe ejecutar para automatizar la regla de negocio."
+        },
+        {
+          id: 3,
+          topic: "DOMINIO: CALIDAD Y ARQUITECTURA",
+          text: "\"El sistema debe procesar la autenticación de la firma electrónica en un tiempo menor o igual a 850 milisegundos con una concurrencia sostenida de 1,200 usuarios simultáneos.\"",
+          type: "RNF",
+          explanation: "Es un Requisito No Funcional (RNF): Especifica una métrica de rendimiento y capacidad (latencia y throughput) según ISO 25010 / ISO 29148."
+        },
+        {
+          id: 4,
+          topic: "DOMINIO: RECURSOS HUMANOS",
+          text: "\"Ningún colaborador puede gozar de su período vacacional anual si tiene pendientes auditorías de arqueo de caja con discrepancias no aclaradas.\"",
+          type: "RN",
+          explanation: "Es una Regla de Negocio (RN): Política laboral corporativa. Determina una restricción de negocio universal previa al software."
+        },
+        {
+          id: 5,
+          topic: "DOMINIO: SEGURIDAD DE LA INFORMACIÓN",
+          text: "\"Todos los números de cuenta bancaria y claves de autenticación en reposo deberán cifrarse utilizando el algoritmo AES con llaves de 256 bits en modo GCM.\"",
+          type: "RNF",
+          explanation: "Es un Requisito No Funcional (RNF): Atributo de seguridad y confidencialidad que restringe cómo debe persistir la información la arquitectura del sistema."
+        }
+      ];
+
+      let currentScenIdx = 0;
+      let evaluatedAnswers = {};
+
+      function renderScenario() {
+        const sc = scenarios[currentScenIdx];
+        document.getElementById('lbl-scenario-topic').innerText = sc.topic;
+        document.getElementById('lbl-scenario-statement').innerText = sc.text;
+
+        document.getElementById('btn-prev-scenario').disabled = (currentScenIdx === 0);
+        document.getElementById('btn-next-scenario').disabled = (currentScenIdx === scenarios.length - 1);
+
+        const fb = document.getElementById('classifier-feedback');
+        if (evaluatedAnswers[sc.id]) {
+          const ans = evaluatedAnswers[sc.id];
+          fb.style.display = 'block';
+          fb.style.background = ans.isHit ? 'rgba(0, 255, 170, 0.15)' : 'rgba(255, 0, 110, 0.15)';
+          fb.style.border = `1px solid ${ans.isHit ? 'var(--green)' : 'var(--coral)'}`;
+          fb.style.color = ans.isHit ? 'var(--green)' : 'var(--coral)';
+          fb.innerHTML = `<strong>${ans.isHit ? '✓ ¡Acierto Doctrinal!' : '✗ Clasificación Incorrecta.'}</strong> ${sc.explanation}`;
+        } else {
+          fb.style.display = 'none';
+        }
+
+        renderPills();
+      }
+
+      function renderPills() {
+        const cont = document.getElementById('scenario-pills-container');
+        cont.innerHTML = '';
+        scenarios.forEach((s, idx) => {
+          const dot = document.createElement('span');
+          dot.style.display = 'inline-block';
+          dot.style.width = '12px';
+          dot.style.height = '12px';
+          dot.style.borderRadius = '50%';
+          dot.style.cursor = 'pointer';
+          dot.style.border = '1px solid var(--line)';
+
+          if (idx === currentScenIdx) {
+            dot.style.borderColor = 'var(--cyan)';
+            dot.style.boxShadow = '0 0 6px var(--cyan)';
+          }
+
+          if (evaluatedAnswers[s.id]) {
+            dot.style.background = evaluatedAnswers[s.id].isHit ? 'var(--green)' : 'var(--coral)';
+          } else {
+            dot.style.background = '#22213d';
+          }
+
+          dot.onclick = () => { currentScenIdx = idx; renderScenario(); };
+          cont.appendChild(dot);
+        });
+
+        // Actualizar contador
+        const hits = Object.values(evaluatedAnswers).filter(a => a.isHit).length;
+        document.getElementById('lbl-score-hits').innerText = hits;
+        document.getElementById('lbl-score-total').innerText = scenarios.length;
+      }
+
+      window.evaluateClassification = function(selectedType) {
+        const sc = scenarios[currentScenIdx];
+        const isHit = (selectedType === sc.type);
+        evaluatedAnswers[sc.id] = { selected: selectedType, isHit: isHit };
+        renderScenario();
+      };
+
+      window.prevScenario = function() {
+        if (currentScenIdx > 0) {
+          currentScenIdx--;
+          renderScenario();
+        }
+      };
+
+      window.nextScenario = function() {
+        if (currentScenIdx < scenarios.length - 1) {
+          currentScenIdx++;
+          renderScenario();
+        }
+      };
+
+      window.switchReqTab = function(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+
+        const btns = document.querySelectorAll('.tab-btn');
+        if (tabId === 'tab-classifier') btns[0].classList.add('active');
+        if (tabId === 'tab-rtm') btns[1].classList.add('active');
+        if (tabId === 'tab-standards') btns[2].classList.add('active');
+        if (tabId === 'tab-quiz') btns[3].classList.add('active');
+      };
+
+      window.answerQuiz = function(qNum, optIdx) {
+        const fb = document.getElementById(`quiz-f${qNum}`);
+        fb.style.display = 'block';
+
+        if (qNum === 1) {
+          if (optIdx === 0) {
+            fb.style.background = 'rgba(0, 255, 170, 0.15)';
+            fb.style.border = '1px solid var(--green)';
+            fb.style.color = 'var(--green)';
+            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> La regla de negocio es la directriz o restricción organizacional intrínseca que rige la operación; el requisito funcional es la implementación informática que permite al software dar soporte a dicha regla.';
+          } else {
+            fb.style.background = 'rgba(255, 0, 110, 0.15)';
+            fb.style.border = '1px solid var(--coral)';
+            fb.style.color = 'var(--coral)';
+            fb.innerHTML = '<strong>✗ Incorrecto.</strong> Revisa los postulados de Vazquez & Simões: las reglas de negocio existen con o sin software; los requisitos funcionales solo existen en el contexto de un sistema computacional.';
+          }
+        } else if (qNum === 2) {
+          if (optIdx === 1) {
+            fb.style.background = 'rgba(0, 255, 170, 0.15)';
+            fb.style.border = '1px solid var(--green)';
+            fb.style.color = 'var(--green)';
+            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> Términos como "amigable", "rápido" o "intuitivo" violan la regla de verificabilidad y no ambigüedad del IEEE 830. Deben sustituirse por métricas observables (ej. latencia menor a 1s, tasa de error menor a 0.1%).';
+          } else {
+            fb.style.background = 'rgba(255, 0, 110, 0.15)';
+            fb.style.border = '1px solid var(--coral)';
+            fb.style.color = 'var(--coral)';
+            fb.innerHTML = '<strong>✗ Incorrecto.</strong> El defecto formal es la ambigüedad y falta de verificabilidad objetiva, lo que impide diseñar un caso de prueba concluyente.';
+          }
+        }
+      };
+
+      window.addEventListener('DOMContentLoaded', () => {
+        renderScenario();
+      });
+    </script>
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>

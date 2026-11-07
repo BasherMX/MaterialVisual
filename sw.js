@@ -3,7 +3,7 @@
  * Provee funcionamiento Offline y Caché Resiliente para toda la plataforma.
  * Estrategia: Cache First con Stale-While-Revalidate para recursos estáticos.
  */
-const CACHE_NAME = 'material-visual-cache-v3';
+const CACHE_NAME = 'material-visual-cache-v4';
 
 const STATIC_PRECACHE = [
   './',
@@ -48,7 +48,13 @@ const STATIC_PRECACHE = [
   './modulos/27-estimacion-pert-ruta-critica-validacion-haynes.html',
   './modulos/28-direccionamiento-memoria-matrices-cairo.html',
   './modulos/29-modelado-sistema-executable-uml-sommerville.html',
-  './modulos/30-estructuras-indexacion-arbol-bplus-vs-hash.html'
+  './modulos/30-estructuras-indexacion-arbol-bplus-vs-hash.html',
+  './modulos/31-ingenieria-requerimientos-reglas-negocio.html',
+  './modulos/32-tecnicas-pruebas-caja-negra-blanca.html',
+  './modulos/33-arquitectura-android-componentes-ciclo-vida.html',
+  './modulos/34-javascript-concurrente-event-loop-web-security.html',
+  './modulos/35-modelos-procesos-espiral-boehm-rup.html',
+  './modulos/36-business-intelligence-data-warehouse-etl.html'
 ];
 
 // Instalación: Precaché de activos vitales

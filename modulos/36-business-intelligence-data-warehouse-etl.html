@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Intelligence &amp; Data Warehouse: Modelado Dimensional &amp; ETL | Laboratorio Interactivo</title>
+    <meta
+      name="description"
+      content="Simulador interactivo de Business Intelligence y Data Warehouse basado en Luis Joyanes Aguilar. Comparativa arquitectónica Kimball vs Inmon, modelado dimensional interactivo (Esquema en Estrella vs Copo de Nieve) y pipelines de integración ETL vs ELT."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --fact-gold: #ffd700;
+        --dim-cyan: #00ffff;
+        --subdim-coral: #ff006e;
+        --pipeline-green: #00ffaa;
+      }
+
+      p, li {
+        font-family: Verdana, sans-serif;
+      }
+
+      .content-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .content-panel.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .bi-card {
+        background: var(--panel-dark);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 22px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      /* Esquema Gráfico */
+      .schema-diagram-wrap {
+        background: rgba(10, 9, 22, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        min-height: 380px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: auto;
+      }
+
+      .table-node {
+        background: rgba(18, 17, 36, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 10px 14px;
+        font-family: "Courier New", monospace;
+        font-size: 0.78rem;
+        box-shadow: var(--shadow);
+        min-width: 140px;
+      }
+
+      .table-header {
+        font-weight: 700;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 4px;
+        margin-bottom: 6px;
+      }
+
+      .table-fact {
+        border-color: var(--fact-gold);
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.25);
+      }
+      .table-fact .table-header { color: var(--fact-gold); }
+
+      .table-dim {
+        border-color: var(--dim-cyan);
+      }
+      .table-dim .table-header { color: var(--dim-cyan); }
+
+      .table-subdim {
+        border-color: var(--subdim-coral);
+      }
+      .table-subdim .table-header { color: var(--subdim-coral); }
+
+      /* ETL Pipeline */
+      .pipeline-step {
+        background: rgba(18, 17, 36, 0.9);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        flex: 1;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .schema-diagram-wrap {
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body data-module-id="36">
+    <main class="page">
+      <header>
+        <p class="eyebrow">Bloque VI · Business Intelligence &amp; Información Electrónica</p>
+        <h1>Business Intelligence &amp; Data Warehouse: Modelado Dimensional &amp; ETL</h1>
+        <p class="intro">
+          Laboratorio interactivo de Inteligencia de Negocios y Analítica de Datos basado en la obra canónica de Luis Joyanes Aguilar. Explora las diferencias arquitectónicas entre Ralph Kimball y Bill Inmon, visualiza el modelado dimensional (Esquema en Estrella vs Copo de Nieve) con comparación de consultas SQL y experimenta el flujo de integración de datos ETL vs ELT.
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="tab-btn active" onclick="switchBITab('tab-schema')">
+          <span>⭐</span> 1. Esquema Estrella vs Copo de Nieve
+        </button>
+        <button class="tab-btn" onclick="switchBITab('tab-architectures')">
+          <span>🏛️</span> 2. Kimball vs Inmon
+        </button>
+        <button class="tab-btn" onclick="switchBITab('tab-etl')">
+          <span>🔄</span> 3. Pipelines ETL vs ELT
+        </button>
+        <button class="tab-btn" onclick="switchBITab('tab-quiz')">
+          <span>📝</span> 4. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+      <!-- TAB 1: MODELADO DIMENSIONAL -->
+      <section id="tab-schema" class="content-panel active">
+        <div class="bi-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+            <div>
+              <h2 style="margin:0 0 4px; font-size:1.25rem; color:#fff;">Diseñador Interactivo de Modelos Dimensionales (Joyanes Cap. 3)</h2>
+              <p style="margin:0; font-size:0.84rem; color:var(--muted);">
+                Alterna entre Esquema en Estrella y Copo de Nieve para analizar el impacto en la normalización de dimensiones y el costo computacional de las consultas analíticas:
+              </p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-theme active" id="btn-mode-star" onclick="setSchemaMode('star')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--fact-gold); color:var(--fact-gold);">
+                ⭐ Esquema en Estrella (Star Schema)
+              </button>
+              <button class="btn-theme" id="btn-mode-snow" onclick="setSchemaMode('snow')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--dim-cyan); color:var(--dim-cyan);">
+                ❄️ Esquema en Copo de Nieve (Snowflake)
+              </button>
+            </div>
+          </div>
+
+          <!-- Canvas del Esquema -->
+          <div class="schema-diagram-wrap" id="schema-canvas">
+            <!-- Render dinámico SVG / Bloques -->
+          </div>
+
+          <!-- Comparativa Analítica SQL y Rendimiento -->
+          <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:16px; margin-top:16px;">
+            <div>
+              <span style="font:700 0.78rem 'Courier New', monospace; color:var(--cyan);">CONSULTA SQL ANALÍTICA GENERADA (OLAP):</span>
+              <pre id="bi-sql-box" style="background:#080811; border:1px solid var(--line); border-radius:6px; padding:12px; font:0.78rem 'Courier New', monospace; color:#a5d6ff; margin:6px 0 0; min-height:110px;"></pre>
+            </div>
+
+            <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:6px; padding:14px;">
+              <strong style="color:var(--gold); font-family:'Courier New', monospace; font-size:0.85rem;">DICTAMEN DE RENDIMIENTO ANALÍTICO:</strong>
+              <div style="font-size:0.82rem; color:var(--ink); margin-top:8px; line-height:1.55;" id="bi-perf-verdict"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: KIMBALL VS INMON -->
+      <section id="tab-architectures" class="content-panel">
+        <div class="bi-card">
+          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Duelo Doctrinal: Ralph Kimball vs Bill Inmon (Joyanes Cap. 2)</h2>
+          <p style="margin:0 0 16px; font-size:0.84rem; color:var(--muted);">
+            Las dos filosofías arquitectónicas que definen el diseño corporativo de almacenamiento de información para toma de decisiones:
+          </p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+            <div style="background:rgba(18,17,36,0.9); border:1px solid var(--dim-cyan); border-radius:8px; padding:18px;">
+              <span style="font:700 0.72rem 'Courier New', monospace; color:var(--dim-cyan); background:rgba(0,255,255,0.1); padding:3px 8px; border-radius:4px;">
+                ENFOQUE BOTTOM-UP (DIMENSIONAL)
+              </span>
+              <h3 style="color:#fff; margin:10px 0 6px; font-size:1.2rem;">Ralph Kimball</h3>
+              <p style="font-size:0.83rem; color:var(--muted); line-height:1.55;">
+                El Data Warehouse se concibe como la <em>unión coherente de todos sus Data Marts departamentales</em> mediante dimensiones conformadas (Conformed Dimensions).
+              </p>
+              <ul style="font-size:0.8rem; color:var(--ink); line-height:1.6; padding-left:18px;">
+                <li><strong>Modelado:</strong> Dimensional puro (Tablas de Hechos y Dimensiones).</li>
+                <li><strong>Normalización:</strong> Desnormalizado intencionalmente para optimizar lecturas.</li>
+                <li><strong>Velocidad de entrega:</strong> Rápida; permite construir Data Marts funcionales de forma iterativa y modular.</li>
+                <li><strong>Orientación:</strong> Diseñado directamente para el usuario de negocio y herramientas de BI (Power BI, Tableau).</li>
+              </ul>
+            </div>
+
+            <div style="background:rgba(18,17,36,0.9); border:1px solid var(--fact-gold); border-radius:8px; padding:18px;">
+              <span style="font:700 0.72rem 'Courier New', monospace; color:var(--fact-gold); background:rgba(255,215,0,0.1); padding:3px 8px; border-radius:4px;">
+                ENFOQUE TOP-DOWN (RELACIONAL)
+              </span>
+              <h3 style="color:#fff; margin:10px 0 6px; font-size:1.2rem;">Bill Inmon (Padre del Data Warehouse)</h3>
+              <p style="font-size:0.83rem; color:var(--muted); line-height:1.55;">
+                Define el Data Warehouse como: <em>"Una colección de datos orientada a temas, integrada, no volátil y variante en el tiempo para el apoyo a decisiones directivas"</em>.
+              </p>
+              <ul style="font-size:0.8rem; color:var(--ink); line-height:1.6; padding-left:18px;">
+                <li><strong>Modelado:</strong> Relacional estricto en Tercera Forma Normal (3FN).</li>
+                <li><strong>Estructura:</strong> Almacén corporativo central (EDW) único; los Data Marts departamentales se desprenden secundariamente de este EDW.</li>
+                <li><strong>Velocidad de entrega:</strong> Lenta al inicio; requiere diseñar el modelo de datos unificado de toda la organización.</li>
+                <li><strong>Consistencia:</strong> Máxima fuente única de la verdad (Single Version of Truth).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: ETL VS ELT -->
+      <section id="tab-etl" class="content-panel">
+        <div class="bi-card">
+          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Tuberías de Integración de Datos: ETL Clásico vs ELT en la Nube</h2>
+          <p style="margin:0 0 16px; font-size:0.84rem; color:var(--muted);">
+            Evolución tecnológica del procesamiento de datos según Luis Joyanes Aguilar:
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <!-- ETL -->
+            <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:16px;">
+              <strong style="color:var(--gold); font-family:'Courier New', monospace; font-size:0.95rem;">
+                ETL (Extract - Transform - Load) · Almacenamiento On-Premise Clásico
+              </strong>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+                <div class="pipeline-step">
+                  <span style="color:var(--cyan); font-weight:700;">1. Extracción</span><br>
+                  <small style="color:var(--muted);">Bases OLTP / Archivos</small>
+                </div>
+                <span style="color:var(--gold); font-size:1.2rem;">➔</span>
+                <div class="pipeline-step" style="border-color:var(--gold); background:rgba(255,215,0,0.08);">
+                  <span style="color:var(--gold); font-weight:700;">2. Transformación</span><br>
+                  <small style="color:var(--muted);">Servidor ETL dedicado (Limpieza, Joins, Conversión)</small>
+                </div>
+                <span style="color:var(--gold); font-size:1.2rem;">➔</span>
+                <div class="pipeline-step">
+                  <span style="color:var(--green); font-weight:700;">3. Carga</span><br>
+                  <small style="color:var(--muted);">Data Warehouse Destino</small>
+                </div>
+              </div>
+              <p style="font-size:0.8rem; color:var(--muted); margin:10px 0 0;">
+                El servidor intermedio puede convertirse en un cuello de botella con grandes volúmenes de Big Data.
+              </p>
+            </div>
+
+            <!-- ELT -->
+            <div style="background:rgba(18,17,36,0.9); border:1px solid var(--green); border-radius:8px; padding:16px;">
+              <strong style="color:var(--green); font-family:'Courier New', monospace; font-size:0.95rem;">
+                ELT (Extract - Load - Transform) · Cloud Data Warehousing &amp; Lakehouse
+              </strong>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+                <div class="pipeline-step">
+                  <span style="color:var(--cyan); font-weight:700;">1. Extracción</span><br>
+                  <small style="color:var(--muted);">Fuentes transaccionales</small>
+                </div>
+                <span style="color:var(--green); font-size:1.2rem;">➔</span>
+                <div class="pipeline-step" style="border-color:var(--cyan);">
+                  <span style="color:var(--cyan); font-weight:700;">2. Carga Rápida</span><br>
+                  <small style="color:var(--muted);">Datos crudos ingresan al Almacén / Data Lake</small>
+                </div>
+                <span style="color:var(--green); font-size:1.2rem;">➔</span>
+                <div class="pipeline-step" style="border-color:var(--green); background:rgba(0,255,170,0.08);">
+                  <span style="color:var(--green); font-weight:700;">3. Transformación In-Situ</span><br>
+                  <small style="color:var(--muted);">Computación distribuida masiva en la nube (Spark, BigQuery)</small>
+                </div>
+              </div>
+              <p style="font-size:0.8rem; color:var(--muted); margin:10px 0 0;">
+                Aprovecha la escalabilidad elástica y el poder de cómputo paralelo masivo (MPP) de los motores modernos.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
+      <section id="tab-quiz" class="content-panel">
+        <div class="bi-card">
+          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Business Intelligence &amp; DWH</h2>
+          <p style="margin:0 0 20px; font-size:0.84rem; color:var(--muted);">
+            Reactivos de opción múltiple estructurados con rigurosa simetría anti-sesgo según Luis Joyanes Aguilar.
+          </p>
+
+          <!-- Q1 -->
+          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px; margin-bottom:16px;">
+            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--fact-gold);">REACTIVO 1 · LUIS JOYANES AGUILAR (MODELADO DIMENSIONAL)</span>
+            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
+              Al comparar un Esquema en Estrella (Star Schema) frente a un Esquema en Copo de Nieve (Snowflake Schema) dentro de un almacén de datos, ¿cuál es la diferencia técnica fundamental respecto a la normalización de dimensiones y el rendimiento de consultas analíticas?
+            </p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(1, 0)">
+                A) El esquema en estrella mantiene dimensiones completamente desnormalizadas optimizando el rendimiento de consultas al requerir menos operaciones JOIN; mientras que el copo de nieve normaliza las dimensiones en jerarquías ahorrando espacio pero incrementando los JOINs.
+              </button>
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(1, 1)">
+                B) El esquema en estrella prohíbe el uso de claves primarias artificiales (Surrogate Keys); mientras que el copo de nieve exige que todas las tablas de hechos se alojen en memoria RAM no volátil de servidores dedicados.
+              </button>
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(1, 2)">
+                C) El esquema en estrella solo admite datos no estructurados en formato XML; mientras que el copo de nieve compila las consultas analíticas en microcódigo de CPU x86 de bajo nivel.
+              </button>
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(1, 3)">
+                D) El esquema en estrella elimina por completo la tabla central de hechos; mientras que el copo de nieve replica el log de transacciones binarias mediante el protocolo TCP/IP.
+              </button>
+            </div>
+            <div id="qbi-f1" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+          </div>
+
+          <!-- Q2 -->
+          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px;">
+            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--dim-cyan);">REACTIVO 2 · ARQUITECTURAS DE DATA WAREHOUSE</span>
+            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
+              ¿Cuál es la discrepancia metodológica principal entre la arquitectura de Data Warehouse corporativo planteada por Bill Inmon y el enfoque dimensional de Ralph Kimball según Luis Joyanes?
+            </p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(2, 0)">
+                A) Inmon prescribe la supresión de copias de seguridad remotas; mientras que Kimball impone el uso de lenguajes ensambladores para la extracción de datos transaccionales.
+              </button>
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(2, 1)">
+                B) Inmon propone un enfoque Top-Down con un Enterprise Data Warehouse centralizado en Tercera Forma Normal (3FN); mientras que Kimball promueve un enfoque Bottom-Up integrando Data Marts dimensionales basados en dimensiones conformadas.
+              </button>
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(2, 2)">
+                C) Inmon se orienta exclusivamente a bases de datos orientadas a grafos NoSQL; mientras que Kimball requiere la normalización matemática de Boyce-Codd para todas las dimensiones.
+              </button>
+              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerBIQuiz(2, 3)">
+                D) Inmon sostiene que el análisis de negocios no debe emplear tableros gráficos de control directivo; mientras que Kimball prohíbe las métricas aditivas y semiaditivas.
+              </button>
+            </div>
+            <div id="qbi-f2" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="global-footer">
+        Laboratorio de Computación · Material Didáctico de Arquitectura &amp; Ingeniería de Software
+      </footer>
+    </main>
+
+    <script>
+      let currentSchema = 'star';
+
+      function setSchemaMode(mode) {
+        currentSchema = mode;
+        document.getElementById('btn-mode-star').classList.toggle('active', mode === 'star');
+        document.getElementById('btn-mode-snow').classList.toggle('active', mode === 'snow');
+        renderSchema();
+      }
+
+      function renderSchema() {
+        const wrap = document.getElementById('schema-canvas');
+        const sqlBox = document.getElementById('bi-sql-box');
+        const perfBox = document.getElementById('bi-perf-verdict');
+
+        if (currentSchema === 'star') {
+          wrap.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:center; gap:26px; flex-wrap:wrap; width:100%;">
+              <div class="table-node table-dim">
+                <div class="table-header">Dim_Cliente</div>
+                <div>PK ClienteID</div>
+                <div>Nombre</div>
+                <div>Segmento</div>
+                <div>Ciudad</div>
+              </div>
+
+              <div class="table-node table-dim">
+                <div class="table-header">Dim_Tiempo</div>
+                <div>PK TiempoID</div>
+                <div>Fecha</div>
+                <div>Mes / Año</div>
+                <div>Trimestre</div>
+              </div>
+
+              <div class="table-node table-fact" style="transform:scale(1.08);">
+                <div class="table-header">⭐ Fact_Ventas</div>
+                <div style="color:var(--fact-gold);">FK ClienteID</div>
+                <div style="color:var(--fact-gold);">FK TiempoID</div>
+                <div style="color:var(--fact-gold);">FK ProductoID</div>
+                <div style="color:var(--green); font-weight:700;">• Cantidad</div>
+                <div style="color:var(--green); font-weight:700;">• TotalVenta ($)</div>
+              </div>
+
+              <div class="table-node table-dim">
+                <div class="table-header">Dim_Producto</div>
+                <div>PK ProductoID</div>
+                <div>NombreProducto</div>
+                <div style="color:var(--gold);">CategoriaNombre (Denorm)</div>
+                <div style="color:var(--gold);">Proveedor (Denorm)</div>
+              </div>
+            </div>
+          `;
+
+          sqlBox.innerText = `SELECT 
+  T.Mes, P.CategoriaNombre, SUM(F.TotalVenta) AS IngresosTotales
+FROM Fact_Ventas F
+JOIN Dim_Tiempo T   ON F.TiempoID = T.TiempoID
+JOIN Dim_Producto P ON F.ProductoID = P.ProductoID
+GROUP BY T.Mes, P.CategoriaNombre;`;
+
+          perfBox.innerHTML = `
+            <span style="color:var(--green); font-weight:700;">✓ Rendimiento de Consulta: Óptimo (2 JOINs)</span><br>
+            Al tener la categoría y proveedor desnormalizados directamente en <code>Dim_Producto</code>, el motor de la base de datos resuelve la agregación con solo <strong>2 operaciones JOIN simples</strong>. Ideal para consultas analíticas rápidas de BI.
+          `;
+        } else {
+          wrap.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; width:100%;">
+              <div class="table-node table-dim">
+                <div class="table-header">Dim_Tiempo</div>
+                <div>PK TiempoID</div>
+                <div>Fecha</div>
+              </div>
+
+              <div class="table-node table-fact" style="transform:scale(1.05);">
+                <div class="table-header">❄️ Fact_Ventas</div>
+                <div>FK TiempoID</div>
+                <div>FK ProductoID</div>
+                <div style="color:var(--green); font-weight:700;">• TotalVenta ($)</div>
+              </div>
+
+              <div class="table-node table-dim">
+                <div class="table-header">Dim_Producto</div>
+                <div>PK ProductoID</div>
+                <div>FK SubcatID</div>
+                <div>FK ProveedorID</div>
+              </div>
+
+              <div class="table-node table-subdim">
+                <div class="table-header">Sub_Categoria</div>
+                <div>PK SubcatID</div>
+                <div>FK CategoriaID</div>
+              </div>
+
+              <div class="table-node table-subdim">
+                <div class="table-header">Categoria</div>
+                <div>PK CategoriaID</div>
+                <div>NombreCategoria</div>
+              </div>
+            </div>
+          `;
+
+          sqlBox.innerText = `SELECT 
+  T.Mes, C.NombreCategoria, SUM(F.TotalVenta) AS IngresosTotales
+FROM Fact_Ventas F
+JOIN Dim_Tiempo T         ON F.TiempoID = T.TiempoID
+JOIN Dim_Producto P       ON F.ProductoID = P.ProductoID
+JOIN Sub_Categoria S      ON P.SubcatID = S.SubcatID
+JOIN Categoria C          ON S.CategoriaID = C.CategoriaID
+GROUP BY T.Mes, C.NombreCategoria;`;
+
+          perfBox.innerHTML = `
+            <span style="color:var(--coral); font-weight:700;">⚠️ Complejidad de Consulta: Mayor (4 JOINs en Cascada)</span><br>
+            Las dimensiones normalizadas eliminan redundancia de texto ahorrando espacio en disco, pero obligan al motor a ejecutar <strong>múltiples JOINs encadenados</strong> (<code>Producto ➔ Subcat ➔ Categoria</code>), reduciendo el rendimiento en tableros de control en vivo.
+          `;
+        }
+      }
+
+      window.switchBITab = function(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+
+        const btns = document.querySelectorAll('.tab-btn');
+        if (tabId === 'tab-schema') btns[0].classList.add('active');
+        if (tabId === 'tab-architectures') btns[1].classList.add('active');
+        if (tabId === 'tab-etl') btns[2].classList.add('active');
+        if (tabId === 'tab-quiz') btns[3].classList.add('active');
+      };
+
+      window.answerBIQuiz = function(qNum, optIdx) {
+        const fb = document.getElementById(`qbi-f${qNum}`);
+        fb.style.display = 'block';
+
+        if (qNum === 1) {
+          if (optIdx === 0) {
+            fb.style.background = 'rgba(0, 255, 170, 0.15)';
+            fb.style.border = '1px solid var(--green)';
+            fb.style.color = 'var(--green)';
+            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> El esquema en estrella desnormaliza conscientemente las tablas de dimensiones para minimizar el número de JOINs en consultas analíticas (OLAP). El copo de nieve normaliza las dimensiones en subtablas jerárquicas reduciendo espacio físico pero penalizando la velocidad de consulta.';
+          } else {
+            fb.style.background = 'rgba(255, 0, 110, 0.15)';
+            fb.style.border = '1px solid var(--coral)';
+            fb.style.color = 'var(--coral)';
+            fb.innerHTML = '<strong>✗ Incorrecto.</strong> Doctrina Joyanes: La diferencia clave es el grado de normalización de las dimensiones (Estrella = desnormalizado / Copo = normalizado) y su impacto directo en los JOINs requeridos.';
+          }
+        } else if (qNum === 2) {
+          if (optIdx === 1) {
+            fb.style.background = 'rgba(0, 255, 170, 0.15)';
+            fb.style.border = '1px solid var(--green)';
+            fb.style.color = 'var(--green)';
+            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> Bill Inmon promueve el enfoque Top-Down donde primero se crea el Enterprise Data Warehouse corporativo normalizado en 3FN; Ralph Kimball aboga por el enfoque Bottom-Up estructurado directamente sobre Data Marts dimensionales que comparten dimensiones conformadas.';
+          } else {
+            fb.style.background = 'rgba(255, 0, 110, 0.15)';
+            fb.style.border = '1px solid var(--coral)';
+            fb.style.color = 'var(--coral)';
+            fb.innerHTML = '<strong>✗ Incorrecto.</strong> La divergencia canónica es Top-Down (Inmon, 3FN) frente a Bottom-Up (Kimball, Modelado Dimensional).';
+          }
+        }
+      };
+
+      window.addEventListener('DOMContentLoaded', () => {
+        renderSchema();
+      });
+    </script>
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>
