@@ -72,6 +72,53 @@
         border: 1px solid currentColor;
       }
 
+      .card-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .card-header-row .badge {
+        margin-bottom: 0;
+        flex: 1 1 auto;
+        max-width: fit-content;
+      }
+
+      .btn-card-check {
+        position: static !important;
+        flex-shrink: 0;
+        background: rgba(18, 17, 36, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--muted);
+        border-radius: 20px;
+        padding: 4px 10px;
+        font: 700 0.72rem "Courier New", monospace;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s ease;
+        user-select: none;
+        white-space: nowrap;
+      }
+
+      .btn-card-check:hover {
+        background: rgba(0, 255, 170, 0.15);
+        border-color: var(--green);
+        color: var(--green);
+        transform: scale(1.03);
+      }
+
+      .btn-card-check.is-viewed {
+        background: rgba(0, 255, 170, 0.22);
+        border-color: var(--green);
+        color: var(--green);
+        box-shadow: 0 0 10px rgba(0, 255, 170, 0.35);
+      }
+
       .module-title {
         margin: 0 0 8px;
         font-size: 1.25rem;
