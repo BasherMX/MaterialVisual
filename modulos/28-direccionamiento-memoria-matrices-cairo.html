@@ -168,9 +168,10 @@
   </style>
 </head>
 <body class="theme-cyan">
-  <div class="top-nav-bar"></div>
+  <main class="page">
+    <a href="../index.html" class="btn-back-index"><span>←</span> Volver al Catálogo Principal</a>
 
-  <header class="module-header">
+    <header class="module-header">
     <div class="module-badge">Estructuras de Datos &middot; Osvaldo Cair&oacute;</div>
     <h1 class="module-title">Direccionamiento de Memoria en Matrices $A[m \times n]$</h1>
     <p class="module-desc">
@@ -187,7 +188,7 @@
     <button class="tab-btn" data-tab="tab-quiz" role="tab">5. Laboratorio SPC Evaluativo</button>
   </nav>
 
-  <main class="module-content">
+  <div class="module-content">
     <!-- TAB 1: TEORÍA -->
     <section id="tab-theory" class="tab-panel active" role="tabpanel">
       <h2>1. El Problema del Mapeo 2D a Memoria 1D</h2>
@@ -583,11 +584,12 @@
         <button class="btn btn-primary" id="btn-eval-cairo" style="margin-top:16px;">Calificar Evaluaci&oacute;n</button>
       </div>
     </section>
-  </main>
+  </div>
 
   <footer class="module-footer">
     <div class="module-nav-bar"></div>
   </footer>
+</main>
 
   <script src="../shared/modules-data.js"></script>
   <script src="../shared/nav.js"></script>

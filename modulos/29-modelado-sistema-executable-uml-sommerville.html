@@ -123,9 +123,10 @@
   </style>
 </head>
 <body class="theme-purple">
-  <div class="top-nav-bar"></div>
+  <main class="page">
+    <a href="../index.html" class="btn-back-index"><span>←</span> Volver al Catálogo Principal</a>
 
-  <header class="module-header">
+    <header class="module-header">
     <div class="module-badge">Ingenier&iacute;a de Software &middot; Ian Sommerville (Cap. 5)</div>
     <h1 class="module-title">Executable UML (xUML) &amp; Compilaci&oacute;n MDA</h1>
     <p class="module-desc">
@@ -142,7 +143,7 @@
     <button class="tab-btn" data-tab="tab-quiz" role="tab">5. Laboratorio Evaluativo SPC</button>
   </nav>
 
-  <main class="module-content">
+  <div class="module-content">
     <!-- TAB 1: TEORÍA -->
     <section id="tab-theory" class="tab-panel active" role="tabpanel">
       <h2>1. El Paradigma de Executable UML (xUML)</h2>
@@ -436,11 +437,12 @@
         <button class="btn btn-primary" id="btn-eval-xuml" style="margin-top:16px;">Calificar Evaluaci&oacute;n</button>
       </div>
     </section>
-  </main>
+  </div>
 
   <footer class="module-footer">
     <div class="module-nav-bar"></div>
   </footer>
+</main>
 
   <script src="../shared/modules-data.js"></script>
   <script src="../shared/nav.js"></script>
