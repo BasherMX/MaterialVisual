@@ -191,8 +191,8 @@
       }
     </style>
   </head>
-  <body>
-    <main class="page">
+  <body class="theme-cyan">
+    <main class="page theme-cyan">
       <a href="../index.html" class="btn-back-index"><span>←</span> Volver al Portal Principal</a>
 
       <header>
@@ -288,14 +288,14 @@
             Simulamos una consulta que recupera <strong>4 pedidos</strong> pertenecientes a solo <strong>2 clientes</strong> (Cliente #101 tiene 2 pedidos; Cliente #102 tiene 2 pedidos). Observa cómo se comportan las instancias creadas en la memoria Heap.
           </p>
 
-          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
-            <button class="toggle-btn active" onclick="simulateTrackingStrategy('tracking')">
+          <div id="tracking-strategy-controls" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+            <button class="toggle-btn active" onclick="simulateTrackingStrategy('tracking', this)">
               1. Tracking Estándar (CRUD)
             </button>
-            <button class="toggle-btn" onclick="simulateTrackingStrategy('notracking')">
+            <button class="toggle-btn" onclick="simulateTrackingStrategy('notracking', this)">
               2. .AsNoTracking() (Lectura Pura)
             </button>
-            <button class="toggle-btn" onclick="simulateTrackingStrategy('identity')">
+            <button class="toggle-btn" onclick="simulateTrackingStrategy('identity', this)">
               3. .AsNoTrackingWithIdentityResolution() (Recomendado)
             </button>
           </div>
@@ -546,6 +546,22 @@ var reporte = await db.Orders
     </main>
 
     <script>
+      // ==========================================
+      // CONTROLADOR GLOBAL DE PESTAÑAS (Hoisted)
+      // ==========================================
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+          const oc = b.getAttribute('onclick') || '';
+          return oc.includes(tabId);
+        });
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+      window.switchTab = switchTab;
+
       // --- Lógica del Simulador de Concurrencia ---
       let concurrencyMode = 'shared'; // 'shared' | 'factory'
 
@@ -671,32 +687,49 @@ var reporte = await db.Orders
         }
       };
 
-      window.simulateTrackingStrategy = function (strat) {
-        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+      window.simulateTrackingStrategy = function (strat, btnEl) {
+        const trackingBtns = document.querySelectorAll('#tracking-strategy-controls .toggle-btn');
+        trackingBtns.forEach(b => b.classList.remove('active'));
+        if (btnEl) {
+          btnEl.classList.add('active');
+        } else {
+          const targetBtn = Array.from(trackingBtns).find(b => {
+            const oc = b.getAttribute('onclick') || '';
+            return oc.includes(strat);
+          });
+          if (targetBtn) targetBtn.classList.add('active');
+        }
 
         const data = trackingExplanations[strat];
-        document.getElementById('strategy-label').innerText = data.label;
-        document.getElementById('tracker-status').innerText = data.tracker;
-        document.getElementById('client-instances-count').innerText = data.instances;
-        document.getElementById('equality-status').innerText = data.equality;
-        document.getElementById('tracking-explanation-box').innerText = data.desc;
+        if (!data) return;
+        const stratLabel = document.getElementById('strategy-label');
+        if (stratLabel) stratLabel.innerText = data.label;
+        const trackerStatus = document.getElementById('tracker-status');
+        if (trackerStatus) trackerStatus.innerText = data.tracker;
+        const clientCount = document.getElementById('client-instances-count');
+        if (clientCount) clientCount.innerText = data.instances;
+        const eqStatus = document.getElementById('equality-status');
+        if (eqStatus) eqStatus.innerText = data.equality;
+        const expBox = document.getElementById('tracking-explanation-box');
+        if (expBox) expBox.innerText = data.desc;
 
         const container = document.getElementById('heap-nodes-list');
-        container.innerHTML = '';
-        data.nodes.forEach(n => {
-          const div = document.createElement('div');
-          const isClient = n.type.includes('client');
-          const isDup = n.type.includes('dup');
-          div.className = `entity-node ${isClient ? 'client-node' : ''} ${isDup ? 'dup-warning' : ''}`;
-          div.innerHTML = `
-            <div style="font-weight:700; color:${isClient ? 'var(--ef-gold)' : 'var(--ef-cyan)'}; margin-bottom:4px;">
-              ${isClient ? '🏢 CLIENTE' : '📦 PEDIDO'}
-            </div>
-            <div>${n.text}</div>
-          `;
-          container.appendChild(div);
-        });
+        if (container) {
+          container.innerHTML = '';
+          data.nodes.forEach(n => {
+            const div = document.createElement('div');
+            const isClient = n.type.includes('client');
+            const isDup = n.type.includes('dup');
+            div.className = `entity-node ${isClient ? 'client-node' : ''} ${isDup ? 'dup-warning' : ''}`;
+            div.innerHTML = `
+              <div style="font-weight:700; color:${isClient ? 'var(--ef-gold)' : 'var(--ef-cyan)'}; margin-bottom:4px;">
+                ${isClient ? '🏢 CLIENTE' : '📦 PEDIDO'}
+              </div>
+              <div>${n.text}</div>
+            `;
+            container.appendChild(div);
+          });
+        }
       };
 
       simulateTrackingStrategy('tracking');
@@ -847,20 +880,12 @@ var reporte = await db.Orders
       function restartQuiz() {
         currentQuizIdx = 0;
         quizScore = 0;
-        location.reload();
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        renderQuizQuestion();
       }
 
       renderQuizQuestion();
-
-      // Pestañas
-      window.switchTab = function (tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (activeBtn) activeBtn.classList.add('active');
-      };
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
