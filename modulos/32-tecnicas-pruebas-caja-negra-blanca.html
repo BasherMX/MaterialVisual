@@ -449,35 +449,34 @@
       </section>
 
       <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-            <div>
-              <h2 style="margin:0 0 4px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Pruebas de Software</h2>
-              <p style="margin:0; font-size:0.84rem; color:var(--muted);">
-                Reactivos de opción múltiple estructurados con rigurosa simetría anti-sesgo basados en Toledo, Pressman y McCabe.
-              </p>
-            </div>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <span id="quiz-progress" style="font:700 0.82rem 'Courier New', monospace; color:var(--cyan);">PREGUNTA 1 DE 4</span>
-              <span id="quiz-score" style="font:700 0.82rem 'Courier New', monospace; color:var(--green);">Puntuación: 0 / 4</span>
-            </div>
-          </div>
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
 
-          <div class="quiz-card" style="margin-bottom:0;">
-            <div id="quiz-container">
-              <h3 id="quiz-question-text" style="color:#ffffff; font-size:1.02rem; line-height:1.55; margin:0 0 16px; font-family:Verdana,sans-serif;"></h3>
-              <div id="quiz-options-container"></div>
-              <div id="quiz-feedback-box" style="display:none; padding:14px; border-radius:6px; margin-top:16px; font:0.86rem/1.55 Verdana, sans-serif;"></div>
-              <div style="margin-top:20px; text-align:right;">
-                <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;" onclick="nextTestingQuizQuestion()">
-                  Siguiente Pregunta ➔
-                </button>
-              </div>
-            </div>
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Técnicas de Pruebas de Software
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos doctrinales sobre Complejidad Ciclomática de McCabe, Análisis de Valores Límite y Cobertura de Ramas.
+          </p>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Laboratorio de Computación · Material Didáctico de Arquitectura &amp; Ingeniería de Software
@@ -955,154 +954,182 @@
 
       // ==========================================
       // LABORATORIO FORMATIVO DE PRUEBAS (QUIZ STEP-BY-STEP)
-      // ==========================================
-      const testingQuizQuestions = [
-        {
-          question: "Un grafo de flujo de control presenta 12 aristas (E), 9 nodos (N) y 1 componente conexo (P = 1). ¿Cuál es su Complejidad Ciclomática de McCabe V(G) y qué representa dicho valor en las pruebas?",
-          options: [
-            "V(G) = 5, y representa el límite superior de caminos linealmente independientes que definen el número de casos de prueba unitaria para cobertura básica del módulo.",
-            "V(G) = 2, y representa el número de servidores de respaldo requeridos para implementar una arquitectura de alta disponibilidad con tolerancia a fallos transitorios.",
-            "V(G) = 21, y define la cantidad mínima de consultas concurrentes que el motor de base de datos relacional puede resolver sin generar contención de cerrojos.",
-            "V(G) = 1, y dictamina que el módulo carece de cualquier instrucción condicional o bucle de iteración en su archivo binario compilado."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! Fórmula de McCabe: V(G) = E - N + 2P = 12 - 9 + 2(1) = 5. Representa la base métrica de caminos linealmente independientes necesarios para probar todos los saltos condicionales y sentencias."
-        },
-        {
-          question: "Un formulario web admite cupones para compras de $100 a $500 pesos inclusive. Aplicando Análisis de Valores Límite (BVA), ¿cuál es el conjunto canónico de valores de prueba?",
-          options: [
-            "$0, $250, $1000, $5000 (Valores seleccionados aleatoriamente en el centro de las clases no estructuradas).",
-            "$99, $100, $101, $499, $500, $501 (Valores frontera inmediatamente adyacentes a los límites mínimo y máximo admitidos).",
-            "Solo los números primos comprendidos estrictamente en el intervalo semi-abierto de cálculo financiero.",
-            "$100 y $500 exclusivamente, omitiendo los valores fuera de rango para no saturar los registros del servidor web."
-          ],
-          correct: 1,
-          feedback: "¡Correcto! La técnica BVA (Boundary Value Analysis) prueba min - 1 (99), min (100), min + 1 (101) y max - 1 (499), max (500), max + 1 (501) para capturar errores de operadores en los extremos del dominio."
-        },
-        {
-          question: "Según Federico Toledo, ¿cuál es la ventaja primordial de la técnica de Partición de Equivalencia frente a pruebas de fuerza bruta?",
-          options: [
-            "Permite reducir drásticamente el número de casos de prueba asumiendo que cualquier valor de la misma partición producirá un resultado conceptualmente equivalente.",
-            "Garantiza el 100% de cobertura de todas las rutas del código fuente sin necesidad de compilar la aplicación.",
-            "Elimina la necesidad de realizar pruebas de regresión al desplegar en entornos de producción.",
-            "Reemplaza por completo el análisis estático de código y las inspecciones de seguridad."
-          ],
-          correct: 0,
-          feedback: "¡Exacto! Al dividir el universo de entradas en clases de equivalencia (válidas e inválidas), basta con seleccionar un solo representante por clase, optimizando tiempo y esfuerzo con alta confiabilidad."
-        },
-        {
-          question: "En un grafo de control donde todos los nodos tienen como máximo dos aristas de salida (decisiones binarias), ¿cómo se calcula alternativamente V(G)?",
-          options: [
-            "V(G) = Número de Predicados (Nodos de Decisión) + 1.",
-            "V(G) = Número total de líneas de código fuente divididas entre 10.",
-            "V(G) = Número de variables locales declaradas en el ámbito de la función.",
-            "V(G) = Número de llamados a APIs externas multiplicado por la cantidad de hilos."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! Para decisiones binarias (if, while), V(G) equivale directamente a: Nodos de Decisión (Predicados) + 1, o alternativamente al número de regiones cerradas + 1."
-        }
-      ];
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
+      const quizQuestions = [
+  {
+    "q": "Un grafo de flujo de control presenta E = 12 aristas, N = 9 nodos y P = 1 componente conexo. ¿Cuál es su Complejidad Ciclomática de McCabe $V(G)$ y qué representa formalmente?",
+    "options": [
+      "V(G) = 5 [ 12 - 9 + 2(1) = 5 ], representando el número máximo de caminos linealmente independientes a probar.",
+      "V(G) = 3 [ 12 - 9 = 3 ], indicando el total de variables locales que requieren inicialización estática.",
+      "V(G) = 7 [ 12 - 9 + 4 = 7 ], definiendo el número de ramas condicionales no alcanzables en el código binario.",
+      "V(G) = 4 [ 12 / 3 = 4 ], representando el grado de acoplamiento eferente entre clases del mismo paquete."
+    ],
+    "correct": 0,
+    "feedback": "Fórmula de Thomas McCabe: V(G) = E - N + 2P. Con E = 12, N = 9 y P = 1: V(G) = 12 - 9 + 2 = 5. Esta métrica cuantifica la complejidad lógica del código y establece la cota superior del número de pruebas unitarias requeridas para garantizar cobertura de caminos básicos."
+  },
+  {
+    "q": "En una caja de texto que admite edades entre 18 y 65 años inclusive, ¿cuál es el conjunto mínimo de valores de frontera robusta según la técnica de Valores Límite (BVA)?",
+    "options": [
+      "17, 18, 19, 64, 65, 66 (valores justo por debajo, en el límite, y justo por encima de cada frontera).",
+      "0, 18, 30, 45, 65, 100 (valores aleatorios distribuidos a lo largo del intervalo de números enteros positivos).",
+      "10, 20, 40, 60, 80 (valores correspondientes a las particiones de equivalencia centrales no válidas).",
+      "18 y 65 únicamente (evaluando exclusivamente los dos valores límites interiores de la especificación)."
+    ],
+    "correct": 0,
+    "feedback": "El Análisis de Valores Límite (Boundary Value Analysis) prueba las fronteras de las clases de equivalencia evaluando el límite exacto, su predecesor inmediato y su sucesor inmediato (frontera de 3 puntos: 17, 18, 19 y 64, 65, 66), ya que la mayoría de los defectos ocurren en las condiciones de borde (ej. confusión entre > y >=)."
+  },
+  {
+    "q": "¿Cuál es la diferencia metodológica fundamental entre las técnicas de prueba de 'Caja Negra' y 'Caja Blanca'?",
+    "options": [
+      "Caja Negra prueba entradas/salidas contra requisitos sin ver el código; Caja Blanca diseña casos examinando la estructura y caminos internos.",
+      "Caja Negra es ejecutada exclusivamente por usuarios finales en producción; Caja Blanca es realizada por auditores contables externos.",
+      "Caja Negra requiere acceso al compilador y al código fuente compilado; Caja Blanca evalúa únicamente prototipos de interfaz gráfica de usuario.",
+      "Caja Negra mide la cobertura de sentencias y ramas de ejecución; Caja Blanca valida el tiempo de respuesta del servidor web ante estrés."
+    ],
+    "correct": 0,
+    "feedback": "Pruebas de Caja Negra (o funcionales/conductuales): se basan en la especificación de requerimientos; el evaluador desconoce la estructura interna del código. Pruebas de Caja Blanca (o estructurales/de cristal): se basan en el conocimiento directo del código fuente para asegurar la cobertura de ramas, condiciones y caminos básicos."
+  },
+  {
+    "q": "¿Qué nivel de cobertura lógica garantiza matemáticamente que toda bifurcación (if/else) ha sido ejecutada tanto en su rama verdadera como en su rama falsa?",
+    "options": [
+      "Cobertura de Sentencias (Statement Coverage), ejecutando cada línea de instrucción ejecutable al menos una vez.",
+      "Cobertura de Ramas (Branch Coverage), garantizando que cada decisión lógica tome los valores verdadero y falso.",
+      "Cobertura de Módulos (Package Coverage), verificando que todas las clases del ensamblado hayan sido invocadas.",
+      "Cobertura de Mutación (Mutation Coverage), introduciendo errores deliberados para evaluar la efectividad de la suite."
+    ],
+    "correct": 1,
+    "feedback": "La Cobertura de Ramas (o Decisión) exige que cada punto de decisión (if, switch, while) sea evaluado en todas sus salidas posibles (True y False). Supera a la simple Cobertura de Sentencias, la cual puede alcanzar 100% omitiendo ramas else inexistentes donde residen defectos latentes."
+  }
+];
 
-      let currentTestingQuizIdx = 0;
-      let testingQuizScore = 0;
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderTestingQuizQuestion() {
-        const q = testingQuizQuestions[currentTestingQuizIdx];
-        document.getElementById('quiz-progress').innerText = `PREGUNTA ${currentTestingQuizIdx + 1} DE ${testingQuizQuestions.length}`;
-        document.getElementById('quiz-score').innerText = `Puntuación: ${testingQuizScore} / ${testingQuizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.question;
+      window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
 
-        const cont = document.getElementById('quiz-options-container');
-        cont.innerHTML = '';
-        const fb = document.getElementById('quiz-feedback-box');
-        fb.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        q.options.forEach((opt, idx) => {
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerHTML = `<strong>${String.fromCharCode(65 + idx)}.</strong> ${opt}`;
-          btn.onclick = () => handleTestingQuizAnswer(idx);
-          cont.appendChild(btn);
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function handleTestingQuizAnswer(selectedIdx) {
-        const q = testingQuizQuestions[currentTestingQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
-        const fb = document.getElementById('quiz-feedback-box');
-        fb.style.display = 'block';
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (selectedIdx === q.correct) {
-          testingQuizScore++;
-          btns[selectedIdx].classList.add('opt-correct');
-          fb.style.background = 'rgba(0, 255, 170, 0.12)';
-          fb.style.border = '1px solid var(--green)';
-          fb.style.color = '#fff';
-          fb.innerHTML = `<strong>✓ ¡Correcto!</strong> ${q.feedback}`;
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[selectedIdx].classList.add('opt-wrong');
-          btns[q.correct].classList.add('opt-correct');
-          fb.style.background = 'rgba(255, 0, 110, 0.12)';
-          fb.style.border = '1px solid var(--coral)';
-          fb.style.color = '#fff';
-          fb.innerHTML = `<strong>✗ Incorrecto.</strong> ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${testingQuizScore} / ${testingQuizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextTestingQuizQuestion() {
-        currentTestingQuizIdx++;
-        if (currentTestingQuizIdx < testingQuizQuestions.length) {
-          renderTestingQuizQuestion();
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
         } else {
-          showTestingQuizSummary();
+          showQuizSummary();
         }
-      }
+      };
 
-      function showTestingQuizSummary() {
-        const cont = document.getElementById('quiz-container');
-        const pct = Math.round((testingQuizScore / testingQuizQuestions.length) * 100);
-        cont.innerHTML = `
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Pruebas Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
-              Puntuación final: <strong>${testingQuizScore} / ${testingQuizQuestions.length} (${pct}%)</strong>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
-              ${pct >= 75 ? '¡Excelente! Dominas la formulación de Thomas McCabe y los criterios de caja negra de Federico Toledo.' : 'Buen intento. Te sugerimos revisar las pestañas teóricas y experimentar con los simuladores interactivos.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
-            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="currentTestingQuizIdx = 0; testingQuizScore = 0; renderTestingQuizQuestion();">
-              🔄 Reiniciar Laboratorio
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
-
-      window.switchTestingTab = function(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-
-        const btns = document.querySelectorAll('.tab-btn');
-        if (tabId === 'tab-theory') btns[0].classList.add('active');
-        if (tabId === 'tab-whitebox') btns[1].classList.add('active');
-        if (tabId === 'tab-blackbox') btns[2].classList.add('active');
-        if (tabId === 'tab-quiz') btns[3].classList.add('active');
       };
 
-      window.addEventListener('DOMContentLoaded', () => {
-        loadSnippet('simple');
-        updateBVA();
-        renderTestingQuizQuestion();
-      });
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

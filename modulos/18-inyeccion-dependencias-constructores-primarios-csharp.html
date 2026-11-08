@@ -521,35 +521,34 @@ System.InvalidOperationException: Cannot consume scoped service 'IUserDbContext'
       </section>
 
       <!-- Pestaña 5: Laboratorio de Diagnóstico (Quiz) -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación: Inyección de Dependencias</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Banco formativo de 5 preguntas técnicas sobre ciclos de vida, dependencias cautivas y constructores primarios con retroalimentación inmediata.
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Inyección de Dependencias & C# 12
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos calibrados sobre ciclos de vida (Transient, Scoped, Singleton), constructores primarios y Captive Dependencies.
           </p>
-
-          <div id="quiz-container">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">Pregunta 1 de 5</span>
-              <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
-            </div>
-
-            <h3 id="quiz-question-text" style="font-size:1.15rem; color:#fff; margin-bottom:14px;">Cargando pregunta...</h3>
-
-            <div id="quiz-options-container" class="quiz-options">
-              <!-- Opciones generadas por JS -->
-            </div>
-
-            <div id="quiz-feedback" style="display:none; padding:14px; border-radius:6px; font:0.86rem/1.5 Verdana, sans-serif; margin-top:14px;"></div>
-
-            <div style="display:flex; justify-content:flex-end; margin-top:16px;">
-              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 18px; border-radius:6px; font:700 0.85rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 5</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 5</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <!-- Barra de Navegación de Módulo Dinámica -->
       <nav class="module-nav-bar"></nav>
@@ -709,166 +708,193 @@ System.InvalidOperationException: Cannot consume scoped service 'IUserDbContext'
 
       evaluateServiceDecision();
 
-      // --- Quiz Formativo ---
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
       const quizQuestions = [
-        {
-          q: "¿Qué sucede si inyectas un servicio registrado como Scoped dentro de un servicio registrado como Singleton?",
-          options: [
-            "Se produce una Dependencia Cautiva (Captive Dependency): la instancia Scoped queda atrapada para siempre en el Singleton.",
-            "El compilador C# emite un error de sintaxis y no permite compilar.",
-            "El contenedor IoC transforma automáticamente el Singleton en Transient.",
-            "El servicio Scoped se destruye inmediatamente después del primer uso."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! La dependencia cautiva es uno de los bugs más silenciosos y peligrosos: el Singleton nunca muere, por lo que retiene la instancia Scoped de la primera petición para todas las peticiones futuras."
-        },
-        {
-          q: "¿Cuál es el ciclo de vida por defecto y recomendado para el DbContext de Entity Framework Core en ASP.NET Core?",
-          options: [
-            "Singleton para reutilizar la conexión y evitar crear objetos.",
-            "Scoped, para que cada petición HTTP tenga su propia unidad de trabajo y contexto aislado.",
-            "Transient, para crear un nuevo DbContext en cada repositorio inyectado.",
-            "Static global en una clase utilitaria."
-          ],
-          correct: 1,
-          feedback: "¡Exacto! DbContext no es thread-safe y acumula entidades en su ChangeTracker. Un ciclo Scoped asegura que se libere al finalizar la petición HTTP."
-        },
-        {
-          q: "En C# 12, ¿cuál es el comportamiento de los parámetros declarados en un Constructor Primario?",
-          options: [
-            "Se convierten automáticamente en propiedades públicas de solo lectura (get-only).",
-            "Están disponibles en el ámbito de toda la clase y métodos, pero no son campos readonly por defecto.",
-            "Solo pueden utilizarse dentro de una sección especial llamada init { }.",
-            "Solo aplican a tipos struct y no a clases ordinarias."
-          ],
-          correct: 1,
-          feedback: "¡Correcto! En C# 12 los parámetros del constructor primario son accesibles en cualquier miembro de la clase. Por convención en DI no deben reasignarse."
-        },
-        {
-          q: "¿Qué flag de configuración activa ASP.NET Core en desarrollo para detectar automáticamente Dependencias Cautivas?",
-          options: [
-            "builder.Host.UseDefaultServiceProvider(o => o.ValidateScopes = true);",
-            "builder.Services.EnableStrictLifecycleRules();",
-            "app.UseCaptiveDependencyMiddleware();",
-            "GC.EnableScopeTracking();"
-          ],
-          correct: 0,
-          feedback: "¡Muy bien! `ValidateScopes = true` valida en el arranque y en tiempo de resolución que ningún Singleton capture dependencias Scoped."
-        },
-        {
-          q: "Si necesitas registrar un servicio que mantiene un contador global en memoria de usuarios activos, ¿qué ciclo de vida corresponde?",
-          options: [
-            "Transient",
-            "Scoped",
-            "Singleton con sincronización de hilos (thread-safe, ej. Interlocked)",
-            "No es posible en C#"
-          ],
-          correct: 2,
-          feedback: "¡Correcto! Un estado compartido global entre todas las sesiones exige un Singleton, asegurando sincronización con `Interlocked.Increment` o colecciones concurrentes."
-        }
-      ];
+  {
+    "q": "¿Qué anomalía arquitectónica ocurre si se inyecta un servicio registrado como Scoped dentro de un servicio registrado como Singleton?",
+    "options": [
+      "Se produce una Dependencia Cautiva (Captive Dependency), reteniendo indefinidamente la misma instancia Scoped.",
+      "El contenedor de Inversión de Control eleva el Singleton a ciclo Transient recreándolo en cada invocación.",
+      "Se corrompe el recolector de basura (GC) provocando un cierre abrupto del proceso del host de la aplicación.",
+      "El runtime de .NET clona dinámicamente el hilo principal creando un subproceso aislado en modo kernel."
+    ],
+    "correct": 0,
+    "feedback": "Una Dependencia Cautiva (Captive Dependency) ocurre cuando un servicio con un ciclo de vida más largo (Singleton) retiene una referencia a un servicio con un ciclo de vida más corto (Scoped), impidiendo que este último se destruya al finalizar el ámbito de la petición y provocando fugas de memoria o problemas de concurrencia."
+  },
+  {
+    "q": "En una API web ASP.NET Core, ¿cuándo se crea y cuándo se destruye formalmente un servicio registrado con ciclo de vida Scoped?",
+    "options": [
+      "Se crea al iniciar el host web del servidor y se destruye únicamente al detener la aplicación por completo.",
+      "Se crea una única vez por cada petición HTTP entrante y se destruye al finalizar dicha petición (dispose).",
+      "Se crea una nueva instancia cada vez que se solicita en un constructor y se destruye inmediatamente tras invocarlo.",
+      "Se crea en el primer acceso de lectura y persiste en memoria caché distribuida entre todos los servidores del clúster."
+    ],
+    "correct": 1,
+    "feedback": "Los servicios Scoped se instancian una sola vez por cada ámbito lógico de ejecución. En ASP.NET Core, el middleware de conexión crea un IServiceScope por cada petición HTTP entrante y lo desecha al concluir la respuesta, invocando Dispose() en los servicios IDisposable."
+  },
+  {
+    "q": "¿Cuál es la recomendación canónica de diseño en C# 12 para los parámetros capturados en Constructores Primarios dentro de servicios?",
+    "options": [
+      "Declarar los parámetros del constructor primario como públicos y mutables para permitir su reasignación en caliente.",
+      "Tratarlos como dependencias de solo lectura y asignarlos a campos privados 'readonly' si se requiere garantizar inmutabilidad.",
+      "Evitar por completo constructores primarios en clases que implementen interfaces del contenedor de dependencias.",
+      "Compilar la clase como una estructura de valor 'ref struct' para forzar su asignación exclusiva en el stack."
+    ],
+    "correct": 1,
+    "feedback": "En C# 12, los parámetros de un constructor primario no son campos readonly por defecto; su estado es capturado mutablemente. Por ello, la directriz canónica es tratarlos como dependencias inmutables o asignarlos explícitamente a un campo 'private readonly' si se desea prevenir mutaciones accidentales."
+  },
+  {
+    "q": "¿Cuál de las siguientes combinaciones de registro de servicios es completamente segura y **NO** genera Dependencias Cautivas?",
+    "options": [
+      "Inyectar un servicio Singleton dentro de la implementación de un servicio con ciclo de vida Scoped.",
+      "Inyectar un servicio Scoped dentro de la implementación de un servicio con ciclo de vida Singleton.",
+      "Inyectar un servicio Transient que retiene un DbContext Scoped dentro de un servicio Singleton raíz.",
+      "Inyectar un servicio con dependencias no registradas en el contenedor invocando 'new' directamente."
+    ],
+    "correct": 0,
+    "feedback": "Inyectar una dependencia de vida más larga (Singleton) dentro de un servicio de vida más corta (Scoped) es perfectamente seguro. Lo inverso (inyectar Scoped en Singleton) es lo que provoca la Captive Dependency."
+  },
+  {
+    "q": "¿Qué interfaz canónica de .NET debe implementar un servicio gestionado por el contenedor IoC para liberar recursos no administrados al destruirse?",
+    "options": [
+      "ICloneable, para permitir duplicar la instancia antes de que el recolector de basura suspenda los hilos.",
+      "IComparable, para ordenar las instancias del contenedor de acuerdo a su tiempo de creación en milisegundos.",
+      "IDisposable o IAsyncDisposable, para que el contenedor invoque su método de limpieza al cerrar el scope.",
+      "IConvertible, para transformar automáticamente la entidad en un flujo binario compatible con Protobuf."
+    ],
+    "correct": 2,
+    "feedback": "Cuando el contenedor de dependencias desecha un Scope (o la aplicación finaliza en el caso de Singletons), invoca automáticamente Dispose() o DisposeAsync() en todas las instancias creadas que implementen IDisposable o IAsyncDisposable."
+  }
+];
 
       let currentQuizIdx = 0;
       let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderQuizQuestion() {
+      window.renderQuizQuestion = function() {
         const q = quizQuestions[currentQuizIdx];
-        document.getElementById('quiz-question-number').innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.q;
+        if (!q) return;
 
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
         const optsContainer = document.getElementById('quiz-options-container');
-        optsContainer.innerHTML = '';
         const feedbackBox = document.getElementById('quiz-feedback');
-        feedbackBox.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        q.options.forEach((opt, idx) => {
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerText = opt;
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
           btn.onclick = () => selectQuizOption(idx);
           optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function selectQuizOption(idx) {
+      window.selectQuizOption = function(idx) {
         const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
         const feedbackBox = document.getElementById('quiz-feedback');
-        feedbackBox.style.display = 'block';
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (idx === q.correct) {
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
           quizScore++;
-          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[idx].style.borderColor = 'var(--green)';
-          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
-          feedbackBox.style.border = '1px solid var(--green)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = q.feedback;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
-          btns[idx].style.borderColor = 'var(--error-color)';
-          btns[q.correct].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[q.correct].style.borderColor = 'var(--green)';
-          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
-          feedbackBox.style.border = '1px solid var(--error-color)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = `Incorrecto. ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextQuizQuestion() {
+      window.nextQuizQuestion = function() {
         currentQuizIdx++;
         if (currentQuizIdx < quizQuestions.length) {
           renderQuizQuestion();
         } else {
           showQuizSummary();
         }
-      }
+      };
 
-      function showQuizSummary() {
+      window.showQuizSummary = function() {
         const container = document.getElementById('quiz-container');
+        if (!container) return;
         const pct = Math.round((quizScore / quizQuestions.length) * 100);
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
-              ${pct >= 80 ? '¡Excelente dominio de arquitectura IoC y ciclos de vida en .NET!' : 'Buen intento. Repasa la pestaña de Simulador de Scopes y vuelve a intentarlo.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
             <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
               🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
+      };
 
-      function restartQuiz() {
+      window.restartQuiz = function() {
         currentQuizIdx = 0;
         quizScore = 0;
-        location.reload();
-      }
-
-      renderQuizQuestion();
-
-      // Pestañas
-      window.switchTab = function (tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (activeBtn) activeBtn.classList.add('active');
+        renderQuizQuestion();
       };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

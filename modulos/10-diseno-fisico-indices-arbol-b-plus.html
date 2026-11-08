@@ -548,36 +548,34 @@
       </section>
 
       <!-- SECCIÓN 5: QUIZ INTERACTIVO -->
-      <section id="tab-quiz-indices" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Banco de Evaluación: Índices y Árboles B+</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Demuestra tu dominio sobre optimización física de consultas, diferencias arquitectónicas entre índices agrupados y no agrupados, y la mecánica del Árbol B+.
+      <section id="tab-quiz-indices" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Índices Árbol B+ y Diseño Físico
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos calibrados con simetría estricta sobre clustered index, RID lookups, covering index y page splits.
           </p>
-
-          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(34,33,61,0.9); padding:12px 18px; border-radius:6px; border:1px solid var(--line); font:700 0.88rem 'Courier New', monospace;">
-            <span>Pregunta <span id="quiz-indices-num">1</span> de 6</span>
-            <span>Aciertos: <span id="quiz-indices-score" style="color:var(--green);">0 / 0</span></span>
-          </div>
-
-          <div class="quiz-card-box">
-            <h4 id="quiz-q-indices-text" style="color:#fff; margin:0 0 14px; font-size:1.05rem; font-family:'Courier New', monospace;">
-              Cargando pregunta...
-            </h4>
-            <div id="quiz-indices-options">
-              <!-- Opciones -->
-            </div>
-            <div id="quiz-indices-feed" style="display:none; padding:12px 16px; border-radius:6px; font:0.85rem/1.5 Verdana, sans-serif; margin-top:14px;">
-              <!-- Feedback -->
-            </div>
-            <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-              <button id="btn-next-indices-quiz" class="btn-sim btn-sim-primary" style="display:none;" onclick="nextIndicesQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 6</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 6</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Material Didáctico e Interactivo · Ciencias de la Computación, Diseño Físico de BD & Algoritmos de Indexación
@@ -941,145 +939,205 @@
       }
 
       // ========================================================
-      // 4. Quiz de Índices y Árboles B+
       // ========================================================
-      const indicesQuizData = [
-        {
-          q: "¿Por qué solo puede existir exactamente UN índice agrupado (Clustered Index) en una tabla relacional?",
-          options: [
-            "Porque el estándar SQL ANSI prohíbe tener más de un archivo en disco",
-            "Porque los datos físicos reales en las páginas de disco solo pueden estar ordenados de una sola forma",
-            "Porque los árboles B+ no soportan más de una raíz por base de datos",
-            "Porque consumiría demasiada memoria RAM en el Buffer Pool"
-          ],
-          correct: 1,
-          feed: "¡Exacto! El índice agrupado define la secuencia física en la que se graban los registros en las páginas de datos del disco; físicamente es imposible ordenar una colección de dos formas distintas a la vez."
-        },
-        {
-          q: "¿Qué diferencia clave distingue a un Árbol B+ frente a un Árbol B clásico?",
-          options: [
-            "En el Árbol B+ los nodos internos no tienen hijos",
-            "En el Árbol B+ todas las tuplas de datos residen exclusivamente en las hojas y las hojas están enlazadas horizontalmente",
-            "El Árbol B clásico no permite inserciones dinámicas",
-            "El Árbol B+ es binario con grado máximo 2"
-          ],
-          correct: 1,
-          feed: "¡Correcto! En el Árbol B+, los nodos internos solo contienen claves de salto, todos los registros residen en las hojas, y las hojas están doblemente enlazadas para escaneos secuenciales de rango."
-        },
-        {
-          q: "¿Qué ocurre cuando una consulta usa un índice no agrupado pero solicita columnas adicionales con 'SELECT *'?",
-          options: [
-            "El motor de base de datos lanza un error de sintaxis",
-            "El motor realiza un Key Lookup (o RID Lookup) hacia la tabla de datos para traer las columnas faltantes",
-            "El motor descarta el índice y borra la tabla",
-            "Las columnas no indexadas se llenan con NULL automáticamente"
-          ],
-          correct: 1,
-          feed: "¡Correcto! El Key Lookup recupera los atributos restantes desde el índice agrupado usando el puntero guardado en la hoja del índice no agrupado."
-        },
-        {
-          q: "¿Qué es un 'Covering Index' (Índice Cubridor)?",
-          options: [
-            "Un índice que cubre el 100% de las tablas de la base de datos",
-            "Un índice no agrupado que contiene todas las columnas requeridas por una consulta (SELECT y WHERE), eliminando la necesidad de Key Lookups",
-            "Un índice que comprime las páginas de datos a la mitad",
-            "Un índice temporal que se destruye al cerrar la transacción"
-          ],
-          correct: 1,
-          feed: "¡Excelente! Al contener todas las columnas que pide el SELECT (mediante INCLUDE), la consulta se resuelve por completo leyendo únicamente el índice."
-        },
-        {
-          q: "En el almacenamiento en disco, ¿por qué los Árboles B+ tienen una ventaja abrumadora sobre los Árboles AVL?",
-          options: [
-            "Porque los árboles AVL no se pueden balancear",
-            "Porque el alto Fan-Out (factor de ramificación) del Árbol B+ mantiene la altura en solo 3 o 4 niveles, minimizando lecturas de disco",
-            "Porque los árboles B+ solo funcionan en memoria RAM",
-            "Porque el árbol AVL ocupa el triple de espacio en disco"
-          ],
-          correct: 1,
-          feed: "¡Correcto! Un nodo de B+ de 8 KB almacena cientos de claves (Fan-Out ~500), requiriendo apenas 3-4 accesos a disco para indexar cientos de millones de filas."
-        },
-        {
-          q: "¿Qué fenómeno indeseado ocurre al utilizar UUID/GUID aleatorios como clave de un Clustered Index?",
-          options: [
-            "Se corrompe el registro transaccional WAL",
-            "Fragmentación severa y frecuentes divisiones de páginas (Page Splits) en medio del archivo de datos",
-            "El motor deshabilita automáticamente el índice",
-            "La base de datos se transforma en no relacional"
-          ],
-          correct: 1,
-          feed: "¡Exacto! Al ser valores no secuenciales, las inserciones obligan al motor a partir páginas de datos existentes a la mitad (Page Splits) para intercalar el registro, generando fragmentación y degradación de I/O."
-        }
-      ];
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
+      const quizQuestions = [
+  {
+    "q": "¿Por qué solo puede existir exactamente UN índice agrupado (Clustered Index) en una tabla de base de datos relacional?",
+    "options": [
+      "Porque el estándar ANSI SQL prohíbe sintácticamente declarar más de un índice por tabla relacional.",
+      "Porque las filas físicas de la tabla en disco solo pueden estar físicamente ordenadas de una única manera.",
+      "Porque los árboles B+ no pueden gestionar más de un nodo raíz en memoria caché de páginas del DBMS.",
+      "Porque consumiría demasiada memoria en el búfer compartido forzando la desasignación de tablas."
+    ],
+    "correct": 1,
+    "feedback": "Un índice agrupado (Clustered Index) define el orden físico secuencial en el que se almacenan las páginas de datos en el disco. Dado que los bloques de datos no pueden estar físicamente ordenados en dos secuencias distintas al mismo tiempo, solo puede existir un Clustered Index por tabla."
+  },
+  {
+    "q": "¿Qué diferencia estructural clave distingue a un Árbol B+ frente a un Árbol B clásico en el diseño físico de bases de datos?",
+    "options": [
+      "En el Árbol B+ los nodos internos no contienen punteros a hijos, operando como listas unidireccionales.",
+      "En el Árbol B+ todos los datos residen en las hojas, las cuales están unidas por punteros secuenciales.",
+      "El Árbol B clásico solo permite claves numéricas enteras impidiendo la indexación de cadenas alfanuméricas.",
+      "El Árbol B+ restringe el factor de ramificación (Fan-Out) a un grado binario estricto de máximo 2 hijos."
+    ],
+    "correct": 1,
+    "feedback": "En un Árbol B tradicional, los registros de datos y claves están distribuidos a través de todos los nodos (internos y hojas). En un Árbol B+, los nodos internos solo contienen claves de guía/enrutamiento y punteros; todas las tuplas de datos residen en las hojas, que están interconectadas en una lista ligada para escaneos de rango veloces."
+  },
+  {
+    "q": "¿Qué operación realiza el motor de base de datos cuando una consulta utiliza un índice no agrupado pero solicita columnas no indexadas con 'SELECT *'?",
+    "options": [
+      "Cancela inmediatamente la ejecución lanzando un error de sintaxis por ausencia de índice cubridor.",
+      "Realiza un Key Lookup (o RID Lookup) accediendo a la tabla base para obtener las columnas faltantes.",
+      "Deshabilita el índice no agrupado de forma persistente hasta que el administrador reconstruya la tabla.",
+      "Retorna valores nulos automáticos en las columnas no indexadas para evitar operaciones adicionales de E/S."
+    ],
+    "correct": 1,
+    "feedback": "Un Key Lookup (en tablas agrupadas) o RID Lookup (en heaps) ocurre cuando el índice no agrupado localiza los registros coincidentes pero no posee todas las columnas requeridas por el SELECT, obligando al motor a realizar lecturas aleatorias de disco adicionales hacia la tabla base."
+  },
+  {
+    "q": "¿Qué es un 'Covering Index' (Índice Cubridor) y cuál es su principal ventaja en el rendimiento de consultas SQL?",
+    "options": [
+      "Un índice global que abarca automáticamente la totalidad de las tablas presentes en el catálogo del sistema.",
+      "Un índice no agrupado que incluye todas las columnas requeridas por la consulta, eliminando los Key Lookups.",
+      "Un índice comprimido que reduce el tamaño físico de las páginas de datos a la mitad mediante algoritmos LZ4.",
+      "Un índice en memoria volátil que se destruye automáticamente al finalizar la sesión del usuario conectado."
+    ],
+    "correct": 1,
+    "feedback": "Un Covering Index contiene (ya sea como claves indexadas o mediante cláusulas INCLUDE) todas las columnas referenciadas por una consulta (SELECT, WHERE, JOIN, ORDER BY). Al tener todos los datos requeridos en el propio índice, el motor satisface la consulta sin acceder a la tabla base."
+  },
+  {
+    "q": "En el almacenamiento en disco, ¿por qué los Árboles B+ tienen una ventaja de rendimiento abrumadora sobre los Árboles AVL o Árboles Binarios?",
+    "options": [
+      "Porque los árboles AVL no admiten algoritmos de balanceo dinámico ante inserciones concurrentes masivas.",
+      "Porque el alto Fan-Out del Árbol B+ reduce drásticamente la altura del árbol, minimizando las lecturas de E/S.",
+      "Porque los árboles B+ solo pueden residir en memoria RAM volátil sin requerir persistencia en disco duro.",
+      "Porque los árboles binarios requieren serializar cada clave en archivos planos con formato XML no indexado."
+    ],
+    "correct": 1,
+    "feedback": "Los árboles binarios (como AVL o Red-Black) tienen un factor de ramificación de 2, por lo que almacenar 1,000,000 de registros requiere una profundidad de ~20 niveles (20 lecturas de disco). Un Árbol B+ con un fan-out de 100 tiene una altura de apenas 3 niveles, reduciendo los costosos accesos de E/S de disco a solo 3 operaciones."
+  },
+  {
+    "q": "¿Qué fenómeno indeseado ocurre al utilizar identificadores UUID/GUID aleatorios como clave de un Clustered Index?",
+    "options": [
+      "Se corrompen de manera irreversible las tablas del catálogo interno de metadatos del motor relacional.",
+      "Se produce fragmentación física severa y continuas divisiones de página (Page Splits) al insertar tuplas.",
+      "El motor de base de datos deshabilita automáticamente la clave primaria convirtiéndola en clave foránea.",
+      "Las transacciones concurrentes se ejecutan sin registrar las modificaciones en el archivo de log WAL."
+    ],
+    "correct": 1,
+    "feedback": "Dado que los UUID aleatorios (v4) no son secuenciales, las inserciones ocurren en posiciones arbitrarias a lo largo de las páginas del Clustered Index. Cuando una página intermedia está llena, el DBMS debe dividirla (Page Split) para acomodar el nuevo registro, provocando severa fragmentación de disco y degradación de escritura."
+  }
+];
 
-      let currentIndicesQuizIdx = 0;
-      let indicesQuizScore = 0;
-      let indicesQuizAnswered = 0;
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderIndicesQuiz() {
-        const item = indicesQuizData[currentIndicesQuizIdx];
-        document.getElementById('quiz-indices-num').innerText = currentIndicesQuizIdx + 1;
-        document.getElementById('quiz-q-indices-text').innerText = item.q;
+      window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
 
-        const optBox = document.getElementById('quiz-indices-options');
-        optBox.innerHTML = "";
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        const feedBox = document.getElementById('quiz-indices-feed');
-        feedBox.style.display = "none";
-        document.getElementById('btn-next-indices-quiz').style.display = "none";
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
 
-        item.options.forEach((opt, idx) => {
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
-          btn.className = "quiz-opt-btn";
-          btn.innerText = `${String.fromCharCode(65 + idx)}) ${opt}`;
-          btn.onclick = () => selectIndicesAnswer(idx);
-          optBox.appendChild(btn);
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function selectIndicesAnswer(chosenIdx) {
-        const item = indicesQuizData[currentIndicesQuizIdx];
-        const buttons = document.querySelectorAll('#quiz-indices-options .quiz-opt-btn');
-        buttons.forEach(b => b.disabled = true);
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
 
-        indicesQuizAnswered++;
-        const feedBox = document.getElementById('quiz-indices-feed');
-        feedBox.style.display = "block";
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (chosenIdx === item.correct) {
-          indicesQuizScore++;
-          buttons[chosenIdx].classList.add('correct');
-          feedBox.style.background = "rgba(0,255,170,0.15)";
-          feedBox.style.border = "1px solid var(--green)";
-          feedBox.style.color = "var(--green)";
-          feedBox.innerHTML = `<strong>¡Correcto!</strong> ${item.feed}`;
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          buttons[chosenIdx].classList.add('incorrect');
-          buttons[item.correct].classList.add('correct');
-          feedBox.style.background = "rgba(255,0,110,0.15)";
-          feedBox.style.border = "1px solid var(--coral)";
-          feedBox.style.color = "#ff99b6";
-          feedBox.innerHTML = `<strong>Incorrecto.</strong> ${item.feed}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-indices-score').innerText = `${indicesQuizScore} / ${indicesQuizAnswered}`;
-        document.getElementById('btn-next-indices-quiz').style.display = "inline-block";
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextIndicesQuestion() {
-        currentIndicesQuizIdx++;
-        if (currentIndicesQuizIdx >= indicesQuizData.length) {
-          currentIndicesQuizIdx = 0;
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
         }
-        renderIndicesQuiz();
-      }
+      };
 
-      // Inicialización
-      document.addEventListener('DOMContentLoaded', () => {
-        loadPresetBTree(1);
-        renderDiskPages();
-        renderIndicesQuiz();
-      });
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      // Auto-inicializar
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

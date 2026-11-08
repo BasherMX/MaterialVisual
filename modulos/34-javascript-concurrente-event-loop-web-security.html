@@ -306,59 +306,33 @@
 
       <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
       <section id="tab-quiz" class="content-panel">
-        <div class="loop-lab-card">
-          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de JavaScript &amp; Seguridad Web</h2>
-          <p style="margin:0 0 20px; font-size:0.84rem; color:var(--muted);">
-            Reactivos técnicos de opción múltiple estructurados con estricta simetría anti-sesgo según MDN Web Docs y Javascript.info.
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Formativo de JavaScript & Seguridad Web
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos técnicos sobre el modelo de concurrencia Event Loop, microtareas vs macrotareas y políticas CORS/CSP.
           </p>
-
-          <!-- Q1 -->
-          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px; margin-bottom:16px;">
-            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--js-yellow);">REACTIVO 1 · EVENT LOOP Y MICROTASKS</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              Considere el siguiente código: <code>console.log('1'); setTimeout(() =&gt; console.log('2'), 0); Promise.resolve().then(() =&gt; console.log('3')); console.log('4');</code> ¿Cuál es el orden de impresión exacto en la consola y cuál es la justificación técnica formal?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(1, 0)">
-                A) 1, 4, 3, 2; porque '1' y '4' son síncronos en el Call Stack, luego el Event Loop drena obligatoriamente toda la Microtask Queue ('3') antes de atender la Task Queue ('2').
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(1, 1)">
-                B) 1, 2, 3, 4; porque setTimeout(..., 0) se inserta directamente en la memoria caché L1 del procesador ejecutándose antes de cualquier promesa asíncrona.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(1, 2)">
-                C) 2, 3, 1, 4; porque el recolector de basura de JavaScript invierte aleatoriamente el orden de las instrucciones para balancear el consumo de hilos en CPU.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(1, 3)">
-                D) 1, 4, 2, 3; porque las promesas siempre requieren obligatoriamente una respuesta de red externa antes de poder resolver su callback then.
-              </button>
-            </div>
-            <div id="qjs-f1" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
-          </div>
-
-          <!-- Q2 -->
-          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px;">
-            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--cyan);">REACTIVO 2 · MDN WEB DOCS (MECANISMO CORS)</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              Una aplicación de frontend intenta realizar una petición <code>HTTP POST</code> con cabecera personalizada <code>Authorization: Bearer token</code> hacia un dominio API diferente. ¿Qué comportamiento ejecuta el navegador bajo la especificación CORS?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(2, 0)">
-                A) Genera una excepción de tipo NetworkOnMainThreadException al detectar la ausencia de una clase abstracta en el contenedor de servicios web.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(2, 1)">
-                B) Envía primero una solicitud de prueba (Preflight Request) mediante el método HTTP OPTIONS para verificar si el servidor destino autoriza el origen y las cabeceras.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(2, 2)">
-                C) Transfiere la conexión directamente al protocolo UDP para omitir las restricciones de seguridad del navegador en tiempo de ejecución.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerJSQuiz(2, 3)">
-                D) Descarga automáticamente el certificado SSL del cliente hacia el sistema de archivos local para validarlo contra el registro DNS central.
-              </button>
-            </div>
-            <div id="qjs-f2" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Laboratorio de Computación · Material Didáctico de Arquitectura &amp; Ingeniería de Software
@@ -366,6 +340,7 @@
     </main>
 
     <script>
+
       const presets = {
         promise_vs_timeout: {
           code: `console.log('1');
@@ -624,6 +599,185 @@ setTimeout(() => console.log('Macro 1'), 0);`,
         loadJSPreset('promise_vs_timeout');
         simulateCors('preflight');
       });
+    
+
+    /* ==============================================================
+       LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+       ============================================================== */
+    const quizQuestions = [
+  {
+    "q": "Considere el código: <code>console.log('1'); setTimeout(() => console.log('2'), 0); Promise.resolve().then(() => console.log('3')); console.log('4');</code> ¿Cuál es el orden exacto de impresión y su justificación?",
+    "options": [
+      "1, 2, 3, 4; porque el motor JavaScript ejecuta las instrucciones en estricto orden cronológico secuencial.",
+      "1, 4, 3, 2; porque 1 y 4 son síncronos en el Call Stack, Microtasks (Promise) drenan antes que Macrotasks (setTimeout).",
+      "1, 4, 2, 3; porque setTimeout con 0 ms tiene prioridad absoluta sobre cualquier cola asíncrona de promesas.",
+      "1, 3, 4, 2; porque las promesas bloquean el hilo principal hasta resolver su valor inmediatamente en el stack."
+    ],
+    "correct": 1,
+    "feedback": "1 y 4 se ejecutan síncronamente en el Call Stack. Al vaciarse el stack, el Event Loop vacía COMPLETAMENTE la Microtask Queue (donde reside el callback '3' de la Promise) antes de pasar a ejecutar la siguiente tarea de la Macrotask / Task Queue (el callback '2' del setTimeout)."
+  },
+  {
+    "q": "¿Qué condición desencadena una petición 'Preflight' (método OPTIONS) en una solicitud CORS entre diferentes orígenes según el estándar de la W3C?",
+    "options": [
+      "El uso de peticiones GET sin cabeceras personalizadas enviadas a un dominio del mismo protocolo.",
+      "El uso de métodos como PUT/DELETE, o cabeceras HTTP personalizadas, o Content-Type como application/json.",
+      "El envío de peticiones exclusivamente a través de túneles VPN autenticados con certificados TLS cliente.",
+      "La navegación directa del usuario mediante enlaces HTML simples de tipo anchor &lt;a href&gt;."
+    ],
+    "correct": 1,
+    "feedback": "Una petición se considera 'no simple' y activa el preflight OPTIONS si usa métodos distintos a GET/HEAD/POST, si incluye cabeceras distintas a las permitidas por defecto (Accept, Language, Content-Type básico), o si su Content-Type es application/json."
+  },
+  {
+    "q": "¿Cuál es el vector de ataque principal que neutraliza la cabecera HTTP de seguridad Content Security Policy (CSP)?",
+    "options": [
+      "Ataques de Denegación de Servicio Distribuido (DDoS) a nivel de capa de transporte TCP.",
+      "Ataques de Cross-Site Scripting (XSS), al restringir los orígenes de scripts y bloquear la ejecución inline.",
+      "Ataques de inyección SQL (SQLi) sobre consultas dinámicas no parametrizadas en la base de datos.",
+      "Ataques de fuerza bruta sobre formularios de inicio de sesión sin mecanismos de captcha o bloqueo."
+    ],
+    "correct": 1,
+    "feedback": "CSP (Content Security Policy) es una capa de seguridad que previene y mitiga ataques XSS (Cross-Site Scripting) y ataques de inyección de datos, restringiendo los dominios autorizados para cargar scripts, estilos e imágenes, y prohibiendo eval() y scripts inline no autorizados."
+  },
+  {
+    "q": "¿Cuál es la diferencia crítica entre la cola de Microtareas (Microtask Queue) y la cola de Macrotareas (Task Queue) en el Event Loop de los navegadores?",
+    "options": [
+      "Las macrotareas se ejecutan en hilos nativos paralelos mientras las microtareas se suspenden indefinidamente.",
+      "La cola de microtareas se vacía exhaustivamente tras cada macrotarea antes de que el motor proceda a renderizar el DOM.",
+      "Las microtareas solo pueden programarse desde Web Workers externos y nunca desde el hilo principal de la UI.",
+      "Las macrotareas se ejecutan primero de forma preferente sin importar el estado del Call Stack de ejecución."
+    ],
+    "correct": 1,
+    "feedback": "Regla del Event Loop HTML5: tras completar una tarea del macrotask queue (ej. un evento de click o un timer), el runtime drena absolutamente todas las microtareas acumuladas (Promise.then, MutationObserver, queueMicrotask) antes de permitir el siguiente renderizado visual o pasar a la siguiente macrotarea."
+  }
+];
+
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let currentShuffledOptions = [];
+
+    window.renderQuizQuestion = function() {
+      const q = quizQuestions[currentQuizIdx];
+      if (!q) return;
+
+      const qNumEl = document.getElementById('quiz-question-number');
+      const qScoreEl = document.getElementById('quiz-score');
+      const qTextEl = document.getElementById('quiz-question-text');
+      const optsContainer = document.getElementById('quiz-options-container');
+      const feedbackBox = document.getElementById('quiz-feedback');
+      const nextBtn = document.getElementById('btn-next-quiz');
+
+      if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+      if (optsContainer) optsContainer.innerHTML = '';
+      if (feedbackBox) feedbackBox.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+
+      // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+      currentShuffledOptions = q.options.map((opt, origIdx) => ({
+        text: opt,
+        isCorrect: origIdx === q.correct
+      })).sort(() => Math.random() - 0.5);
+
+      currentShuffledOptions.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+        btn.onclick = () => selectQuizOption(idx);
+        optsContainer.appendChild(btn);
+      });
+    };
+
+    window.selectQuizOption = function(idx) {
+      const q = quizQuestions[currentQuizIdx];
+      const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+      btns.forEach(b => (b.disabled = true));
+
+      const feedbackBox = document.getElementById('quiz-feedback');
+      if (feedbackBox) feedbackBox.style.display = 'block';
+
+      const chosen = currentShuffledOptions[idx];
+      const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+      if (chosen && chosen.isCorrect) {
+        quizScore++;
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+          feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+        }
+      } else {
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+          btns[idx].style.borderColor = '#ff006e';
+        }
+        if (correctIdx !== -1 && btns[correctIdx]) {
+          btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+          feedbackBox.style.border = '1px solid #ff006e';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+        }
+      }
+
+      const qScoreEl = document.getElementById('quiz-score');
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      const nextBtn = document.getElementById('btn-next-quiz');
+      if (nextBtn) nextBtn.style.display = 'inline-block';
+    };
+
+    window.nextQuizQuestion = function() {
+      currentQuizIdx++;
+      if (currentQuizIdx < quizQuestions.length) {
+        renderQuizQuestion();
+      } else {
+        showQuizSummary();
+      }
+    };
+
+    window.showQuizSummary = function() {
+      const container = document.getElementById('quiz-container');
+      if (!container) return;
+      const pct = Math.round((quizScore / quizQuestions.length) * 100);
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px 10px;">
+          <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+          <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+          <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+            Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+          </p>
+          <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+            ${pct >= 75 ? '¡Excelente! Demuestras una comprensión rigurosa y libre de sesgos en este laboratorio formativo.' : 'Buen esfuerzo. Te recomendamos revisar el material doctrinal e interactivo y reintentar la evaluación.'}
+          </p>
+          <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+            🔄 Reiniciar Evaluación
+          </button>
+        </div>
+      `;
+    };
+
+    window.restartQuiz = function() {
+      currentQuizIdx = 0;
+      quizScore = 0;
+      renderQuizQuestion();
+    };
+
+    // Auto-inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+    } else {
+      renderQuizQuestion();
+    }
+  
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

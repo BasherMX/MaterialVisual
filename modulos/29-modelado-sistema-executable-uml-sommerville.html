@@ -461,50 +461,32 @@
 
     <!-- TAB 5: QUIZ FORMATIVO xUML -->
     <section id="tab-quiz" class="content-panel">
-      <div class="matrix-card">
-        <h2><span>🎯</span> 5. Laboratorio de Diagnóstico: Evaluación Técnica xUML</h2>
-        <p style="font-size:0.92rem; line-height:1.6; color:var(--muted); margin-bottom:22px;">
-          Reactivos de alta complejidad con base en la obra de Ian Sommerville y estándares internacionales de ingeniería de software.
-        </p>
 
-        <div id="quiz-list-container" style="display:flex; flex-direction:column; gap:18px;">
-          <!-- Reactivo 1 -->
-          <div class="quiz-card">
-            <h4 class="quiz-question-title">1. De acuerdo con Ian Sommerville (Cap. 5: Modelado del Sistema), ¿cuáles son exactamente los TRES modelos que conforman el subconjunto formal estricto de Executable UML (xUML) para que un diseño pueda compilarse directamente a código ejecutable?</h4>
-            <div class="quiz-options-list">
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(1, 0, this)"><span>A)</span> Diagramas de Casos de Uso, Diagramas de Secuencia y Diagramas de Clases.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(1, 1, this)"><span>B)</span> Modelos de Dominio, Modelos de Clases y Modelos de Estados (State Machines).</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(1, 2, this)"><span>C)</span> Diagramas de Actividades, Diagramas de Componentes y Diagramas de Despliegue.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(1, 3, this)"><span>D)</span> Diagramas de Flujo de Datos (DFD), Diagramas Entidad-Relación y Diccionario de Datos.</button>
-            </div>
-            <div class="quiz-feedback-box" id="q1-fb"></div>
-          </div>
-
-          <!-- Reactivo 2 -->
-          <div class="quiz-card">
-            <h4 class="quiz-question-title">2. ¿Por qué los Diagramas de Secuencia y los Diagramas de Casos de Uso NO forman parte del estándar de compilación en Executable UML (xUML)?</h4>
-            <div class="quiz-options-list">
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(2, 0, this)"><span>A)</span> Porque los Casos de Uso son requerimientos informales en texto, y los de Secuencia sólo modelan trazas temporales parciales que generarían colisiones y redundancia con las máquinas de estados completas.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(2, 1, this)"><span>B)</span> Porque el consorcio OMG prohibió los diagramas de secuencia en el año 2005.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(2, 2, this)"><span>C)</span> Porque los motores de ejecución de C# sólo aceptan código ensamblador nativo.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(2, 3, this)"><span>D)</span> Porque los casos de uso consumen excesivo ancho de banda en HTTP/2.</button>
-            </div>
-            <div class="quiz-feedback-box" id="q2-fb"></div>
-          </div>
-
-          <!-- Reactivo 3 -->
-          <div class="quiz-card">
-            <h4 class="quiz-question-title">3. En la arquitectura MDA (Model-Driven Architecture) vinculada a Executable UML, ¿qué función desempeña el Modelo Independiente de Plataforma (PIM)?</h4>
-            <div class="quiz-options-list">
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(3, 0, this)"><span>A)</span> Es el archivo binario compilado optimizado con Native AOT.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(3, 1, this)"><span>B)</span> Es una base de datos relacional con claves foráneas preconfiguradas.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(3, 2, this)"><span>C)</span> Modela la estructura y lógica pura del sistema con independencia absoluta de tecnologías, frameworks o lenguajes de programación concretos.</button>
-              <button class="quiz-option-btn" onclick="answerXumlQuiz(3, 3, this)"><span>D)</span> Es el contenedor Docker que aloja el servidor de aplicaciones.</button>
-            </div>
-            <div class="quiz-feedback-box" id="q3-fb"></div>
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio de Diagnóstico: Evaluación Técnica xUML
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos doctrinales sobre Executable UML (xUML), modelos computables y arquitectura MDA según Ian Sommerville.
+          </p>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
       </div>
+  
     </section>
 
     <footer class="global-footer">
@@ -515,6 +497,7 @@
   <script src="../shared/modules-data.js"></script>
   <script src="../shared/nav.js"></script>
   <script>
+
     // Tab switching estandarizado
     function switchXumlTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -764,70 +747,183 @@ public class SesionUsuario
       document.getElementById('csharp-output-console').textContent = "// [COMPILADOR MDA]: Traduciendo PIM -> PSM C# 12 / .NET 8...\n\n" + model.csharp;
     }
 
-    // QUIZ INTERACTIVO
-    function answerXumlQuiz(qNum, optIdx, btnEl) {
-      const parent = btnEl.closest('.quiz-card');
-      const buttons = parent.querySelectorAll('.quiz-option-btn');
-      buttons.forEach(b => (b.style.pointerEvents = 'none'));
+    /* ==============================================================
+       LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+       ============================================================== */
+    const quizQuestions = [
+  {
+    "q": "¿Cuáles son exactamente los TRES modelos que conforman el subconjunto formal estricto de Executable UML (xUML) según Ian Sommerville para compilar especificaciones a código ejecutable?",
+    "options": [
+      "Diagramas de Casos de Uso, Diagramas de Secuencia y Diagramas de Despliegue.",
+      "Modelos de Dominio, Modelos de Clases y Modelos de Estados (State Machines).",
+      "Diagramas de Actividades, Diagramas de Componentes y Diagramas de Paquetes.",
+      "Modelos de Procesos de Negocio, Diagramas de Flujo y Matrices de Requisitos."
+    ],
+    "correct": 1,
+    "feedback": "Doctrina de Ian Sommerville (Cap. 5): xUML restringe UML a tres modelos formalmente semánticos y computables: el Modelo de Dominio (relaciones contextuales), el Modelo de Clases (atributos y relaciones precisas) y el Modelo de Estados (comportamiento dinámico basado en máquinas de estados de Moore)."
+  },
+  {
+    "q": "¿Cuál es la razón técnica fundamental por la cual los Diagramas de Casos de Uso **NO** forman parte del estándar de compilación en Executable UML (xUML)?",
+    "options": [
+      "Porque carecen de semántica operacional formal estricta y están orientados a comunicación humana.",
+      "Porque la especificación UML 2.5 eliminó los actores del catálogo de elementos sintácticos.",
+      "Porque los compiladores xUML requieren únicamente código ensamblador sin abstracciones.",
+      "Porque los casos de uso solo pueden ejecutarse en bases de datos relacionales normalizadas."
+    ],
+    "correct": 0,
+    "feedback": "Los diagramas de casos de uso describen interacciones de alto nivel entre actores y el sistema de forma narrativa o semi-formal, por lo que carecen de la semántica matemática y operacional necesaria para ser traducidos determinísticamente a código ejecutable."
+  },
+  {
+    "q": "En la arquitectura guiada por modelos (MDA) asociada a Executable UML, ¿cuál es el rol del Modelo Independiente de Plataforma (PIM)?",
+    "options": [
+      "Definir los controladores de dispositivos y llamadas al kernel del sistema operativo destino.",
+      "Especificar el funcionamiento y lógica del sistema sin comprometerse con tecnologías de implementación.",
+      "Generar automáticamente la infraestructura física de servidores y cableado de red local.",
+      "Compilar las consultas SQL específicas optimizadas para un motor de base de datos propietario."
+    ],
+    "correct": 1,
+    "feedback": "Un PIM (Platform-Independent Model) describe la estructura y comportamiento lógico del sistema independientemente de la tecnología, lenguaje de programación (C#, Java, C++) o plataforma de despliegue donde posteriormente será transformado a un PSM (Platform-Specific Model)."
+  },
+  {
+    "q": "¿Qué lenguaje formal estandarizado se utiliza en Executable UML para describir de manera determinista las acciones que ocurren dentro de las transiciones de estados?",
+    "options": [
+      "SQL ANSI-92 estándar para la persistencia transaccional de datos relacionales.",
+      "Action Specification Language (ASL) o Action Language for Foundational UML (ALF).",
+      "Pseudocódigo estructurado no tipado basado en sintaxis libre de diagramas de flujo.",
+      "Lenguaje de Definición de Interfaces (IDL) para llamadas a procedimientos remotos."
+    ],
+    "correct": 1,
+    "feedback": "Executable UML requiere un lenguaje de acciones semánticamente formal y sin ambigüedades como ASL o ALF (Action Language for Foundational UML), garantizando que las acciones dentro de los estados y transiciones puedan compilarse a código sin intervención manual."
+  }
+];
 
-      const fb = document.getElementById(`q${qNum}-fb`);
-      fb.style.display = 'block';
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let currentShuffledOptions = [];
 
-      if (qNum === 1) {
-        if (optIdx === 1) {
-          btnEl.style.borderColor = 'var(--green)';
-          btnEl.style.background = 'rgba(0, 255, 170, 0.15)';
-          fb.style.background = 'rgba(0, 255, 170, 0.12)';
-          fb.style.border = '1px solid var(--green)';
-          fb.style.color = 'var(--green)';
-          fb.innerHTML = '<strong>✓ ¡Correcto!</strong> Ian Sommerville establece explícitamente en el Cap. 5 que la tríada canónica de Executable UML está compuesta exclusivamente por: 1) Modelos de Dominio, 2) Modelos de Clases y 3) Modelos de Estados.';
-        } else {
-          btnEl.style.borderColor = 'var(--coral)';
-          btnEl.style.background = 'rgba(255, 0, 110, 0.15)';
-          fb.style.background = 'rgba(255, 0, 110, 0.12)';
-          fb.style.border = '1px solid var(--coral)';
-          fb.style.color = 'var(--coral)';
-          fb.innerHTML = '<strong>✗ Incorrecto.</strong> Los diagramas de casos de uso o de secuencia no forman parte de xUML ejecutable. La respuesta correcta es: Modelos de Dominio, Modelos de Clases y Modelos de Estados.';
+    window.renderQuizQuestion = function() {
+      const q = quizQuestions[currentQuizIdx];
+      if (!q) return;
+
+      const qNumEl = document.getElementById('quiz-question-number');
+      const qScoreEl = document.getElementById('quiz-score');
+      const qTextEl = document.getElementById('quiz-question-text');
+      const optsContainer = document.getElementById('quiz-options-container');
+      const feedbackBox = document.getElementById('quiz-feedback');
+      const nextBtn = document.getElementById('btn-next-quiz');
+
+      if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+      if (optsContainer) optsContainer.innerHTML = '';
+      if (feedbackBox) feedbackBox.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+
+      // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+      currentShuffledOptions = q.options.map((opt, origIdx) => ({
+        text: opt,
+        isCorrect: origIdx === q.correct
+      })).sort(() => Math.random() - 0.5);
+
+      currentShuffledOptions.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+        btn.onclick = () => selectQuizOption(idx);
+        optsContainer.appendChild(btn);
+      });
+    };
+
+    window.selectQuizOption = function(idx) {
+      const q = quizQuestions[currentQuizIdx];
+      const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+      btns.forEach(b => (b.disabled = true));
+
+      const feedbackBox = document.getElementById('quiz-feedback');
+      if (feedbackBox) feedbackBox.style.display = 'block';
+
+      const chosen = currentShuffledOptions[idx];
+      const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+      if (chosen && chosen.isCorrect) {
+        quizScore++;
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
         }
-      } else if (qNum === 2) {
-        if (optIdx === 0) {
-          btnEl.style.borderColor = 'var(--green)';
-          btnEl.style.background = 'rgba(0, 255, 170, 0.15)';
-          fb.style.background = 'rgba(0, 255, 170, 0.12)';
-          fb.style.border = '1px solid var(--green)';
-          fb.style.color = 'var(--green)';
-          fb.innerHTML = '<strong>✓ ¡Correcto!</strong> Los casos de uso carecen de rigor formal computable. Los diagramas de secuencia representan trazas individuales de interacción que colisionan con la semántica completa de las máquinas de estados.';
-        } else {
-          btnEl.style.borderColor = 'var(--coral)';
-          btnEl.style.background = 'rgba(255, 0, 110, 0.15)';
-          fb.style.background = 'rgba(255, 0, 110, 0.12)';
-          fb.style.border = '1px solid var(--coral)';
-          fb.style.color = 'var(--coral)';
-          fb.innerHTML = '<strong>✗ Incorrecto.</strong> La razón formal es la informalidad textual de los casos de uso y la redundancia/solapamiento parcial de los diagramas de secuencia frente a las máquinas de estados finitas.';
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+          feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
         }
-      } else if (qNum === 3) {
-        if (optIdx === 2) {
-          btnEl.style.borderColor = 'var(--green)';
-          btnEl.style.background = 'rgba(0, 255, 170, 0.15)';
-          fb.style.background = 'rgba(0, 255, 170, 0.12)';
-          fb.style.border = '1px solid var(--green)';
-          fb.style.color = 'var(--green)';
-          fb.innerHTML = '<strong>✓ ¡Correcto!</strong> El PIM (Platform-Independent Model) describe la estructura y comportamiento lógico puro del sistema sin ninguna referencia a C#, Java, SQL o Docker. El generador MDA lo traduce a uno o más PSM.';
-        } else {
-          btnEl.style.borderColor = 'var(--coral)';
-          btnEl.style.background = 'rgba(255, 0, 110, 0.15)';
-          fb.style.background = 'rgba(255, 0, 110, 0.12)';
-          fb.style.border = '1px solid var(--coral)';
-          fb.style.color = 'var(--coral)';
-          fb.innerHTML = '<strong>✗ Incorrecto.</strong> El PIM es estrictamente agnóstico a la tecnología y plataformas de ejecución.';
+      } else {
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+          btns[idx].style.borderColor = '#ff006e';
+        }
+        if (correctIdx !== -1 && btns[correctIdx]) {
+          btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+          feedbackBox.style.border = '1px solid #ff006e';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
         }
       }
-    }
 
-    // Inicialización
-    window.addEventListener('DOMContentLoaded', () => {
-      loadXUMLModel();
-    });
-  </script>
+      const qScoreEl = document.getElementById('quiz-score');
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      const nextBtn = document.getElementById('btn-next-quiz');
+      if (nextBtn) nextBtn.style.display = 'inline-block';
+    };
+
+    window.nextQuizQuestion = function() {
+      currentQuizIdx++;
+      if (currentQuizIdx < quizQuestions.length) {
+        renderQuizQuestion();
+      } else {
+        showQuizSummary();
+      }
+    };
+
+    window.showQuizSummary = function() {
+      const container = document.getElementById('quiz-container');
+      if (!container) return;
+      const pct = Math.round((quizScore / quizQuestions.length) * 100);
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px 10px;">
+          <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+          <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+          <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+            Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+          </p>
+          <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+            ${pct >= 75 ? '¡Excelente! Demuestras una comprensión rigurosa y libre de sesgos en este laboratorio formativo.' : 'Buen esfuerzo. Te recomendamos revisar el material doctrinal e interactivo y reintentar la evaluación.'}
+          </p>
+          <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+            🔄 Reiniciar Evaluación
+          </button>
+        </div>
+      `;
+    };
+
+    window.restartQuiz = function() {
+      currentQuizIdx = 0;
+      quizScore = 0;
+      renderQuizQuestion();
+    };
+
+    // Auto-inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+    } else {
+      renderQuizQuestion();
+    }
+  
+    </script>
 </body>
 </html>

@@ -320,35 +320,34 @@
       </section>
 
       <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-            <div>
-              <h2 style="margin:0 0 4px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Procesos de Software</h2>
-              <p style="margin:0; font-size:0.84rem; color:var(--muted);">
-                Reactivos de opción múltiple estructurados con estricta simetría anti-sesgo según Sommerville y Pressman.
-              </p>
-            </div>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <span id="quiz-progress" style="font:700 0.82rem 'Courier New', monospace; color:var(--cyan);">PREGUNTA 1 DE 4</span>
-              <span id="quiz-score" style="font:700 0.82rem 'Courier New', monospace; color:var(--green);">Puntuación: 0 / 4</span>
-            </div>
-          </div>
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
 
-          <div class="quiz-card" style="margin-bottom:0;">
-            <div id="quiz-container">
-              <h3 id="quiz-question-text" style="color:#ffffff; font-size:1.02rem; line-height:1.55; margin:0 0 16px; font-family:Verdana,sans-serif;"></h3>
-              <div id="quiz-options-container"></div>
-              <div id="quiz-feedback-box" style="display:none; padding:14px; border-radius:6px; margin-top:16px; font:0.86rem/1.55 Verdana, sans-serif;"></div>
-              <div style="margin-top:20px; text-align:right;">
-                <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;" onclick="nextProcessQuizQuestion()">
-                  Siguiente Pregunta ➔
-                </button>
-              </div>
-            </div>
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Modelos de Procesos (Espiral & RUP)
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos rigurosos sobre gestión de riesgos en Espiral de Boehm, hitos de RUP y línea base arquitectónica.
+          </p>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Laboratorio de Computación · Material Didáctico de Arquitectura &amp; Ingeniería de Software
@@ -502,153 +501,182 @@
 
       // ==========================================
       // LABORATORIO FORMATIVO DE PROCESOS (QUIZ STEP-BY-STEP)
-      // ==========================================
-      const processQuizQuestions = [
-        {
-          question: "En el contexto de los modelos de procesos descritos por Ian Sommerville, ¿cuál es la diferencia crítica entre la gestión de riesgos en el Modelo en Espiral de Boehm y la fase de Elaboración en el Rational Unified Process (RUP)?",
-          options: [
-            "El modelo en Espiral evalúa e identifica riesgos continuamente en el segundo cuadrante de cada iteración; mientras que en RUP la mitigación de los riesgos arquitectónicos se concentra en construir la línea base ejecutable al cierre de Elaboración.",
-            "El modelo en Espiral prohíbe la creación de prototipos ejecutables antes del despliegue final; mientras que en RUP los riesgos se resuelven exclusivamente durante la fase de Transición al cliente.",
-            "El modelo en Espiral adopta una estructura estrictamente secuencial y lineal sin revisiones; mientras que RUP elimina la necesidad de contar con fases de inicio y análisis de negocio.",
-            "El modelo en Espiral se orienta exclusivamente a la redacción de contratos jurídicos mercantiles; mientras que RUP descarta las pruebas de software de componentes unitarios."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! En el Modelo en Espiral los riesgos se auditan continuamente en el segundo sector de cada vuelta; en RUP, los riesgos técnicos más críticos se mitigan específicamente durante la fase de Elaboración construyendo la línea base de arquitectura ejecutable."
-        },
-        {
-          question: "¿Cuál es el hito principal (milestone) que marca formalmente el término de la fase de Elaboración en RUP y qué artefacto técnico demuestra su cumplimiento?",
-          options: [
-            "Hito de Entrega Final del Producto, demostrado mediante el acta de finiquito contable y el cierre definitivo del repositorio Git.",
-            "Hito de Arquitectura del Ciclo de Vida (LCA), demostrado mediante una línea base de la arquitectura ejecutable que mitiga los principales riesgos técnicos.",
-            "Hito de Objetivos del Ciclo de Vida (LCO), demostrado únicamente mediante el cálculo del retorno de inversión (ROI) estimado a 10 años.",
-            "Hito de Capacidad Operativa Inicial, demostrado cuando el 100% de los manuales de usuario han sido impresos y encuadernados para distribución."
-          ],
-          correct: 1,
-          feedback: "¡Correcto! El hito canónico al finalizar Elaboración es el LCA (Lifecycle Architecture Milestone), cuyo artefacto clave es la línea base arquitectónica ejecutable que demuestra que los riesgos técnicos fundamentales han sido mitigados."
-        },
-        {
-          question: "¿Cuál es la principal debilidad del modelo en Cascada Tradicional (Waterfall de Royce) frente a sistemas con requerimientos inciertos?",
-          options: [
-            "La detección de riesgos e inconsistencias ocurre tardíamente en la fase de pruebas/integración, cuando el costo de modificación es exponencialmente mayor.",
-            "Exige la entrega de código ejecutable al cliente en las primeras dos semanas de iniciado el proyecto.",
-            "Prohíbe la redacción de documentación técnica y diagramas de diseño arquitectónico.",
-            "Requiere que todos los programadores utilicen obligatoriamente lenguajes de programación dinámicos."
-          ],
-          correct: 0,
-          feedback: "¡Exacto! En cascada el feedback es tardío. Si los requerimientos cambian o se entendieron mal, el error se manifiesta hasta la fase final de integración o despliegue con costos astronómicos."
-        },
-        {
-          question: "¿Qué dimensión geométrica del diagrama del Modelo en Espiral de Barry Boehm representa el costo acumulado incurrido por el proyecto?",
-          options: [
-            "La distancia radial (R) desde el centro u origen del sistema de coordenadas cartesianas.",
-            "El número de cuadrantes cruzados dividido por la cantidad de desarrolladores en nómina.",
-            "El grosor del trazo del lápiz utilizado en el diseño conceptual del prototipo.",
-            "El ángulo angular medido exclusivamente en sentido de las manecillas del reloj."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! En la espiral polar de Boehm, la dimensión radial representa el costo acumulado invertido a medida que la espiral se expande hacia afuera, mientras que la dimensión angular representa el progreso a través de los sectores."
-        }
-      ];
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
+      const quizQuestions = [
+  {
+    "q": "En el contexto de los modelos de ciclo de vida descritos por Ian Sommerville, ¿cuál es la diferencia crítica en la gestión de riesgos entre el Modelo en Espiral de Barry Boehm y el Modelo en Cascada tradicional?",
+    "options": [
+      "El Espiral evalúa riesgos explícitamente en cada ciclo mediante prototipado continuo; Cascada descubre los riesgos tardíamente en la integración.",
+      "El Espiral prohíbe el uso de documentación formal en los hitos; Cascada exige que todo el código fuente se compile en modo monohilo.",
+      "El Espiral requiere que el cliente programe las pruebas unitarias; Cascada delega la arquitectura a comités de dirección corporativos.",
+      "El Espiral no admite modificaciones de alcance tras el primer ciclo; Cascada ajusta los requerimientos semanalmente con el usuario."
+    ],
+    "correct": 0,
+    "feedback": "La característica definitoria del Modelo en Espiral de Barry Boehm es que está guiado por riesgos (Risk-Driven). Cada vuelta de la espiral incluye una fase obligatoria de análisis de riesgos y desarrollo de prototipos para mitigar la incertidumbre antes de comprometer recursos. En Cascada, los riesgos no evaluados emergen al final en la fase de pruebas/integración."
+  },
+  {
+    "q": "¿Cuál es el hito principal (milestone) que marca formalmente el término de la fase de 'Elaboración' en el Proceso Unificado RUP?",
+    "options": [
+      "Hito de Objetivos del Ciclo de Vida (LCO), evaluando la viabilidad económica y el caso de negocio preliminar del sistema.",
+      "Hito de Capacidad Operacional Inicial (IOC), desplegando la primera versión beta para pruebas con usuarios reales.",
+      "Hito de Arquitectura del Ciclo de Vida (LCA), validando y aprobando la línea base arquitectónica ejecutable del sistema.",
+      "Hito de Lanzamiento del Producto (PR), entregando el software formalmente empacado y con manuales de usuario finales."
+    ],
+    "correct": 2,
+    "feedback": "En RUP: Fase de Inicio termina en LCO (Life-Cycle Objectives). Fase de Elaboración termina en LCA (Life-Cycle Architecture), donde la arquitectura del sistema debe quedar completamente estabilizada y validada mediante un prototipo ejecutable. Fase de Construcción termina en IOC y Transición en Product Release."
+  },
+  {
+    "q": "¿Por qué en RUP la construcción de la 'Línea Base Arquitectónica' se concentra específicamente en la fase de Elaboración y **NO** en la fase de Construcción?",
+    "options": [
+      "Para mitigar los riesgos técnicos mayores construyendo el núcleo ejecutable antes de escalar el equipo en Construcción.",
+      "Porque el estándar IEEE prohíbe que los programadores de Construcción tomen decisiones de diseño estructural.",
+      "Porque en Construcción el código fuente se subcontrata a terceros que no tienen acceso a los diagramas UML del diseño.",
+      "Porque la fase de Construcción está reservada exclusivamente para redactar manuales de usuario y pruebas de carga."
+    ],
+    "correct": 0,
+    "feedback": "La premisa fundamental de RUP es resolver los riesgos de arquitectura tempranamente. La fase de Elaboración diseña, implementa y prueba una línea base ejecutable que demuestra que la arquitectura soporta los requisitos no funcionales críticos. Una vez mitigado el riesgo técnico, la fase de Construcción puede escalar el equipo para añadir funcionalidad de forma paralela y segura."
+  },
+  {
+    "q": "¿Cuáles son los 4 cuadrantes secuenciales que recorre cada ciclo o iteración en el Modelo en Espiral de Barry Boehm?",
+    "options": [
+      "1) Determinar objetivos y alternativas, 2) Evaluar riesgos y prototipar, 3) Desarrollar y verificar, 4) Planificar la siguiente fase.",
+      "1) Levantamiento de requisitos, 2) Codificación en lenguaje compilado, 3) Pruebas de integración, 4) Despliegue en producción.",
+      "1) Planificación de sprint, 2) Stand-up diario de avance, 3) Demostración con el cliente, 4) Retrospectiva del equipo de trabajo.",
+      "1) Firma del contrato comercial, 2) Asignación de servidores físicos, 3) Auditoría financiera externa, 4) Cierre legal del proyecto."
+    ],
+    "correct": 0,
+    "feedback": "Los cuatro cuadrantes canónicos de Boehm son: 1) Determinación de objetivos, alternativas y restricciones; 2) Evaluación de alternativas, identificación y resolución de riesgos (mediante prototipos/simulaciones); 3) Desarrollo, verificación del producto del siguiente nivel; 4) Planificación de la siguiente fase con revisión del cliente."
+  }
+];
 
-      let currentProcessQuizIdx = 0;
-      let processQuizScore = 0;
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderProcessQuizQuestion() {
-        const q = processQuizQuestions[currentProcessQuizIdx];
-        document.getElementById('quiz-progress').innerText = `PREGUNTA ${currentProcessQuizIdx + 1} DE ${processQuizQuestions.length}`;
-        document.getElementById('quiz-score').innerText = `Puntuación: ${processQuizScore} / ${processQuizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.question;
+      window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
 
-        const cont = document.getElementById('quiz-options-container');
-        cont.innerHTML = '';
-        const fb = document.getElementById('quiz-feedback-box');
-        fb.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        q.options.forEach((opt, idx) => {
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerHTML = `<strong>${String.fromCharCode(65 + idx)}.</strong> ${opt}`;
-          btn.onclick = () => handleProcessQuizAnswer(idx);
-          cont.appendChild(btn);
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function handleProcessQuizAnswer(selectedIdx) {
-        const q = processQuizQuestions[currentProcessQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
-        const fb = document.getElementById('quiz-feedback-box');
-        fb.style.display = 'block';
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (selectedIdx === q.correct) {
-          processQuizScore++;
-          btns[selectedIdx].classList.add('opt-correct');
-          fb.style.background = 'rgba(0, 255, 170, 0.12)';
-          fb.style.border = '1px solid var(--green)';
-          fb.style.color = '#fff';
-          fb.innerHTML = `<strong>✓ ¡Correcto!</strong> ${q.feedback}`;
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[selectedIdx].classList.add('opt-wrong');
-          btns[q.correct].classList.add('opt-correct');
-          fb.style.background = 'rgba(255, 0, 110, 0.12)';
-          fb.style.border = '1px solid var(--coral)';
-          fb.style.color = '#fff';
-          fb.innerHTML = `<strong>✗ Incorrecto.</strong> ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${processQuizScore} / ${processQuizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextProcessQuizQuestion() {
-        currentProcessQuizIdx++;
-        if (currentProcessQuizIdx < processQuizQuestions.length) {
-          renderProcessQuizQuestion();
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
         } else {
-          showProcessQuizSummary();
+          showQuizSummary();
         }
-      }
+      };
 
-      function showProcessQuizSummary() {
-        const cont = document.getElementById('quiz-container');
-        const pct = Math.round((processQuizScore / processQuizQuestions.length) * 100);
-        cont.innerHTML = `
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Procesos Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
-              Puntuación final: <strong>${processQuizScore} / ${processQuizQuestions.length} (${pct}%)</strong>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
-              ${pct >= 75 ? '¡Excelente! Comprendes a cabalidad los ciclos de vida evolutivos, la mitigación de riesgos de Boehm y las fases del Unified Process.' : 'Buen intento. Repasa las comparativas doctrinales y vuelve a girar la espiral para reforzar.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
-            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="currentProcessQuizIdx = 0; processQuizScore = 0; renderProcessQuizQuestion();">
-              🔄 Reiniciar Laboratorio
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
-
-      window.switchProcessTab = function(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-
-        const btns = document.querySelectorAll('.tab-btn');
-        if (tabId === 'tab-compare') btns[0].classList.add('active');
-        if (tabId === 'tab-spiral') btns[1].classList.add('active');
-        if (tabId === 'tab-rup') btns[2].classList.add('active');
-        if (tabId === 'tab-quiz') btns[3].classList.add('active');
       };
 
-      window.addEventListener('DOMContentLoaded', () => {
-        renderSpiralPathAnimated(0);
-        renderProcessQuizQuestion();
-      });
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

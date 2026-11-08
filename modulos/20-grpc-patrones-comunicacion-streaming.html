@@ -875,33 +875,34 @@ message FacturaRequest {
       </section>
 
       <!-- Pestaña 6: Laboratorio de Diagnóstico (Quiz) -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación: gRPC & Streaming</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu dominio sobre la arquitectura gRPC, sus 4 patrones de llamada y Protocol Buffers.
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Patrones de Comunicación gRPC & Streaming
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos doctrinales sobre HTTP/2, multiplexación, Protocol Buffers y patrones de streaming Unary, Server, Client y Bidi.
           </p>
-
-          <div id="quiz-container">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--grpc-cyan);">Pregunta 1 de 5</span>
-              <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--grpc-gold);">Puntuación: 0 / 5</span>
-            </div>
-
-            <h3 id="quiz-question-text" style="font-size:1.15rem; color:#fff; margin-bottom:14px;">Cargando pregunta...</h3>
-
-            <div id="quiz-options-container" class="quiz-options"></div>
-
-            <div id="quiz-feedback" style="display:none; padding:14px; border-radius:6px; font:0.86rem/1.5 Verdana, sans-serif; margin-top:14px;"></div>
-
-            <div style="display:flex; justify-content:flex-end; margin-top:16px;">
-              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 18px; border-radius:6px; font:700 0.85rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 7</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 7</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <!-- Barra Dinámica de Navegación entre Módulos -->
       <nav class="module-nav-bar"></nav>
@@ -1470,196 +1471,215 @@ message FacturaRequest {
         }, 600);
       }
 
-      // --- Quiz Formativo ---
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
       const quizQuestions = [
-        {
-          q: "¿Cuál es el protocolo de transporte subyacente que utiliza gRPC de forma nativa para permitir multiplexación y compresión de cabeceras?",
-          options: [
-            "HTTP/2",
-            "HTTP/1.0",
-            "UDP plano sin control de flujo",
-            "WebSocket únicamente"
-          ],
-          correct: 0,
-          feedback: "¡Correcto! gRPC requiere HTTP/2 para permitir múltiples streams concurrentes en una única conexión TCP y compresión HPACK de headers."
-        },
-        {
-          q: "¿Cómo logra Protocol Buffers (Protobuf) que los mensajes binarios sean sustancialmente más pequeños que JSON?",
-          options: [
-            "Usa tags numéricos en lugar de nombres de texto de campos y codificación Varint compacta.",
-            "Elimina todos los números flotantes y solo admite caracteres ASCII.",
-            "Aplica compresión ZIP automática en cada variable local.",
-            "Requiere que todos los mensajes tengan exactamente 16 bytes."
-          ],
-          correct: 0,
-          feedback: "¡Exacto! Protobuf omite los nombres repetitivos de las claves (como 'cliente' o 'monto') sustituyéndolos por números enteros y serialización binaria ultraligera."
-        },
-        {
-          q: "Si necesitas enviar un flujo continuo de telemetría de sensores IoT a un servidor para recibir un resumen final, ¿qué patrón gRPC corresponde?",
-          options: [
-            "Client Streaming RPC",
-            "Server Streaming RPC",
-            "Unary RPC",
-            "Polling tradicional REST"
-          ],
-          correct: 0,
-          feedback: "¡Muy bien! Client Streaming permite al cliente emitir múltiples mensajes secuenciales en el stream y recibir una única respuesta consolidada del servidor al emitir el EOF."
-        },
-        {
-          q: "¿Qué archivo actúa como contrato estricto agnóstico al lenguaje en un ecosistema de microservicios gRPC?",
-          options: [
-            "El archivo .proto (Protocol Buffers)",
-            "Un archivo package.json",
-            "Un documento Swagger / OpenAPI en formato YAML",
-            "El archivo web.config"
-          ],
-          correct: 0,
-          feedback: "¡Correcto! El archivo .proto define la firma de los métodos RPC y la estructura de los mensajes, a partir del cual el compilador protoc genera código en C#, Go, Java, etc."
-        },
-        {
-          q: "¿En qué escenario arquitectónico es gRPC superior y recomendado frente a REST JSON?",
-          options: [
-            "Comunicación interna de alto rendimiento y baja latencia entre microservicios de backend.",
-            "Cuando se requiere que un humano lea los paquetes directamente en el navegador sin herramientas.",
-            "Cuando se sirven páginas web HTML estáticas a motores de búsqueda (SEO).",
-            "Para correos electrónicos masivos con plantillas HTML."
-          ],
-          correct: 0,
-          feedback: "¡Excelente! La serialización binaria ultrarrápida y el tipado estricto hacen de gRPC el estándar de facto para la comunicación interna entre microservicios (East-West traffic)."
-        },
-        {
-          q: "¿Por qué ASP.NET Core SignalR es la solución idónea para notificaciones y chats en navegadores web en lugar de gRPC?",
-          options: [
-            "Porque proporciona una abstracción pub/sub de tiempo real basada en WebSockets con negociación y fallback automático a SSE y Long Polling.",
-            "Porque SignalR no requiere servidor web y transmite los paquetes directamente por UDP peer-to-peer.",
-            "Porque gRPC solo admite conexiones satelitales y prohíbe el protocolo TCP.",
-            "Porque SignalR elimina el uso de JavaScript en los navegadores."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! SignalR maneja automáticamente la conexión bidireccional mediante WebSockets y, si la red o el proxy intermedio bloquean WebSockets, degrada transparentemente a SSE o Long Polling, ofreciendo soporte universal para navegadores."
-        },
-        {
-          q: "¿Cuál es el propósito fundamental de 'gRPC JSON Transcoding' en ASP.NET Core?",
-          options: [
-            "Permitir que un servicio gRPC sea invocado como una API REST tradicional con JSON a partir de anotaciones en el archivo .proto.",
-            "Convertir gRPC en un servidor de streaming pub/sub para navegadores web mediante WebSockets.",
-            "Traducir automáticamente código C# en scripts de Python en tiempo de ejecución.",
-            "Comprimir la base de datos SQL Server en archivos JSON binarios."
-          ],
-          correct: 0,
-          feedback: "¡Exacto! gRPC JSON Transcoding es una característica para interoperabilidad REST: expone tus métodos gRPC como endpoints REST/JSON anotados con google.api.http, permitiendo que clientes heterogéneos sin cliente gRPC consuman la misma lógica de negocio."
-        }
-      ];
-
-      window.showCommVerdict = function (scenario) {
-        const box = document.getElementById('comm-verdict-box');
-        if (scenario === 'chat') {
-          box.innerHTML = '<strong style=\"color:var(--grpc-cyan);\">Recomendación: ASP.NET Core SignalR</strong><br/>' +
-            'Un chat o panel interactivo en navegadores requiere empuje inmediato de eventos hacia múltiples clientes conectados (grupos, broadcast). SignalR abstrae WebSockets con reconexión automática y degradación a SSE/Long-Polling, evitando lidiar con la falta de soporte directo de HTTP/2 en JavaScript puro.';
-        } else if (scenario === 'microservices') {
-          box.innerHTML = '<strong style=\"color:var(--grpc-green);\">Recomendación: gRPC Puro (HTTP/2 + Protobuf)</strong><br/>' +
-            'Para tráfico interno backend a backend, la máxima velocidad, bajo uso de CPU y el ahorro de ancho de banda son críticos. La multiplexación en un único socket TCP y el contrato tipado en el archivo <code>.proto</code> proporcionan la máxima eficiencia.';
-        } else if (scenario === 'public-api') {
-          box.innerHTML = '<strong style=\"color:var(--grpc-gold);\">Recomendación: gRPC JSON Transcoding</strong><br/>' +
-            'Mantiene una única implementación gRPC de alto rendimiento en el servidor mientras genera automáticamente endpoints REST con JSON para desarrolladores externos, clientes móviles antiguos o herramientas como Postman y cURL.';
-        }
-      };
+  {
+    "q": "¿Cuál es el protocolo de transporte subyacente que utiliza gRPC de forma nativa para permitir multiplexación y compresión de cabeceras?",
+    "options": [
+      "HTTP/2, permitiendo múltiples streams concurrentes bidireccionales sobre una única conexión TCP.",
+      "HTTP/1.0, manteniendo una conexión TCP efímera independiente por cada mensaje serializado.",
+      "UDP plano sin control de flujo, sacrificando confiabilidad para reducir la latencia de red.",
+      "WebSockets, requiriendo un handshake de actualización previo en cada llamada a procedimiento."
+    ],
+    "correct": 0,
+    "feedback": "gRPC se fundamenta nativamente en HTTP/2, lo que le permite multiplexar múltiples streams lógicos sobre una sola conexión TCP física, comprimir cabeceras con HPACK y soportar flujos binarios bidireccionales (Full-Duplex)."
+  },
+  {
+    "q": "¿Qué formato de serialización binaria utiliza gRPC de forma predeterminada para maximizar la eficiencia y reducir el tamaño de los mensajes?",
+    "options": [
+      "Protocol Buffers (Protobuf), un esquema binario tipado y compacto con generación de código.",
+      "JSON estructurado con compresión GZIP obligatoria en la capa de transporte de la red local.",
+      "XML con esquemas XSD para validación formal de tipos de datos en arquitecturas orientadas a servicios.",
+      "BSON (Binary JSON), preservando nombres de propiedades en texto plano dentro de cada mensaje."
+    ],
+    "correct": 0,
+    "feedback": "gRPC utiliza Protocol Buffers (Protobuf) de Google como formato estándar de serialización y lenguaje de definición de interfaces (IDL). Los mensajes se serializan en binario altamente comprimido sin transmitir nombres de campos redundantes."
+  },
+  {
+    "q": "En el patrón 'Server Streaming', ¿cuál es el comportamiento exacto del flujo de datos entre cliente y servidor?",
+    "options": [
+      "El cliente envía una sola petición y el servidor devuelve una secuencia continua de múltiples mensajes.",
+      "El cliente envía una secuencia continua de múltiples mensajes y el servidor responde con un único resumen.",
+      "Ambos extremos envían y reciben flujos de datos independientes de forma continua y simultánea.",
+      "El cliente y servidor intercambian exactamente un único mensaje de petición y un único mensaje de respuesta."
+    ],
+    "correct": 0,
+    "feedback": "En Server Streaming, el cliente emite un único mensaje de petición inicial y el servidor responde con un stream continuo de múltiples mensajes a través del canal HTTP/2, finalizando con un frame de Trailers (grpc-status: 0)."
+  },
+  {
+    "q": "En el patrón 'Client Streaming', ¿cómo notifica el cliente al servidor que ha concluido el envío de todos sus mensajes?",
+    "options": [
+      "Cierra la conexión TCP física obligando al servidor a reiniciar el socket de escucha de red.",
+      "Emite una trama especial de control HTTP/2 con la bandera 'END_STREAM' (Half-Close del cliente).",
+      "Envía un mensaje de error con código CANCELLED para forzar la emisión de la respuesta consolidada.",
+      "Espera a que expire el tiempo límite de timeout del canal para que el servidor procese el lote."
+    ],
+    "correct": 1,
+    "feedback": "En Client Streaming, el cliente transmite una secuencia de mensajes y, al terminar, efectúa un 'Half-Close' enviando un frame con el flag END_STREAM. Esto indica al servidor que el stream de subida terminó y que puede procesar y responder el resultado único."
+  },
+  {
+    "q": "¿Cuál de las siguientes afirmaciones describe con precisión el patrón 'Bidirectional Streaming' (Bidi) en gRPC?",
+    "options": [
+      "El cliente y el servidor operan en modo Full-Duplex, leyendo y escribiendo mensajes de forma asíncrona e independiente.",
+      "El servidor debe esperar a recibir la totalidad de los mensajes del cliente antes de emitir su primera respuesta.",
+      "La comunicación se produce alternando estrictamente un mensaje de ida y un mensaje de vuelta sin paralelismo.",
+      "El canal requiere abrir dos conexiones TCP separadas: una dedicada a subida y otra dedicada a descarga."
+    ],
+    "correct": 0,
+    "feedback": "En Bidirectional Streaming, los streams de llamada y respuesta operan de manera totalmente independiente y simultánea (Full-Duplex). El cliente y el servidor pueden leer y escribir en el orden que dicte la lógica de la aplicación."
+  },
+  {
+    "q": "¿Qué componente de HTTP/2 transporta el código de estado final (ej. 'grpc-status: 0 OK') al término de una llamada gRPC?",
+    "options": [
+      "Los Trailers de HTTP/2, que son cabeceras enviadas al final del stream tras completarse los frames de datos.",
+      "El primer frame de HEADERS de respuesta emitido durante el handshake inicial de la conexión TCP.",
+      "Un campo reservado de tipo entero dentro del cuerpo serializado de Protocol Buffers del último mensaje.",
+      "Una trama de control RST_STREAM enviada por el balanceador de carga para interrumpir el flujo."
+    ],
+    "correct": 0,
+    "feedback": "gRPC transmite los códigos de estado y metadatos de finalización (como grpc-status y grpc-message) dentro de los Trailers de HTTP/2, cabeceras que se envían después de que todos los frames de datos (DATA) han sido transmitidos."
+  },
+  {
+    "q": "¿Cuál es la principal ventaja técnica de utilizar gRPC frente a REST/JSON en la comunicación interna entre microservicios?",
+    "options": [
+      "Mayor rendimiento y menor latencia gracias a la serialización binaria compacta y la multiplexación de HTTP/2.",
+      "Facilidad para inspeccionar y modificar peticiones manualmente desde cualquier navegador web sin herramientas.",
+      "Soporte nativo universal en clientes web heredados sin necesidad de utilizar componentes de traducción como gRPC-Web.",
+      "Eliminación de la necesidad de definir contratos o esquemas formales entre los servicios que se comunican."
+    ],
+    "correct": 0,
+    "feedback": "En arquitecturas de microservicios (malla interna), gRPC ofrece un rendimiento significativamente superior a REST/JSON debido al menor tamaño de carga útil de Protobuf, menor consumo de CPU en serialización/deserialización y reutilización eficiente de sockets TCP con HTTP/2."
+  }
+];
 
       let currentQuizIdx = 0;
       let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderQuizQuestion() {
+      window.renderQuizQuestion = function() {
         const q = quizQuestions[currentQuizIdx];
-        document.getElementById('quiz-question-number').innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.q;
+        if (!q) return;
 
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
         const optsContainer = document.getElementById('quiz-options-container');
-        optsContainer.innerHTML = '';
         const feedbackBox = document.getElementById('quiz-feedback');
-        feedbackBox.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        q.options.forEach((opt, idx) => {
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerText = opt;
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
           btn.onclick = () => selectQuizOption(idx);
           optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function selectQuizOption(idx) {
+      window.selectQuizOption = function(idx) {
         const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
         const feedbackBox = document.getElementById('quiz-feedback');
-        feedbackBox.style.display = 'block';
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (idx === q.correct) {
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
           quizScore++;
-          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[idx].style.borderColor = 'var(--grpc-green)';
-          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
-          feedbackBox.style.border = '1px solid var(--grpc-green)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = q.feedback;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
-          btns[idx].style.borderColor = 'var(--grpc-coral)';
-          btns[q.correct].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[q.correct].style.borderColor = 'var(--grpc-green)';
-          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
-          feedbackBox.style.border = '1px solid var(--grpc-coral)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = `Incorrecto. ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextQuizQuestion() {
+      window.nextQuizQuestion = function() {
         currentQuizIdx++;
         if (currentQuizIdx < quizQuestions.length) {
           renderQuizQuestion();
         } else {
           showQuizSummary();
         }
-      }
+      };
 
-      function showQuizSummary() {
+      window.showQuizSummary = function() {
         const container = document.getElementById('quiz-container');
+        if (!container) return;
         const pct = Math.round((quizScore / quizQuestions.length) * 100);
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--grpc-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
-              ${pct >= 80 ? '¡Excelente dominio de gRPC, Protocol Buffers y patrones de streaming!' : 'Buen intento. Repasa la pestaña de Simulador de Canales y vuelve a intentarlo.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
             <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
               🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
+      };
 
-      function restartQuiz() {
+      window.restartQuiz = function() {
         currentQuizIdx = 0;
         quizScore = 0;
-        const feedbackBox = document.getElementById('quiz-feedback');
-        if (feedbackBox) feedbackBox.style.display = 'none';
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
         renderQuizQuestion();
       }
-
-      renderQuizQuestion();
-
-      // Pestañas hoisted al inicio del script
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

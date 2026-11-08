@@ -507,35 +507,34 @@ var reporte = await db.Orders
       </section>
 
       <!-- Pestaña 5: Laboratorio de Diagnóstico (Quiz) -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación: EF Core & Runtime</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Evalúa tu comprensión sobre concurrencia, tracking y Native AOT con retroalimentación inmediata.
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · EF Core, Concurrencia & Optimización
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos técnicos sobre Thread-Safety en DbContext, IDbContextFactory, AsNoTracking y división de consultas AsSplitQuery.
           </p>
-
-          <div id="quiz-container">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--ef-cyan);">Pregunta 1 de 5</span>
-              <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--ef-gold);">Puntuación: 0 / 5</span>
-            </div>
-
-            <h3 id="quiz-question-text" style="font-size:1.15rem; color:#fff; margin-bottom:14px;">Cargando pregunta...</h3>
-
-            <div id="quiz-options-container" class="quiz-options">
-              <!-- Opciones generadas por JS -->
-            </div>
-
-            <div id="quiz-feedback" style="display:none; padding:14px; border-radius:6px; font:0.86rem/1.5 Verdana, sans-serif; margin-top:14px;"></div>
-
-            <div style="display:flex; justify-content:flex-end; margin-top:16px;">
-              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 18px; border-radius:6px; font:700 0.85rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 5</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 5</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <!-- Barra de Navegación de Módulo Dinámica -->
       <nav class="module-nav-bar"></nav>
@@ -734,158 +733,193 @@ var reporte = await db.Orders
 
       simulateTrackingStrategy('tracking');
 
-      // --- Quiz Formativo ---
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
       const quizQuestions = [
-        {
-          q: "¿Por qué se genera una InvalidOperationException al ejecutar consultas paralelas sobre un mismo DbContext con Task.WhenAll?",
-          options: [
-            "Porque DbContext no es thread-safe y su conexión subyacente no admite comandos simultáneos.",
-            "Porque C# no permite usar Task.WhenAll con métodos asíncronos.",
-            "Porque SQL Server no admite más de 1 usuario conectado por segundo.",
-            "Porque Entity Framework solo puede consultar tablas de hasta 100 registros."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! DbContext mantiene una sola conexión y un lector activo en el socket. Dos hilos simultáneos provocan colisiones en el protocolo de red."
-        },
-        {
-          q: "¿Cuál es el patrón recomendado por Microsoft para ejecutar tareas en paralelo que requieren acceso a base de datos en EF Core?",
-          options: [
-            "IDbContextFactory<TContext>, creando un contexto efímero independiente por cada tarea con 'await using'.",
-            "Registrar el DbContext como Singleton global en el contenedor de DI.",
-            "Usar la palabra clave 'lock(dbContext)' antes de cada llamada asíncrona.",
-            "Deshabilitar las transacciones en SQL Server."
-          ],
-          correct: 0,
-          feedback: "¡Exacto! IDbContextFactory fabrica instancias independientes para cada worker o tarea concurrente, permitiendo paralelismo real."
-        },
-        {
-          q: "¿En qué situación es superior .AsNoTrackingWithIdentityResolution() frente a .AsNoTracking() tradicional?",
-          options: [
-            "Cuando se cargan consultas complejas con relaciones 1:N donde múltiples filas secundarias referencian a la misma entidad principal.",
-            "Cuando se planea llamar a SaveChanges() después de la consulta.",
-            "Solo cuando se utiliza SQLite en memoria.",
-            "Únicamente cuando se ejecutan procedimientos almacenados."
-          ],
-          correct: 0,
-          feedback: "¡Muy bien! Con relaciones 1:N, .AsNoTracking() crea instancias duplicadas de la misma entidad en memoria, mientras que IdentityResolution las deduplica manteniendo una sola instancia sin el costo del Change Tracker."
-        },
-        {
-          q: "¿Por qué Native AOT requiere JSON Source Generators en lugar de JsonSerializer tradicional?",
-          options: [
-            "Porque Native AOT no admite Reflection en tiempo de ejecución ni generación dinámica de código (Emit).",
-            "Porque los archivos JSON solo pueden tener hasta 1 KB de tamaño en AOT.",
-            "Porque Native AOT solo funciona con formato XML.",
-            "Porque el compilador Roslyn reemplaza todas las cadenas de texto por enteros."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! Native AOT aplica trimming agresivo y compila a binario cerrado. El Source Generator crea la metadata de serialización en tiempo de compilación sin recurrir a Reflection."
-        },
-        {
-          q: "¿Cuál es el beneficio de rendimiento más notorio al publicar una Minimal API en .NET 8 con Native AOT?",
-          options: [
-            "Reducción radical del tiempo de arranque en frío (Cold Start de ~15ms) y menor huella de memoria RAM.",
-            "Capacidad ilimitada de usar código no administrado sin firmas.",
-            "Mayor cantidad de métodos por clase.",
-            "Soporte automático para bases de datos NoSQL sin drivers."
-          ],
-          correct: 0,
-          feedback: "¡Excelente! Al eliminar el compilador JIT y el Intermediate Language (IL), el ejecutable nativo arranca en milisegundos y consume una fracción de memoria."
-        }
-      ];
+  {
+    "q": "¿Por qué se genera una InvalidOperationException al ejecutar consultas paralelas sobre una misma instancia de DbContext con Task.WhenAll?",
+    "options": [
+      "Porque DbContext no está diseñado para ser seguro en subprocesos (Thread-Safe); no admite operaciones concurrentes.",
+      "Porque el motor de base de datos relacional rechaza múltiples conexiones TCP originadas desde una misma dirección IP.",
+      "Porque el compilador JIT de .NET bloquea automáticamente las tareas asíncronas que superen los 500 milisegundos.",
+      "Porque Entity Framework Core exige que todas las consultas paralelas se escriban exclusivamente en sintaxis SQL pura."
+    ],
+    "correct": 0,
+    "feedback": "La documentación oficial de Microsoft establece que DbContext no es Thread-Safe. Si dos hilos o tareas intentan ejecutar operaciones simultáneas sobre la misma instancia, EF Core detecta la contención concurrente y arroja InvalidOperationException inmediatamente."
+  },
+  {
+    "q": "¿Cómo resuelve la interfaz IDbContextFactory la contención de concurrencia en componentes de larga duración como Blazor Server o BackgroundServices?",
+    "options": [
+      "Serializa todas las peticiones en una cola síncrona bloqueando la interfaz de usuario hasta finalizar la escritura.",
+      "Crea instancias efímeras de DbContext de corta duración e independientes para cada tarea o subproceso concurrente.",
+      "Reemplaza el proveedor relacional por una base de datos en memoria volátil de acceso exclusivo de lectura.",
+      "Fuerza a que todas las consultas se ejecuten en un único hilo secundario con prioridad de ejecución mínima."
+    ],
+    "correct": 1,
+    "feedback": "IDbContextFactory permite crear instancias de DbContext bajo demanda (usando factory.CreateDbContext()) para unidades de trabajo específicas. Cada subproceso o tarea obtiene su propia instancia aislada, evitando contención de hilos y liberándola al terminar con using."
+  },
+  {
+    "q": "¿Cuál es el beneficio de rendimiento principal de aplicar el método '.AsNoTracking()' en consultas de solo lectura en EF Core?",
+    "options": [
+      "Omite el registro en el Change Tracker, reduciendo el consumo de memoria RAM y acelerando la ejecución de la consulta.",
+      "Evita que el motor de base de datos establezca cerrojos de lectura en los registros de las tablas transaccionales.",
+      "Convierte la consulta LINQ en un procedimiento almacenado compilado directamente en el procesador del servidor.",
+      "Comprime automáticamente los campos alfanuméricos en formato gzip antes de transferirlos por la red local."
+    ],
+    "correct": 0,
+    "feedback": "Al invocar AsNoTracking(), EF Core no crea snapshots ni monitorea las entidades en el Change Tracker. Esto reduce drásticamente la asignación de memoria en el heap y optimiza los tiempos de ejecución de CPU al materializar los objetos."
+  },
+  {
+    "q": "¿Qué anomalía de rendimiento previene la directiva '.AsSplitQuery()' al cargar relaciones complejas de uno a muchos (1:N) con .Include()?",
+    "options": [
+      "Previene bloqueos de actualización (Deadlocks) forzando el aislamiento de transacciones de lectura sucia.",
+      "Previene la 'Explosión Cartesiana', evitando multiplicar filas redundantes en un único resultado masivo con JOINs.",
+      "Previene que el recolector de basura suspenda los hilos de renderizado gráfico de la aplicación cliente.",
+      "Previene que el controlador de red fragmente los paquetes TCP en tramas de longitud variable en el socket."
+    ],
+    "correct": 1,
+    "feedback": "Cuando se incluyen múltiples colecciones relacionadas (Include), un JOIN relacional tradicional provoca una 'explosión cartesiana', duplicando los datos de la tabla principal por cada fila hija. AsSplitQuery() divide la consulta en múltiples sentencias SQL independientes, eliminando la redundancia de datos transferidos."
+  },
+  {
+    "q": "En el manejo de concurrencia optimista en EF Core, ¿qué excepción específica arroja el método SaveChanges() cuando se detecta un conflicto en el token de concurrencia?",
+    "options": [
+      "DbUpdateConcurrencyException, permitiendo capturar el conflicto y aplicar estrategias de resolución.",
+      "SqlExecutionTimeoutException, al expirar el tiempo de espera predeterminado para el bloqueo del registro.",
+      "NullReferenceException, provocada por la pérdida de la clave primaria durante la materialización de entidades.",
+      "InvalidCastException, generada al comparar campos de tipo timestamp con cadenas de texto de caracteres variables."
+    ],
+    "correct": 0,
+    "feedback": "Cuando se configura un token de concurrencia (ej. [Timestamp] o IsRowVersion) y otra transacción modificó la fila primero, EF Core genera DbUpdateConcurrencyException, permitiendo al desarrollador inspeccionar los valores en base de datos, en memoria y en la base original para resolver el conflicto."
+  }
+];
 
       let currentQuizIdx = 0;
       let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderQuizQuestion() {
+      window.renderQuizQuestion = function() {
         const q = quizQuestions[currentQuizIdx];
-        document.getElementById('quiz-question-number').innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.q;
+        if (!q) return;
 
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
         const optsContainer = document.getElementById('quiz-options-container');
-        optsContainer.innerHTML = '';
         const feedbackBox = document.getElementById('quiz-feedback');
-        feedbackBox.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        q.options.forEach((opt, idx) => {
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerText = opt;
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
           btn.onclick = () => selectQuizOption(idx);
           optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function selectQuizOption(idx) {
+      window.selectQuizOption = function(idx) {
         const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
         const feedbackBox = document.getElementById('quiz-feedback');
-        feedbackBox.style.display = 'block';
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (idx === q.correct) {
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
           quizScore++;
-          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[idx].style.borderColor = 'var(--ef-green)';
-          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
-          feedbackBox.style.border = '1px solid var(--ef-green)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = q.feedback;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
-          btns[idx].style.borderColor = 'var(--ef-coral)';
-          btns[q.correct].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[q.correct].style.borderColor = 'var(--ef-green)';
-          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
-          feedbackBox.style.border = '1px solid var(--ef-coral)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = `Incorrecto. ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextQuizQuestion() {
+      window.nextQuizQuestion = function() {
         currentQuizIdx++;
         if (currentQuizIdx < quizQuestions.length) {
           renderQuizQuestion();
         } else {
           showQuizSummary();
         }
-      }
+      };
 
-      function showQuizSummary() {
+      window.showQuizSummary = function() {
         const container = document.getElementById('quiz-container');
+        if (!container) return;
         const pct = Math.round((quizScore / quizQuestions.length) * 100);
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--ef-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
-              ${pct >= 80 ? '¡Excelente dominio de concurrencia y optimización de EF Core!' : 'Buen intento. Repasa la pestaña de Concurrencia y vuelve a intentarlo.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
             <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
               🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
+      };
 
-      function restartQuiz() {
+      window.restartQuiz = function() {
         currentQuizIdx = 0;
         quizScore = 0;
-        const feedbackBox = document.getElementById('quiz-feedback');
-        if (feedbackBox) feedbackBox.style.display = 'none';
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
         renderQuizQuestion();
       }
-
-      renderQuizQuestion();
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

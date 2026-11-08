@@ -362,59 +362,33 @@
 
       <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
       <section id="tab-quiz" class="content-panel">
-        <div class="lifecycle-flow-card">
-          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Arquitectura Móvil</h2>
-          <p style="margin:0 0 20px; font-size:0.84rem; color:var(--muted);">
-            Reactivos de opción múltiple estructurados con simetría anti-sesgo y rigor doctrinal según Head First Android y Tomás Gironés.
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Formativo de Arquitectura Móvil & Ciclo de Vida
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos técnicos con simetría intra-inciso sobre el ciclo de vida de componentes Android y persistencia de estado.
           </p>
-
-          <!-- Q1 -->
-          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px; margin-bottom:16px;">
-            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--android-green);">REACTIVO 1 · HEAD FIRST ANDROID (CICLO DE VIDA)</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              Cuando el usuario rota físicamente el teléfono móvil de posición vertical a horizontal mientras utiliza una aplicación, ¿qué secuencia exacta de eventos ejecuta el sistema operativo Android sobre la Activity activa?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(1, 0)">
-                A) Destruye completamente la instancia de la Activity invocando onPause(), onStop() y onDestroy(), y crea una nueva instancia invocando onCreate(), onStart() y onResume() para cargar los recursos gráficos del nuevo ancho.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(1, 1)">
-                B) Congela el proceso del sistema operativo en modo suspensión de bajo consumo hasta que el usuario presione el botón físico de encendido dos veces consecutivas.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(1, 2)">
-                C) Invoca únicamente el callback onLowMemory() y elimina todos los archivos cacheados en la memoria flash de almacenamiento externo del dispositivo.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(1, 3)">
-                D) Convierte automáticamente la Activity en un Broadcast Receiver global para recibir las señales de orientación de la antena GPS del teléfono.
-              </button>
-            </div>
-            <div id="qand-f1" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
-          </div>
-
-          <!-- Q2 -->
-          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px;">
-            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--gold);">REACTIVO 2 · JETPACK Y BACKGROUND WORK</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              Una aplicación de inspección de campo necesita sincronizar 200 fotografías capturadas hacia un servidor remoto. La tarea debe completarse obligatoriamente aunque la app se cierre o el dispositivo se reinicie, pero solo cuando el teléfono esté conectado a Wi-Fi y cargador. ¿Cuál es el componente arquitectónico recomendado según la doctrina de Android Jetpack?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(2, 0)">
-                A) Thread nativo de Java dentro del método onResume() de la Activity con un bucle while(true) infinito de sondeo.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(2, 1)">
-                B) WorkManager con restricciones (Constraints) de red no medida (UNMETERED) y dispositivo en carga (CHARGING).
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(2, 2)">
-                C) Broadcast Receiver con prioridad 999 registrado estáticamente en el manifest para interceptar eventos de pantalla apagada.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerAndroidQuiz(2, 3)">
-                D) Content Provider con autenticación OAuth en memoria volátil de pila sin persistencia de base de datos Room.
-              </button>
-            </div>
-            <div id="qand-f2" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Laboratorio de Computación · Material Didáctico de Arquitectura &amp; Ingeniería de Software
@@ -422,6 +396,7 @@
     </main>
 
     <script>
+
       let currentCounter = 0;
       let viewModelCounter = 0;
 
@@ -535,6 +510,185 @@
           }
         }
       };
+    
+
+    /* ==============================================================
+       LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+       ============================================================== */
+    const quizQuestions = [
+  {
+    "q": "Cuando el usuario rota físicamente el dispositivo de vertical a horizontal mientras usa una app, ¿qué ciclo ejecuta el sistema operativo Android sobre la Activity activa por defecto?",
+    "options": [
+      "Destruye la instancia ejecutando onPause(), onStop() y onDestroy(), y crea una nueva con onCreate(), onStart() y onResume().",
+      "Mantiene la instancia intacta en memoria suspendiendo temporalmente el hilo principal mediante el método onFreeze().",
+      "Ejecuta únicamente onConfigurationChanged() preservando todas las variables locales del hilo sin redibujar vistas.",
+      "Envía la Activity a segundo plano invocando onRestart() sin destruir ni recargar los recursos gráficos del layout."
+    ],
+    "correct": 0,
+    "feedback": "Por defecto, un cambio de configuración (como rotación de pantalla o cambio de idioma) destruye por completo la Activity activa (onPause -> onStop -> onDestroy) y recrea una nueva instancia (onCreate -> onStart -> onResume) para cargar los recursos adecuados del calificador (ej. layout-land)."
+  },
+  {
+    "q": "¿Por qué el componente ViewModel de Android Jetpack previene fugas de memoria (Memory Leaks) y pérdida de datos durante los cambios de configuración?",
+    "options": [
+      "Porque se ejecuta en un proceso aislado del kernel de Linux con permisos de administrador root.",
+      "Porque sobrevive al ciclo de vida de la Activity y retiene los datos hasta que el Activity se finaliza con finish().",
+      "Porque serializa automáticamente todas las entidades a disco mediante una base de datos SQLite en cada frame.",
+      "Porque reemplaza el Garbage Collector nativo de ART liberando memoria síncronamente en el hilo de renderizado."
+    ],
+    "correct": 1,
+    "feedback": "El ViewModel está vinculado al ViewModelStoreOwner y no al ciclo de vida efímero de la Activity individual. Permanece en memoria mientras la Activity se recrea por rotación y solo se destruye cuando la Activity se finaliza definitivamente (finish()) o el usuario remueve la tarea."
+  },
+  {
+    "q": "En el ciclo de vida de una Activity, ¿en qué callback preciso deja de ser visible la pantalla para el usuario antes de pasar a segundo plano?",
+    "options": [
+      "onPause(), ya que se invoca en cuanto la ventana pierde el foco visual parcial del usuario.",
+      "onStop(), ya que se ejecuta cuando la Activity deja de ser completamente visible para el usuario.",
+      "onDestroy(), ya que es el único callback que notifica la pérdida de visibilidad de componentes.",
+      "onSaveInstanceState(), ya que se ejecuta antes de cualquier transición de visibilidad en la vista."
+    ],
+    "correct": 1,
+    "feedback": "onPause() se ejecuta cuando la Activity pierde el foco (pero aún puede ser parcialmente visible, ej. un diálogo modal flotante). onStop() se dispara cuando la Activity deja de ser visible por completo (ej. el usuario presionó Home o abrió otra app)."
+  },
+  {
+    "q": "¿Cuál de los siguientes componentes arquitectónicos de Android está diseñado para realizar tareas en segundo plano sin proporcionar interfaz gráfica de usuario?",
+    "options": [
+      "BroadcastReceiver, para desplegar vistas complejas en ventanas flotantes de prioridad alta.",
+      "Service, para ejecutar operaciones de larga duración en background como reproducción de audio o sincronización.",
+      "ContentProvider, para capturar eventos de pulsaciones táctiles directas sobre la pantalla táctil.",
+      "Fragment, para gestionar la cola de eventos de hardware del chip de comunicaciones Bluetooth."
+    ],
+    "correct": 1,
+    "feedback": "Un Service es un componente de aplicación que puede realizar operaciones de larga duración en segundo plano (background) y no proporciona una interfaz de usuario visual, a diferencia de una Activity o Fragment."
+  }
+];
+
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let currentShuffledOptions = [];
+
+    window.renderQuizQuestion = function() {
+      const q = quizQuestions[currentQuizIdx];
+      if (!q) return;
+
+      const qNumEl = document.getElementById('quiz-question-number');
+      const qScoreEl = document.getElementById('quiz-score');
+      const qTextEl = document.getElementById('quiz-question-text');
+      const optsContainer = document.getElementById('quiz-options-container');
+      const feedbackBox = document.getElementById('quiz-feedback');
+      const nextBtn = document.getElementById('btn-next-quiz');
+
+      if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+      if (optsContainer) optsContainer.innerHTML = '';
+      if (feedbackBox) feedbackBox.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+
+      // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+      currentShuffledOptions = q.options.map((opt, origIdx) => ({
+        text: opt,
+        isCorrect: origIdx === q.correct
+      })).sort(() => Math.random() - 0.5);
+
+      currentShuffledOptions.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+        btn.onclick = () => selectQuizOption(idx);
+        optsContainer.appendChild(btn);
+      });
+    };
+
+    window.selectQuizOption = function(idx) {
+      const q = quizQuestions[currentQuizIdx];
+      const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+      btns.forEach(b => (b.disabled = true));
+
+      const feedbackBox = document.getElementById('quiz-feedback');
+      if (feedbackBox) feedbackBox.style.display = 'block';
+
+      const chosen = currentShuffledOptions[idx];
+      const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+      if (chosen && chosen.isCorrect) {
+        quizScore++;
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+          feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+        }
+      } else {
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+          btns[idx].style.borderColor = '#ff006e';
+        }
+        if (correctIdx !== -1 && btns[correctIdx]) {
+          btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+          feedbackBox.style.border = '1px solid #ff006e';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+        }
+      }
+
+      const qScoreEl = document.getElementById('quiz-score');
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      const nextBtn = document.getElementById('btn-next-quiz');
+      if (nextBtn) nextBtn.style.display = 'inline-block';
+    };
+
+    window.nextQuizQuestion = function() {
+      currentQuizIdx++;
+      if (currentQuizIdx < quizQuestions.length) {
+        renderQuizQuestion();
+      } else {
+        showQuizSummary();
+      }
+    };
+
+    window.showQuizSummary = function() {
+      const container = document.getElementById('quiz-container');
+      if (!container) return;
+      const pct = Math.round((quizScore / quizQuestions.length) * 100);
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px 10px;">
+          <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+          <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+          <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+            Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+          </p>
+          <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+            ${pct >= 75 ? '¡Excelente! Demuestras una comprensión rigurosa y libre de sesgos en este laboratorio formativo.' : 'Buen esfuerzo. Te recomendamos revisar el material doctrinal e interactivo y reintentar la evaluación.'}
+          </p>
+          <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+            🔄 Reiniciar Evaluación
+          </button>
+        </div>
+      `;
+    };
+
+    window.restartQuiz = function() {
+      currentQuizIdx = 0;
+      quizScore = 0;
+      renderQuizQuestion();
+    };
+
+    // Auto-inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+    } else {
+      renderQuizQuestion();
+    }
+  
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

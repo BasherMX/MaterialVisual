@@ -1194,37 +1194,34 @@ COMMIT; -- Todo se consolida atómicamente</pre>
       </section>
 
       <!-- PESTAÑA 5: QUIZ / CLASIFICADOR INTERACTIVO -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación: Clasificación de Sentencias SQL</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu dominio técnico clasificando cada una de las siguientes sentencias o casos reales en el sublenguaje correspondiente: <strong>DDL</strong>, <strong>DML</strong>, <strong>DCL</strong>, <strong>TCL</strong> o <strong>DQL</strong>.
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Sublenguajes SQL (DDL, DML, DCL, TCL)
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos de clasificación técnica sobre sentencias del estándar SQL con simetría y opciones barajadas.
           </p>
-
-          <div class="quiz-score-bar">
-            <span>Progreso del Examen: <span id="quiz-current-num">1</span> de 8</span>
-            <span>Puntuación: <span id="quiz-score-text" style="color:var(--green);">0 / 0 (0%)</span></span>
-          </div>
-
-          <div class="quiz-container" style="margin-top:16px;">
-            <div class="quiz-card" id="quiz-box">
-              <p class="quiz-q" id="quiz-question-text">Cargando pregunta...</p>
-              <div class="quiz-code" id="quiz-code-text">SENTENCIA SQL</div>
-              <div class="quiz-options" id="quiz-options-container">
-                <!-- Opciones dinámicas -->
-              </div>
-              <div class="quiz-feedback" id="quiz-feedback-box">
-                <!-- Retroalimentación -->
-              </div>
-              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-                <button id="btn-next-quiz" class="btn-run" style="display:none;" onclick="loadNextQuestion()">
-                  Siguiente Pregunta ➔
-                </button>
-              </div>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 8</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 8</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <!-- Barra de Navegación Estandarizada entre Módulos -->
       <nav class="module-nav-bar"></nav>
@@ -1699,140 +1696,227 @@ COMMIT; -- Todo se consolida atómicamente</pre>
       }
 
       // ==========================================
-      // BANCO DE PREGUNTAS (QUIZ) DE CLASIFICACIÓN
-      // ==========================================
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
       const quizQuestions = [
-        {
-          q: "¿A qué sublenguaje pertenece la sentencia que añade una columna de auditoría a una tabla existente?",
-          code: "ALTER TABLE usuarios ADD COLUMN ultimo_login TIMESTAMP;",
-          options: ["DML", "DDL", "DCL", "TCL"],
-          correct: 1, // DDL
-          feedback: "¡Correcto! ALTER TABLE modifica la estructura o esquema del catálogo de la base de datos, por lo que es una operación canónica de DDL."
-        },
-        {
-          q: "¿A qué sublenguaje pertenece la sentencia que otorga permisos de lectura e inserción a un rol?",
-          code: "GRANT SELECT, INSERT ON facturas TO 'rol_contabilidad';",
-          options: ["DDL", "DML", "DCL", "TCL"],
-          correct: 2, // DCL
-          feedback: "¡Correcto! GRANT y REVOKE controlan los privilegios y la seguridad de acceso a los datos, perteneciendo a DCL (Data Control Language)."
-        },
-        {
-          q: "¿Cuál sublenguaje gobierna la reversión de una serie de operaciones bancarias ante un fallo de fondos?",
-          code: "ROLLBACK TO SAVEPOINT antes_de_transferencia;",
-          options: ["TCL", "DML", "DDL", "DQL"],
-          correct: 0, // TCL
-          feedback: "¡Correcto! ROLLBACK, COMMIT y SAVEPOINT administran las fronteras de las transacciones ACID, conformando TCL (Transaction Control Language)."
-        },
-        {
-          q: "¿A qué categoría pertenece la instrucción que actualiza el estado de las órdenes vencidas?",
-          code: "UPDATE pedidos SET estado = 'CANCELADO' WHERE fecha_limite < NOW();",
-          options: ["DDL", "DML", "DCL", "TCL"],
-          correct: 1, // DML
-          feedback: "¡Correcto! UPDATE modifica las tuplas (valores de datos) existentes sin cambiar la definición de la tabla, siendo parte central de DML."
-        },
-        {
-          q: "Aunque borra todos los registros como DELETE, ¿a qué sublenguaje pertenece técnicamente TRUNCATE TABLE?",
-          code: "TRUNCATE TABLE logs_auditoria;",
-          options: ["DML", "DDL", "TCL", "DCL"],
-          correct: 1, // DDL
-          feedback: "¡Exacto! TRUNCATE es una sentencia DDL porque deasigna estructuras físicas a nivel de páginas de disco y reinicia contadores de identidad en el catálogo."
-        },
-        {
-          q: "En taxonomías refinadas, ¿cómo se clasifica una consulta pura de lectura que no genera mutaciones de estado?",
-          code: "SELECT cliente, SUM(total) FROM ventas GROUP BY cliente HAVING SUM(total) > 10000;",
-          options: ["DML / DQL", "DDL", "DCL", "TCL"],
-          correct: 0, // DML / DQL
-          feedback: "¡Correcto! En el estándar tradicional se engloba en DML, pero la literatura moderna lo clasifica específicamente como DQL (Data Query Language) por ser idempotente y de solo lectura."
-        },
-        {
-          q: "¿A qué sublenguaje pertenece la sentencia que quita privilegios de ejecución a un usuario?",
-          code: "REVOKE EXECUTE ON PROCEDURE calcular_nomina FROM 'usuario_temporal';",
-          options: ["TCL", "DDL", "DCL", "DML"],
-          correct: 2, // DCL
-          feedback: "¡Correcto! REVOKE restringe o cancela permisos previamente concedidos, formando parte del control de acceso DCL."
-        },
-        {
-          q: "¿Cuál sublenguaje se encarga de hacer permanente y durable en disco el resultado de una transacción?",
-          code: "COMMIT;",
-          options: ["DDL", "DML", "TCL", "DCL"],
-          correct: 2, // TCL
-          feedback: "¡Correcto! COMMIT sella la transacción en el WAL log y confirma de forma irrevocable los cambios, siendo el pilar de TCL."
-        }
-      ];
+  {
+    "q": "¿A qué sublenguaje pertenece la sentencia que añade una columna de auditoría a una tabla existente?",
+    "options": [
+      "DML (Data Manipulation Language), al insertar nuevos metadatos en los registros del catálogo.",
+      "DDL (Data Definition Language), al alterar la estructura física y esquema de la tabla relacional.",
+      "DCL (Data Control Language), al gestionar las políticas de visibilidad y acceso a la columna.",
+      "TCL (Transaction Control Language), al coordinar los bloqueos de concurrencia en la transacción."
+    ],
+    "correct": 1,
+    "feedback": "ALTER TABLE modifica la estructura o definición del esquema de la base de datos en el diccionario de datos, por lo que es una instrucción canónica de DDL (Data Definition Language)."
+  },
+  {
+    "q": "¿A qué sublenguaje pertenece la sentencia que otorga permisos de lectura e inserción a un rol?",
+    "options": [
+      "DDL (Data Definition Language), al registrar el nombre del rol dentro del catálogo del motor.",
+      "DML (Data Manipulation Language), al agregar tuplas en la tabla interna de usuarios del sistema.",
+      "DCL (Data Control Language), al conceder o revocar privilegios de seguridad y acceso a los datos.",
+      "TCL (Transaction Control Language), al sincronizar el token criptográfico de sesión del usuario."
+    ],
+    "correct": 2,
+    "feedback": "GRANT y REVOKE administran los privilegios, permisos y directivas de seguridad sobre los objetos de la base de datos, conformando el sublenguaje DCL (Data Control Language)."
+  },
+  {
+    "q": "¿Cuál sublenguaje gobierna la reversión de una serie de operaciones bancarias ante un fallo de fondos?",
+    "options": [
+      "TCL (Transaction Control Language), mediante la ejecución de la instrucción ROLLBACK transaccional.",
+      "DML (Data Manipulation Language), mediante la ejecución de sentencias DELETE sobre las tablas.",
+      "DDL (Data Definition Language), mediante la reconstrucción de los esquemas de tablas transaccionales.",
+      "DQL (Data Query Language), mediante la validación previa de saldos con cláusulas SELECT FOR UPDATE."
+    ],
+    "correct": 0,
+    "feedback": "ROLLBACK, COMMIT y SAVEPOINT controlan el ciclo de vida de las transacciones atómicas, perteneciendo a TCL (Transaction Control Language)."
+  },
+  {
+    "q": "¿A qué categoría pertenece la instrucción que actualiza el estado de las órdenes vencidas mediante la sentencia UPDATE?",
+    "options": [
+      "DDL (Data Definition Language), al cambiar las restricciones de integridad check de las columnas.",
+      "DML (Data Manipulation Language), al modificar el estado de los datos almacenados en las filas.",
+      "DCL (Data Control Language), al validar que la sesión cuente con privilegios de modificación de fila.",
+      "TCL (Transaction Control Language), al asegurar la confirmación permanente de los bloques de disco."
+    ],
+    "correct": 1,
+    "feedback": "UPDATE, INSERT y DELETE manipulan los datos almacenados dentro de las tablas sin alterar la estructura del esquema, por lo que son sentencias de DML (Data Manipulation Language)."
+  },
+  {
+    "q": "Aunque borra todos los registros como DELETE sin WHERE, ¿a qué sublenguaje pertenece técnicamente la sentencia TRUNCATE TABLE?",
+    "options": [
+      "DML (Data Manipulation Language), ya que el resultado visual es el vaciado de las tuplas de la tabla.",
+      "DDL (Data Definition Language), ya que desasigna las extensiones de almacenamiento del esquema físico.",
+      "TCL (Transaction Control Language), ya que fuerza un punto de control permanente en el log de escritura.",
+      "DCL (Data Control Language), ya que revoca temporalmente los permisos de lectura de otros usuarios."
+    ],
+    "correct": 1,
+    "feedback": "TRUNCATE TABLE es formalmente DDL: desasigna las páginas y extensiones de datos a nivel de almacenamiento físico y reinicia contadores de identidad, en lugar de borrar fila por fila registrando cada eliminación individual en el log transaccional como hace DELETE."
+  },
+  {
+    "q": "En taxonomías SQL refinadas, ¿cómo se clasifica una consulta pura de lectura SELECT que **NO** genera mutaciones de estado?",
+    "options": [
+      "DQL (Data Query Language) o subconjunto especializado de DML de solo lectura.",
+      "DDL (Data Definition Language), al requerir la lectura del esquema y metadatos de las tablas.",
+      "DCL (Data Control Language), al verificar las credenciales de cifrado de la conexión cliente.",
+      "TCL (Transaction Control Language), al establecer un bloqueo compartido en el nivel de aislamiento."
+    ],
+    "correct": 0,
+    "feedback": "La sentencia SELECT se clasifica en muchas taxonomías académicas y estándares formales como DQL (Data Query Language) para distinguirla de las sentencias DML que provocan mutación (INSERT, UPDATE, DELETE)."
+  },
+  {
+    "q": "¿A qué sublenguaje pertenece la sentencia REVOKE que retira privilegios de ejecución sobre procedimientos almacenados?",
+    "options": [
+      "TCL (Transaction Control Language), al cancelar las transacciones activas iniciadas por dicho usuario.",
+      "DDL (Data Definition Language), al eliminar el procedimiento almacenado del catálogo de funciones.",
+      "DCL (Data Control Language), al revocar derechos de acceso y permisos previamente otorgados a usuarios.",
+      "DML (Data Manipulation Language), al sobrescribir los registros de auditoría en las tablas de auditoría."
+    ],
+    "correct": 2,
+    "feedback": "REVOKE pertenece a DCL (Data Control Language), complementando a GRANT para la administración de seguridad y permisos sobre los recursos de la base de datos."
+  },
+  {
+    "q": "¿Cuál sublenguaje se encarga de hacer permanente y durable en disco el resultado de una transacción completada con éxito?",
+    "options": [
+      "DDL (Data Definition Language), al registrar el identificador de la transacción en el catálogo del sistema.",
+      "DML (Data Manipulation Language), al escribir las filas confirmadas en los búferes de memoria compartida.",
+      "TCL (Transaction Control Language), mediante la ejecución de la sentencia COMMIT de confirmación atómica.",
+      "DCL (Data Control Language), al liberar las credenciales temporales de sesión utilizadas por la consulta."
+    ],
+    "correct": 2,
+    "feedback": "COMMIT confirma las modificaciones realizadas durante una transacción haciéndolas permanentes y visibles a otras transacciones, garantizando la propiedad de Durabilidad de TCL."
+  }
+];
 
-      let currentQuizIndex = 0;
+      let currentQuizIdx = 0;
       let quizScore = 0;
-      let answeredQuestions = 0;
+      let currentShuffledOptions = [];
 
-      function renderCurrentQuestion() {
-        const q = quizQuestions[currentQuizIndex];
-        document.getElementById('quiz-current-num').innerText = currentQuizIndex + 1;
-        document.getElementById('quiz-question-text').innerText = q.q;
-        document.getElementById('quiz-code-text').innerText = q.code;
+      window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
 
-        const optionsContainer = document.getElementById('quiz-options-container');
-        optionsContainer.innerHTML = "";
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.className = "quiz-feedback";
-        feedbackBox.style.display = "none";
-        document.getElementById('btn-next-quiz').style.display = "none";
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
 
-        q.options.forEach((opt, idx) => {
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
-          btn.className = "btn-option";
-          btn.innerText = `${String.fromCharCode(65 + idx)}) ${opt}`;
-          btn.onclick = () => selectQuizAnswer(idx);
-          optionsContainer.appendChild(btn);
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function selectQuizAnswer(chosenIdx) {
-        const q = quizQuestions[currentQuizIndex];
-        const buttons = document.querySelectorAll('.btn-option');
-        buttons.forEach(b => b.disabled = true);
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
 
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.style.display = "block";
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        answeredQuestions++;
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
 
-        if (chosenIdx === q.correct) {
+        if (chosen && chosen.isCorrect) {
           quizScore++;
-          buttons[chosenIdx].classList.add('correct');
-          feedbackBox.className = "quiz-feedback show correct-feed";
-          feedbackBox.innerHTML = `<strong>¡Excelente!</strong> ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          buttons[chosenIdx].classList.add('incorrect');
-          buttons[q.correct].classList.add('correct');
-          feedbackBox.className = "quiz-feedback show incorrect-feed";
-          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        const pct = Math.round((quizScore / answeredQuestions) * 100);
-        document.getElementById('quiz-score-text').innerText = `${quizScore} / ${answeredQuestions} (${pct}%)`;
-        document.getElementById('btn-next-quiz').style.display = "inline-flex";
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function loadNextQuestion() {
-        currentQuizIndex++;
-        if (currentQuizIndex >= quizQuestions.length) {
-          currentQuizIndex = 0; // Reiniciar o ciclar
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
         }
-        renderCurrentQuestion();
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      // Auto-inicializar
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
       }
-
-      // Event Listeners y arranque inicial
-      document.addEventListener("DOMContentLoaded", () => {
-        renderRDBMSUI();
-        renderCurrentQuestion();
-        simulateDeletionScenario('DELETE');
-
-        // Escucha cambios manuales en el textarea
-        document.getElementById('sql-input').addEventListener('input', (e) => {
-          detectSublanguage(e.target.value);
-        });
-      });
+    
     </script>
     <!-- Navegación Dinámica Centralizada -->
     <script src="../shared/modules-data.js"></script>

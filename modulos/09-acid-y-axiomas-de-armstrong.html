@@ -697,36 +697,34 @@
       </section>
 
       <!-- SECCIÓN 5: QUIZ INTERACTIVO -->
-      <section id="tab-quiz-armstrong" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Banco de Evaluación: ACID y Axiomas de Armstrong</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu comprensión técnica con preguntas de nivel examen sobre mecanismos transaccionales y deducciones lógicas de dependencias funcionales.
+      <section id="tab-quiz-armstrong" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Propiedades ACID y Axiomas de Armstrong
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos rigurosos de teoría relacional, niveles de aislamiento ANSI y derivación de dependencias funcionales.
           </p>
-
-          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(34,33,61,0.9); padding:12px 18px; border-radius:6px; border:1px solid var(--line); font:700 0.88rem 'Courier New', monospace;">
-            <span>Pregunta <span id="quiz-armstrong-num">1</span> de 6</span>
-            <span>Aciertos: <span id="quiz-armstrong-score" style="color:var(--green);">0 / 0</span></span>
-          </div>
-
-          <div class="quiz-card-box">
-            <h4 id="quiz-q-text" style="color:#fff; margin:0 0 14px; font-size:1.05rem; font-family:'Courier New', monospace;">
-              Cargando pregunta...
-            </h4>
-            <div id="quiz-options-box">
-              <!-- Opciones -->
-            </div>
-            <div id="quiz-feed-box" style="display:none; padding:12px 16px; border-radius:6px; font:0.85rem/1.5 Verdana, sans-serif; margin-top:14px;">
-              <!-- Feedback -->
-            </div>
-            <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-              <button id="btn-next-armstrong-quiz" class="btn-sim btn-sim-primary" style="display:none;" onclick="nextArmstrongQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 6</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 6</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Material Didáctico e Interactivo · Ciencias de la Computación, Teoría Relacional & Sistemas Gestores de Bases de Datos
@@ -1017,145 +1015,205 @@
       }
 
       // ========================================================
-      // 4. Quiz de ACID y Axiomas de Armstrong
       // ========================================================
-      const armstrongQuizData = [
-        {
-          q: "¿Cuál propiedad ACID garantiza que un corte de electricidad no borrará una transferencia ya confirmada con COMMIT?",
-          options: [
-            "Atomicidad (Atomicity)",
-            "Consistencia (Consistency)",
-            "Aislamiento (Isolation)",
-            "Durabilidad (Durability)"
-          ],
-          correct: 3,
-          feed: "¡Correcto! La Durabilidad asegura que los cambios confirmados sobrevivan a fallos catastróficos mediante el almacenamiento en el Write-Ahead Log (WAL)."
-        },
-        {
-          q: "Si en un esquema relacional se cumple que X → Y, ¿cuál de los axiomas primarios nos permite deducir que XZ → YZ?",
-          options: [
-            "Axioma de Reflexividad",
-            "Axioma de Aumento (Augmentation)",
-            "Axioma de Transitividad",
-            "Regla de Pseudotransitividad"
-          ],
-          correct: 1,
-          feed: "¡Exacto! El Axioma de Aumento establece que agregar un conjunto arbitrario de atributos Z a ambos lados preserva la dependencia funcional."
-        },
-        {
-          q: "¿Qué anomalía de concurrencia ocurre cuando la Transacción 1 lee datos no confirmados que la Transacción 2 termina revirtiendo (ROLLBACK)?",
-          options: [
-            "Lectura Sucia (Dirty Read)",
-            "Lectura No Repetible (Non-Repeatable Read)",
-            "Lectura Fantasma (Phantom Read)",
-            "Pérdida de Actualización (Lost Update)"
-          ],
-          correct: 0,
-          feed: "¡Correcto! Una Lectura Sucia (Dirty Read) lee datos en estado borrador de otra transacción que aún no ha emitido COMMIT."
-        },
-        {
-          q: "La regla de derivación secundaria 'Unión' (si X → Y y X → Z entonces X → YZ) se demuestra combinando:",
-          options: [
-            "Únicamente Reflexividad dos veces",
-            "Aumento y Transitividad",
-            "Pseudotransitividad y Descomposición",
-            "No se puede demostrar, es un axioma primario"
-          ],
-          correct: 1,
-          feed: "¡Excelente! Se aumenta X → Y con X para obtener X → XY, se aumenta X → Z con Y para obtener XY → YZ, y por Transitividad se concluye X → YZ."
-        },
-        {
-          q: "¿Qué nivel de aislamiento previene tanto las Lecturas Sucias como las Lecturas No Repetibles, pero puede permitir Lecturas Fantasma?",
-          options: [
-            "Read Uncommitted",
-            "Read Committed",
-            "Repeatable Read",
-            "Serializable"
-          ],
-          correct: 2,
-          feed: "¡Correcto! Repeatable Read garantiza que si vuelves a leer la misma fila obtendrás el mismo valor, pero otra transacción podría insertar nuevas filas (fantasmas) en el rango."
-        },
-        {
-          q: "Si tenemos R(A, B, C) con dependencias {A → B, B → C}. ¿Cuál es la clausura {A}⁺?",
-          options: [
-            "{A}",
-            "{A, B}",
-            "{A, B, C}",
-            "{B, C}"
-          ],
-          correct: 2,
-          feed: "¡Correcto! Por reflexividad A determina A. Por A → B se agrega B. Por B → C se agrega C. Por tanto {A}⁺ = {A, B, C}, lo que hace de A una clave candidata."
-        }
-      ];
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
+      const quizQuestions = [
+  {
+    "q": "¿Cuál propiedad ACID garantiza que un corte catastrófico de energía eléctrica **NO** destruirá una transferencia bancaria ya confirmada con COMMIT?",
+    "options": [
+      "Atomicidad (Atomicity), al asegurar que todas las transferencias se ejecuten como unidad indivisible.",
+      "Consistencia (Consistency), al validar que la suma de saldos contables se conserve antes y después.",
+      "Aislamiento (Isolation), al ocultar los balances intermedios a otras sesiones concurrentes del sistema.",
+      "Durabilidad (Durability), al garantizar que los cambios confirmados persistan en el almacenamiento seguro."
+    ],
+    "correct": 3,
+    "feedback": "La Durabilidad (D de ACID) garantiza que una vez que una transacción ha emitido COMMIT, sus efectos persisten en medios de almacenamiento no volátil incluso si el sistema colapsa o se desconecta inmediatamente después."
+  },
+  {
+    "q": "Si en un esquema relacional se cumple la dependencia funcional $X \\rightarrow Y$, ¿cuál de los axiomas primarios de Armstrong permite deducir formalmente que $XZ \\rightarrow YZ$?",
+    "options": [
+      "Axioma de Reflexividad, al deducir que cualquier conjunto de atributos es subconjunto de sí mismo.",
+      "Axioma de Aumento (Augmentation), al agregar el mismo conjunto de atributos $Z$ a ambos lados de la regla.",
+      "Axioma de Transitividad, al encadenar la implicación lógica entre tres conjuntos de atributos distintos.",
+      "Regla de Pseudotransitividad, al sustituir un subconjunto de atributos dependientes en el antecedente."
+    ],
+    "correct": 1,
+    "feedback": "El Axioma de Aumento establece que si $X \\rightarrow Y$, entonces $XZ \\rightarrow YZ$ (o $X \\cup Z \\rightarrow Y \\cup Z$) para cualquier conjunto de atributos $Z$ del mismo esquema relacional."
+  },
+  {
+    "q": "¿Qué anomalía de concurrencia ocurre cuando la Transacción 1 lee datos no confirmados que la Transacción 2 revierte posteriormente con ROLLBACK?",
+    "options": [
+      "Lectura Sucia (Dirty Read), leyendo datos transitorios que nunca llegaron a confirmarse en la base de datos.",
+      "Lectura No Repetible (Non-Repeatable Read), leyendo valores distintos al consultar dos veces la misma fila.",
+      "Lectura Fantasma (Phantom Read), observando nuevas filas insertadas concurrentemente por otra sesión activa.",
+      "Pérdida de Actualización (Lost Update), sobrescribiendo escrituras previas sin control de cerrojos exclusivos."
+    ],
+    "correct": 0,
+    "feedback": "Una Lectura Sucia (Dirty Read) ocurre cuando una transacción lee datos modificados por otra transacción concurrente que aún no ha confirmado (no-committed). Si la segunda transacción realiza ROLLBACK, los datos leídos eran inválidos y ficticios."
+  },
+  {
+    "q": "La regla de derivación secundaria de 'Unión' (si $X \\rightarrow Y$ y $X \\rightarrow Z$ entonces $X \\rightarrow YZ$) se demuestra combinando formalmente:",
+    "options": [
+      "Únicamente el axioma de Reflexividad dos veces consecutivas sobre los atributos del esquema.",
+      "El axioma de Aumento (generando $X \\rightarrow XY$ y $XY \\rightarrow YZ$) y el axioma de Transitividad.",
+      "La regla de Pseudotransitividad combinada con el axioma de Descomposición de dependencias triviales.",
+      "Ninguna combinación, pues la regla de Unión constituye un axioma primario irreductible de Armstrong."
+    ],
+    "correct": 1,
+    "feedback": "Demostración canónica: Si $X \\rightarrow Y$, por Aumento con $X$ tenemos $X \\rightarrow XY$. Si $X \\rightarrow Z$, por Aumento con $Y$ tenemos $XY \\rightarrow YZ$. Aplicando Transitividad entre $X \\rightarrow XY$ y $XY \\rightarrow YZ$, se concluye que $X \\rightarrow YZ$."
+  },
+  {
+    "q": "¿Qué nivel de aislamiento previene tanto las Lecturas Sucias como las Lecturas No Repetibles, pero puede permitir Lecturas Fantasma?",
+    "options": [
+      "Read Uncommitted, permitiendo leer datos en vuelo de transacciones concurrentes sin bloqueo.",
+      "Read Committed, previniendo lecturas sucias pero permitiendo cambios de valores en lecturas repetidas.",
+      "Repeatable Read, bloqueando las filas leídas pero permitiendo la inserción de nuevas tuplas coincidentes.",
+      "Serializable, garantizando la ejecución serial estricta mediante cerrojos de rango de predicados."
+    ],
+    "correct": 2,
+    "feedback": "Repeatable Read retiene cerrojos compartidos sobre las filas leídas hasta el final de la transacción, evitando que otras sesiones las modifiquen (previene Non-Repeatable Reads). Sin embargo, al no bloquear rangos completos, permite que otra sesión inserte nuevas tuplas que cumplan el predicado WHERE (Lecturas Fantasma)."
+  },
+  {
+    "q": "Dado el esquema relacional $R(A, B, C)$ con dependencias funcionales $\\{A \\rightarrow B, B \\rightarrow C\\}$, ¿cuál es la clausura formal de atributos $\\{A\\}^+$?",
+    "options": [
+      "$\\{A\\}$, conteniendo exclusivamente el atributo inicial sin deducir implicaciones transitivas.",
+      "$\\{A, B\\}$, conteniendo los atributos derivados directamente sin alcanzar el cierre completo del conjunto.",
+      "$\\{A, B, C\\}$, deduciendo $B$ por implicación directa y $C$ por la transitividad de Armstrong.",
+      "$\\{B, C\\}$, excluyendo la clave determinante inicial al aplicar la descomposición relacional."
+    ],
+    "correct": 2,
+    "feedback": "Iniciando con $\\{A\\}^+ = \\{A\\}$. Con $A \\rightarrow B$, agregamos $B$: $\\{A, B\\}$. Con $B \\rightarrow C$, como $B \\in \\{A, B\\}$, agregamos $C$: $\\{A, B, C\\}$. Por ende, $\\{A\\}^+ = \\{A, B, C\\}$ y $A$ es una superclave de $R$."
+  }
+];
 
       let currentQuizIdx = 0;
-      let quizCorrectCount = 0;
-      let quizAnsweredCount = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderArmstrongQuiz() {
-        const item = armstrongQuizData[currentQuizIdx];
-        document.getElementById('quiz-armstrong-num').innerText = currentQuizIdx + 1;
-        document.getElementById('quiz-q-text').innerText = item.q;
+      window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
 
-        const optBox = document.getElementById('quiz-options-box');
-        optBox.innerHTML = "";
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        const feedBox = document.getElementById('quiz-feed-box');
-        feedBox.style.display = "none";
-        document.getElementById('btn-next-armstrong-quiz').style.display = "none";
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
 
-        item.options.forEach((opt, idx) => {
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
-          btn.className = "quiz-opt-btn";
-          btn.innerText = `${String.fromCharCode(65 + idx)}) ${opt}`;
-          btn.onclick = () => selectArmstrongAnswer(idx);
-          optBox.appendChild(btn);
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function selectArmstrongAnswer(chosenIdx) {
-        const item = armstrongQuizData[currentQuizIdx];
-        const buttons = document.querySelectorAll('.quiz-opt-btn');
-        buttons.forEach(b => b.disabled = true);
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
 
-        quizAnsweredCount++;
-        const feedBox = document.getElementById('quiz-feed-box');
-        feedBox.style.display = "block";
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (chosenIdx === item.correct) {
-          quizCorrectCount++;
-          buttons[chosenIdx].classList.add('correct');
-          feedBox.style.background = "rgba(0,255,170,0.15)";
-          feedBox.style.border = "1px solid var(--green)";
-          feedBox.style.color = "var(--green)";
-          feedBox.innerHTML = `<strong>¡Correcto!</strong> ${item.feed}`;
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          buttons[chosenIdx].classList.add('incorrect');
-          buttons[item.correct].classList.add('correct');
-          feedBox.style.background = "rgba(255,0,110,0.15)";
-          feedBox.style.border = "1px solid var(--coral)";
-          feedBox.style.color = "#ff99b6";
-          feedBox.innerHTML = `<strong>Incorrecto.</strong> ${item.feed}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-armstrong-score').innerText = `${quizCorrectCount} / ${quizAnsweredCount}`;
-        document.getElementById('btn-next-armstrong-quiz').style.display = "inline-block";
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextArmstrongQuestion() {
+      window.nextQuizQuestion = function() {
         currentQuizIdx++;
-        if (currentQuizIdx >= armstrongQuizData.length) {
-          currentQuizIdx = 0; // Reinicio o ciclado
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
         }
-        renderArmstrongQuiz();
-      }
+      };
 
-      // Inicialización en DOM Ready
-      document.addEventListener('DOMContentLoaded', () => {
-        loadPresetFD(1);
-        renderArmstrongQuiz();
-        updateAcidSimUI();
-      });
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      // Auto-inicializar
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

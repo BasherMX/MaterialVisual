@@ -648,32 +648,34 @@
       </section>
 
       <!-- Pestaña 6: Laboratorio de Evaluación Técnica -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación Formativa: Resiliencia & Microservicios</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu dominio sobre BackgroundService, cancelación cooperativa, estrategias de caché y resiliencia con reactivos de alta exigencia técnica:
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Background Services, Polly & Caching
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos de alta exigencia sobre BackgroundService, Circuit Breaker, Jitter en reintentos y cachés en clúster.
           </p>
-
-          <div class="quiz-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <span id="quiz-progress" style="font:700 0.8rem 'Courier New', monospace; color:var(--srv-cyan);">PREGUNTA 1 DE 4</span>
-              <span id="quiz-score" style="font:700 0.8rem 'Courier New', monospace; color:var(--srv-gold);">Puntuación: 0 / 4</span>
-            </div>
-
-            <div id="quiz-container">
-              <h3 id="quiz-question-text" style="color:#ffffff; font-size:1.05rem; margin-bottom:18px;"></h3>
-              <div id="quiz-options-container"></div>
-              <div id="quiz-feedback-box" style="display:none; padding:14px; border-radius:6px; margin-top:16px; font:0.86rem/1.5 Verdana, sans-serif;"></div>
-              <div style="margin-top:20px; text-align:right;">
-                <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;" onclick="nextQuizQuestion()">
-                  Siguiente Pregunta ➔
-                </button>
-              </div>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 6</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 6</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software, Bases de Datos, Gestión de Proyectos y Arquitectura Backend en .NET
@@ -867,195 +869,204 @@
 
       // ==========================================
       // 4. LABORATORIO DE EVALUACIÓN (QUIZ DE RESILIENCIA Y CACHÉ)
-      // ==========================================
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
       const quizQuestions = [
-        {
-          question: "¿Cuál es la clase base abstracta de 'Microsoft.Extensions.Hosting' diseñada específicamente para implementar tareas continuas de larga duración en segundo plano dentro de una aplicación .NET?",
-          options: [
-            "TaskFactory",
-            "BackgroundService",
-            "ThreadManager",
-            "ParallelExecutor"
-          ],
-          correct: 1,
-          feedback: "Correcto. BackgroundService es la clase base abstracta recomendada en .NET que implementa IHostedService y expone el método 'protected abstract Task ExecuteAsync(CancellationToken stoppingToken)'. TaskFactory es solo una clase auxiliar para crear tareas, pero no un componente hospedado con gestión de ciclo de vida."
-        },
-        {
-          question: "¿Cómo debe consumirse un servicio con ciclo de vida 'Scoped' (como un DbContext de Entity Framework Core) dentro de un 'BackgroundService' para evitar excepciones de Dependencia Cautiva (Captive Dependency)?",
-          options: [
-            "Inyectando directamente el DbContext en el constructor primario del BackgroundService.",
-            "Inyectando IServiceScopeFactory para crear manualmente un ámbito efímero (using var scope = _scopeFactory.CreateScope()) dentro del bucle ExecuteAsync.",
-            "Registrando el BackgroundService como Transient en el Program.cs.",
-            "Cambiando el DbContext a Singleton mediante AddSingleton<DbContext>()."
-          ],
-          correct: 1,
-          feedback: "Exacto. Como el BackgroundService es un Singleton de larga duración, inyectarle un servicio Scoped directamente provoca que la instancia Scoped quede capturada para siempre (Captive Dependency), causando fugas de memoria y colisiones multihilo. La solución canónica es inyectar IServiceScopeFactory y crear un scope efímero por cada iteración."
-        },
-        {
-          question: "¿Cuál es la ventaja arquitectónica de combinar 'AbsoluteExpiration' con 'SlidingExpiration' al configurar entradas en memoria caché?",
-          options: [
-            "Que la caché se replica automáticamente en todos los nodos de Kubernetes sin usar Redis.",
-            "Evitar que un dato consultado de forma continua y frecuente por usuarios permanezca indefinidamente en la memoria con información obsoleta (evita el estancamiento perpetuo).",
-            "Reducir el tamaño de los strings en el Heap de memoria a la mitad.",
-            "Desactivar la necesidad de invocar Dispose() al destruir la aplicación."
-          ],
-          correct: 1,
-          feedback: "Correcto. Si solo se utiliza expiración deslizante (Sliding), cualquier dato que reciba consultas continuas renovará su tiempo de vida sin cesar y jamás será desalojado, sirviendo datos desactualizados. Establecer un techo de expiración absoluta (AbsoluteExpiration) fuerza el desalojo periódico para obligar a refrescar la fuente de verdad."
-        },
-        {
-          question: "En una arquitectura de microservicios con Polly, ¿qué ocurre cuando el Circuit Breaker pasa al estado 'Open' (Abierto)?",
-          options: [
-            "El cortacircuito intercepta las llamadas salientes y arroja un fallo inmediato (fail-fast) sin enviar tráfico de red hacia el servicio remoto caído, protegiendo a ambos sistemas.",
-            "El servidor web apaga automáticamente el contenedor de Docker.",
-            "El circuito reintenta la llamada 1,000 veces por segundo hasta que el servicio responda.",
-            "Convierte automáticamente las peticiones REST en llamadas gRPC."
-          ],
-          correct: 0,
-          feedback: "Exacto. Cuando el circuito está Abierto (Open), no se emite ninguna llamada a la red. El cliente recibe una excepción BrokenCircuitException instantánea (fail-fast), lo que evita la saturación de hilos del llamador y da un respiro al servicio colapsado para que pueda recuperarse."
-        },
-        {
-          question: "¿Por qué en .NET 8 (Mark J. Price) se recomienda 'Six Labors ImageSharp' para manipular imágenes en microservicios en lugar de 'System.Drawing.Common'?",
-          options: [
-            "Porque ImageSharp es 100% código administrado C# multiplataforma, mientras que System.Drawing.Common depende de GDI+ nativo de Windows y falla en Linux con PlatformNotSupportedException.",
-            "Porque ImageSharp solo permite renderizar fuentes TrueType en Word.",
-            "Porque System.Drawing.Common fue prohibida por el estándar SQL ANSI.",
-            "Porque ImageSharp duplica el consumo de CPU para evitar que el Garbage Collector se ejecute."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! En .NET 6+ Microsoft restringió System.Drawing.Common exclusivamente a Windows debido a problemas de estabilidad y seguridad con libgdiplus en Linux. Six Labors ImageSharp es la librería moderna independiente del sistema operativo."
-        },
-        {
-          question: "¿Cuál es la principal ventaja arquitectónica de utilizar 'Serilog' para Logging Estructurado (Structured Logging) frente a la salida tradicional de texto plano?",
-          options: [
-            "Emite plantillas de mensajes con propiedades semánticas en JSON, permitiendo consultas e indexación precisa de campos (ej. OrderId, UserId) en motores como Seq o Elasticsearch.",
-            "Elimina la necesidad de escribir pruebas unitarias de software.",
-            "Encripta automáticamente los archivos de disco mediante llaves RSA de 4096 bits.",
-            "Convierte los logs en código binario gRPC directamente en la tarjeta de red."
-          ],
-          correct: 0,
-          feedback: "¡Exacto! El logging estructurado sustituye cadenas concatenadas amorfas por eventos con propiedades semánticas enriquecidas en JSON, facilitando búsquedas analíticas instantáneas en plataformas de observabilidad."
-        }
-      ];
-
-      function updateSerilogPreview() {
-        const u = document.getElementById('log-input-user').value || 'USR-ANON';
-        const o = document.getElementById('log-input-order').value || 'ORD-NONE';
-        const a = parseFloat(document.getElementById('log-input-amount').value) || 0;
-
-        document.getElementById('log-preview-plain').innerText = `[INFO] Usuario ${u} completó orden ${o} con total $${a.toFixed(2)}.`;
-
-        const jsonEvent = {
-          Timestamp: new Date().toISOString(),
-          Level: "Information",
-          MessageTemplate: "Usuario {UserId} completó orden {OrderId} con total {Amount:C}",
-          Properties: {
-            UserId: u,
-            OrderId: o,
-            Amount: a,
-            SourceContext: "OrderProcessingService",
-            Environment: "Production",
-            Host: "cloud-api-pod-88"
-          }
-        };
-
-        document.getElementById('log-preview-json').innerText = JSON.stringify(jsonEvent, null, 2);
-      }
-
-      setTimeout(updateSerilogPreview, 100);
+  {
+    "q": "¿Cuál es la clase base abstracta de 'Microsoft.Extensions.Hosting' diseñada específicamente para implementar tareas continuas de larga duración en segundo plano?",
+    "options": [
+      "IHostedService, implementando manualmente StartAsync y StopAsync con un bucle while controlado por CancellationToken.",
+      "BackgroundService, implementando el método ExecuteAsync(CancellationToken stoppingToken) con gestión de ciclo de vida.",
+      "WorkerProcess, creando un hilo nativo independiente que omite el despachador de eventos del sistema operativo.",
+      "TaskFactory, asignando registros de memoria compartida en el contenedor de inyección de dependencias de ASP.NET."
+    ],
+    "correct": 1,
+    "feedback": "BackgroundService es la clase base canónica en .NET que implementa IHostedService y abstrae la lógica del hilo de fondo mediante el método abstracto ExecuteAsync(CancellationToken). Se encarga de coordinar la cancelación gracefully cuando la aplicación se detiene."
+  },
+  {
+    "q": "¿Qué sucede si se inyecta directamente un servicio registrado como 'Scoped' (como DbContext) dentro del constructor de un BackgroundService?",
+    "options": [
+      "El contenedor arroja una excepción de Dependencia Cautiva en tiempo de inicio, o el DbContext se vuelve un Singleton con fugas.",
+      "El contenedor de Inversión de Control clona la base de datos relacional en un clúster local de alta disponibilidad.",
+      "El servicio en segundo plano se ejecuta sin errores pero duplica cada registro insertado en la base de datos.",
+      "El recolector de basura suspende el hilo de fondo reiniciando el socket de red del servidor web inmediatamente."
+    ],
+    "correct": 0,
+    "feedback": "Un BackgroundService es registrado como Singleton por el host. Inyectar un servicio Scoped directamente en su constructor crea una Captive Dependency o falla con InvalidOperationException si se valida el ámbito. La solución correcta es inyectar IServiceScopeFactory y crear un scope puntual dentro de cada ciclo de ExecuteAsync."
+  },
+  {
+    "q": "En una política de reintentos con Polly para servicios distribuidos, ¿por qué es crítico incorporar 'Jitter' (aleatoriedad en el backoff exponencial)?",
+    "options": [
+      "Para comprimir el tamaño de los paquetes HTTP transmitidos entre los microservicios de la red local.",
+      "Para desincronizar los reintentos concurrentes de múltiples clientes, evitando el colapso por 'Tormenta de Reintentos' (Thundering Herd).",
+      "Para forzar que el firewall de la red reconozca las conexiones como peticiones originadas por un navegador web.",
+      "Para validar que la firma criptográfica del token JWT no haya expirado durante la interrupción de la red."
+    ],
+    "correct": 1,
+    "feedback": "Si 1,000 clientes sufren un fallo y todos reintentan exactamente a los 2s, 4s y 8s (backoff determinista), bombardearán al servidor recuperado al unísono, derribándolo de nuevo. Agregar Jitter añade una variación aleatoria (ej. 2s ± 400ms) que dispersa la carga en el tiempo."
+  },
+  {
+    "q": "¿En qué estado se encuentra un Circuit Breaker de Polly cuando el servicio remoto está degradado y rechaza de inmediato todas las peticiones?",
+    "options": [
+      "Estado ABIERTO (Open), rechazando peticiones rápidamente sin enviarlas a la red para permitir que el servicio se recupere.",
+      "Estado CERRADO (Closed), permitiendo el flujo normal de peticiones mientras monitorea la tasa de fallas acumuladas.",
+      "Estado SEMI-ABIERTO (Half-Open), enviando una cantidad limitada de peticiones de prueba para evaluar la recuperación.",
+      "Estado SUSPENDIDO (Suspended), redirigiendo el tráfico hacia un archivo plano de auditoría en el disco duro."
+    ],
+    "correct": 0,
+    "feedback": "En la analogía eléctrica del Circuit Breaker: CERRADO = circuito cerrado (la corriente fluye normal); ABIERTO = circuito abierto (el flujo se corta para proteger el sistema, retornando fallo inmediato sin sobrecargar el servicio); SEMI-ABIERTO = prueba una muestra de peticiones para decidir si vuelve a cerrar."
+  },
+  {
+    "q": "¿Cuál es la diferencia crítica entre 'IMemoryCache' e 'IDistributedCache' en una aplicación distribuida escalada horizontalmente?",
+    "options": [
+      "IMemoryCache reside en la memoria RAM local del proceso servidor; IDistributedCache comparte el estado entre múltiples nodos (ej. Redis).",
+      "IMemoryCache cifra los datos en almacenamiento secundario; IDistributedCache solo admite cadenas de texto plano de solo lectura.",
+      "IMemoryCache requiere una base de datos relacional dedicada; IDistributedCache utiliza la memoria caché de primer nivel de la CPU.",
+      "IMemoryCache es compatible únicamente con sistemas Linux; IDistributedCache está restringido a microservicios alojados en Docker."
+    ],
+    "correct": 0,
+    "feedback": "IMemoryCache almacena objetos directamente en la memoria del proceso local. Si se escala a 5 instancias de servidor, cada una tendrá su propia caché desincronizada. IDistributedCache desacopla la caché del proceso y la centraliza en un clúster compartido (como Redis o SQL Server), manteniendo consistencia global."
+  },
+  {
+    "q": "¿Qué ventaja ofrece el registro estructurado de eventos (ej. con Serilog) frente al logging tradicional de texto plano no formateado?",
+    "options": [
+      "Preserva las propiedades de los objetos como campos de clave-valor consultables en motores de búsqueda (Elasticsearch, Seq).",
+      "Elimina por completo la necesidad de almacenar archivos de log en disco liberando espacio de almacenamiento secundario.",
+      "Compila las trazas de error en código de máquina de bajo nivel para acelerar el procesamiento de excepciones del GC.",
+      "Garantiza que ningún usuario sin privilegios de administrador pueda leer los mensajes de error en la consola local."
+    ],
+    "correct": 0,
+    "feedback": "El logging estructurado conserva el mensaje con plantillas de propiedades semánticas (ej. 'Usuario {UserId} completó pedido {PedidoId}'), lo que permite que motores analíticos como Elasticsearch, Datadog o Seq indexen los campos individuales y permitan filtrar, alertar y agregar datos sin requerir expresiones regulares frágiles."
+  }
+];
 
       let currentQuizIdx = 0;
       let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderQuizQuestion() {
+      window.renderQuizQuestion = function() {
         const q = quizQuestions[currentQuizIdx];
-        document.getElementById('quiz-progress').innerText = `PREGUNTA ${currentQuizIdx + 1} DE ${quizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.question;
-        const container = document.getElementById('quiz-options-container');
-        container.innerHTML = '';
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        if (!q) return;
 
-        q.options.forEach((opt, idx) => {
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerHTML = `<strong>${String.fromCharCode(65 + idx)}.</strong> ${opt}`;
-          btn.onclick = () => handleQuizAnswer(idx);
-          container.appendChild(btn);
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function handleQuizAnswer(selectedIdx) {
+      window.selectQuizOption = function(idx) {
         const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.style.display = 'block';
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (selectedIdx === q.correct) {
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
           quizScore++;
-          btns[selectedIdx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[selectedIdx].style.borderColor = 'var(--srv-green)';
-          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
-          feedbackBox.style.border = '1px solid var(--srv-green)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = q.feedback;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[selectedIdx].style.background = 'rgba(255, 51, 102, 0.2)';
-          btns[selectedIdx].style.borderColor = 'var(--srv-coral)';
-          btns[q.correct].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[q.correct].style.borderColor = 'var(--srv-green)';
-          feedbackBox.style.background = 'rgba(255, 51, 102, 0.1)';
-          feedbackBox.style.border = '1px solid var(--srv-coral)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = `Incorrecto. ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextQuizQuestion() {
+      window.nextQuizQuestion = function() {
         currentQuizIdx++;
         if (currentQuizIdx < quizQuestions.length) {
           renderQuizQuestion();
         } else {
           showQuizSummary();
         }
-      }
+      };
 
-      function showQuizSummary() {
+      window.showQuizSummary = function() {
         const container = document.getElementById('quiz-container');
+        if (!container) return;
         const pct = Math.round((quizScore / quizQuestions.length) * 100);
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--srv-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Técnica Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:520px; margin:0 auto 24px;">
-              ${pct >= 75 ? '¡Excelente! Has dominado BackgroundService, cancelación cooperativa, estrategias de caché y Circuit Breaker requeridos para el examen de Jefatura de Departamento.' : 'Buen intento. Repasa la pestaña de BackgroundService y Resiliencia para afianzar conceptos clave.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
-            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="location.reload()">
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
               🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
-
-      renderQuizQuestion();
-
-      // Control de Pestañas
-      window.switchTab = function (tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (activeBtn) activeBtn.classList.add('active');
       };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

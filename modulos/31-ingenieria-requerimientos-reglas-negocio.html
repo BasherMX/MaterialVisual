@@ -415,59 +415,33 @@
 
       <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
       <section id="tab-quiz" class="content-panel">
-        <div class="req-console">
-          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Ingeniería de Requerimientos</h2>
-          <p style="margin:0 0 20px; font-size:0.84rem; color:var(--muted);">
-            Reactivos de opción múltiple estructurados con estricta simetría anti-sesgo y rigor doctrinal según Vazquez &amp; Simões y Pressman.
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Formativo de Ingeniería de Requerimientos
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos estructurados con estricta simetría anti-sesgo y rigor doctrinal según IEEE 830, ISO 29148 y Vazquez & Simões.
           </p>
-
-          <!-- Q1 -->
-          <div class="scenario-card">
-            <span class="badge-req" style="color:var(--gold); border-color:var(--gold);">REACTIVO 1 · DOCTRINA VAZQUEZ &amp; SIMÕES</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              ¿Cuál es la diferencia conceptual fundamental entre una Regla de Negocio y un Requisito Funcional dentro de la ingeniería de software?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 0)">
-                A) La regla de negocio es una directriz de la organización preexistente y agnóstica de la tecnología; el requisito funcional define el comportamiento observable que el software debe ejecutar para satisfacer dicha directriz.
-              </button>
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 1)">
-                B) La regla de negocio se redacta obligatoriamente en código binario compilado; el requisito funcional se documenta únicamente mediante diagramas de Gantt y presupuestos contables de la dirección de sistemas.
-              </button>
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 2)">
-                C) La regla de negocio define la tasa de fallas admitida en producción por hora; el requisito funcional especifica exclusivamente los acuerdos salariales y contratos de tercerización de desarrolladores.
-              </button>
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(1, 3)">
-                D) La regla de negocio describe los índices de B+ Tree en la base de datos; el requisito funcional define los protocolos de transporte TCP/IP en la capa de red del modelo OSI.
-              </button>
-            </div>
-            <div id="quiz-f1" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
-          </div>
-
-          <!-- Q2 -->
-          <div class="scenario-card">
-            <span class="badge-req" style="color:var(--cyan); border-color:var(--cyan);">REACTIVO 2 · ESTÁNDAR IEEE 830</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              Un analista redacta el siguiente requerimiento: <em>"El sistema de facturación debe ser intuitivo, muy rápido al procesar pagos y amigable con el usuario"</em>. Según el estándar IEEE 830, ¿por qué este enunciado es formalmente inaceptable?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 0)">
-                A) Porque viola la regla de utilizar frameworks en la nube para la persistencia transaccional de pagos en microservicios distribuidos.
-              </button>
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 1)">
-                B) Porque adolece de ambigüedad subjetiva y carece de métricas verificables; no establece un umbral numérico de latencia ni criterios objetivos de prueba.
-              </button>
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 2)">
-                C) Porque las transferencias electrónicas no admiten la especificación de interfaces gráficas bajo ninguna metodología de software.
-              </button>
-              <button class="btn-class-opt" style="text-align:left; justify-content:flex-start;" onclick="answerQuiz(2, 3)">
-                D) Porque la longitud del texto excede los límites admisibles estipulados para la sintaxis de casos de uso ejecutables de Sommerville.
-              </button>
-            </div>
-            <div id="quiz-f2" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Laboratorio de Computación · Material Didáctico de Arquitectura &amp; Ingeniería de Software
@@ -475,6 +449,7 @@
     </main>
 
     <script>
+
       // Banco de Casos Didácticos para el Clasificador
       const scenarios = [
         {
@@ -642,6 +617,185 @@
       window.addEventListener('DOMContentLoaded', () => {
         renderScenario();
       });
+    
+
+    /* ==============================================================
+       LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+       ============================================================== */
+    const quizQuestions = [
+  {
+    "q": "¿Cuál es la diferencia conceptual fundamental entre una Regla de Negocio y un Requisito Funcional en la ingeniería de software según Vazquez & Simões?",
+    "options": [
+      "La regla de negocio es una directriz organizacional agnóstica de tecnología; el requisito funcional define el software observable para satisfacerla.",
+      "La regla de negocio se redacta exclusivamente en código fuente; el requisito funcional se documenta mediante diagramas de presupuesto y Gantt.",
+      "La regla de negocio define la tasa de fallas admitida en producción; el requisito funcional especifica los contratos de tercerización laboral.",
+      "La regla de negocio describe los índices físicos del DBMS; el requisito funcional define los protocolos de transporte de la capa de red."
+    ],
+    "correct": 0,
+    "feedback": "Una Regla de Negocio (ej. 'Los clientes con más de 5 años tienen 15% de descuento') existe en la empresa antes y con independencia del software. El Requisito Funcional es la especificación técnica que describe cómo el sistema informático automatiza y valida esa regla."
+  },
+  {
+    "q": "Un analista redacta: <em>'El sistema de facturación debe ser intuitivo, rápido y amigable'</em>. Según el estándar IEEE 830 / ISO 29148, ¿por qué este enunciado es inaceptable?",
+    "options": [
+      "Porque viola la regla de utilizar microservicios distribuidos en la nube para el cobro transaccional.",
+      "Porque adolece de ambigüedad subjetiva y carece de métricas verificables y umbrales numéricos de prueba.",
+      "Porque las operaciones de facturación no admiten interfaces gráficas bajo ninguna metodología formal.",
+      "Porque la extensión del texto excede los límites gramaticales permitidos para historias de usuario."
+    ],
+    "correct": 1,
+    "feedback": "El estándar IEEE 830 exige que todo requerimiento sea verificable. Calificativos subjetivos como 'amigable', 'intuitivo' o 'rápido' no son medibles. Debe reformularse con métricas objetivas (ej. 'El tiempo de respuesta del 95% de las transacciones debe ser menor a 500 ms')."
+  },
+  {
+    "q": "¿Cuál de las siguientes afirmaciones corresponde a un Requerimiento No Funcional (RNF) según la taxonomía canónica de Ian Sommerville?",
+    "options": [
+      "El cajero debe poder registrar una venta de productos escaneando el código de barras bidimensional.",
+      "El sistema debe cifrar los datos en reposo usando AES-256 y responder peticiones en menos de 200 milisegundos.",
+      "El supervisor debe poder anular comprobantes fiscales emitidos durante el turno actual de operaciones.",
+      "El módulo de inventarios debe generar un reporte consolidado en formato PDF al cierre del ejercicio contable."
+    ],
+    "correct": 1,
+    "feedback": "Los requerimientos funcionales definen qué hace el sistema (servicios y casos de uso). Los requerimientos no funcionales definen restricciones de calidad, rendimiento, seguridad, confiabilidad o estándares operacionales (ej. cifrado AES-256, latencia < 200 ms)."
+  },
+  {
+    "q": "En la especificación de Historias de Usuario ágiles, ¿qué evalúa la letra 'V' dentro del acrónimo mnemotécnico INVEST de Bill Wake?",
+    "options": [
+      "Versatilidad: La historia debe poder implementarse en múltiples lenguajes de programación.",
+      "Valiosa (Valuable): La historia debe aportar valor tangible y medible al cliente o negocio.",
+      "Verificable: La historia debe poder compilarse en entornos de integración continua sin errores.",
+      "Volátil: La historia debe modificarse constantemente durante cada reunión diaria de Scrum."
+    ],
+    "correct": 1,
+    "feedback": "El criterio INVEST define que una historia de usuario debe ser: Independent (Independiente), Negotiable (Negociable), Valuable (Valiosa para el usuario/negocio), Estimable (Estimable), Small (Pequeña) y Testable (Comprobable o verificable)."
+  }
+];
+
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let currentShuffledOptions = [];
+
+    window.renderQuizQuestion = function() {
+      const q = quizQuestions[currentQuizIdx];
+      if (!q) return;
+
+      const qNumEl = document.getElementById('quiz-question-number');
+      const qScoreEl = document.getElementById('quiz-score');
+      const qTextEl = document.getElementById('quiz-question-text');
+      const optsContainer = document.getElementById('quiz-options-container');
+      const feedbackBox = document.getElementById('quiz-feedback');
+      const nextBtn = document.getElementById('btn-next-quiz');
+
+      if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+      if (optsContainer) optsContainer.innerHTML = '';
+      if (feedbackBox) feedbackBox.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+
+      // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+      currentShuffledOptions = q.options.map((opt, origIdx) => ({
+        text: opt,
+        isCorrect: origIdx === q.correct
+      })).sort(() => Math.random() - 0.5);
+
+      currentShuffledOptions.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+        btn.onclick = () => selectQuizOption(idx);
+        optsContainer.appendChild(btn);
+      });
+    };
+
+    window.selectQuizOption = function(idx) {
+      const q = quizQuestions[currentQuizIdx];
+      const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+      btns.forEach(b => (b.disabled = true));
+
+      const feedbackBox = document.getElementById('quiz-feedback');
+      if (feedbackBox) feedbackBox.style.display = 'block';
+
+      const chosen = currentShuffledOptions[idx];
+      const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+      if (chosen && chosen.isCorrect) {
+        quizScore++;
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+          feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+        }
+      } else {
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+          btns[idx].style.borderColor = '#ff006e';
+        }
+        if (correctIdx !== -1 && btns[correctIdx]) {
+          btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+          feedbackBox.style.border = '1px solid #ff006e';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+        }
+      }
+
+      const qScoreEl = document.getElementById('quiz-score');
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      const nextBtn = document.getElementById('btn-next-quiz');
+      if (nextBtn) nextBtn.style.display = 'inline-block';
+    };
+
+    window.nextQuizQuestion = function() {
+      currentQuizIdx++;
+      if (currentQuizIdx < quizQuestions.length) {
+        renderQuizQuestion();
+      } else {
+        showQuizSummary();
+      }
+    };
+
+    window.showQuizSummary = function() {
+      const container = document.getElementById('quiz-container');
+      if (!container) return;
+      const pct = Math.round((quizScore / quizQuestions.length) * 100);
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px 10px;">
+          <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+          <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+          <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+            Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+          </p>
+          <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+            ${pct >= 75 ? '¡Excelente! Demuestras una comprensión rigurosa y libre de sesgos en este laboratorio formativo.' : 'Buen esfuerzo. Te recomendamos revisar el material doctrinal e interactivo y reintentar la evaluación.'}
+          </p>
+          <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+            🔄 Reiniciar Evaluación
+          </button>
+        </div>
+      `;
+    };
+
+    window.restartQuiz = function() {
+      currentQuizIdx = 0;
+      quizScore = 0;
+      renderQuizQuestion();
+    };
+
+    // Auto-inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+    } else {
+      renderQuizQuestion();
+    }
+  
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

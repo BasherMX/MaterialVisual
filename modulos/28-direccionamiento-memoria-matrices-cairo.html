@@ -652,93 +652,32 @@
 
     <!-- TAB 5: QUIZ FORMATIVO -->
     <section id="tab-quiz" class="content-panel" role="tabpanel">
-      <h2>5. Laboratorio de Evaluación Técnica &middot; Direccionamiento de Arreglos</h2>
-      <p>
-        Resuelve estos 4 reactivos de alta complejidad con base en la bibliografía oficial de Osvaldo Cairó y 
-        evaluaciones técnicas de desarrollo de software y arquitectura.
-      </p>
 
-      <div id="cairo-quiz">
-        <!-- Reactivo 1 -->
-        <div class="quiz-card" id="qc-1" data-correct="1">
-          <p class="quiz-question">
-            1. Sea una matriz A[5 &times; 6] almacenada por renglones (Row-Major) en base 1, con POSINI = 1000 y cada elemento ocupando w = 2 bytes. 
-            ¿Cuál es la dirección de memoria física de A[4, 3]?
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio de Evaluación Técnica · Direccionamiento de Arreglos
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos rigurosos de alta complejidad psicométrica sobre direccionamiento lineal en memoria (Row-Major vs Column-Major).
           </p>
-          <div class="quiz-options">
-            <button class="quiz-option-btn" onclick="checkQuiz(1, 0)"><span class="opt-letter">A</span> 1038</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(1, 1)"><span class="opt-letter">B</span> 1040</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(1, 2)"><span class="opt-letter">C</span> 1046</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(1, 3)"><span class="opt-letter">D</span> 1050</button>
-          </div>
-          <div class="quiz-feedback" id="fb-1">
-            <strong>Explicación Doctrinal:</strong><br/>
-            Fórmula: LOC = POSINI + [n(i - 1) + (j - 1)] &times; w.<br/>
-            n = 6, i = 4, j = 3, w = 2, POSINI = 1000.<br/>
-            Desplazamiento = [6 &times; (4 - 1) + (3 - 1)] &times; 2 = [6 &times; 3 + 2] &times; 2 = [18 + 2] &times; 2 = 20 &times; 2 = 40 bytes.<br/>
-            LOC = 1000 + 40 = <strong>1040</strong>.
-          </div>
         </div>
-
-        <!-- Reactivo 2 -->
-        <div class="quiz-card" id="qc-2" data-correct="2">
-          <p class="quiz-question">
-            2. Si la misma matriz anterior A[5 &times; 6] (POSINI = 1000, w = 2) fuera almacenada en orden por columnas (Column-Major) en base 1, 
-            ¿cuál sería la dirección física de A[4, 3]?
-          </p>
-          <div class="quiz-options">
-            <button class="quiz-option-btn" onclick="checkQuiz(2, 0)"><span class="opt-letter">A</span> 1024</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(2, 1)"><span class="opt-letter">B</span> 1032</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(2, 2)"><span class="opt-letter">C</span> 1026</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(2, 3)"><span class="opt-letter">D</span> 1040</button>
-          </div>
-          <div class="quiz-feedback" id="fb-2">
-            <strong>Explicación Doctrinal:</strong><br/>
-            Fórmula: LOC = POSINI + [m(j - 1) + (i - 1)] &times; w.<br/>
-            m = 5, i = 4, j = 3, w = 2, POSINI = 1000.<br/>
-            Desplazamiento = [5 &times; (3 - 1) + (4 - 1)] &times; 2 = [5 &times; 2 + 3] &times; 2 = [10 + 3] &times; 2 = 13 &times; 2 = 26 bytes.<br/>
-            LOC = 1000 + 26 = <strong>1026</strong>.
-          </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
         </div>
-
-        <!-- Reactivo 3 -->
-        <div class="quiz-card" id="qc-3" data-correct="0">
-          <p class="quiz-question">
-            3. Al calcular la dirección física de un elemento en un arreglo bidimensional almacenado por renglones (Row-Major), 
-            ¿por qué el número de renglones totales (m) es irrelevante para la función de direccionamiento?
-          </p>
-          <div class="quiz-options">
-            <button class="quiz-option-btn" onclick="checkQuiz(3, 0)"><span class="opt-letter">A</span> Porque para saltar renglones completos sólo se necesita conocer cuántas columnas (n) tiene cada renglón.</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(3, 1)"><span class="opt-letter">B</span> Porque el compilador infiere m automáticamente a partir del valor de w.</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(3, 2)"><span class="opt-letter">C</span> Porque en Row-Major los renglones se almacenan de manera discontinua mediante apuntadores.</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(3, 3)"><span class="opt-letter">D</span> Porque la memoria RAM colapsa la dimensión m a un solo byte físico.</button>
-          </div>
-          <div class="quiz-feedback" id="fb-3">
-            <strong>Explicación Doctrinal:</strong><br/>
-            En Row-Major, para saltar los (i-1) renglones previos, la única información de ancho necesaria es el número de elementos por fila (n). 
-            El límite total m sirve para validar que no haya desbordamiento de índice (bounds checking), pero no participa en la aritmética del offset.
-          </div>
-        </div>
-
-        <!-- Reactivo 4 -->
-        <div class="quiz-card" id="qc-4" data-correct="3">
-          <p class="quiz-question">
-            4. En una matriz A[m &times; n], ¿qué elementos tienen garantizada exactamente la misma dirección de memoria tanto en Row-Major como en Column-Major?
-          </p>
-          <div class="quiz-options">
-            <button class="quiz-option-btn" onclick="checkQuiz(4, 0)"><span class="opt-letter">A</span> Todos los elementos de la diagonal principal (i = j).</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(4, 1)"><span class="opt-letter">B</span> Ninguno, sus disposiciones son siempre mutuamente excluyentes.</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(4, 2)"><span class="opt-letter">C</span> Sólo el elemento central de matrices impares.</button>
-            <button class="quiz-option-btn" onclick="checkQuiz(4, 3)"><span class="opt-letter">D</span> El primer elemento (A[1, 1]) y el último elemento (A[m, n]).</button>
-          </div>
-          <div class="quiz-feedback" id="fb-4">
-            <strong>Explicación Doctrinal:</strong><br/>
-            El primer elemento (A[1, 1]) tiene offset 0 en ambos esquemas (LOC = POSINI). 
-            El último elemento (A[m, n]) tiene siempre un offset de (m &times; n - 1) &times; w bytes, pues independientemente de cómo se ordenen internamente las celdas, 
-            ambos esquemas deben recorrer la totalidad de las celdas anteriores antes de alcanzar la última.
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
       </div>
+  
     </section>
 
     <footer class="module-footer">
@@ -749,6 +688,7 @@
   <script src="../shared/modules-data.js"></script>
   <script src="../shared/nav.js"></script>
   <script>
+
     // Tab switching standard
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -962,6 +902,185 @@
 
     // Render inicial al cargar
     renderMatrixSimulator();
-  </script>
+  
+
+    /* ==============================================================
+       LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+       ============================================================== */
+    const quizQuestions = [
+  {
+    "q": "Sea una matriz bidimensional A[5 &times; 6] almacenada en orden por renglones (Row-Major) en base 1, con dirección inicial POSINI = 1000 y cada elemento ocupando w = 2 bytes. ¿Cuál es la dirección de memoria física exacta de A[4, 3]?",
+    "options": [
+      "1038 bytes, aplicando la fórmula de base cero sin considerar el desplazamiento.",
+      "1040 bytes, calculando POSINI + [(4 - 1) &times; 6 + (3 - 1)] &times; 2 = 1000 + 40.",
+      "1046 bytes, multiplicando el índice de renglón por la dimensión vertical m.",
+      "1050 bytes, invirtiendo la ponderación entre el número de renglones y columnas."
+    ],
+    "correct": 1,
+    "feedback": "Fórmula canónica de Osvaldo Cairó en base 1 por renglones: LOC = POSINI + [(i - 1) &times; n + (j - 1)] &times; w. Con n = 6, i = 4, j = 3, w = 2: LOC = 1000 + [(3 &times; 6) + 2] &times; 2 = 1000 + 20 &times; 2 = 1040."
+  },
+  {
+    "q": "Si la misma matriz A[5 &times; 6] (POSINI = 1000, w = 2, base 1) se almacena en orden por columnas (Column-Major), ¿cuál es la dirección física de memoria de A[4, 3]?",
+    "options": [
+      "1026 bytes, calculando POSINI + [(3 - 1) &times; 5 + (4 - 1)] &times; 2 = 1000 + 26.",
+      "1032 bytes, sumando el desplazamiento horizontal de columnas sin considerar w.",
+      "1040 bytes, asumiendo simetría idéntica entre Row-Major y Column-Major.",
+      "1048 bytes, multiplicando las coordenadas relativas por el total de columnas n."
+    ],
+    "correct": 0,
+    "feedback": "En almacenamiento por columnas (Column-Major): LOC = POSINI + [(j - 1) &times; m + (i - 1)] &times; w. Con m = 5, i = 4, j = 3, w = 2: LOC = 1000 + [(2 &times; 5) + 3] &times; 2 = 1000 + 13 &times; 2 = 1026."
+  },
+  {
+    "q": "Al calcular la dirección física de un elemento en una matriz A[m &times; n] por renglones (Row-Major), ¿por qué el número total de renglones (m) es estrictamente irrelevante en la función matemática?",
+    "options": [
+      "Porque la arquitectura de la memoria RAM solo direcciona bloques de longitud fija.",
+      "Porque para saltar renglones completos solo se requiere conocer el ancho de cada renglón (n).",
+      "Porque el compilador almacena los límites de renglones en la tabla de símbolos del SO.",
+      "Porque la caché L1 mapea automáticamente el número de renglones a registros virtuales."
+    ],
+    "correct": 1,
+    "feedback": "Para calcular el desplazamiento en Row-Major solo importa cuántos renglones previos se saltan y cuántas columnas tiene cada renglón (n). El límite m solo se utiliza para validación de desbordamiento (IndexOutOfRange), no para calcular la dirección."
+  },
+  {
+    "q": "En una matriz bidimensional A[m &times; n] con base 1, ¿cuál de los siguientes elementos tiene garantizada exactamente la misma dirección física tanto en Row-Major como en Column-Major?",
+    "options": [
+      "Únicamente el elemento central A[m/2, n/2] cuando ambas dimensiones son impares.",
+      "El primer elemento A[1, 1], ya que su desplazamiento relativo es exactamente cero.",
+      "Todos los elementos pertenecientes a la diagonal secundaria de una matriz cuadrada.",
+      "Ningún elemento, pues ambas estrategias de direccionamiento son mutuamente excluyentes."
+    ],
+    "correct": 1,
+    "feedback": "Tanto en Row-Major como en Column-Major, para i = 1 y j = 1 los términos (i - 1) y (j - 1) se anulan (ambos valen 0), por lo que LOC(A[1, 1]) = POSINI en ambas organizaciones lineales."
+  }
+];
+
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let currentShuffledOptions = [];
+
+    window.renderQuizQuestion = function() {
+      const q = quizQuestions[currentQuizIdx];
+      if (!q) return;
+
+      const qNumEl = document.getElementById('quiz-question-number');
+      const qScoreEl = document.getElementById('quiz-score');
+      const qTextEl = document.getElementById('quiz-question-text');
+      const optsContainer = document.getElementById('quiz-options-container');
+      const feedbackBox = document.getElementById('quiz-feedback');
+      const nextBtn = document.getElementById('btn-next-quiz');
+
+      if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+      if (optsContainer) optsContainer.innerHTML = '';
+      if (feedbackBox) feedbackBox.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+
+      // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+      currentShuffledOptions = q.options.map((opt, origIdx) => ({
+        text: opt,
+        isCorrect: origIdx === q.correct
+      })).sort(() => Math.random() - 0.5);
+
+      currentShuffledOptions.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+        btn.onclick = () => selectQuizOption(idx);
+        optsContainer.appendChild(btn);
+      });
+    };
+
+    window.selectQuizOption = function(idx) {
+      const q = quizQuestions[currentQuizIdx];
+      const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+      btns.forEach(b => (b.disabled = true));
+
+      const feedbackBox = document.getElementById('quiz-feedback');
+      if (feedbackBox) feedbackBox.style.display = 'block';
+
+      const chosen = currentShuffledOptions[idx];
+      const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+      if (chosen && chosen.isCorrect) {
+        quizScore++;
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+          feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+        }
+      } else {
+        if (btns[idx]) {
+          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+          btns[idx].style.borderColor = '#ff006e';
+        }
+        if (correctIdx !== -1 && btns[correctIdx]) {
+          btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+          btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+        }
+        if (feedbackBox) {
+          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+          feedbackBox.style.border = '1px solid #ff006e';
+          feedbackBox.style.color = '#fff';
+          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+        }
+      }
+
+      const qScoreEl = document.getElementById('quiz-score');
+      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+      const nextBtn = document.getElementById('btn-next-quiz');
+      if (nextBtn) nextBtn.style.display = 'inline-block';
+    };
+
+    window.nextQuizQuestion = function() {
+      currentQuizIdx++;
+      if (currentQuizIdx < quizQuestions.length) {
+        renderQuizQuestion();
+      } else {
+        showQuizSummary();
+      }
+    };
+
+    window.showQuizSummary = function() {
+      const container = document.getElementById('quiz-container');
+      if (!container) return;
+      const pct = Math.round((quizScore / quizQuestions.length) * 100);
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px 10px;">
+          <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+          <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+          <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+            Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+          </p>
+          <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+            ${pct >= 75 ? '¡Excelente! Demuestras una comprensión rigurosa y libre de sesgos en este laboratorio formativo.' : 'Buen esfuerzo. Te recomendamos revisar el material doctrinal e interactivo y reintentar la evaluación.'}
+          </p>
+          <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+            🔄 Reiniciar Evaluación
+          </button>
+        </div>
+      `;
+    };
+
+    window.restartQuiz = function() {
+      currentQuizIdx = 0;
+      quizScore = 0;
+      renderQuizQuestion();
+    };
+
+    // Auto-inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+    } else {
+      renderQuizQuestion();
+    }
+  
+    </script>
 </body>
 </html>

@@ -715,32 +715,34 @@
       </section>
 
       <!-- Pestaña 6: Laboratorio de Evaluación Técnica -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu comprensión de la taxonomía IEEE de errores, defectos y fallas, y la doctrina de Verificación vs Validación de Barry Boehm:
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Error, Defecto, Falla & V&V
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos doctrinales según IEEE 610.12, Roger Pressman y Barry Boehm con simetría y opciones barajadas.
           </p>
-
-          <div class="quiz-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <span id="quiz-progress" style="font:700 0.8rem 'Courier New', monospace; color:var(--sw-cyan);">PREGUNTA 1 DE 4</span>
-              <span id="quiz-score" style="font:700 0.8rem 'Courier New', monospace; color:var(--sw-green);">Puntuación: 0 / 4</span>
-            </div>
-
-            <div id="quiz-container">
-              <h3 id="quiz-question-text" style="color:#ffffff; font-size:1.05rem; margin-bottom:18px;"></h3>
-              <div id="quiz-options-container"></div>
-              <div id="quiz-feedback-box" style="display:none; padding:14px; border-radius:6px; margin-top:16px; font:0.86rem/1.5 Verdana, sans-serif;"></div>
-              <div style="margin-top:20px; text-align:right;">
-                <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;" onclick="nextQuizQuestion()">
-                  Siguiente Pregunta ➔
-                </button>
-              </div>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 6</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 6</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software, Bases de Datos, Gestión de Proyectos y Calidad de Software
@@ -1054,226 +1056,204 @@
 
       // ==========================================
       // 3. LABORATORIO DE EVALUACIÓN (QUIZ)
-      // ==========================================
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
       const quizQuestions = [
-        {
-          question: "Un desarrollador escribe 'if (x > 10)' en lugar de 'if (x >= 10)', pero dicha función solo es invocada durante los primeros 6 meses con valores menores a 5. Según la doctrina formal IEEE 610.12, ¿cuál es el estado del sistema?",
-          options: [
-            "Existe una falla activa que está degradando silenciosamente el rendimiento de la memoria.",
-            "Existe un defecto estático latente en el código fuente que no ha detonado una falla porque ninguna entrada lo ha ejecutado.",
-            "No existe ningún defecto porque si el usuario no percibe el error, técnicamente no existe anomalía.",
-            "El error humano se canceló automáticamente al compilar el binario con optimizaciones de release."
-          ],
-          correct: 1,
-          feedback: "Correcto. El defecto está físicamente alojado en el código fuente (estático), pero permanece 'latente' hasta que una entrada de datos (x = 10) lo recorra y manifieste una divergencia dinámica observable (falla)."
-        },
-        {
-          question: "Según la formulación canónica de Barry Boehm, ¿cuál es la diferencia fundamental entre Verificación y Validación?",
-          options: [
-            "Verificación se realiza únicamente después del despliegue en producción; Validación ocurre durante el diseño.",
-            "Verificación pregunta '¿Estamos construyendo el producto correctamente?' (contra especificación); Validación pregunta '¿Estamos construyendo el producto correcto?' (contra necesidad real del usuario).",
-            "Verificación es ejecutada exclusivamente por los usuarios finales; Validación es ejecutada por herramientas de análisis estático.",
-            "Verificación evalúa requerimientos no funcionales (rendimiento); Validación evalúa requerimientos de base de datos relacional."
-          ],
-          correct: 1,
-          feedback: "Exacto. Verificación evalúa conformidad técnica contra documentos y diseño previo ('building the product right'); Validación evalúa utilidad y satisfacción de la necesidad auténtica del cliente ('building the right product')."
-        },
-        {
-          question: "¿En cuál de las siguientes situaciones se considera que un software fue VERIFICADO con éxito, pero NO FUE VALIDADO?",
-          options: [
-            "El sistema se cae continuamente por excepciones de puntero nulo (NullReferenceException) durante las pruebas de carga.",
-            "El código fuente no compila porque los programadores ignoraron los diagramas UML del arquitecto.",
-            "El software cumple al 100% la especificación técnica escrita y pasa todas las pruebas unitarias, pero los médicos del hospital no pueden usarlo porque la interfaz entorpece su flujo de urgencias.",
-            "Un prototipo rápido sin pruebas unitarias resuelve a la perfección el problema inmediato del cliente."
-          ],
-          correct: 2,
-          feedback: "Correcto. Si el código cumple la especificación al pie de la letra, la verificación es positiva. Pero si la especificación no servía para la operación real del cliente, la validación fracasó ('La operación fue un éxito pero el paciente murió')."
-        },
-        {
-          question: "¿Qué técnica de aseguramiento de calidad es un ejemplo paradigmático de VALIDACIÓN en el ciclo de vida del software?",
-          options: [
-            "Inspección formal de código de Fagan para verificar cumplimiento de estándares de nomenclatura.",
-            "Análisis estático de seguridad con SonarQube para detectar inyecciones SQL.",
-            "Pruebas de Aceptación del Usuario (UAT) donde clientes reales operan el software en su entorno de trabajo.",
-            "Ejecución de pruebas unitarias automáticas con mock objects en el pipeline de CI/CD."
-          ],
-          correct: 2,
-          feedback: "Correcto. Las pruebas de aceptación con usuarios reales (UAT) y pilotos en campo comprueban si el software realmente satisface las necesidades del usuario final en su entorno operativo, lo cual es la esencia de la Validación."
-        },
-        {
-          question: "De acuerdo con la taxonomía de pruebas de SWEBOK v4, ¿cuál es la diferencia conceptual y metodológica clave entre 'Monkey Testing' y 'Smoke Testing'?",
-          options: [
-            "Smoke Testing es un conjunto mínimo y estructurado de pruebas para verificar que el build realiza funciones básicas vitales antes de pasar a QA; Monkey Testing es estocástico, no estructurado y bombardea entradas aleatorias para forzar caídas del sistema.",
-            "Monkey Testing se ejecuta exclusivamente en hardware de servidores de producción; Smoke Testing solo se aplica a código HTML en navegadores.",
-            "Smoke Testing busca exclusivamente desbordamientos de pila mediante fuerza bruta; Monkey Testing valida contratos formales con clientes.",
-            "Son sinónimos intercambiables según el estándar IEEE 829 para pruebas de integración."
-          ],
-          correct: 0,
-          feedback: "¡Exacto! El Smoke Testing (prueba de humo o verificación de compilación) es un filtro rápido y determinista que aprueba o rechaza el build de inmediato. El Monkey Testing es estocástico y caótico para cazar condiciones límite y memory leaks imprevistos."
-        },
-        {
-          question: "¿Cuál es la regla de oro operativa en un pipeline de integración continua (CI/CD) cuando falla una prueba de Smoke Testing?",
-          options: [
-            "La compilación (build) se rechaza de inmediato (fail-fast) y se detiene el proceso de prueba formal hasta que los desarrolladores reparen el defecto crítico.",
-            "El pipeline ignora el fallo y despliega directamente a producción para que los usuarios lo reporten.",
-            "Se convierte automáticamente la prueba en un Monkey Test para reintentar 10,000 veces.",
-            "Se incrementa el presupuesto del proyecto en un 15% según el estándar PMBOK."
-          ],
-          correct: 0,
-          feedback: "¡Correcto! Si el Smoke Test falla, significa que el software no realiza ni siquiera sus operaciones vitales básicas. Continuar con pruebas funcionales completas sería una pérdida total de tiempo y recursos para el equipo de control de calidad."
-        }
-      ];
-
-      // Simulador de Pruebas SWEBOK
-      let monkeyTimer = null;
-
-      function logTesting(msg) {
-        const log = document.getElementById('test-execution-log');
-        if (log) {
-          log.innerHTML += `<div>${msg}</div>`;
-          log.scrollTop = log.scrollHeight;
-        }
-      }
-
-      function resetTestingSim() {
-        if (monkeyTimer) clearInterval(monkeyTimer);
-        monkeyTimer = null;
-        const log = document.getElementById('test-execution-log');
-        if (log) log.innerHTML = '[LISTO]: Esperando orden de ejecución de pruebas...';
-      }
-
-      function runSmokeTestSuite() {
-        resetTestingSim();
-        logTesting('<span style="color:var(--sw-cyan); font-weight:700;">[SMOKE TEST CI/CD INICIADO]: Verificando Build #1042...</span>');
-        setTimeout(() => {
-          logTesting('[CHECK 1/3]: Servicio Web API levanta correctamente (HTTP 200 /health) &check;');
-        }, 300);
-        setTimeout(() => {
-          logTesting('[CHECK 2/3]: Conexión al motor de base de datos activa (Ping SQL: 4ms) &check;');
-        }, 700);
-        setTimeout(() => {
-          logTesting('[CHECK 3/3]: Autenticación y generación de JWT operativo &check;');
-        }, 1100);
-        setTimeout(() => {
-          logTesting('<span style="color:var(--sw-green); font-weight:700;">[SMOKE TEST EXITOSO]: Build verificado. Autorizado el pase a la suite formal de pruebas de QA.</span>');
-        }, 1500);
-      }
-
-      function runMonkeyChaosTest() {
-        resetTestingSim();
-        logTesting('<span style="color:var(--sw-coral); font-weight:700;">[CHAOS MONKEY LIBERADO]: Disparando eventos estocásticos y entradas aleatorias...</span>');
-        let iterations = 0;
-        const chaosEvents = [
-          "Clic rápido en Coordenada [X:1422, Y:89] (Botón 'Cancelar' x40 veces)",
-          "Entrada de texto Unicode desbordante: '\\u0000\\uFFFF' en campo 'Nombre'",
-          "Pulsación simultánea: ESC + ENTER + ALT + TAB a 50 ms",
-          "Inyección de payload numérico negativo en campo de edad: -999999999",
-          "Interrupción súbita de conexión de red durante envío de formulario",
-          "Redimensionamiento de viewport de 1920x1080 a 10x10 píxeles"
-        ];
-
-        monkeyTimer = setInterval(() => {
-          iterations++;
-          const evt = chaosEvents[Math.floor(Math.random() * chaosEvents.length)];
-          logTesting(`[MONKEY PASO ${iterations}]: ${evt}`);
-
-          if (iterations >= 5) {
-            clearInterval(monkeyTimer);
-            monkeyTimer = null;
-            setTimeout(() => {
-              logTesting('<span style="color:#ff0055; font-weight:700;">[EXCEPCIÓN DETONADA]: System.OutOfMemoryException forzada en renderizado! Crash dump generado con éxito.</span>');
-            }, 300);
-          }
-        }, 350);
-      }
+  {
+    "q": "Un programador escribe 'if (x > 10)' en lugar de 'if (x >= 10)', pero dicha función solo recibe valores menores a 5 durante los primeros 6 meses. Según el estándar IEEE 610.12, ¿cuál es el estado formal del sistema?",
+    "options": [
+      "Existe una Falla en ejecución, ya que el código fuente contiene una discrepancia sintáctica con la especificación.",
+      "Existe un Defecto (Bug) latente en el código, pero NO se ha manifestado ninguna Falla operacional en el sistema.",
+      "Existe un Error humano en el compilador, el cual bloquea automáticamente la ejecución de la bifurcación lógica.",
+      "No existe ninguna anomalía, puesto que la ausencia de síntomas visibles anula la existencia formal del defecto."
+    ],
+    "correct": 1,
+    "feedback": "Cadena causal IEEE 610.12 / Pressman: El desarrollador cometió una equivocación humana (Error), que introdujo una imperfección estática en el código fuente (Defecto o Bug). Como la condición x=10 nunca fue evaluada por los datos de entrada, el defecto permaneció inactivo y jamás se produjo un comportamiento observable incorrecto (Falla)."
+  },
+  {
+    "q": "En las definiciones canónicas de Barry Boehm para Calidad de Software, ¿cuál es la diferencia formal entre Verificación y Validación?",
+    "options": [
+      "Verificación: '¿Construimos el producto correctamente?' (cumple especificación). Validación: '¿Construimos el producto correcto?' (cumple necesidad del cliente).",
+      "Verificación: '¿Se compila el código sin advertencias?' (análisis estático). Validación: '¿Se despliega en servidores cloud?' (infraestructura operacional).",
+      "Verificación: '¿El software es inmune a ataques XSS?' (seguridad web). Validación: '¿La base de datos está normalizada en 3FN?' (integridad relacional).",
+      "Verificación: '¿El proyecto cumple el presupuesto?' (gestión de costos). Validación: '¿El cronograma finalizó a tiempo?' (gestión de tiempos y holguras)."
+    ],
+    "correct": 0,
+    "feedback": "La distinción clásica de Barry Boehm formulada en IEEE: Verificación evalúa si el producto de una fase satisface las condiciones impuestas en la especificación previa ('Building the product right'). Validación evalúa si el software satisface las necesidades y expectativas reales del usuario final ('Building the right product')."
+  },
+  {
+    "q": "Un software bancario calcula correctamente los intereses según la fórmula matemática entregada por el cliente, pero el cliente se basó en una ley financiera derogada. ¿Qué dictamen emite el proceso de V&V?",
+    "options": [
+      "El software falla en Verificación pero aprueba Validación, al respetar la voluntad del usuario.",
+      "El software falla en ambos procesos, al existir una discrepancia legal de carácter imperativo.",
+      "El software aprueba Verificación (cumplió la especificación) pero reprueba Validación (no satisface el propósito real).",
+      "El software aprueba Validación (cumplió el marco legal) pero reprueba Verificación (código no probado)."
+    ],
+    "correct": 2,
+    "feedback": "El sistema fue construido de acuerdo con la especificación provista (aprueba Verificación: se construyó el producto correctamente según el documento), pero no resuelve la necesidad real y válida del negocio (reprueba Validación: no es el producto correcto)."
+  },
+  {
+    "q": "De acuerdo con Roger S. Pressman, ¿cuál es el objetivo fundamental de una Revisión Técnica Formal (RTF o Inspección de Fagan)?",
+    "options": [
+      "Evaluar el desempeño salarial de los programadores identificando a los autores de defectos en el equipo.",
+      "Detectar defectos de sintaxis, lógica o diseño en etapas tempranas antes de que pasen a la fase de pruebas dinámicas.",
+      "Sustituir las pruebas unitarias y de integración mediante la firma de aprobación de la dirección general.",
+      "Reescribir automáticamente el código fuente en un lenguaje de programación con tipado estático más seguro."
+    ],
+    "correct": 1,
+    "feedback": "Una RTF es una técnica de verificación estática cuyo fin primordial es descubrir errores en la función, lógica o estructura del software en fases tempranas del ciclo de vida, donde el costo de corrección es hasta 100 veces menor que en producción."
+  },
+  {
+    "q": "En la taxonomía formal de pruebas de software, ¿cuál de las siguientes actividades corresponde estrictamente a una técnica de 'Pruebas Dinámicas'?",
+    "options": [
+      "Ejecutar casos de prueba con datos de entrada específicos y comparar las salidas reales contra los resultados esperados.",
+      "Escanear el código fuente con un analizador estático para detectar variables no inicializadas y referencias nulas.",
+      "Realizar una inspección en sala revisando el diagrama entidad-relación junto con los analistas de requerimientos.",
+      "Auditar la matriz de trazabilidad para comprobar que todos los requerimientos funcionales cuentan con historias asociadas."
+    ],
+    "correct": 0,
+    "feedback": "Las pruebas dinámicas requieren obligatoriamente compilar y ejecutar el software sobre un entorno computacional, suministrando entradas y observando salidas y comportamientos en tiempo de ejecución. Las inspecciones, análisis estático y auditorías son técnicas estáticas."
+  },
+  {
+    "q": "¿Por qué un caso de prueba que **NO** detecta defectos no debe considerarse necesariamente como un éxito según Glenford Myers?",
+    "options": [
+      "Porque un caso de prueba exitoso es aquel que demuestra la presencia de un defecto no detectado previamente.",
+      "Porque el estándar IEEE 829 exige que todos los casos de prueba provoquen al menos una excepción fatal en runtime.",
+      "Porque indica que el compilador desactivó los mecanismos de assertions durante la construcción del binario.",
+      "Porque los casos de prueba sin fallas deben descartarse de la suite de regresión para evitar redundancia."
+    ],
+    "correct": 0,
+    "feedback": "Axioma de Glenford Myers (The Art of Software Testing): 'Probar es el proceso de ejecutar un programa con la intención de encontrar defectos'. Un caso de prueba que encuentra un defecto es exitoso porque aumenta la confiabilidad del producto al permitir su corrección; un caso que no encuentra nada no añade certeza absoluta de ausencia de errores."
+  }
+];
 
       let currentQuizIdx = 0;
       let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderQuizQuestion() {
+      window.renderQuizQuestion = function() {
         const q = quizQuestions[currentQuizIdx];
-        document.getElementById('quiz-progress').innerText = `PREGUNTA ${currentQuizIdx + 1} DE ${quizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.question;
-        const container = document.getElementById('quiz-options-container');
-        container.innerHTML = '';
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        if (!q) return;
 
-        q.options.forEach((opt, idx) => {
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerHTML = `<strong>${String.fromCharCode(65 + idx)}.</strong> ${opt}`;
-          btn.onclick = () => handleQuizAnswer(idx);
-          container.appendChild(btn);
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function handleQuizAnswer(selectedIdx) {
+      window.selectQuizOption = function(idx) {
         const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.style.display = 'block';
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (selectedIdx === q.correct) {
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
           quizScore++;
-          btns[selectedIdx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[selectedIdx].style.borderColor = 'var(--sw-green)';
-          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
-          feedbackBox.style.border = '1px solid var(--sw-green)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = q.feedback;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[selectedIdx].style.background = 'rgba(255, 51, 102, 0.2)';
-          btns[selectedIdx].style.borderColor = 'var(--sw-coral)';
-          btns[q.correct].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[q.correct].style.borderColor = 'var(--sw-green)';
-          feedbackBox.style.background = 'rgba(255, 51, 102, 0.1)';
-          feedbackBox.style.border = '1px solid var(--sw-coral)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = `Incorrecto. ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextQuizQuestion() {
+      window.nextQuizQuestion = function() {
         currentQuizIdx++;
         if (currentQuizIdx < quizQuestions.length) {
           renderQuizQuestion();
         } else {
           showQuizSummary();
         }
-      }
+      };
 
-      function showQuizSummary() {
+      window.showQuizSummary = function() {
         const container = document.getElementById('quiz-container');
+        if (!container) return;
         const pct = Math.round((quizScore / quizQuestions.length) * 100);
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--sw-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
-              ${pct >= 75 ? '¡Excelente dominio de la taxonomía IEEE de fallas y la doctrina de Barry Boehm!' : 'Buen intento. Repasa la pestaña de Cadena Causal y Matriz 2x2 para afianzar conceptos.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
-            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="location.reload()">
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
               🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
+      };
 
-      // Inicialización
-      selectScenario(1);
-      selectQuadrant(1);
-      loadRealCase('hospital');
-      renderQuizQuestion();
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

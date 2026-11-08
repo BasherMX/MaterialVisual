@@ -673,32 +673,34 @@ public void ProcesarTransferencia()
       </section>
 
       <!-- Pestaña 6: Laboratorio de Evaluación Técnica -->
-      <section id="tab-quiz" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Laboratorio de Evaluación Formativa: Concurrencia Avanzada</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Pon a prueba tu dominio sobre atomicidad, descompilación de lock y selección de primitivas multihilo con reactivos basados en el estándares profesionales de ingeniería de software multihilo:
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Primitivas de Concurrencia de Bajo Nivel
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos rigurosos sobre Interlocked, Monitor/lock, SemaphoreSlim, Mutex y prevención de Deadlocks de Coffman.
           </p>
-
-          <div class="quiz-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <span id="quiz-progress" style="font:700 0.8rem 'Courier New', monospace; color:var(--cpu-cyan);">PREGUNTA 1 DE 4</span>
-              <span id="quiz-score" style="font:700 0.8rem 'Courier New', monospace; color:var(--cpu-gold);">Puntuación: 0 / 4</span>
-            </div>
-
-            <div id="quiz-container">
-              <h3 id="quiz-question-text" style="color:#ffffff; font-size:1.05rem; margin-bottom:18px;"></h3>
-              <div id="quiz-options-container"></div>
-              <div id="quiz-feedback-box" style="display:none; padding:14px; border-radius:6px; margin-top:16px; font:0.86rem/1.5 Verdana, sans-serif;"></div>
-              <div style="margin-top:20px; text-align:right;">
-                <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;" onclick="nextQuizQuestion()">
-                  Siguiente Pregunta ➔
-                </button>
-              </div>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 6</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 6</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Material Didáctico e Interactivo para Estructuras de Datos, Algoritmos, Diseño de Software, Bases de Datos, Gestión de Proyectos y Concurrencia en .NET
@@ -889,169 +891,204 @@ public void ProcesarTransferencia()
 
       // ==========================================
       // 3. LABORATORIO DE EVALUACIÓN (QUIZ DE CONCURRENCIA)
-      // ==========================================
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
       const quizQuestions = [
-        {
-          question: "¿Por qué la operación de incremento en una variable compartida (x++) provoca condiciones de carrera en entornos multihilo, y cómo lo resuelve la clase Interlocked?",
-          options: [
-            "Porque x++ convierte la variable en un tipo de referencia temporal; Interlocked bloquea la memoria virtual del sistema operativo.",
-            "Porque x++ requiere tres pasos independientes en CPU (cargar de memoria a registro, incrementar en ALU y almacenar de vuelta en memoria); Interlocked realiza la modificación atómica mediante instrucciones a nivel de hardware/procesador.",
-            "Porque el Garbage Collector pausa los hilos cada vez que detecta un operador aritmético unitario; Interlocked desactiva el GC durante la suma.",
-            "Porque x++ ejecuta internamente un bucle de espera activa (spin-lock); Interlocked utiliza un SemaphoreSlim asíncrono."
-          ],
-          correct: 1,
-          feedback: "Exacto. La operación x++ no es atómica a nivel de CPU; ejecuta el ciclo Read-Modify-Write. Si ocurre un cambio de contexto entre estos pasos, los incrementos se pierden. Interlocked.Increment ejecuta instrucciones atómicas directas en el bus del procesador (ej. LOCK XADD) sin necesidad de bloquear hilos."
-        },
-        {
-          question: "¿Cuál es la mecánica interna real con la que el compilador de C# traslada y ejecuta un bloque de código lock(_syncRoot) { ... }?",
-          options: [
-            "Un bucle de espera activa (spin-lock) gestionado por TaskFactory que sondea continuamente una dirección de memoria.",
-            "Una estructura try-finally donde se invoca Monitor.Enter al ingresar y se garantiza la invocación a Monitor.Exit en el bloque finally incluso ante excepciones no controladas.",
-            "La instanciación de un Mutex del Kernel de Windows que bloquea a todos los procesos del servidor.",
-            "Un SemaphoreSlim con capacidad inicial 1 que realiza llamadas a await WaitAsync()."
-          ],
-          correct: 1,
-          feedback: "Correcto. lock(obj) es azúcar sintáctico de C#. El compilador emite un try-finally donde invoca Monitor.Enter(obj, ref lockTaken) y garantiza que Monitor.Exit(obj) se ejecute en el bloque finally para evitar bloqueos permanentes (deadlocks). Además, duerme el hilo en la cola del monitor del SO en lugar de quemar CPU con spin-locks."
-        },
-        {
-          question: "¿Cuál es la diferencia arquitectónica y funcional clave entre un Mutex y un SemaphoreSlim en .NET?",
-          options: [
-            "Un Mutex solo funciona dentro del mismo proceso; SemaphoreSlim permite sincronizar múltiples procesos independientes en el sistema operativo.",
-            "Un Mutex otorga acceso exclusivo a un solo hilo/proceso a la vez (con propiedad estricta de hilo y capacidad inter-proceso mediante nombres); SemaphoreSlim es una primitiva ligera en espacio de usuario que regula el acceso mediante un número configurable de ranuras simultáneas (resource throttling) y admite await WaitAsync().",
-            "SemaphoreSlim bloquea hilos nativos en el Kernel de Windows; Mutex opera exclusivamente en la memoria RAM del CLR.",
-            "No existe ninguna diferencia técnica; SemaphoreSlim es simplemente el nombre moderno que recibió el Mutex a partir de .NET Core."
-          ],
-          correct: 1,
-          feedback: "Exacto. El Mutex es una primitiva de Kernel del SO con exclusión mutua estricta (1 hilo/proceso), propiedad de hilo (thread ownership) y soporte inter-proceso con nombres. SemaphoreSlim está optimizado para un solo proceso, no tiene propiedad de hilo, regula la concurrencia a N slots simultáneos (throttling) y soporta asincronía nativa con await WaitAsync()."
-        },
-        {
-          question: "¿Por qué se considera un error crítico de arquitectura utilizar 'lock(this)' o 'lock(typeof(MiServicio))' como objeto de sincronización en C#?",
-          options: [
-            "Porque el recolector de basura (GC) elimina los objetos de tipo Type durante la recolección de Generación 0.",
-            "Porque exponen el objeto de bloqueo públicamente, permitiendo que código externo no controlado bloquee sobre la misma instancia y provoque Deadlocks accidentales en toda la aplicación.",
-            "Porque C# prohíbe compilar código que contenga la palabra clave this dentro de un bloque lock.",
-            "Porque el procesador desactiva las instrucciones SIMD cuando detecta bloqueos sobre tipos de referencia."
-          ],
-          correct: 1,
-          feedback: "Correcto. Al bloquear sobre 'this' o 'typeof(T)', el objeto de bloqueo es accesible públicamente fuera de la clase. Si otra parte del sistema bloquea sobre la misma instancia o tipo (el cual es compartido a nivel de AppDomain), se producen condiciones de Deadlock imposibles de depurar. La regla de oro es usar siempre: private readonly object _syncRoot = new();"
-        },
-        {
-          question: "La clase Task fue introducida en .NET para facilitar el trabajo asíncrono. ¿Qué representa fundamentalmente una Task en comparación con el manejo directo de objetos de la clase Thread?",
-          options: [
-            "Representa una abstracción de alto nivel de una operación asíncrona (promesa de trabajo futuro) ejecutada sobre el ThreadPool, frente a un Thread que representa un hilo físico nativo pesado del SO con 1MB de pila.",
-            "Representa un proceso independiente del sistema operativo con su propio espacio de direcciones virtuales aislado.",
-            "Es un hilo nativo de Windows que solo puede ejecutarse en el núcleo primario de la CPU.",
-            "Es una estructura que reemplaza completamente a las bases de datos relacionales en memoria."
-          ],
-          correct: 0,
-          feedback: "Exacto. Un Thread representa un hilo físico del SO, pesado (1MB de stack por defecto) y costoso de crear. Una Task es una abstracción de alto nivel (TPL) de una operación asíncrona; es ultraligera, se ejecuta sobre el ThreadPool reutilizando hilos existentes y admite retorno de valores, continuación y cancelación cooperativa."
-        },
-        {
-          question: "Respecto al manejo de eventos en .NET en escenarios multihilo, ¿por qué los eventos no son intrínsecamente seguros para hilos (thread-safe) y qué riesgo directo surge al intentar protegerlos con bloques lock inapropiados?",
-          options: [
-            "Porque los delegados son tipos de valor que mutan en el Stack; y usar lock desactiva el garbage collector.",
-            "Porque un suscriptor puede desuscribirse entre la verificación de nulidad y la invocación provocando NullReferenceException (solucionado con ?.); y envolver la invocación en lock cede el control a código externo que puede intentar adquirir otro bloqueo o sincronizar con la UI, provocando Deadlocks.",
-            "Porque los eventos solo pueden ser invocados desde métodos estáticos marcados con async.",
-            "Porque C# prohíbe asociar más de un manejador a un mismo evento si la aplicación tiene más de un núcleo de procesador."
-          ],
-          correct: 1,
-          feedback: "Correcto. Un evento encapsula un MulticastDelegate; si se desuscribe el último manejador entre el chequeo y la invocación, se lanza NullReferenceException (evitado en C# 6+ con ?.Invoke()). Intentar solucionarlo con lock(_syncRoot) es un antipatrón crítico: invocar código de terceros dentro de un lock puede generar Deadlocks inmediatos si el manejador tarda o intenta sincronizar con el hilo de UI."
-        }
-      ];
+  {
+    "q": "¿Por qué la operación de incremento en una variable compartida (x++) provoca condiciones de carrera en entornos multihilo, y cómo lo resuelve la clase Interlocked?",
+    "options": [
+      "x++ no es atómica; compila en 3 instrucciones (leer, modificar, guardar). Interlocked usa instrucciones atómicas de hardware a nivel de CPU.",
+      "x++ suspende la memoria caché L1; Interlocked serializa los hilos pausando el proceso mediante llamadas bloqueantes al kernel del SO.",
+      "x++ genera desbordamientos de pila (StackOverflow); Interlocked reasigna la variable en el heap mediante el recolector de basura.",
+      "x++ requiere permisos de administrador; Interlocked ejecuta el incremento dentro de una transacción relacional de base de datos."
+    ],
+    "correct": 0,
+    "feedback": "La instrucción x++ se descompone en tres pasos de microcódigo máquina: leer el valor de la memoria a un registro, incrementarlo en la ALU y escribirlo de vuelta. Si dos hilos se intercalan, se pierde una actualización. Interlocked.Increment ejecuta una instrucción atómica de bus bloqueado (ej. LOCK XADD o LOCK CMPXCHG) garantizada por el procesador sin cambiar a modo kernel."
+  },
+  {
+    "q": "¿En qué instrucción de bajo nivel se descompone la sentencia 'lock (obj)' de C# durante la compilación a CIL?",
+    "options": [
+      "En una llamada al sistema operativo creando un Mutex con nombre global compartido entre todos los procesos del SO.",
+      "En un bloque try-finally envolviendo las llamadas estáticas Monitor.Enter(obj, ref lockTaken) y Monitor.Exit(obj).",
+      "En una instrucción atómica Interlocked.Exchange que sobrescribe la tabla de métodos virtuales de la clase.",
+      "En un bucle infinito de espera activa (SpinWait) que satura un núcleo del procesador hasta obtener el recurso."
+    ],
+    "correct": 1,
+    "feedback": "En C#, la sentencia lock(obj) { ... } es azúcar sintáctico que el compilador traduce a: bool lockTaken = false; try { Monitor.Enter(obj, ref lockTaken); ... } finally { if (lockTaken) Monitor.Exit(obj); }. Esto garantiza que el bloqueo se libere siempre, incluso ante excepciones."
+  },
+  {
+    "q": "¿Cuál es la diferencia técnica fundamental entre 'Monitor' y 'Mutex' en la plataforma .NET?",
+    "options": [
+      "Monitor opera en modo usuario dentro del mismo proceso; Mutex envuelve un handle nativo del SO permitiendo sincronizar múltiples procesos.",
+      "Monitor admite llamadas asíncronas con await; Mutex requiere obligatoriamente que el hilo entre en suspensión permanente.",
+      "Monitor solo puede sincronizar tipos de datos primitivos; Mutex opera exclusivamente con instancias de colecciones genéricas.",
+      "Monitor consume más tiempo de CPU en cambios de contexto; Mutex es una primitiva puramente ligera sin interacción con el kernel."
+    ],
+    "correct": 0,
+    "feedback": "Monitor (y lock) es una primitiva ligera y muy rápida que opera en modo usuario (user-mode) y solo sirve para sincronizar hilos dentro del mismo AppDomain/proceso. Mutex envuelve un objeto de sincronización del kernel del sistema operativo, por lo que puede tener nombre y sincronizar procesos independientes, a costa de una penalización de rendimiento de ~50x por cambio de contexto."
+  },
+  {
+    "q": "¿Por qué 'SemaphoreSlim' es la opción recomendada frente a Monitor/lock en arquitecturas asíncronas modernas basadas en async/await?",
+    "options": [
+      "Porque SemaphoreSlim proporciona el método WaitAsync(), permitiendo ceder el hilo al ThreadPool sin bloquearlo físicamente.",
+      "Porque SemaphoreSlim cifra el contenido de las variables compartidas mediante claves asimétricas de curva elíptica.",
+      "Porque SemaphoreSlim garantiza que las tareas secundarias se ejecuten en orden lexicográfico según el nombre de la clase.",
+      "Porque SemaphoreSlim sustituye al recolector de basura desasignando la memoria de los sockets de red inmediatamente."
+    ],
+    "correct": 0,
+    "feedback": "Monitor.Enter es estrictamente síncrono y bloquea físicamente el hilo subyacente del SO, además de requerir afinidad de hilo (Thread Affinity: el mismo hilo que hace Enter debe hacer Exit). En async/await, el código tras await puede reanudarse en otro hilo, lo cual rompería Monitor. SemaphoreSlim resuelve esto ofreciendo WaitAsync(), que suspende la tarea sin bloquear el hilo."
+  },
+  {
+    "q": "De acuerdo con el estándar Coffman, ¿cuál de las siguientes condiciones **NO** es necesaria para que ocurra un Interbloqueo (Deadlock)?",
+    "options": [
+      "Exclusión mutua: Al menos un recurso debe ser retenido en modo no compartible por un proceso.",
+      "Retención y espera: Un proceso retiene recursos mientras solicita nuevos recursos bloqueados.",
+      "Apropiación (Preemption): El sistema operativo expropia forzosamente los recursos asignados al hilo.",
+      "Espera circular: Existe una cadena cerrada de procesos donde cada uno espera un recurso del siguiente."
+    ],
+    "correct": 2,
+    "feedback": "Las cuatro condiciones necesarias y suficientes de Coffman para un deadlock son: 1) Exclusión mutua, 2) Retención y espera, 3) NO apropiación (No preemption: los recursos NO pueden ser arrebatados forzosamente al hilo), y 4) Espera circular. Si hubiera apropiación forzosa, el deadlock se rompería de inmediato."
+  },
+  {
+    "q": "¿Cuál es la directriz canónica de diseño para prevenir Interbloqueos (Deadlocks) cuando un método requiere adquirir múltiples bloqueos?",
+    "options": [
+      "Adquirir siempre los bloqueos en un orden global estricto y predeterminado a lo largo de toda la aplicación.",
+      "Aumentar la prioridad de los hilos en contención para forzar que el planificador de la CPU resuelva la colisión.",
+      "Utilizar objetos de bloqueo de tipo String compartidos públicamente entre todos los servicios del dominio.",
+      "Eliminar las cláusulas finally en las rutinas de captura para evitar la liberación prematura de recursos."
+    ],
+    "correct": 0,
+    "feedback": "La regla de oro contra deadlocks es la adquisición ordenada de bloqueos: si dos hilos necesitan acceder a los recursos A y B, ambos deben adquirir SIEMPRE A primero y luego B. Esto rompe matemáticamente la condición de 'Espera circular' de Coffman."
+  }
+];
 
       let currentQuizIdx = 0;
       let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderQuizQuestion() {
+      window.renderQuizQuestion = function() {
         const q = quizQuestions[currentQuizIdx];
-        document.getElementById('quiz-progress').innerText = `PREGUNTA ${currentQuizIdx + 1} DE ${quizQuestions.length}`;
-        document.getElementById('quiz-question-text').innerText = q.question;
-        const container = document.getElementById('quiz-options-container');
-        container.innerHTML = '';
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.style.display = 'none';
-        document.getElementById('btn-next-quiz').style.display = 'none';
+        if (!q) return;
 
-        q.options.forEach((opt, idx) => {
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
           btn.className = 'quiz-option-btn';
-          btn.innerHTML = `<strong>${String.fromCharCode(65 + idx)}.</strong> ${opt}`;
-          btn.onclick = () => handleQuizAnswer(idx);
-          container.appendChild(btn);
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function handleQuizAnswer(selectedIdx) {
+      window.selectQuizOption = function(idx) {
         const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('.quiz-option-btn');
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
         btns.forEach(b => (b.disabled = true));
 
-        const feedbackBox = document.getElementById('quiz-feedback-box');
-        feedbackBox.style.display = 'block';
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (selectedIdx === q.correct) {
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
           quizScore++;
-          btns[selectedIdx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[selectedIdx].style.borderColor = 'var(--cpu-green)';
-          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
-          feedbackBox.style.border = '1px solid var(--cpu-green)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = q.feedback;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          btns[selectedIdx].style.background = 'rgba(255, 51, 102, 0.2)';
-          btns[selectedIdx].style.borderColor = 'var(--cpu-coral)';
-          btns[q.correct].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[q.correct].style.borderColor = 'var(--cpu-green)';
-          feedbackBox.style.background = 'rgba(255, 51, 102, 0.1)';
-          feedbackBox.style.border = '1px solid var(--cpu-coral)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerText = `Incorrecto. ${q.feedback}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-score').innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        document.getElementById('btn-next-quiz').style.display = 'inline-block';
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextQuizQuestion() {
+      window.nextQuizQuestion = function() {
         currentQuizIdx++;
         if (currentQuizIdx < quizQuestions.length) {
           renderQuizQuestion();
         } else {
           showQuizSummary();
         }
-      }
+      };
 
-      function showQuizSummary() {
+      window.showQuizSummary = function() {
         const container = document.getElementById('quiz-container');
+        if (!container) return;
         const pct = Math.round((quizScore / quizQuestions.length) * 100);
         container.innerHTML = `
           <div style="text-align:center; padding:30px 10px;">
             <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-            <h3 style="color:var(--cpu-gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Evaluación Técnica Completado</h3>
-            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
               Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
             </p>
-            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:520px; margin:0 auto 24px;">
-              ${pct >= 75 ? '¡Excelente! Has dominado las primitivas de sincronización, la atomicidad a nivel CPU y la descompilación de lock requeridas para Jefatura de Departamento.' : 'Buen intento. Repasa la pestaña de Atomicidad y el Simulador de Carreras para afianzar la mecánica de CPU.'}
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
             </p>
-            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="location.reload()">
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
               🔄 Reiniciar Evaluación
             </button>
           </div>
         `;
-      }
-
-      renderQuizQuestion();
-
-      // Control de Pestañas
-      window.switchTab = function (tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (activeBtn) activeBtn.classList.add('active');
       };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>

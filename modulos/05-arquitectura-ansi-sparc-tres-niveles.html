@@ -590,36 +590,34 @@
       </section>
 
       <!-- SECCIÓN 5: QUIZ INTERACTIVO -->
-      <section id="tab-quiz-sparc" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🎯</span> Banco de Evaluación: Arquitectura ANSI/SPARC</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Evalúa tu comprensión sobre los tres niveles de abstracción, las transformaciones de mapeo, los dos tipos de independencia de datos y las notas críticas de autor.
+      <section id="tab-quiz-sparc" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Arquitectura ANSI/SPARC de 3 Niveles
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos doctrinales sobre esquemas externo, conceptual e interno e independencia física y lógica de datos.
           </p>
-
-          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(34,33,61,0.9); padding:12px 18px; border-radius:6px; border:1px solid var(--line); font:700 0.88rem 'Courier New', monospace;">
-            <span>Pregunta <span id="quiz-sparc-num">1</span> de 6</span>
-            <span>Aciertos: <span id="quiz-sparc-score" style="color:var(--green);">0 / 0</span></span>
-          </div>
-
-          <div class="quiz-card-box">
-            <h4 id="quiz-sparc-q-text" style="color:#fff; margin:0 0 14px; font-size:1.05rem; font-family:'Courier New', monospace;">
-              Cargando pregunta...
-            </h4>
-            <div id="quiz-sparc-options">
-              <!-- Opciones -->
-            </div>
-            <div id="quiz-sparc-feed" style="display:none; padding:12px 16px; border-radius:6px; font:0.85rem/1.5 Verdana, sans-serif; margin-top:14px;">
-              <!-- Feedback -->
-            </div>
-            <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-              <button id="btn-next-sparc-quiz" class="btn-sim btn-sim-primary" style="display:none;" onclick="nextSparcQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 6</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 6</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
+          <div style="margin-top:22px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+  
+    </section>
 
       <footer class="global-footer">
         Material Didáctico e Interactivo · Ciencias de la Computación, Arquitectura ANSI/SPARC & Modelado de Datos
@@ -778,143 +776,205 @@
       }
 
       // ========================================================
-      // 4. Quiz de ANSI/SPARC
       // ========================================================
-      const sparcQuizData = [
-        {
-          q: "¿Cuál es el objetivo primordial de la Arquitectura ANSI/SPARC de tres niveles?",
-          options: [
-            "Aumentar la velocidad de la CPU en servidores de base de datos",
-            "Aislar las aplicaciones de los usuarios de los detalles físicos del almacenamiento de datos",
-            "Obligar a que todas las bases de datos utilicen el lenguaje NoSQL",
-            "Eliminar la necesidad de crear índices en disco"
-          ],
-          correct: 1,
-          feed: "¡Exacto! El propósito nuclear de ANSI/SPARC es la inmunidad al cambio: permitir que la base de datos evolucione físicamente sin romper el software cliente."
-        },
-        {
-          q: "¿Qué transformación de mapeo se encarga de convertir una consulta sobre una vista en operaciones sobre las tablas del catálogo global?",
-          options: [
-            "Mapeo Lógico / Interno",
-            "Mapeo Externo / Lógico",
-            "Mapeo de Hardware / CPU",
-            "Mapeo Físico / Red"
-          ],
-          correct: 1,
-          feed: "¡Correcto! El Mapeo Externo/Lógico traduce las vistas secundarias del usuario a las relaciones reales del esquema conceptual/lógico."
-        },
-        {
-          q: "¿Qué tipo de independencia permite migrar los archivos de la base de datos a discos SSD o cambiar de Heap a B+ Tree sin alterar el código de los programas?",
-          options: [
-            "Independencia Física de Datos",
-            "Independencia Lógica de Datos",
-            "Independencia Transaccional ACID",
-            "Independencia Conceptual de Vistas"
-          ],
-          correct: 0,
-          feed: "¡Excelente! La Independencia Física de Datos protege el esquema lógico y los programas cliente de cualquier alteración en el esquema interno o de almacenamiento."
-        },
-        {
-          q: "¿Qué tipo de independencia permite agregar una nueva columna (ej. 'telefono_secundario') a una tabla sin tener que recompilar las aplicaciones existentes?",
-          options: [
-            "Independencia Física de Datos",
-            "Independencia Lógica de Datos",
-            "Independencia de Dispositivo",
-            "Independencia de Concurrencia"
-          ],
-          correct: 1,
-          feed: "¡Correcto! La Independencia Lógica de Datos asegura que las modificaciones al esquema conceptual no afecten a las vistas externas que no utilicen las nuevas estructuras."
-        },
-        {
-          q: "Según el autor Andy Oppel, ¿cuál es la discrepancia principal entre la teoría pura de ANSI/SPARC y los RDBMS comerciales del mundo real (Oracle, SQL Server, Postgres)?",
-          options: [
-            "Que en los RDBMS comerciales no existen los índices",
-            "Que en los motores comerciales los niveles conceptual y lógico se implementan de forma fusionada en un único esquema lógico",
-            "Que los motores comerciales no permiten crear vistas externas",
-            "Que ANSI/SPARC solo aplica a bases de datos jerárquicas"
-          ],
-          correct: 1,
-          feed: "¡Preciso! Andy Oppel destaca que mientras la teoría formal separa conceptual de lógico, los motores comerciales los fusionan en un único esquema relacional administrado por DDL."
-        },
-        {
-          q: "¿Cuántos esquemas conceptuales pueden existir en una base de datos empresarial bajo la arquitectura ANSI/SPARC?",
-          options: [
-            "Tantos como usuarios o aplicaciones existan",
-            "Exactamente uno para toda la base de datos comunitaria",
-            "Uno por cada índice creado en el disco",
-            "Ninguno, solo existen esquemas externos"
-          ],
-          correct: 1,
-          feed: "¡Correcto! A diferencia de los esquemas externos (que pueden ser múltiples), solo existe un único esquema conceptual que representa la totalidad del universo de datos de la organización."
-        }
-      ];
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
+      const quizQuestions = [
+  {
+    "q": "¿Cuál es el objetivo primordial de la Arquitectura ANSI/SPARC de tres niveles en los sistemas de gestión de bases de datos?",
+    "options": [
+      "Aumentar la velocidad de la CPU en servidores dedicados mediante paralelismo de hilos nativos.",
+      "Aislar las aplicaciones de los usuarios de los detalles físicos de almacenamiento y gestión de datos.",
+      "Obligar a que todas las bases de datos utilicen el modelo relacional puro sin admitir vistas externas.",
+      "Eliminar la necesidad de crear índices secundarios y archivos de log transaccional en el disco duro."
+    ],
+    "correct": 1,
+    "feedback": "El propósito canónico de la arquitectura ANSI/SPARC de 3 niveles (Externo, Conceptual, Interno) es proporcionar independencia de datos: separar las vistas del usuario (nivel externo) de la estructura lógica global (nivel conceptual) y del almacenamiento físico en disco (nivel interno)."
+  },
+  {
+    "q": "¿Qué transformación de mapeo se encarga de convertir una consulta sobre una vista de usuario en operaciones sobre las tablas del catálogo global?",
+    "options": [
+      "Mapeo Lógico / Interno, traduciendo registros lógicos a estructuras de bloques de disco.",
+      "Mapeo Externo / Conceptual, traduciendo consultas de vista a entidades de esquema global.",
+      "Mapeo Conceptual / Físico, transformando sentencias SQL a comandos de hardware y CPU.",
+      "Mapeo de Red / Dispositivo, enrutando paquetes TCP/IP hacia el servidor de base de datos."
+    ],
+    "correct": 1,
+    "feedback": "El mapeo Externo/Conceptual traduce las solicitudes de una vista de usuario específica (nivel externo) a las tablas o entidades del esquema lógico global (nivel conceptual). El mapeo Conceptual/Interno traduce dicho esquema global al almacenamiento físico en disco."
+  },
+  {
+    "q": "¿Qué tipo de independencia permite migrar los archivos de la base de datos a discos SSD o cambiar de Heap a Árbol B+ sin alterar los programas de aplicación?",
+    "options": [
+      "Independencia Física de Datos, aislando el esquema conceptual de los métodos de almacenamiento interno.",
+      "Independencia Lógica de Datos, permitiendo modificar esquemas conceptuales sin alterar las vistas externas.",
+      "Independencia Transaccional ACID, asegurando la durabilidad de las escrituras ante cortes de energía.",
+      "Independencia Conceptual de Vistas, permitiendo crear índices agrupados sin privilegios de administrador."
+    ],
+    "correct": 0,
+    "feedback": "La Independencia Física de Datos es la capacidad de modificar el esquema interno (métodos de acceso, organización de archivos, tipos de índices o medios de almacenamiento) sin necesidad de modificar el esquema conceptual ni las aplicaciones existentes."
+  },
+  {
+    "q": "¿Qué tipo de independencia permite agregar una nueva columna (ej. 'telefono_secundario') a una tabla sin tener que recompilar las aplicaciones existentes?",
+    "options": [
+      "Independencia Física de Datos, aislando las páginas de datos en los bloques de almacenamiento magnético.",
+      "Independencia Lógica de Datos, aislando los esquemas externos de alteraciones al esquema conceptual global.",
+      "Independencia de Dispositivo, permitiendo que el DBMS opere en múltiples arquitecturas de procesador.",
+      "Independencia de Concurrencia, garantizando que múltiples transacciones se ejecuten con bloqueos de fila."
+    ],
+    "correct": 1,
+    "feedback": "La Independencia Lógica de Datos es la capacidad de modificar el esquema conceptual (añadir nuevas tablas, campos o relaciones) sin obligar a cambiar los esquemas externos existentes que no requieren dichos cambios."
+  },
+  {
+    "q": "Según la doctrina de bases de datos de Andy Oppel, ¿cuál es la discrepancia principal entre la teoría pura de ANSI/SPARC y los RDBMS comerciales del mundo real (Oracle, PostgreSQL, SQL Server)?",
+    "options": [
+      "Que los motores comerciales eliminaron por completo el concepto de índices y vistas de consulta.",
+      "Que los motores comerciales unifican los niveles conceptual e interno, exponiendo sentencias DDL físicas.",
+      "Que los motores comerciales prohíben la coexistencia de múltiples usuarios conectados simultáneamente.",
+      "Que la arquitectura ANSI/SPARC fue formulada exclusivamente para bases de datos no relacionales NoSQL."
+    ],
+    "correct": 1,
+    "feedback": "En la teoría ANSI/SPARC, el nivel conceptual es puramente abstracto e independiente del hardware. Sin embargo, en los RDBMS comerciales, el lenguaje DDL (como CREATE TABLE o CREATE INDEX) a menudo mezcla definiciones conceptuales con parámetros de almacenamiento físico (ej. tablespaces, fillfactor, storage clauses)."
+  },
+  {
+    "q": "¿Cuántos esquemas conceptuales pueden existir en una base de datos empresarial bajo la arquitectura canónica ANSI/SPARC?",
+    "options": [
+      "Tantos esquemas conceptuales como usuarios o aplicaciones cliente conectadas existan en la red.",
+      "Exactamente un único esquema conceptual que describe la totalidad de los datos para toda la organización.",
+      "Uno por cada índice secundario o clustered index creado en las particiones de almacenamiento de disco.",
+      "Ninguno, puesto que la arquitectura ANSI/SPARC prescribe únicamente la existencia de esquemas externos."
+    ],
+    "correct": 1,
+    "feedback": "En la arquitectura ANSI/SPARC existe un solo esquema conceptual (la visión comunitaria global de la base de datos), un solo esquema interno (la estructura física), y potencialmente múltiples esquemas externos (vistas adaptadas para cada tipo de usuario o programa)."
+  }
+];
 
-      let currentSparcQuizIdx = 0;
-      let sparcQuizScore = 0;
-      let sparcQuizAnswered = 0;
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
 
-      function renderSparcQuiz() {
-        const item = sparcQuizData[currentSparcQuizIdx];
-        document.getElementById('quiz-sparc-num').innerText = currentSparcQuizIdx + 1;
-        document.getElementById('quiz-sparc-q-text').innerText = item.q;
+      window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
 
-        const optBox = document.getElementById('quiz-sparc-options');
-        optBox.innerHTML = "";
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
 
-        const feedBox = document.getElementById('quiz-sparc-feed');
-        feedBox.style.display = "none";
-        document.getElementById('btn-next-sparc-quiz').style.display = "none";
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
 
-        item.options.forEach((opt, idx) => {
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
           const btn = document.createElement('button');
-          btn.className = "quiz-opt-btn";
-          btn.innerText = `${String.fromCharCode(65 + idx)}) ${opt}`;
-          btn.onclick = () => selectSparcAnswer(idx);
-          optBox.appendChild(btn);
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
         });
-      }
+      };
 
-      function selectSparcAnswer(chosenIdx) {
-        const item = sparcQuizData[currentSparcQuizIdx];
-        const buttons = document.querySelectorAll('#quiz-sparc-options .quiz-opt-btn');
-        buttons.forEach(b => b.disabled = true);
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
 
-        sparcQuizAnswered++;
-        const feedBox = document.getElementById('quiz-sparc-feed');
-        feedBox.style.display = "block";
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'block';
 
-        if (chosenIdx === item.correct) {
-          sparcQuizScore++;
-          buttons[chosenIdx].classList.add('correct');
-          feedBox.style.background = "rgba(0,255,170,0.15)";
-          feedBox.style.border = "1px solid var(--green)";
-          feedBox.style.color = "var(--green)";
-          feedBox.innerHTML = `<strong>¡Correcto!</strong> ${item.feed}`;
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          }
         } else {
-          buttons[chosenIdx].classList.add('incorrect');
-          buttons[item.correct].classList.add('correct');
-          feedBox.style.background = "rgba(255,0,110,0.15)";
-          feedBox.style.border = "1px solid var(--coral)";
-          feedBox.style.color = "#ff99b6";
-          feedBox.innerHTML = `<strong>Incorrecto.</strong> ${item.feed}`;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          }
         }
 
-        document.getElementById('quiz-sparc-score').innerText = `${sparcQuizScore} / ${sparcQuizAnswered}`;
-        document.getElementById('btn-next-sparc-quiz').style.display = "inline-block";
-      }
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+      };
 
-      function nextSparcQuestion() {
-        currentSparcQuizIdx++;
-        if (currentSparcQuizIdx >= sparcQuizData.length) {
-          currentSparcQuizIdx = 0;
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
         }
-        renderSparcQuiz();
-      }
+      };
 
-      // Inicialización
-      document.addEventListener('DOMContentLoaded', () => {
-        renderSparcQuiz();
-      });
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      // Auto-inicializar
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
