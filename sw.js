@@ -3,7 +3,7 @@
  * Provee funcionamiento Offline y Caché Resiliente para toda la plataforma.
  * Estrategia: Cache First con Stale-While-Revalidate para recursos estáticos.
  */
-const CACHE_NAME = 'material-visual-cache-v5';
+const CACHE_NAME = 'material-visual-cache-v6';
 
 const STATIC_PRECACHE = [
   './',
@@ -92,13 +92,36 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: Stale-While-Revalidate con Fallback a Caché
+// Fetch: Network First para documentos HTML; Stale-While-Revalidate para activos estáticos
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   
   // Ignorar métodos no GET o esquemas extraños (chrome-extension, etc.)
   if (req.method !== 'GET' || !req.url.startsWith('http')) return;
 
+  const isHtml = req.headers.get('accept') && req.headers.get('accept').includes('text/html');
+
+  if (isHtml) {
+    // Para navegación HTML: Network First con fallback a caché (asegura ver siempre la última versión online)
+    event.respondWith(
+      fetch(req)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const resClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(req, resClone);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match(req).then((cached) => cached || caches.match('./index.html'));
+        })
+    );
+    return;
+  }
+
+  // Para activos estáticos (CSS, JS, iconos, JSON): Cache First con revalidación en segundo plano
   event.respondWith(
     caches.match(req).then((cachedResponse) => {
       const fetchPromise = fetch(req)
@@ -111,13 +134,7 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => {
-          // Si falla la red y no hay caché, retornar fallback offline si es HTML
-          if (cachedResponse) return cachedResponse;
-          if (req.headers.get('accept') && req.headers.get('accept').includes('text/html')) {
-            return caches.match('./index.html');
-          }
-        });
+        .catch(() => cachedResponse);
 
       return cachedResponse || fetchPromise;
     })

@@ -34,10 +34,11 @@
       const maxUint32 = 0xFFFFFFFF;
       const limit = maxUint32 - (maxUint32 % range);
       let randVal;
+      let loopGuard = 50;
       do {
         cryptoObj.getRandomValues(buffer);
         randVal = buffer[0];
-      } while (randVal >= limit);
+      } while (randVal >= limit && --loopGuard > 0);
       return minInclusive + (randVal % range);
     }
 
@@ -211,30 +212,25 @@
       'bloque-6': 1.0  // BI & DWH
     };
 
-    // Calcular cuotas por bloque
+    // Calcular cuotas por bloque de manera determinista y acotada (cero bucles infinitos)
     const blockQuotas = {};
     if (cfg.blockDistribution === 'weighted') {
       let totalWeight = 0;
       activeBlocks.forEach(bId => { totalWeight += (blockWeights[bId] || 1.0); });
       let assignedSum = 0;
       activeBlocks.forEach(bId => {
-        const quota = Math.max(1, Math.round((blockWeights[bId] / totalWeight) * targetCount));
+        const quota = Math.floor(((blockWeights[bId] || 1.0) / totalWeight) * targetCount);
         blockQuotas[bId] = quota;
         assignedSum += quota;
       });
-      // Ajustar diferencia si la suma no coincide
+      // Distribuir el remanente (siempre >= 0) de mayor a menor ponderación
       let diff = targetCount - assignedSum;
-      while (diff !== 0) {
-        for (const bId of activeBlocks) {
-          if (diff === 0) break;
-          if (diff > 0) {
-            blockQuotas[bId]++;
-            diff--;
-          } else if (diff < 0 && blockQuotas[bId] > 1) {
-            blockQuotas[bId]--;
-            diff++;
-          }
-        }
+      const sortedByWeight = [...activeBlocks].sort((a, b) => (blockWeights[b] || 1.0) - (blockWeights[a] || 1.0));
+      let idx = 0;
+      while (diff > 0 && sortedByWeight.length > 0) {
+        blockQuotas[sortedByWeight[idx % sortedByWeight.length]]++;
+        diff--;
+        idx++;
       }
     } else {
       // Distribución uniforme
