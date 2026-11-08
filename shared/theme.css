@@ -58,7 +58,7 @@ body {
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
-  background: radial-gradient(circle at 50% -10%, rgba(93, 52, 208, 0.35), transparent 42%), var(--paper);
+  background: radial-gradient(circle at 50% -10%, rgba(93, 52, 208, 0.18), transparent 45%), var(--paper);
   font-family: "Courier New", Courier, monospace;
 }
 
@@ -97,6 +97,61 @@ body::after {
   width: min(1440px, calc(100% - 40px));
   margin: 0 auto;
   padding: 34px 0 54px;
+}
+
+/* Aura Dinámica Flotante Detrás de los Títulos (Movimiento Suave & Ligero) */
+.page::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: min(1200px, 94vw);
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 38%,
+    rgba(121, 40, 202, 0.45) 0%,
+    rgba(255, 0, 110, 0.22) 34%,
+    rgba(0, 255, 255, 0.08) 55%,
+    transparent 72%
+  );
+  filter: blur(55px);
+  pointer-events: none;
+  z-index: -1;
+  animation: headerAmbientDrift 18s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes headerAmbientDrift {
+  0% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 0.82;
+  }
+  25% {
+    transform: translate(-48.5%, 16px) scale(1.04, 0.97);
+    opacity: 0.96;
+  }
+  50% {
+    transform: translate(-51.5%, -12px) scale(0.97, 1.05);
+    opacity: 0.88;
+  }
+  75% {
+    transform: translate(-49%, 10px) scale(1.03, 1.01);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-51%, -6px) scale(1.01, 0.98);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page::before {
+    animation: none;
+    transform: translate(-50%, 0) scale(1);
+    opacity: 0.85;
+  }
 }
 
 /* Botón Regresar al Índice */
