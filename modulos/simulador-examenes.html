@@ -559,6 +559,105 @@
       /* ==========================================================================
        Generador Parametrizado de Exámenes (Embedded en Centro de Exámenes)
        ========================================================================== */
+      
+      /* ==========================================================================
+       Hub Mode Switcher & Hero Layout (Rediseño Limpio y Espacioso)
+       ========================================================================== */
+      .hub-hero-banner {
+        background: linear-gradient(135deg, rgba(22, 21, 42, 0.95), rgba(14, 13, 28, 0.98));
+        border: 1px solid rgba(0, 255, 255, 0.22);
+        border-radius: 12px;
+        padding: 22px 24px 18px;
+        margin-bottom: 26px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      }
+
+      .hub-hero-title {
+        font-size: 1.45rem;
+        color: #ffffff;
+        margin: 8px 0 8px;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.02em;
+      }
+
+      .hub-hero-desc {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.6;
+        margin: 0 0 18px;
+        font-family: Verdana, sans-serif;
+        max-width: 860px;
+      }
+
+      .hub-mode-nav {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        border-top: 1px solid var(--line);
+        padding-top: 16px;
+      }
+
+      .hub-mode-tab-btn {
+        flex: 1 1 240px;
+        background: rgba(10, 9, 22, 0.75);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font: 800 0.9rem 'Courier New', monospace;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.22s ease;
+        min-height: 48px;
+      }
+
+      .hub-mode-tab-btn:hover {
+        border-color: var(--cyan);
+        color: #ffffff;
+        background: rgba(0, 255, 255, 0.08);
+      }
+
+      .hub-mode-tab-btn.active {
+        border-color: var(--exam-gold);
+        color: #ffffff;
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.16), rgba(255, 0, 110, 0.1));
+        box-shadow: 0 0 18px rgba(255, 215, 0, 0.22);
+      }
+
+      .hub-subview {
+        display: none;
+      }
+
+      .hub-subview.active {
+        display: block;
+        animation: fadeIn 0.25s ease;
+      }
+
+      .hub-subview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .hub-cta-generator-banner {
+        margin-top: 28px;
+        background: linear-gradient(135deg, rgba(18, 17, 36, 0.95), rgba(26, 25, 48, 0.92));
+        border: 1px dashed rgba(0, 255, 255, 0.4);
+        border-radius: 10px;
+        padding: 20px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
       .exam-generator-card {
         background: linear-gradient(
           135deg,
@@ -657,9 +756,20 @@
 
       .gen-grid-layout {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        grid-template-columns: 1fr 1fr;
         gap: 20px;
         margin-bottom: 24px;
+      }
+
+      
+      .gen-section-box.full-width {
+        grid-column: 1 / -1;
+      }
+
+      @media (max-width: 900px) {
+        .gen-grid-layout {
+          grid-template-columns: 1fr !important;
+        }
       }
 
       .gen-section-box {
@@ -1125,521 +1235,257 @@
       </nav>
 
       <!-- TAB 1: HUB / CENTRO DE EXÁMENES -->
+            <!-- TAB 1: HUB / CENTRO DE EXÁMENES -->
       <section id="tab-hub" class="exam-panel active">
-        <!-- ====================================================================
-           CARD TRIGGER MÓVIL (Abre el Modal de Calibración en Pantallas Pequeñas)
-           ==================================================================== -->
-      <div class="mobile-gen-trigger-card" id="mobile-gen-trigger-card">
-        <div class="gen-badge-strip">
-          <span class="exam-meta-pill" style="color:var(--exam-gold); border-color:var(--exam-gold); font-weight:800;">🛠️ GENERADOR DINÁMICO</span>
-          <span class="exam-meta-pill" style="color:var(--green); border-color:var(--green);"><span id="gen-mobile-bank-count">180</span> REACTIVOS</span>
-        </div>
-        <h3 style="margin:0 0 6px; font-size:1.15rem; color:#ffffff;">🎯 Generador de Exámenes Parametrizado</h3>
-        <p style="margin:0 0 14px; font-size:0.84rem; color:var(--muted); line-height:1.5; font-family:Verdana,sans-serif;">
-          Personaliza volumen (15 a 100Q), dificultad y temas. Cada corrida permuta estocásticamente 20 combinaciones por reactivo con barajado puro.
-        </p>
-        <button type="button" class="btn-theme" onclick="openGenMobileModal()" style="width:100%; min-height:48px; background:linear-gradient(135deg, var(--gold), var(--coral)); color:#000; font:800 0.88rem 'Courier New', monospace; border:none; border-radius:8px; cursor:pointer; box-shadow:0 0 18px rgba(255,215,0,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px;">
-          <span>⚙️</span> CALIBRAR Y GENERAR EXAMEN (MODAL) ➔
-        </button>
-      </div>
-
-      <!-- ====================================================================
-           1. HERO: GENERADOR PARAMETRIZADO INCRUSTADO (BANCO MAESTRO 180Q)
-           ==================================================================== -->
-      <div class="exam-generator-card" id="exam-generator-panel">
-        <!-- Header superior exclusivo para Modal Móvil -->
-        <div class="gen-modal-mobile-header" id="gen-modal-close-bar">
-          <span style="font:800 0.9rem 'Courier New', monospace; color:var(--gold);">🛠️ CALIBRACIÓN DE EXAMEN</span>
-          <button type="button" onclick="closeGenMobileModal()" class="btn-theme" style="padding:6px 14px; border-radius:6px; font:700 0.8rem 'Courier New', monospace; background:rgba(255,0,110,0.2); border:1px solid var(--coral); color:var(--coral); cursor:pointer;">
-            ✕ Cerrar
-          </button>
-        </div>
-
-        <div class="gen-badge-strip">
-          <span class="exam-meta-pill" style="color:var(--exam-gold); border-color:var(--exam-gold); font-weight:800;">🛠️ GENERADOR DINÁMICO</span>
-          <span class="exam-meta-pill" style="color:var(--cyan); border-color:var(--cyan);">ESTOCÁSTICO C(2,1)×C(5,3) = 20 VAR/Q</span>
-          <span class="exam-meta-pill" style="color:var(--green); border-color:var(--green);"><span id="gen-total-bank-count">180</span> REACTIVOS MAESTROS</span>
-        </div>
-
-        <h2 class="gen-title">
-          <span>🎯 Generador de Exámenes Técnicos Parametrizado</span>
-        </h2>
-        <p class="gen-subtitle">
-          Personaliza tu evaluación seleccionando volumen de reactivos, ritmo de tiempo, distribución de dificultad y bloques temáticos. Cada corrida selecciona estocásticamente 1 clave canónica y 3 distractores entre 7 opciones ($\binom{2}{1} \times \binom{5}{3} = 20$ variantes por pregunta) con barajado criptográfico insesgado.
-        </p>
-
-        <!-- Presets Rápidos -->
-        <div style="margin-bottom:20px;">
-          <label style="font:700 0.75rem 'Courier New', monospace; color:var(--muted); display:block; margin-bottom:8px; text-transform:uppercase;">
-            ⚡ Presets Rápidos de Simulación:
-          </label>
-          <div class="gen-presets-row">
-            <button type="button" class="gen-preset-chip" id="preset-chip-sprint-15" onclick="applyGenPreset('sprint-15')">
-              <span>⚡</span> 15Q · Sprint (22m)
-            </button>
-            <button type="button" class="gen-preset-chip active" id="preset-chip-diag-30" onclick="applyGenPreset('diag-30')">
-              <span>🎯</span> 30Q · Diagnóstico (45m)
-            </button>
-            <button type="button" class="gen-preset-chip" id="preset-chip-sim-50" onclick="applyGenPreset('sim-50')">
-              <span>🏆</span> 50Q · Simulacro (75m)
-            </button>
-            <button type="button" class="gen-preset-chip" id="preset-chip-marathon-100" onclick="applyGenPreset('marathon-100')">
-              <span>🚀</span> 100Q · Maratón (150m)
-            </button>
+        <!-- Hero Header del Hub -->
+        <div class="hub-hero-banner">
+          <div class="gen-badge-strip">
+            <span class="exam-meta-pill" style="color:var(--gold); border-color:var(--gold); font-weight:800;">🏛️ CENTRO DE EVALUACIÓN</span>
+            <span class="exam-meta-pill" style="color:var(--green); border-color:var(--green);"><span id="gen-total-bank-count">180</span> REACTIVOS OFICIALES</span>
+            <span class="exam-meta-pill" style="color:var(--cyan); border-color:var(--cyan);">ESTOCÁSTICO C(2,1)×C(5,3) = 20 VAR/Q</span>
           </div>
-
-          <h2 class="gen-title">
-            <span>🎯 Generador de Exámenes Técnicos Parametrizado</span>
-          </h2>
-          <p class="gen-subtitle">
-            Personaliza tu evaluación seleccionando volumen de reactivos, ritmo
-            de tiempo, distribución de dificultad y bloques temáticos. Cada
-            corrida selecciona estocásticamente 1 clave canónica y 3
-            distractores entre 7 opciones ($\binom{2}{1} \times \binom{5}{3} =
-            20$ variantes por pregunta) con barajado criptográfico insesgado.
+          <h2 class="hub-hero-title">Evaluaciones Técnicas &amp; Certificación</h2>
+          <p class="hub-hero-desc">
+            Practica con simulacros completos de 1 clic o genera evaluaciones personalizadas calibrando volumen, bloques temáticos y dificultad con barajado estocástico insesgado.
           </p>
 
-          <!-- Presets Rápidos -->
-          <div style="margin-bottom: 20px">
-            <label
-              style="
-                font:
-                  700 0.75rem &quot;Courier New&quot;,
-                  monospace;
-                color: var(--muted);
-                display: block;
-                margin-bottom: 8px;
-                text-transform: uppercase;
-              "
-            >
-              ⚡ Presets Rápidos de Simulación:
-            </label>
-            <div class="gen-presets-row">
-              <button
-                type="button"
-                class="gen-preset-chip"
-                id="preset-chip-sprint-15"
-                onclick="applyGenPreset('sprint-15')"
-              >
-                <span>⚡</span> 15Q · Sprint (22m)
-              </button>
-              <button
-                type="button"
-                class="gen-preset-chip active"
-                id="preset-chip-diag-30"
-                onclick="applyGenPreset('diag-30')"
-              >
-                <span>🎯</span> 30Q · Diagnóstico (45m)
-              </button>
-              <button
-                type="button"
-                class="gen-preset-chip"
-                id="preset-chip-sim-50"
-                onclick="applyGenPreset('sim-50')"
-              >
-                <span>🏆</span> 50Q · Simulacro (75m)
-              </button>
-              <button
-                type="button"
-                class="gen-preset-chip"
-                id="preset-chip-marathon-100"
-                onclick="applyGenPreset('marathon-100')"
-              >
-                <span>🚀</span> 100Q · Maratón (150m)
-              </button>
-            </div>
-          </div>
-
-          <!-- Cuadrícula de Configuración -->
-          <div class="gen-grid-layout">
-            <!-- Columna 1: Volumen y Temporizador -->
-            <div class="gen-section-box">
-              <div class="gen-section-label">
-                <span>📝</span> 1. Volumen &amp; Temporizador
-              </div>
-
-              <div>
-                <label
-                  for="gen-vol-input"
-                  style="
-                    font-size: 0.78rem;
-                    font-family: &quot;Courier New&quot;, monospace;
-                    color: var(--muted);
-                    display: block;
-                    margin-bottom: 6px;
-                  "
-                >
-                  CANTIDAD DE REACTIVOS (5 A 150):
-                </label>
-                <div style="display: flex; align-items: center; gap: 10px">
-                  <input
-                    type="number"
-                    id="gen-vol-input"
-                    min="5"
-                    max="150"
-                    value="30"
-                    onchange="onGenVolChange(this.value)"
-                    style="
-                      width: 90px;
-                      background: #121124;
-                      border: 1px solid var(--cyan);
-                      color: #ffffff;
-                      font:
-                        700 1.1rem &quot;Courier New&quot;,
-                        monospace;
-                      padding: 8px 12px;
-                      border-radius: 6px;
-                      outline: none;
-                      text-align: center;
-                      min-height: 44px;
-                    "
-                  />
-                  <span
-                    id="gen-vol-summary"
-                    style="
-                      font-size: 0.8rem;
-                      color: var(--ink);
-                      font-family: Verdana, sans-serif;
-                    "
-                    >30 reactivos configurados</span
-                  >
-                </div>
-              </div>
-
-              <div>
-                <label
-                  for="gen-time-mode-select"
-                  style="
-                    font-size: 0.78rem;
-                    font-family: &quot;Courier New&quot;, monospace;
-                    color: var(--muted);
-                    display: block;
-                    margin-bottom: 6px;
-                  "
-                >
-                  MODO DE TIEMPO Y RITMO:
-                </label>
-                <select
-                  id="gen-time-mode-select"
-                  onchange="onGenTimeModeChange(this.value)"
-                  style="
-                    width: 100%;
-                    background: #121124;
-                    border: 1px solid var(--line);
-                    color: var(--cyan);
-                    font:
-                      700 0.82rem &quot;Courier New&quot;,
-                      monospace;
-                    padding: 10px 12px;
-                    border-radius: 6px;
-                    outline: none;
-                    cursor: pointer;
-                    min-height: 44px;
-                  "
-                >
-                  <option value="auto" selected>
-                    ⚡ Automático Inteligente (1.5 min / Q)
-                  </option>
-                  <option value="15">⏱️ Fijo: 15 Minutos</option>
-                  <option value="30">⏱️ Fijo: 30 Minutos</option>
-                  <option value="45">⏱️ Fijo: 45 Minutos</option>
-                  <option value="60">⏱️ Fijo: 60 Minutos (1 Hora)</option>
-                  <option value="75">⏱️ Fijo: 75 Minutos</option>
-                  <option value="90">⏱️ Fijo: 90 Minutos (1.5 Horas)</option>
-                  <option value="120">⏱️ Fijo: 120 Minutos (2 Horas)</option>
-                  <option value="150">⏱️ Fijo: 150 Minutos (2.5 Horas)</option>
-                  <option value="unlimited">
-                    ⏳ Modo Estudio Libre (Sin límite de tiempo)
-                  </option>
-                </select>
-                <p
-                  id="gen-time-preview"
-                  style="
-                    font-size: 0.78rem;
-                    color: var(--green);
-                    font-family: &quot;Courier New&quot;, monospace;
-                    margin: 6px 0 0;
-                    font-weight: 700;
-                  "
-                >
-                  ⏱️ Tiempo asignado: 45 minutos (1.5 min/Q)
-                </p>
-              </div>
-            </div>
-
-            <!-- Columna 2: Sliders de Dificultad Dinámicos (Suma = 100%) -->
-            <div class="gen-section-box">
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  flex-wrap: wrap;
-                  gap: 8px;
-                "
-              >
-                <div class="gen-section-label">
-                  <span>⚖️</span> 2. Calibración de Dificultad
-                </div>
-                <span
-                  class="exam-meta-pill"
-                  style="
-                    color: var(--gold);
-                    font-size: 0.72rem;
-                    border-color: var(--gold);
-                  "
-                  >Suma: 100%</span
-                >
-              </div>
-
-              <!-- Barra Visual de Composición -->
-              <div
-                class="diff-composition-bar"
-                title="Composición: Verde (Fácil) / Amarillo (Medio) / Rojo (Difícil)"
-              >
-                <div
-                  id="diff-bar-easy"
-                  class="diff-bar-segment diff-bar-easy"
-                  style="width: 30%"
-                ></div>
-                <div
-                  id="diff-bar-med"
-                  class="diff-bar-segment diff-bar-med"
-                  style="width: 50%"
-                ></div>
-                <div
-                  id="diff-bar-hard"
-                  class="diff-bar-segment diff-bar-hard"
-                  style="width: 20%"
-                ></div>
-              </div>
-
-              <!-- Sliders -->
-              <div style="display: flex; flex-direction: column; gap: 12px">
-                <div class="diff-slider-item">
-                  <div class="diff-slider-header" style="color: var(--green)">
-                    <span>🟢 FÁCIL (Conceptos directos)</span>
-                    <span id="diff-val-easy">30%</span>
-                  </div>
-                  <input
-                    type="range"
-                    id="diff-slider-easy"
-                    class="diff-slider-input diff-slider-easy"
-                    min="0"
-                    max="100"
-                    value="30"
-                    oninput="onDiffSliderChange('easy', this.value)"
-                  />
-                </div>
-
-                <div class="diff-slider-item">
-                  <div class="diff-slider-header" style="color: var(--gold)">
-                    <span>🟡 MEDIO (Causa-efecto / Mecanismos)</span>
-                    <span id="diff-val-med">50%</span>
-                  </div>
-                  <input
-                    type="range"
-                    id="diff-slider-med"
-                    class="diff-slider-input diff-slider-med"
-                    min="0"
-                    max="100"
-                    value="50"
-                    oninput="onDiffSliderChange('medium', this.value)"
-                  />
-                </div>
-
-                <div class="diff-slider-item">
-                  <div class="diff-slider-header" style="color: var(--coral)">
-                    <span>🔴 DIFÍCIL (Código / Escenarios / Cotas)</span>
-                    <span id="diff-val-hard">20%</span>
-                  </div>
-                  <input
-                    type="range"
-                    id="diff-slider-hard"
-                    class="diff-slider-input diff-slider-hard"
-                    min="0"
-                    max="100"
-                    value="20"
-                    oninput="onDiffSliderChange('hard', this.value)"
-                  />
-                </div>
-              </div>
-
-              <!-- Presets de Dificultad -->
-              <div
-                style="
-                  display: flex;
-                  gap: 6px;
-                  flex-wrap: wrap;
-                  margin-top: 2px;
-                "
-              >
-                <button
-                  type="button"
-                  class="gen-preset-chip"
-                  style="font-size: 0.72rem; padding: 4px 8px; min-height: 36px"
-                  onclick="applyDiffPreset(60, 30, 10)"
-                >
-                  Suave (60/30/10)
-                </button>
-                <button
-                  type="button"
-                  class="gen-preset-chip active"
-                  id="btn-diff-preset-realistic"
-                  style="font-size: 0.72rem; padding: 4px 8px; min-height: 36px"
-                  onclick="applyDiffPreset(30, 50, 20)"
-                >
-                  Canónico (30/50/20)
-                </button>
-                <button
-                  type="button"
-                  class="gen-preset-chip"
-                  style="font-size: 0.72rem; padding: 4px 8px; min-height: 36px"
-                  onclick="applyDiffPreset(10, 40, 50)"
-                >
-                  Extremo (10/40/50)
-                </button>
-              </div>
-            </div>
-
-            <!-- Columna 3: Cobertura de Bloques Temáticos -->
-            <div class="gen-section-box">
-              <div class="gen-section-label">
-                <span>📚</span> 3. Cobertura de Bloques
-              </div>
-
-              <div>
-                <label
-                  for="gen-block-dist-select"
-                  style="
-                    font-size: 0.78rem;
-                    font-family: &quot;Courier New&quot;, monospace;
-                    color: var(--muted);
-                    display: block;
-                    margin-bottom: 6px;
-                  "
-                >
-                  DISTRIBUCIÓN DE MUESTREO:
-                </label>
-                <select
-                  id="gen-block-dist-select"
-                  onchange="onBlockDistChange(this.value)"
-                  style="
-                    width: 100%;
-                    background: #121124;
-                    border: 1px solid var(--line);
-                    color: var(--cyan);
-                    font:
-                      700 0.82rem &quot;Courier New&quot;,
-                      monospace;
-                    padding: 10px 12px;
-                    border-radius: 6px;
-                    outline: none;
-                    cursor: pointer;
-                    min-height: 44px;
-                  "
-                >
-                  <option value="uniform" selected>
-                    ⚖️ Uniforme (~16.6% por bloque)
-                  </option>
-                  <option value="weighted">
-                    ⚡ Ponderada (Mayor peso a Plataformas &amp; BD)
-                  </option>
-                  <option value="focus">
-                    🎯 Focalizada (Personalizar bloques activos)
-                  </option>
-                </select>
-              </div>
-
-              <!-- Lista de Checkboxes de Bloques -->
-              <div id="gen-blocks-picker-wrap" class="gen-blocks-list">
-                <!-- Renderizado dinámicamente con los 6 bloques y contadores de MATERIAL_BANK -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Barra Heroica de Acciones -->
-          <div class="gen-actions-bar">
-            <button
-              type="button"
-              class="btn-gen-primary"
-              id="btn-generate-exam-now"
-              onclick="executeExamGenerationAndStart()"
-            >
-              <span>⚡ GENERAR &amp; COMENZAR EXAMEN AHORA</span>
+          <!-- Switcher Segmentado de Modos del Hub -->
+          <div class="hub-mode-nav">
+            <button type="button" class="hub-mode-tab-btn active" id="btn-hub-mode-canonical" onclick="setHubMode('canonical')">
+              <span>🏆</span> Simulacros Oficiales Canónicos
             </button>
-            <button
-              type="button"
-              class="btn-gen-secondary"
-              onclick="executeExportGeneratedMarkdown()"
-              title="Exportar examen en Markdown optimizado para NotebookLM y estudio offline"
-            >
-              <span>📋 Exportar Markdown (NotebookLM)</span>
-            </button>
-            <button
-              type="button"
-              class="btn-gen-secondary"
-              onclick="executeExportGeneratedJSON()"
-              title="Descargar examen en archivo JSON compatible"
-            >
-              <span>💾 Descargar JSON</span>
+            <button type="button" class="hub-mode-tab-btn" id="btn-hub-mode-generator" onclick="setHubMode('generator')">
+              <span>⚙️</span> Generador a Medida (Personalizado)
             </button>
           </div>
         </div>
 
         <!-- ====================================================================
-           2. CATÁLOGO DE EVALUACIONES ESTÁNDAR PRECONFIGURADAS
-           ==================================================================== -->
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-          "
-        >
-          <div>
-            <h2 style="margin: 0 0 6px; font-size: 1.25rem; color: #ffffff">
-              📦 Simulacros Canónicos Preconfigurados
-            </h2>
-            <p
-              style="
-                margin: 0;
-                font-size: 0.86rem;
-                color: var(--muted);
-                font-family: Verdana, sans-serif;
-              "
-            >
-              O bien, selecciona una evaluación fija del catálogo formal
-              oficial.
-            </p>
+             VISTA A: SIMULACROS CANÓNICOS OFICIALES (1-CLIC START)
+             ==================================================================== -->
+        <div id="hub-view-canonical" class="hub-subview active">
+          <div class="hub-subview-header">
+            <div>
+              <h3 style="margin:0 0 4px; font-size:1.15rem; color:#ffffff; font-family:'Courier New', monospace;">
+                📦 Simulacros Estándar Disponibles
+              </h3>
+              <p style="margin:0; font-size:0.86rem; color:var(--muted); font-family:Verdana, sans-serif;">
+                Evaluaciones canónicas preconfiguradas con balance doctrinal y cobertura integral listos para iniciar en 1 clic.
+              </p>
+            </div>
+            <button class="btn-theme" onclick="switchExamTab('tab-manager')" style="padding:10px 18px; border-radius:6px; cursor:pointer; font:700 0.85rem 'Courier New', monospace; background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid var(--gold); min-height:44px; display:inline-flex; align-items:center; gap:8px;">
+              <span>➕</span> Crear o Importar Examen
+            </button>
           </div>
-          <button
-            class="btn-theme"
-            onclick="switchExamTab('tab-manager')"
-            style="
-              padding: 10px 18px;
-              border-radius: 6px;
-              cursor: pointer;
-              font:
-                700 0.85rem &quot;Courier New&quot;,
-                monospace;
-              background: linear-gradient(135deg, var(--gold), var(--coral));
-              color: #000;
-              border: none;
-              min-height: 44px;
-            "
-          >
-            ➕ Crear o Importar Examen
-          </button>
+
+          <!-- Cuadrícula de Simulacros Canónicos -->
+          <div class="exams-hub-grid" id="exams-hub-list">
+            <!-- Renderizado dinámicamente -->
+          </div>
+
+          <!-- Tarjeta CTA hacia el generador -->
+          <div class="hub-cta-generator-banner">
+            <div>
+              <span class="exam-meta-pill" style="color:var(--cyan); border-color:var(--cyan); margin-bottom:8px; display:inline-block;">🛠️ MODO ENTRENAMIENTO FOCALIZADO</span>
+              <h4 style="margin:0 0 6px; font-size:1.05rem; color:#ffffff; font-family:'Courier New', monospace;">¿Deseas evaluar temas específicos o ajustar el tiempo?</h4>
+              <p style="margin:0; font-size:0.84rem; color:var(--muted); font-family:Verdana,sans-serif; max-width:640px;">
+                Personaliza la cantidad de reactivos (de 5 a 150), calibra los pesos de dificultad y filtra únicamente los bloques temáticos que desees reforzar.
+              </p>
+            </div>
+            <button type="button" class="btn-theme" onclick="setHubMode('generator')" style="padding:12px 22px; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--coral)); color:#000; font:800 0.86rem 'Courier New', monospace; border:none; cursor:pointer; white-space:nowrap; box-shadow:0 0 16px rgba(255,215,0,0.35);">
+              Abrir Generador a Medida ➔
+            </button>
+          </div>
         </div>
 
-        <div class="exams-hub-grid" id="exams-hub-list">
-          <!-- Renderizado dinámicamente -->
+        <!-- ====================================================================
+             VISTA B: GENERADOR PARAMETRIZADO A MEDIDA (ORGANIZADO)
+             ==================================================================== -->
+        <div id="hub-view-generator" class="hub-subview">
+          <div class="exam-generator-card" id="exam-generator-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+              <div class="gen-badge-strip" style="margin-bottom:0;">
+                <span class="exam-meta-pill" style="color:var(--exam-gold); border-color:var(--exam-gold); font-weight:800;">🛠️ CONFIGURADOR ESTOCÁSTICO</span>
+                <span class="exam-meta-pill" style="color:var(--green); border-color:var(--green);"><span id="gen-mobile-bank-count">180</span> REACTIVOS EN BANCO</span>
+              </div>
+              <button type="button" onclick="setHubMode('canonical')" class="btn-theme" style="padding:8px 16px; border-radius:6px; font:700 0.82rem 'Courier New', monospace; background:rgba(34,33,61,0.8); border:1px solid var(--line); color:var(--cyan); cursor:pointer;">
+                ← Volver a Simulacros Oficiales
+              </button>
+            </div>
+
+            <h3 class="gen-title">
+              <span>🎯 Generador de Exámenes Técnicos Parametrizado</span>
+            </h3>
+            <p class="gen-subtitle">
+              Personaliza tu evaluación seleccionando volumen de reactivos, ritmo de tiempo, distribución de dificultad y bloques temáticos. Cada corrida selecciona estocásticamente 1 clave canónica y 3 distractores entre 7 opciones por pregunta con barajado criptográfico insesgado.
+            </p>
+
+            <!-- Presets Rápidos en Fila Limpia -->
+            <div style="margin-bottom:22px; background:rgba(8,7,18,0.6); padding:14px 16px; border-radius:8px; border:1px solid var(--line);">
+              <label style="font:700 0.76rem 'Courier New', monospace; color:var(--muted); display:block; margin-bottom:10px; text-transform:uppercase;">
+                ⚡ Presets Rápidos de Simulación (1-Clic):
+              </label>
+              <div class="gen-presets-row" style="margin-bottom:0;">
+                <button type="button" class="gen-preset-chip" id="preset-chip-sprint-15" onclick="applyGenPreset('sprint-15')">
+                  <span>⚡</span> 15Q · Sprint (22m)
+                </button>
+                <button type="button" class="gen-preset-chip active" id="preset-chip-diag-30" onclick="applyGenPreset('diag-30')">
+                  <span>🎯</span> 30Q · Diagnóstico (45m)
+                </button>
+                <button type="button" class="gen-preset-chip" id="preset-chip-sim-50" onclick="applyGenPreset('sim-50')">
+                  <span>🏆</span> 50Q · Simulacro (75m)
+                </button>
+                <button type="button" class="gen-preset-chip" id="preset-chip-marathon-100" onclick="applyGenPreset('marathon-100')">
+                  <span>🚀</span> 100Q · Maratón (150m)
+                </button>
+              </div>
+            </div>
+
+            <!-- Cuadrícula de Configuración en 2 Filas Espaciosas -->
+            <div class="gen-grid-layout">
+              <!-- Fila 1 / Columna 1: Volumen y Temporizador -->
+              <div class="gen-section-box">
+                <div class="gen-section-label">
+                  <span>📝</span> 1. Volumen &amp; Temporizador
+                </div>
+
+                <div>
+                  <label for="gen-vol-input" style="font-size:0.78rem; font-family:'Courier New', monospace; color:var(--muted); display:block; margin-bottom:6px;">
+                    CANTIDAD DE REACTIVOS (5 A 150):
+                  </label>
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="number" id="gen-vol-input" min="5" max="150" value="30" onchange="onGenVolChange(this.value)" style="width:90px; background:#121124; border:1px solid var(--cyan); color:#ffffff; font:700 1.1rem 'Courier New', monospace; padding:8px 12px; border-radius:6px; outline:none; text-align:center; min-height:44px;" />
+                    <span id="gen-vol-summary" style="font-size:0.82rem; color:var(--ink); font-family:Verdana, sans-serif;">30 reactivos configurados</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="gen-time-mode-select" style="font-size:0.78rem; font-family:'Courier New', monospace; color:var(--muted); display:block; margin-bottom:6px;">
+                    MODO DE TIEMPO Y RITMO:
+                  </label>
+                  <select id="gen-time-mode-select" onchange="onGenTimeModeChange(this.value)" style="width:100%; background:#121124; border:1px solid var(--line); color:var(--cyan); font:700 0.82rem 'Courier New', monospace; padding:10px 12px; border-radius:6px; outline:none; cursor:pointer; min-height:44px;">
+                    <option value="auto" selected>⚡ Automático Inteligente (1.5 min / Q)</option>
+                    <option value="15">⏱️ Fijo: 15 Minutos</option>
+                    <option value="30">⏱️ Fijo: 30 Minutos</option>
+                    <option value="45">⏱️ Fijo: 45 Minutos</option>
+                    <option value="60">⏱️ Fijo: 60 Minutos (1 Hora)</option>
+                    <option value="75">⏱️ Fijo: 75 Minutos</option>
+                    <option value="90">⏱️ Fijo: 90 Minutos (1.5 Horas)</option>
+                    <option value="120">⏱️ Fijo: 120 Minutos (2 Horas)</option>
+                    <option value="150">⏱️ Fijo: 150 Minutos (2.5 Horas)</option>
+                    <option value="unlimited">⏳ Modo Estudio Libre (Sin límite de tiempo)</option>
+                  </select>
+                  <p id="gen-time-preview" style="font-size:0.78rem; color:var(--green); font-family:'Courier New', monospace; margin:6px 0 0; font-weight:700;">
+                    ⏱️ Tiempo asignado: 45 minutos (1.5 min/Q)
+                  </p>
+                </div>
+              </div>
+
+              <!-- Fila 1 / Columna 2: Calibración de Dificultad Dinámica -->
+              <div class="gen-section-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <div class="gen-section-label">
+                    <span>⚖️</span> 2. Calibración de Dificultad
+                  </div>
+                  <span class="exam-meta-pill" style="color:var(--gold); font-size:0.72rem; border-color:var(--gold);">Suma: 100%</span>
+                </div>
+
+                <!-- Presets de Dificultad -->
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <button type="button" class="gen-preset-chip" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(60, 30, 10)">
+                    Suave (60/30/10)
+                  </button>
+                  <button type="button" class="gen-preset-chip active" id="btn-diff-preset-realistic" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(30, 50, 20)">
+                    Canónico (30/50/20)
+                  </button>
+                  <button type="button" class="gen-preset-chip" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(10, 40, 50)">
+                    Extremo (10/40/50)
+                  </button>
+                </div>
+
+                <!-- Barra Tricromática -->
+                <div class="diff-composition-bar" title="Distribución de dificultad del examen">
+                  <div class="diff-bar-segment diff-bar-easy" id="diff-bar-seg-easy" style="width:30%;"></div>
+                  <div class="diff-bar-segment diff-bar-med" id="diff-bar-seg-med" style="width:50%;"></div>
+                  <div class="diff-bar-segment diff-bar-hard" id="diff-bar-seg-hard" style="width:20%;"></div>
+                </div>
+
+                <!-- Sliders finos -->
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <div class="diff-slider-item">
+                    <div class="diff-slider-header">
+                      <span style="color:var(--green);">🟢 FÁCIL (Conceptos directos)</span>
+                      <span id="diff-val-easy" style="color:var(--green);">30%</span>
+                    </div>
+                    <input type="range" class="diff-slider-input diff-slider-easy" id="diff-slider-easy" min="0" max="100" value="30" oninput="onDiffSliderChange('easy', this.value)" />
+                  </div>
+                  <div class="diff-slider-item">
+                    <div class="diff-slider-header">
+                      <span style="color:var(--gold);">🟡 MEDIO (Causa-efecto / Mecanismos)</span>
+                      <span id="diff-val-med" style="color:var(--gold);">50%</span>
+                    </div>
+                    <input type="range" class="diff-slider-input diff-slider-med" id="diff-slider-med" min="0" max="100" value="50" oninput="onDiffSliderChange('medium', this.value)" />
+                  </div>
+                  <div class="diff-slider-item">
+                    <div class="diff-slider-header">
+                      <span style="color:var(--coral);">🔴 DIFÍCIL (Código / Escenarios / Casos)</span>
+                      <span id="diff-val-hard" style="color:var(--coral);">20%</span>
+                    </div>
+                    <input type="range" class="diff-slider-input diff-slider-hard" id="diff-slider-hard" min="0" max="100" value="20" oninput="onDiffSliderChange('hard', this.value)" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fila 2 / Ancho Completo: Cobertura de Bloques Temáticos -->
+              <div class="gen-section-box full-width">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <div class="gen-section-label">
+                    <span>📚</span> 3. Cobertura de Bloques Temáticos
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="btn-theme" onclick="selectAllGenBlocks(true)" style="padding:5px 12px; font:700 0.74rem 'Courier New', monospace; border-radius:4px; background:rgba(0,255,255,0.12); color:var(--cyan); border:1px solid var(--cyan); cursor:pointer;">
+                      ✔️ Marcar Todos
+                    </button>
+                    <button type="button" class="btn-theme" onclick="selectAllGenBlocks(false)" style="padding:5px 12px; font:700 0.74rem 'Courier New', monospace; border-radius:4px; background:rgba(255,0,110,0.12); color:var(--coral); border:1px solid var(--coral); cursor:pointer;">
+                      ✖️ Desmarcar Todos
+                    </button>
+                  </div>
+                </div>
+
+                <div style="max-width:380px;">
+                  <label for="gen-block-dist-select" style="font-size:0.78rem; font-family:'Courier New', monospace; color:var(--muted); display:block; margin-bottom:6px;">
+                    DISTRIBUCIÓN DE MUESTREO:
+                  </label>
+                  <select id="gen-block-dist-select" onchange="onBlockDistChange(this.value)" style="width:100%; background:#121124; border:1px solid var(--line); color:var(--cyan); font:700 0.82rem 'Courier New', monospace; padding:10px 12px; border-radius:6px; outline:none; cursor:pointer; min-height:44px;">
+                    <option value="uniform" selected>⚖️ Uniforme (~16.6% por bloque)</option>
+                    <option value="weighted">⚡ Ponderada (Mayor peso a Plataformas &amp; BD)</option>
+                    <option value="focus">🎯 Focalizada (Personalizar bloques activos)</option>
+                  </select>
+                </div>
+
+                <!-- Lista de Checkboxes de Bloques en Cuadrícula Amplia -->
+                <div id="gen-blocks-picker-wrap" class="gen-blocks-list">
+                  <!-- Renderizado dinámicamente con los 6 bloques y contadores de MATERIAL_BANK -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Barra Heroica de Acciones -->
+            <div class="gen-actions-bar">
+              <button type="button" class="btn-gen-primary" id="btn-generate-exam-now" onclick="executeExamGenerationAndStart()">
+                <span>⚡ GENERAR &amp; COMENZAR EXAMEN AHORA</span>
+              </button>
+              <button type="button" class="btn-gen-secondary" onclick="executeExportGeneratedMarkdown()" title="Exportar examen en Markdown optimizado para NotebookLM y estudio offline">
+                <span>📋 Exportar Markdown (NotebookLM)</span>
+              </button>
+              <button type="button" class="btn-gen-secondary" onclick="executeExportGeneratedJSON()" title="Descargar examen en archivo JSON compatible">
+                <span>💾 Descargar JSON</span>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
+
 
       <!-- TAB 2: SESIÓN DE EXAMEN ACTIVA -->
       <section id="tab-session" class="exam-panel">
@@ -1910,6 +1756,7 @@
               Siguiente / Saltar →
             </button>
           </div>
+      </section>
 
     <!-- TAB 3: DICTAMEN & POST-MORTEM -->
     <section id="tab-results" class="exam-panel">
@@ -1922,7 +1769,6 @@
           <span class="exam-meta-pill" style="color:var(--gold); border-color:var(--gold); font-weight:800;">🏁 EXAMEN FINALIZADO</span>
           <span class="exam-meta-pill" style="color:var(--cyan); border-color:var(--cyan);">AUDITORÍA TÉCNICA CERRADA</span>
         </div>
-      </section>
 
         <h2 style="color:#ffffff; font-size:1.85rem; margin:14px 0 8px; font-family:'Courier New', monospace;">
           ✨ ¡Evaluación Concluida con Éxito!
@@ -2028,99 +1874,6 @@
         </div>
       </div>
     </section>
-
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-          "
-        >
-          <button
-            class="btn-theme"
-            onclick="switchExamTab('tab-hub')"
-            style="
-              background: rgba(34, 33, 61, 0.9);
-              border: 1px solid var(--line);
-              color: var(--cyan);
-              padding: 12px 20px;
-              border-radius: 6px;
-              cursor: pointer;
-              font:
-                700 0.85rem &quot;Courier New&quot;,
-                monospace;
-            "
-          >
-            ← Volver al Centro de Exámenes
-          </button>
-          <button
-            id="btn-retry-failed"
-            class="btn-theme"
-            onclick="startFailedQuestionsRetry()"
-            style="
-              background: linear-gradient(135deg, var(--gold), var(--coral));
-              border: none;
-              color: #0b0c16;
-              padding: 12px 22px;
-              border-radius: 6px;
-              cursor: pointer;
-              font:
-                800 0.88rem &quot;Courier New&quot;,
-                monospace;
-              box-shadow: 0 0 16px rgba(255, 215, 0, 0.35);
-              display: inline-flex;
-              align-items: center;
-              gap: 8px;
-            "
-          >
-            🎯 Reintentar solo Fallados (<span id="lbl-failed-retry-count"
-              >0</span
-            >)
-          </button>
-          <button
-            class="btn-theme"
-            onclick="downloadResultsReportMarkdown()"
-            style="
-              background: rgba(0, 255, 255, 0.12);
-              border: 1px solid var(--cyan);
-              color: var(--cyan);
-              padding: 12px 22px;
-              border-radius: 6px;
-              cursor: pointer;
-              font:
-                800 0.85rem &quot;Courier New&quot;,
-                monospace;
-              display: inline-flex;
-              align-items: center;
-              gap: 8px;
-              box-shadow: 0 0 14px rgba(0, 255, 255, 0.25);
-            "
-          >
-            📥 Descargar Informe (.md)
-          </button>
-          <button
-            class="btn-theme"
-            onclick="restartCurrentExam()"
-            style="
-              background: linear-gradient(135deg, var(--green), var(--cyan));
-              border: none;
-              color: #000;
-              padding: 12px 24px;
-              border-radius: 6px;
-              cursor: pointer;
-              font:
-                800 0.88rem &quot;Courier New&quot;,
-                monospace;
-              box-shadow: 0 0 16px rgba(0, 255, 170, 0.4);
-            "
-          >
-            🔄 Reintentar Todo
-          </button>
-        </div>
-      </section>
-
       <!-- TAB 4: GESTOR & CREADOR DE CUESTIONARIOS -->
       <section id="tab-manager" class="exam-panel">
         <div style="margin-bottom: 24px">
@@ -3552,6 +3305,33 @@ D) Requiere Task.Run obligatoriamente.
         detailedResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
       showQuickToast("🏆 Calificación y desglose técnico revelados.");
+    }
+
+    
+    function setHubMode(mode) {
+      const btnCan = document.getElementById('btn-hub-mode-canonical');
+      const btnGen = document.getElementById('btn-hub-mode-generator');
+      const viewCan = document.getElementById('hub-view-canonical');
+      const viewGen = document.getElementById('hub-view-generator');
+
+      if (mode === 'generator') {
+        if (btnCan) btnCan.classList.remove('active');
+        if (btnGen) btnGen.classList.add('active');
+        if (viewCan) viewCan.classList.remove('active');
+        if (viewGen) viewGen.classList.add('active');
+        if (viewGen) viewGen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        if (btnCan) btnCan.classList.add('active');
+        if (btnGen) btnGen.classList.remove('active');
+        if (viewCan) viewCan.classList.add('active');
+        if (viewGen) viewGen.classList.remove('active');
+      }
+    }
+
+    function selectAllGenBlocks(select) {
+      const cbs = document.querySelectorAll('#gen-blocks-picker-wrap input[type="checkbox"]');
+      cbs.forEach(cb => { cb.checked = !!select; });
+      onBlockCheckboxChange();
     }
 
     function openGenMobileModal() {
