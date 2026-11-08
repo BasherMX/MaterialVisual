@@ -750,6 +750,22 @@
     <!-- Scripts de Lógica Interactiva -->
     <script>
       // ==========================================
+      // CONTROLADOR GLOBAL DE PESTAÑAS (Hoisted)
+      // ==========================================
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+          const oc = b.getAttribute('onclick') || '';
+          return oc.includes(tabId);
+        });
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+      window.switchTab = switchTab;
+
+      // ==========================================
       // 1. LABORATORIO DE INYECCIÓN DE DEFECTOS
       // ==========================================
       const scenarios = {
@@ -812,7 +828,7 @@
     // Requerimiento: Imprimir ticket de pedido de mostrador o domicilio
     // ERROR HUMANO: En pedidos anónimos de mostrador, pedido.Cliente es NULL
     <span class="defect-highlight">string nombre = pedido.Cliente.Nombre.ToUpper();</span> // ← DEFECTO LATENTE
-    return $"Ticket para: {nombre} | Total: ${pedido.Total}";
+    return $"Ticket para: {nombre} | Total: \${pedido.Total}";
 }`,
           controls: `
             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
@@ -1258,16 +1274,6 @@
       selectQuadrant(1);
       loadRealCase('hospital');
       renderQuizQuestion();
-
-      // Control de Pestañas
-      window.switchTab = function (tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (activeBtn) activeBtn.classList.add('active');
-      };
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
