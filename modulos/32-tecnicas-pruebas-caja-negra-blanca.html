@@ -97,7 +97,10 @@
       }
 
       .path-badge {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         background: rgba(0, 255, 255, 0.08);
         border-left: 3px solid var(--cyan);
         padding: 8px 12px;
@@ -105,6 +108,31 @@
         font: 0.8rem "Courier New", monospace;
         color: #fff;
         border-radius: 0 4px 4px 0;
+        transition: all 0.25s ease;
+      }
+      .path-badge.active-path {
+        background: rgba(255, 215, 0, 0.18);
+        border-left-color: var(--gold);
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.35);
+        color: #fff;
+      }
+      .btn-play-path {
+        background: rgba(0, 255, 170, 0.15);
+        border: 1px solid var(--green);
+        color: var(--green);
+        border-radius: 4px;
+        padding: 4px 10px;
+        font: 700 0.72rem "Courier New", monospace;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-height: 32px;
+        transition: all 0.2s ease;
+      }
+      .btn-play-path:hover {
+        background: var(--green);
+        color: #080712;
       }
 
       /* Rango BVA */
@@ -125,6 +153,8 @@
         align-items: center;
         justify-content: center;
         font: 700 0.78rem "Courier New", monospace;
+        text-align: center;
+        padding: 0 4px;
       }
 
       .bva-zone-invalid {
@@ -138,18 +168,62 @@
         border-right: 2px dashed var(--green);
       }
 
-      .bva-point {
+      .bva-probe-pin {
         position: absolute;
-        top: -10px;
-        width: 24px;
-        height: 24px;
+        top: -14px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         background: var(--gold);
         color: #000;
-        font: 800 0.72rem/24px "Courier New", monospace;
+        font: 800 0.75rem/28px "Courier New", monospace;
         text-align: center;
         transform: translateX(-50%);
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+        transition: left 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2), background 0.3s;
+        pointer-events: none;
+        z-index: 10;
+      }
+      .bva-probe-pin::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px 5px 0 5px;
+        border-style: solid;
+        border-color: var(--gold) transparent transparent transparent;
+      }
+      .bva-probe-pin.fail {
+        background: var(--coral);
+        box-shadow: 0 0 15px rgba(255, 0, 110, 0.9);
+      }
+      .bva-probe-pin.fail::after {
+        border-color: var(--coral) transparent transparent transparent;
+      }
+
+      /* Animaciones de Nodos y Trazador CFG */
+      .cfg-node {
+        transition: all 0.3s ease;
+      }
+      .cfg-node.active-node circle {
+        fill: rgba(255, 215, 0, 0.35) !important;
+        stroke: #ffd700 !important;
+        stroke-width: 3.5px !important;
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+      }
+      .cfg-edge {
+        transition: stroke 0.3s, stroke-width 0.3s;
+      }
+      .cfg-edge.active-edge {
+        stroke: #ffd700 !important;
+        stroke-width: 3.5px !important;
+        filter: drop-shadow(0 0 6px #ffd700);
+      }
+      #cfg-tracer {
+        pointer-events: none;
+        filter: drop-shadow(0 0 10px #00ffff);
+        transition: cx 0.45s ease-in-out, cy 0.45s ease-in-out;
       }
 
       @media (max-width: 820px) {
@@ -244,9 +318,20 @@
               <div style="font:700 0.76rem 'Courier New', monospace; color:var(--muted); position:absolute; top:12px; left:14px;">
                 GRAFO DE FLUJO DE CONTROL (CFG)
               </div>
+              <div style="position:absolute; top:10px; right:12px; display:flex; gap:6px;">
+                <button class="btn-play-path" id="btn-play-all-paths" onclick="playAllPaths()" title="Reproducir todos los caminos básicos de forma secuencial">
+                  ▶ Recorrer Todos
+                </button>
+                <button class="btn-play-path" id="btn-stop-cfg" onclick="stopCFGPlayback()" style="border-color:var(--coral); color:var(--coral); display:none;">
+                  ⏹ Detener
+                </button>
+              </div>
               <svg id="cfg-svg" width="100%" height="300" viewBox="0 0 340 300" style="overflow:visible;">
                 <!-- Render dinámico de aristas y nodos -->
               </svg>
+              <div id="cfg-step-status" style="margin-top:8px; font:700 0.8rem 'Courier New', monospace; color:var(--cyan); min-height:22px; text-align:center;">
+                Selecciona un camino para reproducir su recorrido interactivo.
+              </div>
             </div>
           </div>
         </div>
@@ -277,15 +362,33 @@
           </div>
 
           <!-- Barra Visual de Partición -->
-          <div class="bva-bar">
-            <div class="bva-zone bva-zone-invalid" style="width:25%;">
-              Clase Inválida Inferior (x &lt; Min)
+          <div style="position:relative;">
+            <div class="bva-bar" id="bva-visual-bar">
+              <div class="bva-zone bva-zone-invalid" style="width:25%;">
+                Clase Inválida Inferior<br>(x &lt; Min)
+              </div>
+              <div class="bva-zone bva-zone-valid" style="width:50%;">
+                Clase Válida Admitida<br>(Min ≤ x ≤ Max)
+              </div>
+              <div class="bva-zone bva-zone-invalid" style="width:25%;">
+                Clase Inválida Superior<br>(x &gt; Max)
+              </div>
+              <div id="bva-pin" class="bva-probe-pin" style="left:50%;" title="Sonda de Valor Actual">18</div>
             </div>
-            <div class="bva-zone bva-zone-valid" style="width:50%;">
-              Clase Válida Admitida (Min ≤ x ≤ Max)
+          </div>
+
+          <!-- Controles de Animación y Batería Automatizada -->
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin:14px 0;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-theme" id="btn-run-bva-suite" onclick="playBVASuite()" style="padding:8px 16px; font:700 0.82rem 'Courier New', monospace; background:rgba(0,255,170,0.18); border-color:var(--green); color:var(--green);">
+                ▶ Ejecutar Suite Automática BVA (7 Casos Límite)
+              </button>
+              <button class="btn-theme" id="btn-stop-bva" onclick="stopBVASuite()" style="padding:8px 14px; font:700 0.82rem 'Courier New', monospace; border-color:var(--coral); color:var(--coral); display:none;">
+                ⏹ Detener Suite
+              </button>
             </div>
-            <div class="bva-zone bva-zone-invalid" style="width:25%;">
-              Clase Inválida Superior (x &gt; Max)
+            <div id="bva-suite-status" style="font:700 0.8rem 'Courier New', monospace; color:var(--gold);">
+              Listo para probar casos de frontera.
             </div>
           </div>
 
@@ -419,83 +522,116 @@
           nodes: 4,
           edges: 4,
           vg: 2,
+          coords: {
+            1: { x: 170, y: 30 },
+            2: { x: 100, y: 130 },
+            3: { x: 240, y: 130 },
+            4: { x: 170, y: 240 }
+          },
           paths: [
-            "Camino 1 (True):  1 ➔ 2 ➔ 4 (edad = 20)",
-            "Camino 2 (False): 1 ➔ 3 ➔ 4 (edad = 15)"
+            { label: "Camino 1 (True): 1 ➔ 2 ➔ 4 (edad = 20)", nodes: [1, 2, 4], edges: ["1-2", "2-4"] },
+            { label: "Camino 2 (False): 1 ➔ 3 ➔ 4 (edad = 15)", nodes: [1, 3, 4], edges: ["1-3", "3-4"] }
           ],
           svg: `
-            <circle cx="170" cy="30" r="16" fill="#121124" stroke="#ff006e" stroke-width="2" />
-            <text x="170" y="35" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N1</text>
+            <!-- Aristas -->
+            <line id="edge-1-2" class="cfg-edge" x1="160" y1="44" x2="108" y2="116" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-1-3" class="cfg-edge" x1="180" y1="44" x2="232" y2="116" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-2-4" class="cfg-edge" x1="108" y1="144" x2="160" y2="226" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-3-4" class="cfg-edge" x1="232" y1="144" x2="180" y2="226" stroke="#00ffaa" stroke-width="2" />
 
-            <line x1="160" y1="44" x2="100" y2="120" stroke="#00ffaa" stroke-width="2" marker-end="url(#arrow)" />
-            <line x1="180" y1="44" x2="240" y2="120" stroke="#00ffaa" stroke-width="2" />
+            <!-- Nodos -->
+            <g id="node-1" class="cfg-node">
+              <circle cx="170" cy="30" r="16" fill="#121124" stroke="#ff006e" stroke-width="2" />
+              <text x="170" y="35" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N1</text>
+            </g>
+            <g id="node-2" class="cfg-node">
+              <circle cx="100" cy="130" r="16" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="100" y="135" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N2</text>
+            </g>
+            <g id="node-3" class="cfg-node">
+              <circle cx="240" cy="130" r="16" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="240" y="135" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N3</text>
+            </g>
+            <g id="node-4" class="cfg-node">
+              <circle cx="170" cy="240" r="16" fill="#121124" stroke="#ffd700" stroke-width="2" />
+              <text x="170" y="245" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N4</text>
+            </g>
 
-            <circle cx="100" cy="130" r="16" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="100" y="135" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N2</text>
-
-            <circle cx="240" cy="130" r="16" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="240" y="135" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N3</text>
-
-            <line x1="100" y1="146" x2="160" y2="230" stroke="#00ffaa" stroke-width="2" />
-            <line x1="240" y1="146" x2="180" y2="230" stroke="#00ffaa" stroke-width="2" />
-
-            <circle cx="170" cy="240" r="16" fill="#121124" stroke="#ffd700" stroke-width="2" />
-            <text x="170" y="245" fill="#fff" font-family="Courier New" font-size="12" font-weight="700" text-anchor="middle">N4</text>
+            <!-- Trazador animado -->
+            <circle id="cfg-tracer" cx="170" cy="30" r="7" fill="#00ffff" opacity="0" />
           `
         },
         nested: {
           code: `string EvaluarNota(int p) {
   // Nodo 1: Inicio
-  if (p >= 90) {      // Decisión 1 (Nodo 1)
-    return "A";       // Nodo 2
+  if (p >= 90) {        // Decisión 1 (Nodo 1)
+    return "A";         // Nodo 2
   } else if (p >= 70) { // Decisión 2 (Nodo 3)
-    return "B";       // Nodo 4
+    return "B";         // Nodo 4
   } else {
-    return "F";       // Nodo 5
+    return "F";         // Nodo 5
   }
   // Nodo 6: Fin
 }`,
           nodes: 6,
           edges: 7,
           vg: 3,
+          coords: {
+            1: { x: 170, y: 25 },
+            2: { x: 80, y: 100 },
+            3: { x: 230, y: 100 },
+            4: { x: 160, y: 180 },
+            5: { x: 280, y: 180 },
+            6: { x: 170, y: 260 }
+          },
           paths: [
-            "Camino 1: 1 ➔ 2 ➔ 6 (p = 95)",
-            "Camino 2: 1 ➔ 3 ➔ 4 ➔ 6 (p = 80)",
-            "Camino 3: 1 ➔ 3 ➔ 5 ➔ 6 (p = 50)"
+            { label: "Camino 1: 1 ➔ 2 ➔ 6 (p = 95)", nodes: [1, 2, 6], edges: ["1-2", "2-6"] },
+            { label: "Camino 2: 1 ➔ 3 ➔ 4 ➔ 6 (p = 80)", nodes: [1, 3, 4, 6], edges: ["1-3", "3-4", "4-6"] },
+            { label: "Camino 3: 1 ➔ 3 ➔ 5 ➔ 6 (p = 50)", nodes: [1, 3, 5, 6], edges: ["1-3", "3-5", "5-6"] }
           ],
           svg: `
-            <circle cx="170" cy="25" r="14" fill="#121124" stroke="#ff006e" stroke-width="2" />
-            <text x="170" y="29" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N1</text>
+            <!-- Aristas -->
+            <line id="edge-1-2" class="cfg-edge" x1="156" y1="35" x2="92" y2="90" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-1-3" class="cfg-edge" x1="184" y1="35" x2="218" y2="90" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-3-4" class="cfg-edge" x1="220" y1="114" x2="172" y2="168" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-3-5" class="cfg-edge" x1="240" y1="114" x2="268" y2="168" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-2-6" class="cfg-edge" x1="86" y1="114" x2="158" y2="248" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-4-6" class="cfg-edge" x1="162" y1="194" x2="168" y2="246" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-5-6" class="cfg-edge" x1="270" y1="192" x2="182" y2="250" stroke="#00ffaa" stroke-width="2" />
 
-            <line x1="156" y1="35" x2="90" y2="90" stroke="#00ffaa" stroke-width="2" />
-            <line x1="184" y1="35" x2="220" y2="90" stroke="#00ffaa" stroke-width="2" />
+            <!-- Nodos -->
+            <g id="node-1" class="cfg-node">
+              <circle cx="170" cy="25" r="14" fill="#121124" stroke="#ff006e" stroke-width="2" />
+              <text x="170" y="29" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N1</text>
+            </g>
+            <g id="node-2" class="cfg-node">
+              <circle cx="80" cy="100" r="14" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="80" y="104" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N2</text>
+            </g>
+            <g id="node-3" class="cfg-node">
+              <circle cx="230" cy="100" r="14" fill="#121124" stroke="#ff006e" stroke-width="2" />
+              <text x="230" y="104" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N3</text>
+            </g>
+            <g id="node-4" class="cfg-node">
+              <circle cx="160" cy="180" r="14" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="160" y="184" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N4</text>
+            </g>
+            <g id="node-5" class="cfg-node">
+              <circle cx="280" cy="180" r="14" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="280" y="184" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N5</text>
+            </g>
+            <g id="node-6" class="cfg-node">
+              <circle cx="170" cy="260" r="14" fill="#121124" stroke="#ffd700" stroke-width="2" />
+              <text x="170" y="264" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N6</text>
+            </g>
 
-            <circle cx="80" cy="100" r="14" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="80" y="104" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N2</text>
-
-            <circle cx="230" cy="100" r="14" fill="#121124" stroke="#ff006e" stroke-width="2" />
-            <text x="230" y="104" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N3</text>
-
-            <line x1="220" y1="114" x2="170" y2="170" stroke="#00ffaa" stroke-width="2" />
-            <line x1="240" y1="114" x2="270" y2="170" stroke="#00ffaa" stroke-width="2" />
-
-            <circle cx="160" cy="180" r="14" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="160" y="184" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N4</text>
-
-            <circle cx="280" cy="180" r="14" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="280" y="184" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N5</text>
-
-            <line x1="80" y1="114" x2="160" y2="250" stroke="#00ffaa" stroke-width="2" />
-            <line x1="160" y1="194" x2="170" y2="245" stroke="#00ffaa" stroke-width="2" />
-            <line x1="280" y1="194" x2="184" y2="250" stroke="#00ffaa" stroke-width="2" />
-
-            <circle cx="170" cy="260" r="14" fill="#121124" stroke="#ffd700" stroke-width="2" />
-            <text x="170" y="264" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">N6</text>
+            <!-- Trazador animado -->
+            <circle id="cfg-tracer" cx="170" cy="25" r="7" fill="#00ffff" opacity="0" />
           `
         },
         loop: {
           code: `int SumarPares(int[] arr) {
-  int sum = 0, i = 0; // Nodo 1
+  int sum = 0, i = 0;      // Nodo 1
   while (i < arr.Length) { // Nodo 2 (Loop)
     if (arr[i] % 2 == 0) { // Nodo 3 (If)
       sum += arr[i];       // Nodo 4
@@ -507,49 +643,174 @@
           nodes: 6,
           edges: 8,
           vg: 4,
+          coords: {
+            1: { x: 170, y: 20 },
+            2: { x: 170, y: 80 },
+            3: { x: 170, y: 140 },
+            4: { x: 100, y: 195 },
+            5: { x: 210, y: 195 },
+            6: { x: 170, y: 255 }
+          },
           paths: [
-            "Camino 1: 1 ➔ 2 ➔ 6 (Arreglo vacío, bucle 0 iteraciones)",
-            "Camino 2: 1 ➔ 2 ➔ 3 ➔ 4 ➔ 5 ➔ 2 ➔ 6 (Elemento par)",
-            "Camino 3: 1 ➔ 2 ➔ 3 ➔ 5 ➔ 2 ➔ 6 (Elemento impar)",
-            "Camino 4: Cobertura de combinaciones de ramas consecutivas"
+            { label: "Camino 1: 1 ➔ 2 ➔ 6 (Arreglo vacío, bucle 0 iteraciones)", nodes: [1, 2, 6], edges: ["1-2", "2-6"] },
+            { label: "Camino 2: 1 ➔ 2 ➔ 3 ➔ 4 ➔ 5 ➔ 2 ➔ 6 (Elemento par)", nodes: [1, 2, 3, 4, 5, 2, 6], edges: ["1-2", "2-3", "3-4", "4-5", "5-2", "2-6"] },
+            { label: "Camino 3: 1 ➔ 2 ➔ 3 ➔ 5 ➔ 2 ➔ 6 (Elemento impar)", nodes: [1, 2, 3, 5, 2, 6], edges: ["1-2", "2-3", "3-5", "5-2", "2-6"] },
+            { label: "Camino 4: Cobertura de salto directo y salida", nodes: [1, 2, 3, 4, 5, 2, 6], edges: ["1-2", "2-3", "3-4", "4-5", "5-2", "2-6"] }
           ],
           svg: `
-            <circle cx="170" cy="20" r="13" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="170" y="24" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N1</text>
+            <!-- Aristas -->
+            <line id="edge-1-2" class="cfg-edge" x1="170" y1="33" x2="170" y2="67" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-2-3" class="cfg-edge" x1="170" y1="93" x2="170" y2="127" stroke="#00ffaa" stroke-width="2" />
+            <path id="edge-2-6" class="cfg-edge" d="M 183 80 C 270 90, 270 230, 183 250" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="4" />
+            <line id="edge-3-4" class="cfg-edge" x1="160" y1="150" x2="110" y2="185" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-3-5" class="cfg-edge" x1="180" y1="150" x2="200" y2="185" stroke="#00ffaa" stroke-width="2" />
+            <line id="edge-4-5" class="cfg-edge" x1="113" y1="195" x2="197" y2="195" stroke="#00ffaa" stroke-width="2" />
+            <path id="edge-5-2" class="cfg-edge" d="M 210 182 C 230 140, 210 100, 183 80" fill="none" stroke="#00ffaa" stroke-width="2" />
 
-            <line x1="170" y1="33" x2="170" y2="67" stroke="#00ffaa" stroke-width="2" />
+            <!-- Nodos -->
+            <g id="node-1" class="cfg-node">
+              <circle cx="170" cy="20" r="13" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="170" y="24" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N1</text>
+            </g>
+            <g id="node-2" class="cfg-node">
+              <circle cx="170" cy="80" r="13" fill="#121124" stroke="#ff006e" stroke-width="2" />
+              <text x="170" y="84" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N2</text>
+            </g>
+            <g id="node-3" class="cfg-node">
+              <circle cx="170" cy="140" r="13" fill="#121124" stroke="#ff006e" stroke-width="2" />
+              <text x="170" y="144" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N3</text>
+            </g>
+            <g id="node-4" class="cfg-node">
+              <circle cx="100" cy="195" r="13" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="100" y="199" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N4</text>
+            </g>
+            <g id="node-5" class="cfg-node">
+              <circle cx="210" cy="195" r="13" fill="#121124" stroke="#00ffff" stroke-width="2" />
+              <text x="210" y="199" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N5</text>
+            </g>
+            <g id="node-6" class="cfg-node">
+              <circle cx="170" cy="255" r="13" fill="#121124" stroke="#ffd700" stroke-width="2" />
+              <text x="170" y="259" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N6</text>
+            </g>
 
-            <circle cx="170" cy="80" r="13" fill="#121124" stroke="#ff006e" stroke-width="2" />
-            <text x="170" y="84" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N2</text>
-
-            <line x1="170" y1="93" x2="170" y2="127" stroke="#00ffaa" stroke-width="2" />
-            <path d="M 183 80 C 270 90, 270 230, 183 250" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="4" />
-
-            <circle cx="170" cy="140" r="13" fill="#121124" stroke="#ff006e" stroke-width="2" />
-            <text x="170" y="144" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N3</text>
-
-            <line x1="160" y1="150" x2="110" y2="185" stroke="#00ffaa" stroke-width="2" />
-            <line x1="180" y1="150" x2="210" y2="185" stroke="#00ffaa" stroke-width="2" />
-
-            <circle cx="100" cy="195" r="13" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="100" y="199" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N4</text>
-
-            <circle cx="210" cy="195" r="13" fill="#121124" stroke="#00ffff" stroke-width="2" />
-            <text x="210" y="199" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N5</text>
-
-            <line x1="100" y1="208" x2="157" y2="245" stroke="#00ffaa" stroke-width="2" />
-            <line x1="210" y1="208" x2="183" y2="245" stroke="#00ffaa" stroke-width="2" />
-
-            <!-- Loop back -->
-            <path d="M 90 195 C 40 180, 40 90, 157 80" fill="none" stroke="#00ffaa" stroke-width="2" />
-
-            <circle cx="170" cy="255" r="13" fill="#121124" stroke="#ffd700" stroke-width="2" />
-            <text x="170" y="259" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">N6</text>
+            <!-- Trazador animado -->
+            <circle id="cfg-tracer" cx="170" cy="20" r="6" fill="#00ffff" opacity="0" />
           `
         }
       };
 
+      let currentSnippetKey = 'simple';
+      let cfgPlaybackTimer = null;
+      let bvaSuiteTimer = null;
+
+      function stopCFGPlayback() {
+        if (cfgPlaybackTimer) {
+          clearTimeout(cfgPlaybackTimer);
+          cfgPlaybackTimer = null;
+        }
+        document.querySelectorAll('.cfg-node').forEach(n => n.classList.remove('active-node'));
+        document.querySelectorAll('.cfg-edge').forEach(e => e.classList.remove('active-edge'));
+        document.querySelectorAll('.path-badge').forEach(b => b.classList.remove('active-path'));
+        const tracer = document.getElementById('cfg-tracer');
+        if (tracer) tracer.setAttribute('opacity', '0');
+        const stopBtn = document.getElementById('btn-stop-cfg');
+        if (stopBtn) stopBtn.style.display = 'none';
+        const status = document.getElementById('cfg-step-status');
+        if (status) status.innerText = 'Recorrido detenido o listo.';
+      }
+
+      function playPath(pathIdx, onComplete) {
+        stopCFGPlayback();
+        const s = snippets[currentSnippetKey];
+        if (!s || !s.paths[pathIdx]) return;
+
+        const pathObj = s.paths[pathIdx];
+        const badges = document.querySelectorAll('.path-badge');
+        badges.forEach((b, idx) => {
+          b.classList.toggle('active-path', idx === pathIdx);
+        });
+
+        const stopBtn = document.getElementById('btn-stop-cfg');
+        if (stopBtn) stopBtn.style.display = 'inline-flex';
+
+        const tracer = document.getElementById('cfg-tracer');
+        const status = document.getElementById('cfg-step-status');
+        const nodesSeq = pathObj.nodes;
+        let step = 0;
+
+        if (tracer && nodesSeq.length > 0) {
+          const firstCoord = s.coords[nodesSeq[0]];
+          tracer.setAttribute('cx', firstCoord.x);
+          tracer.setAttribute('cy', firstCoord.y);
+          tracer.setAttribute('opacity', '1');
+        }
+
+        function executeStep() {
+          if (step >= nodesSeq.length) {
+            if (status) status.innerHTML = `<span style="color:var(--green)">✓ ¡Recorrido completado para ${pathObj.label.split(':')[0]}!</span>`;
+            if (tracer) tracer.setAttribute('opacity', '0');
+            cfgPlaybackTimer = setTimeout(() => {
+              document.querySelectorAll('.cfg-node').forEach(n => n.classList.remove('active-node'));
+              document.querySelectorAll('.cfg-edge').forEach(e => e.classList.remove('active-edge'));
+              if (stopBtn) stopBtn.style.display = 'none';
+              if (onComplete) onComplete();
+            }, 800);
+            return;
+          }
+
+          const currNodeId = nodesSeq[step];
+          const coord = s.coords[currNodeId];
+
+          // Activar nodo
+          document.querySelectorAll('.cfg-node').forEach(n => n.classList.remove('active-node'));
+          const nodeEl = document.getElementById(`node-${currNodeId}`);
+          if (nodeEl) nodeEl.classList.add('active-node');
+
+          // Mover trazador
+          if (tracer && coord) {
+            tracer.setAttribute('cx', coord.x);
+            tracer.setAttribute('cy', coord.y);
+          }
+
+          // Iluminar arista previa si existe
+          if (step > 0) {
+            const prevNodeId = nodesSeq[step - 1];
+            const edgeDirect = document.getElementById(`edge-${prevNodeId}-${currNodeId}`);
+            if (edgeDirect) edgeDirect.classList.add('active-edge');
+          }
+
+          if (status) {
+            status.innerHTML = `Paso ${step + 1}/${nodesSeq.length}: Transición en <strong>Nodo N${currNodeId}</strong>`;
+          }
+
+          step++;
+          cfgPlaybackTimer = setTimeout(executeStep, 650);
+        }
+
+        executeStep();
+      }
+
+      function playAllPaths() {
+        const s = snippets[currentSnippetKey];
+        if (!s) return;
+        let pIndex = 0;
+        function runNext() {
+          if (pIndex >= s.paths.length) {
+            const status = document.getElementById('cfg-step-status');
+            if (status) status.innerHTML = `<strong style="color:var(--gold)">★ ¡100% de Caminos Linealmente Independientes Cubiertos (V(G)=${s.vg})!</strong>`;
+            return;
+          }
+          playPath(pIndex, () => {
+            pIndex++;
+            cfgPlaybackTimer = setTimeout(runNext, 700);
+          });
+        }
+        runNext();
+      }
+
       function loadSnippet(type) {
+        stopCFGPlayback();
+        currentSnippetKey = type;
         const s = snippets[type];
         if (!s) return;
 
@@ -560,14 +821,50 @@
 
         const cont = document.getElementById('paths-list-container');
         cont.innerHTML = '';
-        s.paths.forEach(p => {
+        s.paths.forEach((p, idx) => {
           const b = document.createElement('div');
           b.className = 'path-badge';
-          b.innerText = p;
+          b.innerHTML = `
+            <span>${p.label}</span>
+            <button class="btn-play-path" onclick="playPath(${idx})" title="Ver trazado animado de este camino">
+              ▶ Probar
+            </button>
+          `;
           cont.appendChild(b);
         });
 
         document.getElementById('cfg-svg').innerHTML = s.svg;
+        const status = document.getElementById('cfg-step-status');
+        if (status) status.innerText = 'Selecciona un camino o pulsa "Recorrer Todos" para iniciar la animación.';
+      }
+
+      function updateBVAPinPosition(val, min, max) {
+        const pin = document.getElementById('bva-pin');
+        if (!pin) return;
+        pin.innerText = val;
+
+        // Mapear posición porcentual en .bva-bar:
+        // [0% - 25%]: < Min (de Min - 5 a Min - 1)
+        // [25% - 75%]: [Min a Max]
+        // [75% - 100%]: > Max (de Max + 1 a Max + 5)
+        let percent = 50;
+        if (val < min) {
+          const delta = Math.max(0, Math.min(4, min - val));
+          percent = 25 - (delta / 4) * 22; // 3% a 25%
+          pin.className = 'bva-probe-pin fail';
+        } else if (val > max) {
+          const delta = Math.max(0, Math.min(4, val - max));
+          percent = 75 + (delta / 4) * 22; // 75% a 97%
+          pin.className = 'bva-probe-pin fail';
+        } else {
+          // Dentro de rango
+          const range = Math.max(1, max - min);
+          const ratio = (val - min) / range;
+          percent = 25 + ratio * 50; // 25% a 75%
+          pin.className = 'bva-probe-pin';
+        }
+
+        pin.style.left = `${Math.max(2, Math.min(98, percent))}%`;
       }
 
       function updateBVA() {
@@ -592,23 +889,85 @@
         const lbl = document.getElementById('lbl-probe-result');
 
         if (isNaN(val)) {
-          lbl.innerText = '';
+          if (lbl) lbl.innerText = '';
           return;
         }
 
+        updateBVAPinPosition(val, min, max);
+
         if (val < min) {
           lbl.style.color = 'var(--coral)';
-          lbl.innerText = `✗ Valor ${val}: Clase Inválida Inferior (< ${min})`;
+          lbl.innerText = `✗ Valor ${val}: Clase Inválida Inferior (< ${min}) [Rechazar]`;
         } else if (val > max) {
           lbl.style.color = 'var(--coral)';
-          lbl.innerText = `✗ Valor ${val}: Clase Inválida Superior (> ${max})`;
+          lbl.innerText = `✗ Valor ${val}: Clase Inválida Superior (> ${max}) [Rechazar]`;
         } else if (val === min || val === max) {
           lbl.style.color = 'var(--gold)';
-          lbl.innerText = `✓ Valor ${val}: ¡Límite Exacto en Frontera! (Válido)`;
+          lbl.innerText = `✓ Valor ${val}: ¡Frontera Crítica Exacta (${val === min ? 'Min' : 'Max'})! [Aceptar]`;
         } else {
           lbl.style.color = 'var(--green)';
-          lbl.innerText = `✓ Valor ${val}: Clase Válida Nominal (${min} a ${max})`;
+          lbl.innerText = `✓ Valor ${val}: Clase Válida Nominal (${min} a ${max}) [Aceptar]`;
         }
+      }
+
+      function stopBVASuite() {
+        if (bvaSuiteTimer) {
+          clearTimeout(bvaSuiteTimer);
+          bvaSuiteTimer = null;
+        }
+        const stopBtn = document.getElementById('btn-stop-bva');
+        if (stopBtn) stopBtn.style.display = 'none';
+        const runBtn = document.getElementById('btn-run-bva-suite');
+        if (runBtn) runBtn.disabled = false;
+        const suiteStatus = document.getElementById('bva-suite-status');
+        if (suiteStatus) suiteStatus.innerText = 'Suite detenida.';
+      }
+
+      function playBVASuite() {
+        stopBVASuite();
+        const min = parseInt(document.getElementById('input-min-val').value, 10) || 18;
+        const max = parseInt(document.getElementById('input-max-val').value, 10) || 65;
+        const nominal = Math.round((min + max) / 2);
+
+        // Batería formal de 7 casos de prueba BVA
+        const suite = [
+          { val: min - 1, desc: `Min - 1 (${min - 1}) · Inválido Inferior` },
+          { val: min,     desc: `Min (${min}) · Frontera Límite Inferior (Válido)` },
+          { val: min + 1, desc: `Min + 1 (${min + 1}) · Válido Nominal Inmediato` },
+          { val: nominal, desc: `Centro (${nominal}) · Valor Nominal Típico` },
+          { val: max - 1, desc: `Max - 1 (${max - 1}) · Válido Nominal Inmediato` },
+          { val: max,     desc: `Max (${max}) · Frontera Límite Superior (Válido)` },
+          { val: max + 1, desc: `Max + 1 (${max + 1}) · Inválido Superior` }
+        ];
+
+        const runBtn = document.getElementById('btn-run-bva-suite');
+        if (runBtn) runBtn.disabled = true;
+        const stopBtn = document.getElementById('btn-stop-bva');
+        if (stopBtn) stopBtn.style.display = 'inline-flex';
+        const suiteStatus = document.getElementById('bva-suite-status');
+        const probeInput = document.getElementById('input-test-probe');
+
+        let idx = 0;
+        function runNextCase() {
+          if (idx >= suite.length) {
+            if (suiteStatus) suiteStatus.innerHTML = '<span style="color:var(--green)">★ ¡Batería BVA completada con éxito (7 casos evaluados)!</span>';
+            stopBtn.style.display = 'none';
+            runBtn.disabled = false;
+            return;
+          }
+
+          const c = suite[idx];
+          probeInput.value = c.val;
+          testProbeValue();
+          if (suiteStatus) {
+            suiteStatus.innerHTML = `Probando Caso ${idx + 1}/${suite.length}: <strong>${c.desc}</strong>`;
+          }
+
+          idx++;
+          bvaSuiteTimer = setTimeout(runNextCase, 1100);
+        }
+
+        runNextCase();
       }
 
       window.switchTestingTab = function(tabId) {
