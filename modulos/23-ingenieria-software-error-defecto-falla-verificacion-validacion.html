@@ -902,8 +902,8 @@
           log.style.color = '#00ffaa';
           log.innerHTML = `
             <span style="color:var(--sw-green); font-weight:700;">[EJECUCIÓN EXITOSA (DEFECTO NO ACTIVADO)]</span><br />
-            Entrada: monto = $${monto}.00<br />
-            Resultado: $${cobrado}.00 (Coincide con lo esperado)<br />
+            Entrada: monto = ${monto}.00<br />
+            Resultado: ${cobrado}.00 (Coincide con lo esperado)<br />
             <span style="color:var(--muted);">Observación:</span> El defecto sigue en el código compilado, pero esta entrada no cruzó el caso borde exacto.
           `;
         }
@@ -935,8 +935,8 @@
           log.style.color = '#00ffaa';
           log.innerHTML = `
             <span style="color:var(--sw-green); font-weight:700;">[EJECUCIÓN NORMAL (CÓDIGO 200 OK)]</span><br />
-            Entrada: saldo = $${saldo}, tasa = ${tasa}<br />
-            Resultado: $${res} divisas locales convertidas.<br />
+            Entrada: saldo = ${saldo}, tasa = ${tasa}<br />
+            Resultado: ${res} divisas locales convertidas.<br />
             <span style="color:var(--muted);">Observación:</span> La tasa fue válida, por lo que el camino de excepción jamás se detonó.
           `;
         }
@@ -966,7 +966,7 @@
           log.style.color = '#00ffaa';
           log.innerHTML = `
             <span style="color:var(--sw-green); font-weight:700;">[TICKET IMPRESO SATISFACTORIAMENTE]</span><br />
-            Ticket para: ${nombreCliente.toUpperCase()} | Total: $${total}<br />
+            Ticket para: ${nombreCliente.toUpperCase()} | Total: ${total}<br />
             <span style="color:var(--muted);">Observación:</span> Como había cliente asignado, la desreferencia funcionó por casualidad.
           `;
         }
@@ -1216,6 +1216,16 @@
         currentQuizIdx++;
         if (currentQuizIdx < quizQuestions.length) {
           renderQuizQuestion();
+
+      // Inicialización de simuladores interactivos
+      try {
+        if (typeof selectScenario === 'function') selectScenario(1);
+        if (typeof selectQuadrant === 'function') selectQuadrant(1);
+        if (typeof loadRealCase === 'function') loadRealCase('hospital');
+      } catch(e) {
+        console.warn('Init warning:', e);
+      }
+    
         } else {
           showQuizSummary();
         }
