@@ -122,11 +122,9 @@
       const homeLink = document.createElement('a');
       homeLink.href = '../index.html';
       homeLink.className = 'btn-back-index';
-      homeLink.innerHTML = '<img src="../assets/icons/favicon-32x32.png" style="width:16px; height:16px; border-radius:4px; vertical-align:middle; margin-right:6px;" alt="Logo" />← Volver al Índice';
+      homeLink.innerHTML = '← Volver al Índice';
       homeLink.style.marginBottom = '0';
       topBar.insertBefore(homeLink, topBar.firstChild);
-    } else if (backBtn && !backBtn.querySelector('img')) {
-      backBtn.innerHTML = '<img src="../assets/icons/favicon-32x32.png" style="width:16px; height:16px; border-radius:4px; vertical-align:middle; margin-right:6px;" alt="Logo" />' + backBtn.innerHTML;
     }
 
     // Contenedor de herramientas superiores derechas
