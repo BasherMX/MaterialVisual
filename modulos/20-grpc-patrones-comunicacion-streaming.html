@@ -81,18 +81,56 @@
         margin-bottom: 8px;
       }
 
-      /* Tubo de Transmisión HTTP/2 */
+      /* ==========================================================================
+       Túnel HTTP/2 Multiplexado & Sistema de Paquetes Cyberpunk (Full-Duplex)
+       ========================================================================== */
       .stream-pipeline {
-        background: #080812;
-        border: 1px solid rgba(0, 255, 255, 0.25);
-        border-radius: 10px;
-        padding: 24px 20px;
+        background: linear-gradient(180deg, rgba(12, 11, 24, 0.98), rgba(6, 6, 14, 0.98));
+        border: 1px solid rgba(0, 255, 255, 0.35);
+        border-radius: 12px;
+        padding: 22px 20px;
         margin-bottom: 24px;
         position: relative;
-        min-height: 280px;
+        box-shadow: 0 4px 28px rgba(0, 0, 0, 0.65), inset 0 0 20px rgba(0, 255, 255, 0.05);
+      }
+
+      /* Stepper de Fases RPC */
+      .rpc-lifecycle-stepper {
         display: flex;
-        flex-direction: column;
         justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 12px;
+        background: rgba(14, 13, 28, 0.85);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        flex-wrap: wrap;
+      }
+
+      .rpc-step-pill {
+        flex: 1 1 140px;
+        text-align: center;
+        font: 700 0.72rem "Courier New", monospace;
+        padding: 8px 10px;
+        border-radius: 4px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .rpc-step-pill.active {
+        color: #ffffff;
+        background: rgba(0, 255, 255, 0.18);
+        border-color: var(--grpc-cyan);
+        box-shadow: 0 0 14px rgba(0, 255, 255, 0.35);
+      }
+
+      .rpc-step-pill.completed {
+        color: var(--grpc-green);
+        background: rgba(0, 255, 170, 0.12);
+        border-color: var(--grpc-green);
       }
 
       .stream-entities {
@@ -100,25 +138,71 @@
         justify-content: space-between;
         align-items: center;
         gap: 16px;
+        position: relative;
       }
 
       .endpoint-box {
-        background: var(--panel);
+        background: linear-gradient(135deg, rgba(20, 19, 40, 0.95), rgba(10, 9, 22, 0.95));
         border: 2px solid var(--grpc-cyan);
-        border-radius: 8px;
-        padding: 14px 18px;
+        border-radius: 10px;
+        padding: 16px 14px;
         text-align: center;
         font: 700 0.88rem "Courier New", monospace;
         color: #ffffff;
-        min-width: 140px;
-        box-shadow: 0 0 14px rgba(0, 255, 255, 0.2);
+        min-width: 145px;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
       }
 
-      .http2-pipe {
+      .endpoint-box.server-node {
+        border-color: var(--grpc-green);
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.2);
+      }
+
+      .endpoint-box.transmitting {
+        transform: scale(1.04);
+        border-color: var(--grpc-gold) !important;
+        box-shadow: 0 0 28px rgba(255, 215, 0, 0.5) !important;
+      }
+
+      .endpoint-box.receiving {
+        transform: scale(1.04);
+        border-color: var(--grpc-green) !important;
+        box-shadow: 0 0 28px rgba(0, 255, 170, 0.55) !important;
+      }
+
+      .state-pill {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font: 800 0.7rem "Courier New", monospace;
+        margin-top: 6px;
+        border: 1px solid var(--grpc-cyan);
+        color: var(--grpc-cyan);
+        background: rgba(0, 255, 255, 0.08);
+      }
+
+      /* Tubo Doble Carril HTTP/2 Full-Duplex */
+      .http2-pipe-container {
         flex: 1;
-        height: 48px;
-        background: rgba(0, 0, 0, 0.5);
-        border: 1px dashed rgba(0, 255, 255, 0.35);
+        background: rgba(4, 4, 10, 0.9);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 10px;
+        padding: 10px 12px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+      }
+
+      .pipe-lane {
+        height: 52px;
+        background: rgba(14, 13, 28, 0.6);
+        border: 1px dashed rgba(255, 255, 255, 0.12);
         border-radius: 6px;
         position: relative;
         overflow: hidden;
@@ -126,28 +210,121 @@
         align-items: center;
       }
 
-      .pipe-label {
+      .pipe-lane.outbound {
+        border-color: rgba(0, 255, 255, 0.35);
+        background: linear-gradient(90deg, rgba(0, 255, 255, 0.06) 0%, rgba(0, 255, 255, 0.02) 100%);
+      }
+
+      .pipe-lane.inbound {
+        border-color: rgba(0, 255, 170, 0.35);
+        background: linear-gradient(90deg, rgba(0, 255, 170, 0.02) 0%, rgba(0, 255, 170, 0.06) 100%);
+      }
+
+      .lane-guide-text {
         position: absolute;
-        width: 100%;
-        text-align: center;
-        font: 700 0.72rem "Courier New", monospace;
-        color: var(--muted);
+        left: 12px;
+        font: 700 0.68rem "Courier New", monospace;
+        color: rgba(255, 255, 255, 0.28);
+        text-transform: uppercase;
         pointer-events: none;
+        user-select: none;
+        letter-spacing: 0.08em;
       }
 
-      .packet-dot {
+      .lane-arrows-bg {
         position: absolute;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--grpc-cyan);
-        box-shadow: 0 0 12px var(--grpc-cyan);
-        transition: left 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+        right: 14px;
+        font: 700 0.82rem "Courier New", monospace;
+        color: rgba(0, 255, 255, 0.18);
+        pointer-events: none;
+        user-select: none;
+        letter-spacing: 0.25em;
       }
 
-      .packet-dot.return-packet {
-        background: var(--grpc-green);
-        box-shadow: 0 0 12px var(--grpc-green);
+      .lane-arrows-bg.reverse {
+        left: 14px;
+        right: auto;
+        color: rgba(0, 255, 170, 0.18);
+      }
+
+      .pipe-divider {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font: 700 0.66rem "Courier New", monospace;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-top: 1px dotted rgba(255, 255, 255, 0.1);
+        border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+        padding: 4px 6px;
+      }
+
+      /* Cápsula de Paquete Animada */
+      .packet-capsule {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font: 800 0.74rem "Courier New", monospace;
+        white-space: nowrap;
+        z-index: 10;
+        pointer-events: none;
+        box-shadow: 0 0 18px rgba(0, 0, 0, 0.9);
+        opacity: 0;
+        will-change: left, right, opacity, transform;
+      }
+
+      .packet-capsule.outbound-pack {
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.95), rgba(0, 140, 255, 0.92));
+        color: #05050f;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 18px rgba(0, 255, 255, 0.75);
+      }
+
+      .packet-capsule.inbound-pack {
+        background: linear-gradient(135deg, rgba(0, 255, 170, 0.95), rgba(0, 210, 130, 0.92));
+        color: #05050f;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 18px rgba(0, 255, 170, 0.75);
+      }
+
+      .packet-capsule.trailer-pack {
+        background: linear-gradient(135deg, #ffd700, #ff006e);
+        color: #000;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 18px rgba(255, 215, 0, 0.75);
+      }
+
+      @media (max-width: 768px) {
+        .endpoint-box {
+          min-width: 88px;
+          padding: 10px 6px;
+          font-size: 0.74rem;
+        }
+        .endpoint-box div:first-child {
+          font-size: 1.3rem !important;
+        }
+        .http2-pipe-container {
+          padding: 6px 8px;
+        }
+        .pipe-lane {
+          height: 44px;
+        }
+        .packet-capsule {
+          padding: 4px 8px;
+          font-size: 0.66rem;
+        }
+        .lane-guide-text {
+          display: none;
+        }
+        .pipe-divider {
+          font-size: 0.58rem;
+        }
       }
 
       /* Comparador Protobuf vs JSON */
@@ -341,81 +518,127 @@ message FacturaRequest {
         <div class="matrix-card">
           <h2><span>📡</span> Simulador Interactivo de los 4 Patrones de Llamada</h2>
           <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Selecciona uno de los cuatro patrones de ciclo de vida RPC y pulsa <strong>"Transmitir por Canal HTTP/2"</strong> para ver el flujo de paquetes y las tramas de control en tiempo real.
+            Selecciona uno de los cuatro patrones de ciclo de vida RPC y pulsa <strong>"Transmitir por Canal HTTP/2"</strong> para ver el flujo en tiempo real de tramas HEADERS, payloads Protobuf binarios, streams continuos y trailers de control.
           </p>
 
-          <!-- Selector de Patrones -->
+          <!-- Selector de Patrones sin notación cruda -->
           <div class="patterns-grid">
             <div id="card-pat-unary" class="pattern-card selected" onclick="selectPattern('unary')">
               <span class="badge-rpc">PATRÓN 1</span>
               <h4 style="margin:0 0 6px; color:#fff;">1. Unary RPC</h4>
-              <p style="margin:0; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
-                Petición simple $\rightarrow$ Respuesta simple (1 a 1).
+              <p style="margin:0 0 8px; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
+                Petición simple <strong style="color:var(--grpc-cyan);">➔</strong> Respuesta simple (1 a 1).
               </p>
+              <code style="font:700 0.72rem 'Courier New', monospace; color:var(--grpc-cyan); background:rgba(0,255,255,0.08); padding:3px 6px; border-radius:4px; display:inline-block;">rpc Unary(Req) returns (Res)</code>
             </div>
 
             <div id="card-pat-server" class="pattern-card" onclick="selectPattern('server')">
               <span class="badge-rpc">PATRÓN 2</span>
               <h4 style="margin:0 0 6px; color:#fff;">2. Server Streaming</h4>
-              <p style="margin:0; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
-                1 petición $\rightarrow$ Flujo continuo de respuestas del servidor.
+              <p style="margin:0 0 8px; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
+                1 petición <strong style="color:var(--grpc-green);">➔</strong> Flujo continuo de respuestas del servidor.
               </p>
+              <code style="font:700 0.72rem 'Courier New', monospace; color:var(--grpc-green); background:rgba(0,255,170,0.08); padding:3px 6px; border-radius:4px; display:inline-block;">rpc ServerStream(Req) returns (stream Res)</code>
             </div>
 
             <div id="card-pat-client" class="pattern-card" onclick="selectPattern('client')">
               <span class="badge-rpc">PATRÓN 3</span>
               <h4 style="margin:0 0 6px; color:#fff;">3. Client Streaming</h4>
-              <p style="margin:0; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
-                Flujo de envíos del cliente $\rightarrow$ 1 sola respuesta resumen.
+              <p style="margin:0 0 8px; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
+                Flujo de envíos del cliente <strong style="color:var(--grpc-gold);">➔</strong> 1 sola respuesta resumen.
               </p>
+              <code style="font:700 0.72rem 'Courier New', monospace; color:var(--grpc-gold); background:rgba(255,215,0,0.08); padding:3px 6px; border-radius:4px; display:inline-block;">rpc ClientStream(stream Req) returns (Res)</code>
             </div>
 
             <div id="card-pat-bidi" class="pattern-card" onclick="selectPattern('bidi')">
               <span class="badge-rpc">PATRÓN 4</span>
               <h4 style="margin:0 0 6px; color:#fff;">4. Bidirectional</h4>
-              <p style="margin:0; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
-                Full-Duplex: Cliente y servidor transmiten simultáneamente.
+              <p style="margin:0 0 8px; font:0.78rem/1.4 Verdana, sans-serif; color:var(--muted);">
+                Full-Duplex: Cliente y servidor transmiten simultáneamente <strong style="color:var(--coral);">⇄</strong>.
               </p>
+              <code style="font:700 0.72rem 'Courier New', monospace; color:var(--coral); background:rgba(255,0,110,0.08); padding:3px 6px; border-radius:4px; display:inline-block;">rpc Bidi(stream Req) returns (stream Res)</code>
             </div>
           </div>
 
-          <!-- Escenario de Transmisión HTTP/2 -->
+          <!-- Escenario de Transmisión HTTP/2 con Doble Carril Full-Duplex -->
           <div class="stream-pipeline">
+            <!-- Stepper de Fases de Ciclo de Vida RPC -->
+            <div class="rpc-lifecycle-stepper">
+              <div class="rpc-step-pill active" id="step-pill-1">1. Handshake &amp; Headers</div>
+              <div class="rpc-step-pill" id="step-pill-2">2. Petición Client</div>
+              <div class="rpc-step-pill" id="step-pill-3">3. Respuesta Server</div>
+              <div class="rpc-step-pill" id="step-pill-4">4. Trailers &amp; Cierre (0 OK)</div>
+            </div>
+
             <div class="stream-entities">
-              <div class="endpoint-box">
-                <div style="font-size:1.6rem; margin-bottom:4px;">💻</div>
-                <div>CLIENTE gRPC</div>
-                <div id="client-state-badge" style="font-size:0.72rem; color:var(--grpc-cyan); margin-top:4px;">LISTO</div>
+              <!-- Cliente gRPC -->
+              <div class="endpoint-box client-node" id="client-endpoint-box">
+                <div style="font-size:2rem; margin-bottom:4px;">💻</div>
+                <div style="letter-spacing:0.04em;">CLIENTE gRPC</div>
+                <div id="client-state-badge" class="state-pill">LISTO</div>
               </div>
 
-              <div class="http2-pipe">
-                <span class="pipe-label">TÚNEL HTTP/2 (Multiplexed Stream #1)</span>
-                <div id="packet-animator" class="packet-dot" style="display:none; left:10px;"></div>
-                <div id="packet-return-animator" class="packet-dot return-packet" style="display:none; right:10px;"></div>
+              <!-- Túnel HTTP/2 con 2 Carriles Dedicados -->
+              <div class="http2-pipe-container">
+                <!-- Carril Superior: Outbound (Cliente ➔ Servidor) -->
+                <div class="pipe-lane outbound" id="outbound-lane">
+                  <span class="lane-guide-text">▲ CANAL UPSTREAM (CLIENTE ➔ SERVIDOR)</span>
+                  <span class="lane-arrows-bg">➔ ➔ ➔ ➔</span>
+                </div>
+
+                <!-- Separador Central con Telemetría -->
+                <div class="pipe-divider">
+                  <span>STREAM ID #1</span>
+                  <span id="pipe-live-status" style="color:var(--grpc-cyan);">CANAL HTTP/2 MULTIPLEXADO (LISTO)</span>
+                  <span>HPACK COMPRESSION</span>
+                </div>
+
+                <!-- Carril Inferior: Inbound (Servidor ➔ Cliente) -->
+                <div class="pipe-lane inbound" id="inbound-lane">
+                  <span class="lane-guide-text">▼ CANAL DOWNSTREAM (SERVIDOR ➔ CLIENTE)</span>
+                  <span class="lane-arrows-bg reverse">⬅ ⬅ ⬅ ⬅</span>
+                </div>
               </div>
 
-              <div class="endpoint-box" style="border-color:var(--grpc-green);">
-                <div style="font-size:1.6rem; margin-bottom:4px;">🖧</div>
-                <div>SERVIDOR gRPC</div>
-                <div id="server-state-badge" style="font-size:0.72rem; color:var(--grpc-green); margin-top:4px;">ESCUCHANDO</div>
+              <!-- Servidor gRPC -->
+              <div class="endpoint-box server-node" id="server-endpoint-box">
+                <div style="font-size:2rem; margin-bottom:4px;">🖧</div>
+                <div style="letter-spacing:0.04em;">SERVIDOR gRPC</div>
+                <div id="server-state-badge" class="state-pill" style="border-color:var(--grpc-green); color:var(--grpc-green);">ESCUCHANDO</div>
               </div>
             </div>
 
             <!-- Botones de Acción -->
-            <div style="display:flex; justify-content:center; gap:14px; margin-top:20px; flex-wrap:wrap;">
-              <button id="btn-fire-stream" class="btn-theme" style="padding:12px 24px; font:700 0.88rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="executeSelectedPattern()">
-                ⚡ Iniciar Transmisión gRPC
+            <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin-top:22px; flex-wrap:wrap;">
+              <button id="btn-fire-stream" class="btn-theme" style="padding:12px 28px; font:800 0.92rem 'Courier New', monospace; border-radius:8px; cursor:pointer;" onclick="executeSelectedPattern()">
+                <span>⚡</span> Iniciar Transmisión gRPC
               </button>
+              <button type="button" class="btn-theme" onclick="resetSimulatorState()" style="padding:10px 18px; border-radius:6px; font:700 0.8rem 'Courier New', monospace; background:rgba(34,33,61,0.8); border:1px solid var(--line); color:var(--muted); cursor:pointer;">
+                🔄 Reiniciar Canal
+              </button>
+              <div style="display:inline-flex; align-items:center; gap:8px; font:700 0.78rem 'Courier New', monospace; color:var(--muted);">
+                <span>Velocidad:</span>
+                <select id="sim-speed-select" style="background:#121124; border:1px solid var(--line); color:var(--cyan); padding:6px 10px; border-radius:6px; font:700 0.78rem 'Courier New', monospace; outline:none; cursor:pointer;">
+                  <option value="1">1.0x (Normal)</option>
+                  <option value="0.75" selected>0.75x (Didáctica)</option>
+                  <option value="0.5">0.5x (Paso a Paso)</option>
+                </select>
+              </div>
             </div>
           </div>
 
           <!-- Bitácora de Tramas HTTP/2 -->
-          <div style="background:#05050d; border:1px solid rgba(0,255,255,0.2); border-radius:8px; padding:14px;">
-            <div style="font:700 0.78rem 'Courier New', monospace; color:var(--grpc-cyan); margin-bottom:8px;">
-              📋 REGISTRO DE FRAMES HTTP/2 & MENSAJES PROTOBUF:
+          <div style="background:#05050d; border:1px solid rgba(0,255,255,0.25); border-radius:8px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+              <div style="font:800 0.82rem 'Courier New', monospace; color:var(--grpc-cyan); display:flex; align-items:center; gap:6px;">
+                <span>📋</span> REGISTRO EN TIEMPO REAL: FRAMES HTTP/2 &amp; PROTOBUF
+              </div>
+              <button type="button" onclick="clearFramesLog()" style="background:none; border:none; color:var(--muted); font:700 0.72rem 'Courier New', monospace; cursor:pointer; text-decoration:underline;">
+                Limpiar Bitácora
+              </button>
             </div>
-            <div id="grpc-frames-log" style="font:0.78rem/1.5 'Courier New', monospace; color:var(--ink); height:130px; overflow-y:auto;">
-              [CANAL]: Conexión HTTP/2 establecida con éxito. Listo para invocar RPC.
+            <div id="grpc-frames-log" style="font:0.8rem/1.6 'Courier New', monospace; color:var(--ink); height:150px; overflow-y:auto; scrollbar-width:thin;">
+              <div><span style="color:var(--muted)">[CANAL]</span> Conexión TCP HTTP/2 inicializada. Listo para transmitir.</div>
             </div>
           </div>
         </div>
@@ -689,173 +912,562 @@ message FacturaRequest {
     </main>
 
     <script>
-      // --- Lógica del Simulador de Canales de Streaming ---
+      // ==========================================
+      // CONTROLADOR GLOBAL DE PESTAÑAS (Hoisted)
+      // ==========================================
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+          const oc = b.getAttribute('onclick') || '';
+          return oc.includes(tabId);
+        });
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+      window.switchTab = switchTab;
+
+      // ==========================================================================
+      // Simulador Didáctico de gRPC & HTTP/2 Streaming (Motor Full-Duplex)
+      // ==========================================================================
       let selectedPattern = 'unary'; // 'unary' | 'server' | 'client' | 'bidi'
       let isSimulating = false;
+      let activeTimers = [];
+
+      function getSpeedMultiplier() {
+        const sel = document.getElementById('sim-speed-select');
+        const val = sel ? parseFloat(sel.value) : 0.75;
+        return isNaN(val) || val <= 0 ? 0.75 : val;
+      }
+
+      function safeTimeout(fn, delayMs) {
+        const mult = getSpeedMultiplier();
+        const adjusted = Math.round(delayMs / mult);
+        const t = setTimeout(fn, adjusted);
+        activeTimers.push(t);
+        return t;
+      }
+
+      function clearAllSimTimers() {
+        activeTimers.forEach(t => clearTimeout(t));
+        activeTimers = [];
+      }
 
       window.selectPattern = function (pat) {
         if (isSimulating) return;
         selectedPattern = pat;
         ['unary', 'server', 'client', 'bidi'].forEach(p => {
-          document.getElementById('card-pat-' + p).classList.toggle('selected', p === pat);
+          const card = document.getElementById('card-pat-' + p);
+          if (card) card.classList.toggle('selected', p === pat);
         });
-        logFrame(`[SELECCIÓN]: Patrón cambiado a: ${pat.toUpperCase()}`);
+        setStepPill(1);
+        resetSimulatorVisuals();
+        logFrame(`[PATRÓN SELECCIONADO]: ${pat.toUpperCase()} &bull; Listo para transmitir.`, 'var(--grpc-cyan)');
       };
 
-      function logFrame(msg) {
+      function setStepPill(step) {
+        for (let i = 1; i <= 4; i++) {
+          const pill = document.getElementById('step-pill-' + i);
+          if (!pill) continue;
+          if (i < step) {
+            pill.className = 'rpc-step-pill completed';
+          } else if (i === step) {
+            pill.className = 'rpc-step-pill active';
+          } else {
+            pill.className = 'rpc-step-pill';
+          }
+        }
+      }
+
+      function logFrame(msg, color) {
         const logBox = document.getElementById('grpc-frames-log');
+        if (!logBox) return;
         const time = new Date().toLocaleTimeString();
-        logBox.innerHTML = `<div><span style="color:var(--muted)">[${time}]</span> ${msg}</div>` + logBox.innerHTML;
+        const colStyle = color ? `style="color:${color};"` : '';
+        const item = document.createElement('div');
+        item.innerHTML = `<span style="color:var(--muted)">[${time}]</span> <span ${colStyle}>${msg}</span>`;
+        logBox.appendChild(item);
+        logBox.scrollTop = logBox.scrollHeight;
+      }
+
+      window.clearFramesLog = function () {
+        const logBox = document.getElementById('grpc-frames-log');
+        if (logBox) logBox.innerHTML = '<div><span style="color:var(--muted)">[BITÁCORA LIMPIA]</span> Listo para nuevas tramas.</div>';
+      };
+
+      function resetSimulatorVisuals() {
+        const clientBox = document.getElementById('client-endpoint-box');
+        const serverBox = document.getElementById('server-endpoint-box');
+        const clientBadge = document.getElementById('client-state-badge');
+        const serverBadge = document.getElementById('server-state-badge');
+        const statusText = document.getElementById('pipe-live-status');
+
+        if (clientBox) clientBox.className = 'endpoint-box client-node';
+        if (serverBox) serverBox.className = 'endpoint-box server-node';
+        if (clientBadge) {
+          clientBadge.innerText = 'LISTO';
+          clientBadge.style.borderColor = 'var(--grpc-cyan)';
+          clientBadge.style.color = 'var(--grpc-cyan)';
+        }
+        if (serverBadge) {
+          serverBadge.innerText = 'ESCUCHANDO';
+          serverBadge.style.borderColor = 'var(--grpc-green)';
+          serverBadge.style.color = 'var(--grpc-green)';
+        }
+        if (statusText) statusText.innerText = 'CANAL HTTP/2 MULTIPLEXADO (LISTO)';
+
+        // Limpiar paquetes en tránsito
+        document.querySelectorAll('.packet-capsule').forEach(el => el.remove());
+      }
+
+      window.resetSimulatorState = function () {
+        clearAllSimTimers();
+        isSimulating = false;
+        const fireBtn = document.getElementById('btn-fire-stream');
+        if (fireBtn) fireBtn.disabled = false;
+        resetSimulatorVisuals();
+        setStepPill(1);
+        logFrame('[CANAL REINICIADO]: Conexión HTTP/2 restablecida a estado basal.', 'var(--muted)');
+      };
+
+      // Disparador de Paquete Animado con Cápsula Visible
+      function emitPacketCapsule({ laneId, direction, icon, tag, payload, packClass, durationMs, onArrive }) {
+        const lane = document.getElementById(laneId);
+        if (!lane) return;
+
+        const capsule = document.createElement('div');
+        capsule.className = `packet-capsule ${packClass}`;
+        capsule.innerHTML = `<span>${icon || '📦'}</span> <strong>[${tag}]</strong> <span>${payload}</span>`;
+
+        lane.appendChild(capsule);
+
+        const laneWidth = lane.offsetWidth;
+        const capWidth = capsule.offsetWidth || 180;
+        const travelDistance = Math.max(laneWidth - capWidth - 20, 60);
+
+        const mult = getSpeedMultiplier();
+        const realDuration = Math.round(durationMs / mult);
+
+        if (direction === 'ltr') {
+          capsule.style.left = '8px';
+          capsule.style.opacity = '1';
+          capsule.style.transition = `left ${realDuration}ms cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.25s ease`;
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              capsule.style.left = `${travelDistance}px`;
+            });
+          });
+        } else {
+          capsule.style.right = '8px';
+          capsule.style.opacity = '1';
+          capsule.style.transition = `right ${realDuration}ms cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.25s ease`;
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              capsule.style.right = `${travelDistance}px`;
+            });
+          });
+        }
+
+        safeTimeout(() => {
+          capsule.style.opacity = '0';
+          if (onArrive) onArrive();
+          setTimeout(() => {
+            if (capsule.parentNode) capsule.parentNode.removeChild(capsule);
+          }, 300);
+        }, durationMs);
       }
 
       window.executeSelectedPattern = function () {
         if (isSimulating) return;
         isSimulating = true;
-        document.getElementById('btn-fire-stream').disabled = true;
+        const fireBtn = document.getElementById('btn-fire-stream');
+        if (fireBtn) fireBtn.disabled = true;
 
-        const pDot = document.getElementById('packet-animator');
-        const pReturn = document.getElementById('packet-return-animator');
+        clearAllSimTimers();
+        resetSimulatorVisuals();
+
+        const clientBox = document.getElementById('client-endpoint-box');
+        const serverBox = document.getElementById('server-endpoint-box');
         const clientBadge = document.getElementById('client-state-badge');
         const serverBadge = document.getElementById('server-state-badge');
-
-        pDot.style.display = 'block';
-        pReturn.style.display = 'none';
-        pDot.style.left = '10px';
+        const pipeStatus = document.getElementById('pipe-live-status');
 
         if (selectedPattern === 'unary') {
-          // Unary: 1 envío -> 1 respuesta
-          clientBadge.innerText = 'ENVIANDO REQUEST';
-          logFrame(`[UNARY] Cliente emite HEADERS + DATA (1 FacturaRequest: pedido_id=10452)`);
+          // ==============================================================
+          // 1. UNARY RPC: 1 Petición -> 1 Respuesta
+          // ==============================================================
+          setStepPill(1);
+          if (clientBox) clientBox.classList.add('transmitting');
+          if (clientBadge) clientBadge.innerText = 'EMITIENDO REQUEST';
+          if (pipeStatus) pipeStatus.innerText = 'STREAM #1: TRANSMITIENDO HEADERS + DATA (CLIENTE ➔ SERVIDOR)';
+          logFrame('[UNARY &bull; CLIENTE]: Emite HEADERS (:method=POST, :path=/Facturacion/GenerarFactura, content-type=application/grpc)', 'var(--grpc-cyan)');
+          logFrame('[UNARY &bull; CLIENTE]: Serializa DATA (Protobuf FacturaRequest: { pedido_id: 10452, rfc: "XAXX010101000", total: $1,250.00 })', 'var(--grpc-cyan)');
 
-          setTimeout(() => {
-            pDot.style.left = 'calc(100% - 30px)';
-          }, 50);
-
-          setTimeout(() => {
-            serverBadge.innerText = 'PROCESANDO RPC';
-            logFrame(`[UNARY] Servidor recibe paquete, ejecuta lógica y prepara FacturaReply.`);
-            pDot.style.display = 'none';
-
-            pReturn.style.display = 'block';
-            pReturn.style.right = '10px';
-            setTimeout(() => {
-              pReturn.style.right = 'calc(100% - 30px)';
-            }, 50);
-          }, 950);
-
-          setTimeout(() => {
-            clientBadge.innerText = 'COMPLETADO (OK)';
-            serverBadge.innerText = 'ESCUCHANDO';
-            logFrame(`[UNARY] Cliente recibe FacturaReply. Servidor emite TRAILERS (grpc-status: 0 OK). Stream cerrado.`);
-            finishSimulation();
-          }, 1900);
-
-        } else if (selectedPattern === 'server') {
-          // Server Streaming: 1 request -> 3 respuestas en stream
-          clientBadge.innerText = 'ENVIANDO SUSCRIPCIÓN';
-          logFrame(`[SERVER STREAM] Cliente suscribe a CotizacionRequest.`);
-          pDot.style.left = 'calc(100% - 30px)';
-
-          setTimeout(() => {
-            pDot.style.display = 'none';
-            serverBadge.innerText = 'STREAMING EN CURSO (3 Chunks)';
-            logFrame(`[SERVER STREAM] Servidor abre flujo de respuestas continuo...`);
-
-            sendServerChunk(1, 3, () => {
-              sendServerChunk(2, 3, () => {
-                sendServerChunk(3, 3, () => {
-                  serverBadge.innerText = 'STREAM FINALIZADO';
-                  logFrame(`[SERVER STREAM] Servidor emite TRAILERS (EOF). Stream completado.`);
-                  finishSimulation();
-                });
-              });
-            });
-          }, 950);
-
-        } else if (selectedPattern === 'client') {
-          // Client Streaming: 3 envíos del cliente -> 1 respuesta del servidor
-          clientBadge.innerText = 'TRANSMITIENDO CHUNKS (1/3)';
-          logFrame(`[CLIENT STREAM] Cliente inicia carga de telemetría por lotes...`);
-
-          sendClientChunk(1, 3, () => {
-            sendClientChunk(2, 3, () => {
-              sendClientChunk(3, 3, () => {
-                clientBadge.innerText = 'STREAM CLIENTE FINALIZADO';
-                logFrame(`[CLIENT STREAM] Cliente envía EOF. Servidor procesa consolidado y retorna ResumenUpload.`);
-                pReturn.style.display = 'block';
-                pReturn.style.right = '10px';
-                setTimeout(() => {
-                  pReturn.style.right = 'calc(100% - 30px)';
-                }, 50);
-
-                setTimeout(() => {
-                  serverBadge.innerText = 'ESCUCHANDO';
-                  logFrame(`[CLIENT STREAM] Cliente recibe ResumenUpload (3 chunks recibidos correctamente).`);
-                  finishSimulation();
-                }, 900);
-              });
-            });
+          emitPacketCapsule({
+            laneId: 'outbound-lane',
+            direction: 'ltr',
+            icon: '⚡',
+            tag: 'HEADERS+DATA',
+            payload: 'FacturaRequest { pedido_id: 10452 }',
+            packClass: 'outbound-pack',
+            durationMs: 1100,
+            onArrive: () => {
+              if (clientBox) clientBox.classList.remove('transmitting');
+              if (clientBadge) clientBadge.innerText = 'ESPERANDO RESPUESTA';
+              if (serverBox) serverBox.classList.add('receiving');
+              if (serverBadge) {
+                serverBadge.innerText = 'PROCESANDO RPC';
+                serverBadge.style.color = 'var(--grpc-gold)';
+              }
+              if (pipeStatus) pipeStatus.innerText = 'STREAM #1: SERVIDOR EJECUTANDO LÓGICA DE NEGOCIO (DB)';
+              setStepPill(2);
+              logFrame('[UNARY &bull; SERVIDOR]: Trama recibida y verificada con CRC32. Deserializando Protobuf a entidad C#...', 'var(--grpc-gold)');
+            }
           });
 
+          // Respuesta del Servidor
+          safeTimeout(() => {
+            setStepPill(3);
+            if (serverBox) {
+              serverBox.classList.remove('receiving');
+              serverBox.classList.add('transmitting');
+            }
+            if (serverBadge) {
+              serverBadge.innerText = 'EMITIENDO REPLY';
+              serverBadge.style.color = 'var(--grpc-green)';
+            }
+            if (pipeStatus) pipeStatus.innerText = 'STREAM #1: TRANSMITIENDO DATA (SERVIDOR ➔ CLIENTE)';
+            logFrame('[UNARY &bull; SERVIDOR]: Emite DATA frame (Protobuf FacturaReply: { folio: "FAC-9841", status: "EMITIDA", fecha: "2026-11-08" })', 'var(--grpc-green)');
+
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '📄',
+              tag: 'DATA',
+              payload: 'FacturaReply { folio: "FAC-9841", ok: true }',
+              packClass: 'inbound-pack',
+              durationMs: 1100,
+              onArrive: () => {
+                if (serverBox) serverBox.classList.remove('transmitting');
+                if (clientBadge) {
+                  clientBadge.innerText = 'REPLY RECIBIDA';
+                  clientBadge.style.color = 'var(--grpc-green)';
+                }
+                logFrame('[UNARY &bull; CLIENTE]: FacturaReply recibida con éxito.', 'var(--grpc-green)');
+              }
+            });
+          }, 1500);
+
+          // Cierre con Trailers
+          safeTimeout(() => {
+            setStepPill(4);
+            logFrame('[UNARY &bull; SERVIDOR]: Emite TRAILERS frame con cabecera de control: grpc-status: 0 (OK), grpc-message: Success.', 'var(--grpc-gold)');
+
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '🏁',
+              tag: 'TRAILERS',
+              payload: 'grpc-status: 0 (OK)',
+              packClass: 'trailer-pack',
+              durationMs: 800,
+              onArrive: () => {
+                finishSimulation('UNARY RPC COMPLETADO EXITOSAMENTE');
+              }
+            });
+          }, 2700);
+
+        } else if (selectedPattern === 'server') {
+          // ==============================================================
+          // 2. SERVER STREAMING: 1 Petición -> Flujo Continuo de N Respuestas
+          // ==============================================================
+          setStepPill(1);
+          if (clientBox) clientBox.classList.add('transmitting');
+          if (clientBadge) clientBadge.innerText = 'SUSCRIBIENDO';
+          if (pipeStatus) pipeStatus.innerText = 'STREAM #1: ENVIANDO SOLICITUD DE SUSCRIPCIÓN';
+          logFrame('[SERVER STREAM &bull; CLIENTE]: Emite HEADERS + DATA (CotizacionRequest: ticker="NVDA", intervalo=1s)', 'var(--grpc-cyan)');
+
+          emitPacketCapsule({
+            laneId: 'outbound-lane',
+            direction: 'ltr',
+            icon: '📡',
+            tag: 'SUBSCRIBE',
+            payload: 'CotizacionRequest { ticker: "NVDA" }',
+            packClass: 'outbound-pack',
+            durationMs: 1000,
+            onArrive: () => {
+              if (clientBox) clientBox.classList.remove('transmitting');
+              if (clientBadge) clientBadge.innerText = 'ESCUCHANDO STREAM';
+              if (serverBox) serverBox.classList.add('transmitting');
+              setStepPill(2);
+              logFrame('[SERVER STREAM &bull; SERVIDOR]: Suscripción aceptada. Abriendo flujo continuo de chunks...', 'var(--grpc-gold)');
+            }
+          });
+
+          // Enviar ráfaga de 3 Chunks continuos
+          const chunks = [
+            { id: 1, val: '$138.40', ts: '14:05:01' },
+            { id: 2, val: '$139.15', ts: '14:05:02' },
+            { id: 3, val: '$140.20', ts: '14:05:03' }
+          ];
+
+          chunks.forEach((chk, i) => {
+            safeTimeout(() => {
+              setStepPill(3);
+              if (serverBadge) serverBadge.innerText = `STREAMING (${chk.id}/3)`;
+              if (pipeStatus) pipeStatus.innerText = `STREAM #1: TRANSMITIENDO CHUNK ${chk.id} DE 3 EN TIEMPO REAL`;
+              logFrame(`[SERVER STREAM &bull; SERVIDOR]: Emite DATA Chunk #${chk.id} &bull; CotizacionReply { ticker: "NVDA", precio: ${chk.val}, ts: ${chk.ts} }`, 'var(--grpc-green)');
+
+              emitPacketCapsule({
+                laneId: 'inbound-lane',
+                direction: 'rtl',
+                icon: '📈',
+                tag: `CHUNK #${chk.id}`,
+                payload: `NVDA: ${chk.val}`,
+                packClass: 'inbound-pack',
+                durationMs: 900,
+                onArrive: () => {
+                  logFrame(`[SERVER STREAM &bull; CLIENTE]: Chunk #${chk.id} recibido y renderizado en UI sin bloquear.`, 'var(--grpc-green)');
+                }
+              });
+            }, 1400 + i * 850);
+          });
+
+          // Fin del Stream
+          safeTimeout(() => {
+            setStepPill(4);
+            if (serverBadge) serverBadge.innerText = 'STREAM FINALIZADO';
+            logFrame('[SERVER STREAM &bull; SERVIDOR]: Fin del flujo alcanzado. Emite TRAILERS con END_STREAM flag (grpc-status: 0 OK).', 'var(--grpc-gold)');
+
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '🏁',
+              tag: 'TRAILERS',
+              payload: 'EOF &bull; grpc-status: 0 (OK)',
+              packClass: 'trailer-pack',
+              durationMs: 800,
+              onArrive: () => {
+                finishSimulation('SERVER STREAMING CONCLUIDO CON ÉXITO');
+              }
+            });
+          }, 4200);
+
+        } else if (selectedPattern === 'client') {
+          // ==============================================================
+          // 3. CLIENT STREAMING: Flujo de N Envíos -> 1 Respuesta Resumen
+          // ==============================================================
+          setStepPill(1);
+          if (clientBox) clientBox.classList.add('transmitting');
+          if (pipeStatus) pipeStatus.innerText = 'STREAM #1: TRANSMISIÓN POR LOTES DEL CLIENTE (UPSTREAM)';
+          logFrame('[CLIENT STREAM &bull; CLIENTE]: Inicia sesión de subida de telemetría IoT por lotes...', 'var(--grpc-cyan)');
+
+          const telemetryBatches = [
+            { id: 1, temp: '24.2°C', rpm: '3200' },
+            { id: 2, temp: '25.6°C', rpm: '3450' },
+            { id: 3, temp: '26.1°C', rpm: '3600' }
+          ];
+
+          telemetryBatches.forEach((batch, i) => {
+            safeTimeout(() => {
+              setStepPill(2);
+              if (clientBadge) clientBadge.innerText = `SUBIENDO (${batch.id}/3)`;
+              if (pipeStatus) pipeStatus.innerText = `STREAM #1: CLIENTE ENVIANDO CHUNK ${batch.id} DE 3`;
+              logFrame(`[CLIENT STREAM &bull; CLIENTE]: Emite DATA Chunk #${batch.id} &bull; TelemetriaData { temp: ${batch.temp}, rpm: ${batch.rpm} }`, 'var(--grpc-cyan)');
+
+              emitPacketCapsule({
+                laneId: 'outbound-lane',
+                direction: 'ltr',
+                icon: '📊',
+                tag: `CHUNK #${batch.id}`,
+                payload: `Temp: ${batch.temp} | RPM: ${batch.rpm}`,
+                packClass: 'outbound-pack',
+                durationMs: 900,
+                onArrive: () => {
+                  if (serverBox) serverBox.classList.add('receiving');
+                  if (serverBadge) serverBadge.innerText = `RECIBIDOS (${batch.id}/3)`;
+                  logFrame(`[CLIENT STREAM &bull; SERVIDOR]: Chunk #${batch.id} bufferizado en memoria.`, 'var(--grpc-gold)');
+                }
+              });
+            }, 300 + i * 850);
+          });
+
+          // Half-Close del cliente
+          safeTimeout(() => {
+            if (clientBadge) clientBadge.innerText = 'HALF-CLOSE (EOF)';
+            logFrame('[CLIENT STREAM &bull; CLIENTE]: Emite Half-Close (END_STREAM en canal outbound). El cliente no enviará más datos.', 'var(--grpc-cyan)');
+
+            emitPacketCapsule({
+              laneId: 'outbound-lane',
+              direction: 'ltr',
+              icon: '🔒',
+              tag: 'HALF-CLOSE',
+              payload: 'Client EOF',
+              packClass: 'outbound-pack',
+              durationMs: 700,
+              onArrive: () => {
+                if (clientBox) clientBox.classList.remove('transmitting');
+                if (serverBox) serverBox.classList.add('transmitting');
+                if (serverBadge) serverBadge.innerText = 'CONSOLIDANDO LOTE';
+                setStepPill(3);
+                logFrame('[CLIENT STREAM &bull; SERVIDOR]: Lote completo recibido. Calculando métricas y guardando en DB...', 'var(--grpc-gold)');
+              }
+            });
+          }, 3000);
+
+          // Servidor emite respuesta consolidada única + Trailers
+          safeTimeout(() => {
+            if (pipeStatus) pipeStatus.innerText = 'STREAM #1: SERVIDOR ENVIANDO RESUMEN CONSOLIDADO';
+            logFrame('[CLIENT STREAM &bull; SERVIDOR]: Emite DATA ResumenUpload { chunks_procesados: 3, bytes_totales: 142, estado: "OK" }', 'var(--grpc-green)');
+
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '📋',
+              tag: 'RESUMEN',
+              payload: 'ResumenUpload { procesados: 3, ok: true }',
+              packClass: 'inbound-pack',
+              durationMs: 1000,
+              onArrive: () => {
+                logFrame('[CLIENT STREAM &bull; CLIENTE]: Resumen consolidado recibido.', 'var(--grpc-green)');
+              }
+            });
+          }, 4000);
+
+          safeTimeout(() => {
+            setStepPill(4);
+            logFrame('[CLIENT STREAM &bull; SERVIDOR]: Emite TRAILERS (grpc-status: 0 OK). Stream finalizado.', 'var(--grpc-gold)');
+
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '🏁',
+              tag: 'TRAILERS',
+              payload: 'grpc-status: 0 (OK)',
+              packClass: 'trailer-pack',
+              durationMs: 700,
+              onArrive: () => {
+                finishSimulation('CLIENT STREAMING CONCLUIDO CON ÉXITO');
+              }
+            });
+          }, 5100);
+
         } else if (selectedPattern === 'bidi') {
-          // Bidirectional Streaming
-          clientBadge.innerText = 'FULL-DUPLEX ACTIVO';
-          serverBadge.innerText = 'FULL-DUPLEX ACTIVO';
-          logFrame(`[BIDI STREAM] Canal bidireccional abierto. Ambos extremos transmiten simultáneamente.`);
+          // ==============================================================
+          // 4. BIDIRECTIONAL STREAMING: Full-Duplex Simultáneo sin bloqueo
+          // ==============================================================
+          setStepPill(1);
+          if (clientBox) clientBox.classList.add('transmitting');
+          if (serverBox) serverBox.classList.add('transmitting');
+          if (clientBadge) clientBadge.innerText = 'FULL-DUPLEX ACTIVO';
+          if (serverBadge) serverBadge.innerText = 'FULL-DUPLEX ACTIVO';
+          if (pipeStatus) pipeStatus.innerText = 'STREAM #1: CANAL BIDIRECCIONAL COMPLETO &bull; TRÁFICO SIMULTÁNEO';
+          logFrame('[BIDI &bull; CANAL]: Conexión HTTP/2 Full-Duplex abierta. Ambos extremos leen y escriben asíncronamente en paralelo.', 'var(--coral)');
 
-          pDot.style.display = 'block';
-          pReturn.style.display = 'block';
-          pDot.style.left = 'calc(100% - 30px)';
-          pReturn.style.right = 'calc(100% - 30px)';
+          // Onda 1: Cliente envía mensaje #1
+          safeTimeout(() => {
+            setStepPill(2);
+            logFrame('[BIDI &bull; CLIENTE]: Emite MensajeChat #1 { usuario: "Operador-Alpha", texto: "Iniciando monitoreo de red" }', 'var(--grpc-cyan)');
+            emitPacketCapsule({
+              laneId: 'outbound-lane',
+              direction: 'ltr',
+              icon: '💬',
+              tag: 'CLIENT #1',
+              payload: 'Chat: "Inicio monitoreo"',
+              packClass: 'outbound-pack',
+              durationMs: 1000
+            });
+          }, 400);
 
-          setTimeout(() => {
-            logFrame(`[BIDI] Cliente envía 'MensajeChat #1' <---> Servidor envía 'Notificación Evento #1'`);
-          }, 500);
+          // Onda 2: Servidor emite simultáneamente Evento #1 por el carril inbound
+          safeTimeout(() => {
+            setStepPill(3);
+            logFrame('[BIDI &bull; SERVIDOR]: Emite EventoServidor #1 { tipo: "ACK_CONEXIÓN", nodos_activos: 18 }', 'var(--grpc-green)');
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '🔔',
+              tag: 'SERVER #1',
+              payload: 'Evento: "Ack Conexión"',
+              packClass: 'inbound-pack',
+              durationMs: 1000
+            });
+          }, 800);
 
-          setTimeout(() => {
-            logFrame(`[BIDI] Tráfico concurrente sin bloqueo en ambas direcciones sobre el mismo Stream.`);
-            finishSimulation();
-          }, 1800);
+          // Onda 3: Cruce concurrente de paquetes
+          safeTimeout(() => {
+            logFrame('[BIDI &bull; CLIENTE]: Emite MensajeChat #2 { comando: "SYNC_CONFIG", version: 4.2 }', 'var(--grpc-cyan)');
+            emitPacketCapsule({
+              laneId: 'outbound-lane',
+              direction: 'ltr',
+              icon: '⚙️',
+              tag: 'CLIENT #2',
+              payload: 'Cmd: "SYNC_CONFIG v4.2"',
+              packClass: 'outbound-pack',
+              durationMs: 1000
+            });
+
+            logFrame('[BIDI &bull; SERVIDOR]: Emite EventoServidor #2 { telemetria: "PING_OK (4ms)", carga: "14%" }', 'var(--grpc-green)');
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '📡',
+              tag: 'SERVER #2',
+              payload: 'Telemetría: "Ping 4ms"',
+              packClass: 'inbound-pack',
+              durationMs: 1000
+            });
+          }, 1900);
+
+          // Cierre simultáneo con Trailers
+          safeTimeout(() => {
+            setStepPill(4);
+            logFrame('[BIDI &bull; TÚNEL]: Cierre ordenado de ambos lados del stream mediante END_STREAM flags y trailers.', 'var(--grpc-gold)');
+
+            emitPacketCapsule({
+              laneId: 'inbound-lane',
+              direction: 'rtl',
+              icon: '🏁',
+              tag: 'TRAILERS',
+              payload: 'grpc-status: 0 (OK)',
+              packClass: 'trailer-pack',
+              durationMs: 800,
+              onArrive: () => {
+                finishSimulation('BIDIRECTIONAL STREAMING FINALIZADO');
+              }
+            });
+          }, 3300);
         }
       };
 
-      function sendServerChunk(idx, total, callback) {
-        const pReturn = document.getElementById('packet-return-animator');
-        pReturn.style.display = 'block';
-        pReturn.style.right = '10px';
-        setTimeout(() => {
-          pReturn.style.right = 'calc(100% - 30px)';
-          logFrame(`[SERVER STREAM] Servidor emite DATA chunk ${idx}/${total} (Cotización en vivo: $${(8450 + idx * 12).toFixed(2)})`);
-        }, 50);
-        setTimeout(() => {
-          pReturn.style.display = 'none';
-          if (callback) callback();
-        }, 700);
-      }
+      function finishSimulation(msg) {
+        safeTimeout(() => {
+          const clientBox = document.getElementById('client-endpoint-box');
+          const serverBox = document.getElementById('server-endpoint-box');
+          const clientBadge = document.getElementById('client-state-badge');
+          const serverBadge = document.getElementById('server-state-badge');
+          const pipeStatus = document.getElementById('pipe-live-status');
+          const fireBtn = document.getElementById('btn-fire-stream');
 
-      function sendClientChunk(idx, total, callback) {
-        const pDot = document.getElementById('packet-animator');
-        pDot.style.display = 'block';
-        pDot.style.left = '10px';
-        setTimeout(() => {
-          pDot.style.left = 'calc(100% - 30px)';
-          logFrame(`[CLIENT STREAM] Cliente sube Chunk ${idx}/${total} (Lectura de Sensor IoT)`);
-        }, 50);
-        setTimeout(() => {
-          pDot.style.display = 'none';
-          if (callback) callback();
-        }, 700);
-      }
-
-      function finishSimulation() {
-        setTimeout(() => {
-          document.getElementById('packet-animator').style.display = 'none';
-          document.getElementById('packet-return-animator').style.display = 'none';
-          document.getElementById('client-state-badge').innerText = 'LISTO';
-          document.getElementById('server-state-badge').innerText = 'ESCUCHANDO';
-          document.getElementById('btn-fire-stream').disabled = false;
+          if (clientBox) clientBox.className = 'endpoint-box client-node';
+          if (serverBox) serverBox.className = 'endpoint-box server-node';
+          if (clientBadge) {
+            clientBadge.innerText = 'LISTO';
+            clientBadge.style.color = 'var(--grpc-cyan)';
+          }
+          if (serverBadge) {
+            serverBadge.innerText = 'ESCUCHANDO';
+            serverBadge.style.color = 'var(--grpc-green)';
+          }
+          if (pipeStatus) pipeStatus.innerText = 'CANAL HTTP/2 MULTIPLEXADO (LISTO)';
+          if (fireBtn) fireBtn.disabled = false;
           isSimulating = false;
-        }, 500);
+
+          logFrame(`[SISTEMA]: ${msg || 'Transmisión gRPC completada.'}`, 'var(--grpc-green)');
+        }, 600);
       }
 
       // --- Quiz Formativo ---
@@ -1040,20 +1652,14 @@ message FacturaRequest {
       function restartQuiz() {
         currentQuizIdx = 0;
         quizScore = 0;
-        location.reload();
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        renderQuizQuestion();
       }
 
       renderQuizQuestion();
 
-      // Pestañas
-      window.switchTab = function (tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (activeBtn) activeBtn.classList.add('active');
-      };
+      // Pestañas hoisted al inicio del script
     </script>
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
