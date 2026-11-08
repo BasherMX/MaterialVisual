@@ -169,6 +169,253 @@
           gap: 16px;
         }
       }
+    
+
+      /* Estilos del Grafo de Nodos y Simulador de Carrera GraphQL */
+      .gql-lab-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .node-graph-board {
+        background: radial-gradient(circle at 50% 20%, rgba(225, 0, 152, 0.08), rgba(5, 5, 12, 0.95));
+        border: 1px solid rgba(225, 0, 152, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .node-graph-board::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: 
+          linear-gradient(rgba(225, 0, 152, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(225, 0, 152, 0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+        pointer-events: none;
+      }
+
+      .graph-nodes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 16px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .schema-node-card {
+        background: rgba(14, 15, 30, 0.9);
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        padding: 14px;
+        transition: all 0.25s ease;
+        position: relative;
+      }
+
+      .schema-node-card.active-node {
+        border-color: var(--gql-pink);
+        box-shadow: 0 0 16px rgba(225, 0, 152, 0.35);
+        background: rgba(26, 12, 38, 0.95);
+      }
+
+      .schema-node-card.inactive-node {
+        opacity: 0.45;
+        filter: grayscale(0.6);
+      }
+
+      .node-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .node-tag {
+        font: 700 0.72rem 'Courier New', monospace;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(225, 0, 152, 0.2);
+        color: var(--gql-pink);
+        border: 1px solid rgba(225, 0, 152, 0.4);
+      }
+
+      .node-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .node-fields-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .field-pill {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font: 0.8rem 'Courier New', monospace;
+        color: var(--ink);
+        transition: all 0.15s ease;
+        user-select: none;
+      }
+
+      .field-pill:hover {
+        background: rgba(225, 0, 152, 0.15);
+        border-color: var(--gql-pink);
+      }
+
+      .field-pill.field-active {
+        background: rgba(225, 0, 152, 0.25);
+        border-color: var(--gql-pink);
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .field-pill input[type="checkbox"] {
+        accent-color: var(--gql-pink);
+        cursor: pointer;
+      }
+
+      /* Conectores visuales entre nodos */
+      .graph-flow-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gql-pink);
+        font-size: 1.2rem;
+        font-weight: 700;
+        text-shadow: 0 0 8px rgba(225, 0, 152, 0.8);
+      }
+
+      /* Inspector de Consulta vs Respuesta */
+      .ast-inspector-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      @media (max-width: 768px) {
+        .ast-inspector-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .code-display-card {
+        background: #060710;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .code-display-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font: 700 0.78rem 'Courier New', monospace;
+      }
+
+      .code-preview-content {
+        margin: 0;
+        padding: 10px;
+        background: #020206;
+        border-radius: 6px;
+        font: 0.78rem/1.5 'Courier New', monospace;
+        color: var(--ink);
+        overflow-x: auto;
+        min-height: 180px;
+        max-height: 260px;
+        overflow-y: auto;
+      }
+
+      /* Pista de Carrera de Red (REST vs GraphQL) */
+      .race-container {
+        background: #080914;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .race-track {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 12px 16px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .race-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font: 700 0.82rem 'Courier New', monospace;
+      }
+
+      .track-progress-bar-bg {
+        width: 100%;
+        height: 24px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .track-progress-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 12px;
+        transition: width 0.1s linear;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 8px;
+        font: 700 0.72rem 'Courier New', monospace;
+        color: #fff;
+      }
+
+      .rest-fill {
+        background: linear-gradient(90deg, #ff006e, #ff5e00);
+        box-shadow: 0 0 12px rgba(255, 0, 110, 0.6);
+      }
+
+      .gql-fill {
+        background: linear-gradient(90deg, #e10098, #00ffff);
+        box-shadow: 0 0 12px rgba(225, 0, 152, 0.8);
+      }
+
+      .track-info-badge {
+        font: 0.78rem Verdana, sans-serif;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
     </style>
   </head>
   <body>
@@ -253,92 +500,245 @@
       </section>
 
       <!-- Pestaña 2: Laboratorio REST vs GraphQL -->
-      <section id="tab-simulator" class="content-panel">
-        <div class="matrix-card">
-          <h2><span>🔬</span> Laboratorio de Tráfico de Red: REST vs GraphQL en Vivo</h2>
-          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            Imagina que estás construyendo la pantalla de **"Detalle de Orden de Compra"**. Elige qué campos necesita tu pantalla y observa la diferencia de peticiones y tamaño de carga útil entre ambos enfoques.
-          </p>
+      <section id="tab-simulator" class="content-panel" role="tabpanel">
 
-          <div class="network-lab-grid">
-            <!-- Mockup de Pantalla Móvil -->
-            <div class="mobile-mockup">
-              <h3 style="color:var(--gql-cyan); margin:0 0 10px; font-size:1.05rem;">
-                📱 Campos Necesarios para la Vista Móvil:
-              </h3>
-              <p style="font:0.8rem Verdana, sans-serif; color:var(--muted); margin-bottom:12px;">
-                Selecciona las propiedades requeridas por el componente:
-              </p>
+      <div class="matrix-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+          <div>
+            <h2 style="margin:0 0 6px; font-size:1.35rem; color:#fff; display:flex; align-items:center; gap:8px;">
+              <span>🔬</span> Explorador Interactivo de Grafo de Nodos &amp; Carrera: GraphQL vs REST
+            </h2>
+            <p style="margin:0; font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:850px;">
+              En GraphQL, el backend no expone URLs fijas aisladas, sino un <strong>Grafo Conectado de Nodos y Relaciones</strong>. 
+              Selecciona qué campos y nodos recorrer en el esquema inferior: observa cómo se construye la consulta jerárquica (AST), 
+              cómo la respuesta JSON adquiere su misma forma exacta, y ejecuta la <strong>Carrera de Rendimiento de Red</strong> en vivo.
+            </p>
+          </div>
+        </div>
 
-              <div class="fields-selector-box">
-                <label class="field-checkbox-row">
-                  <input type="checkbox" id="chk-order-id" checked disabled />
-                  <span>Pedido: id</span>
-                </label>
-                <label class="field-checkbox-row">
-                  <input type="checkbox" id="chk-order-total" checked onchange="updateSimulation()" />
-                  <span>Pedido: total</span>
-                </label>
-                <label class="field-checkbox-row">
-                  <input type="checkbox" id="chk-client-name" checked onchange="updateSimulation()" />
-                  <span>Cliente: nombre</span>
-                </label>
-                <label class="field-checkbox-row">
-                  <input type="checkbox" id="chk-client-email" onchange="updateSimulation()" />
-                  <span>Cliente: email</span>
-                </label>
-                <label class="field-checkbox-row">
-                  <input type="checkbox" id="chk-items-count" onchange="updateSimulation()" />
-                  <span>Artículos: cantidad</span>
-                </label>
+        <!-- Presets Rápidos -->
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;">
+          <span style="font:700 0.75rem 'Courier New', monospace; color:var(--gql-cyan); align-self:center; margin-right:4px;">PRESETS:</span>
+          <button class="btn-theme" style="padding:6px 12px; font:700 0.75rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="applyNodePreset('profile')">
+            📱 1. Perfil Rápido (Solo Usuario)
+          </button>
+          <button class="btn-theme" style="padding:6px 12px; font:700 0.75rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="applyNodePreset('orders')">
+            📦 2. Usuario ➔ Pedidos
+          </button>
+          <button class="btn-theme" style="padding:6px 12px; font:700 0.75rem 'Courier New', monospace; border-radius:6px; cursor:pointer; background:linear-gradient(135deg, rgba(225,0,152,0.3), rgba(0,255,255,0.2)); border-color:var(--gql-pink);" onclick="applyNodePreset('deep')">
+            🛒 3. Grafo Profundo Completo (Usuario ➔ Pedidos ➔ Artículos ➔ Producto)
+          </button>
+        </div>
+
+        <div class="gql-lab-container">
+          <!-- 1. TABLERO DE GRAFO DE NODOS -->
+          <div class="node-graph-board">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; position:relative; z-index:2;">
+              <span style="font:700 0.8rem 'Courier New', monospace; color:var(--gql-pink); letter-spacing:1px;">
+                🌐 ESQUEMA DE GRAFO: HAZ CLIC EN LOS CAMPOS PARA EXPANDIR O PODAR EL ÁRBOL
+              </span>
+              <span id="active-nodes-counter" style="font:700 0.75rem 'Courier New', monospace; color:var(--gql-green);">
+                Nodos en Consulta: 4 Activos
+              </span>
+            </div>
+
+            <div class="graph-nodes-grid">
+              <!-- NODO 1: USUARIO -->
+              <div class="schema-node-card active-node" id="node-card-user">
+                <div class="node-header">
+                  <h4 class="node-title"><span>👤</span> Usuario</h4>
+                  <span class="node-tag">Type: User</span>
+                </div>
+                <div class="node-fields-list">
+                  <label class="field-pill field-active" onclick="toggleField('user', 'id', this)">
+                    <span>id: ID!</span>
+                    <input type="checkbox" checked disabled />
+                  </label>
+                  <label class="field-pill field-active" onclick="toggleField('user', 'nombre', this)">
+                    <span>nombre: String</span>
+                    <input type="checkbox" checked />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('user', 'email', this)">
+                    <span>email: String</span>
+                    <input type="checkbox" />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('user', 'nivel', this)">
+                    <span>nivelLealtad: VIP</span>
+                    <input type="checkbox" />
+                  </label>
+                </div>
               </div>
 
-              <div style="display:flex; gap:10px;">
-                <button class="btn-theme" style="flex:1; padding:10px; font:700 0.8rem 'Courier New', monospace; border-radius:6px; cursor:pointer;" onclick="runSimulationTest('rest')">
-                  📡 Probar con REST
-                </button>
-                <button class="btn-theme" style="flex:1; padding:10px; font:700 0.8rem 'Courier New', monospace; border-radius:6px; cursor:pointer; background:linear-gradient(135deg, var(--gql-pink), var(--purple));" onclick="runSimulationTest('graphql')">
-                  ⚡ Probar con GraphQL
-                </button>
+              <!-- NODO 2: PEDIDOS -->
+              <div class="schema-node-card active-node" id="node-card-orders">
+                <div class="node-header">
+                  <h4 class="node-title"><span>📦</span> pedidos</h4>
+                  <span class="node-tag">[Order!]!</span>
+                </div>
+                <div class="node-fields-list">
+                  <label class="field-pill field-active" onclick="toggleField('order', 'id', this)">
+                    <span>id: ID!</span>
+                    <input type="checkbox" checked />
+                  </label>
+                  <label class="field-pill field-active" onclick="toggleField('order', 'total', this)">
+                    <span>total: Decimal</span>
+                    <input type="checkbox" checked />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('order', 'fecha', this)">
+                    <span>fecha: Date</span>
+                    <input type="checkbox" />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('order', 'estado', this)">
+                    <span>estado: String</span>
+                    <input type="checkbox" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- NODO 3: ARTICULOS -->
+              <div class="schema-node-card active-node" id="node-card-items">
+                <div class="node-header">
+                  <h4 class="node-title"><span>📋</span> articulos</h4>
+                  <span class="node-tag">[Item!]!</span>
+                </div>
+                <div class="node-fields-list">
+                  <label class="field-pill field-active" onclick="toggleField('item', 'cantidad', this)">
+                    <span>cantidad: Int</span>
+                    <input type="checkbox" checked />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('item', 'precioUnitario', this)">
+                    <span>precioUnitario: Decimal</span>
+                    <input type="checkbox" />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('item', 'descuento', this)">
+                    <span>descuento: Decimal</span>
+                    <input type="checkbox" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- NODO 4: PRODUCTO -->
+              <div class="schema-node-card active-node" id="node-card-product">
+                <div class="node-header">
+                  <h4 class="node-title"><span>🏷️</span> producto</h4>
+                  <span class="node-tag">Product!</span>
+                </div>
+                <div class="node-fields-list">
+                  <label class="field-pill field-active" onclick="toggleField('product', 'titulo', this)">
+                    <span>titulo: String</span>
+                    <input type="checkbox" checked />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('product', 'sku', this)">
+                    <span>sku: String</span>
+                    <input type="checkbox" />
+                  </label>
+                  <label class="field-pill" onclick="toggleField('product', 'stock', this)">
+                    <span>stock: Int</span>
+                    <input type="checkbox" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. COMPARADOR DE CÓDIGO (QUERY GRAPHQL vs RESPUESTA JSON) -->
+          <div class="ast-inspector-grid">
+            <div class="code-display-card">
+              <div class="code-display-header">
+                <span style="color:var(--gql-pink);">📝 CONSULTA GRAPHQL GENERADA (AST):</span>
+                <span style="color:var(--muted);">POST /graphql</span>
+              </div>
+              <pre id="graphql-query-code" class="code-preview-content"></pre>
+            </div>
+
+            <div class="code-display-card">
+              <div class="code-display-header">
+                <span style="color:var(--gql-green);">📦 RESPUESTA JSON DEVUELTA POR EL SERVIDOR:</span>
+                <span id="response-size-badge" style="color:var(--gql-green);">Carga útil: 284 B</span>
+              </div>
+              <pre id="graphql-response-code" class="code-preview-content"></pre>
+            </div>
+          </div>
+
+          <!-- 3. LA CARRERA DE RENDIMIENTO EN TIEMPO REAL: REST vs GRAPHQL -->
+          <div class="race-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="margin:0 0 4px; font-size:1.05rem; color:#fff; display:flex; align-items:center; gap:8px;">
+                  <span>🏁</span> Carrera de Red en Vivo: REST en Cascada vs GraphQL Single Round-Trip
+                </h3>
+                <p style="margin:0; font:0.8rem Verdana, sans-serif; color:var(--muted);">
+                  Observa cómo REST sufre múltiples viajes secuenciales en cascada mientras GraphQL resuelve todo el grafo en una sola ida y vuelta.
+                </p>
+              </div>
+              <button id="btn-start-race" class="btn-theme" style="padding:10px 20px; font:700 0.85rem 'Courier New', monospace; border-radius:6px; cursor:pointer; background:linear-gradient(135deg, var(--gql-pink), var(--purple)); box-shadow:0 0 16px rgba(225,0,152,0.4);" onclick="startRaceSimulation()">
+                ⚡ Iniciar Carrera de Red (Play)
+              </button>
+            </div>
+
+            <!-- Carril REST -->
+            <div class="race-track" id="track-rest-box">
+              <div class="race-header">
+                <span style="color:var(--gql-coral);">📡 REST TRADICIONAL (Endpoints Fijos):</span>
+                <span id="rest-timer-label" style="color:var(--gql-coral);">Esperando inicio...</span>
+              </div>
+              <div class="track-progress-bar-bg">
+                <div id="rest-progress-bar" class="track-progress-fill rest-fill">0%</div>
+              </div>
+              <div class="track-info-badge">
+                <span id="rest-status-text">Viajes requeridos: 3 peticiones HTTP (/usuarios, /pedidos, /articulos)</span>
+                <span id="rest-payload-badge" style="color:var(--gql-coral);">Sobrecarga: ~6,190 Bytes (Over-fetching)</span>
               </div>
             </div>
 
-            <!-- Panel de Métricas de Red -->
-            <div class="traffic-meter-card">
-              <h3 style="color:var(--gold); margin:0 0 14px; font-size:1.05rem;">
-                📊 Telemetría de Red y Rendimiento:
-              </h3>
+            <!-- Carril GraphQL -->
+            <div class="race-track" id="track-gql-box">
+              <div class="race-header">
+                <span style="color:var(--gql-green);">⚡ GRAPHQL + HOTCHOCOLATE (1 Solo Round-Trip):</span>
+                <span id="gql-timer-label" style="color:var(--gql-green);">Esperando inicio...</span>
+              </div>
+              <div class="track-progress-bar-bg">
+                <div id="gql-progress-bar" class="track-progress-fill gql-fill">0%</div>
+              </div>
+              <div class="track-info-badge">
+                <span id="gql-status-text">Viajes requeridos: 1 sola petición HTTP (POST /graphql)</span>
+                <span id="gql-payload-badge" style="color:var(--gql-green);">Carga neta: ~320 Bytes (0% Over-fetching)</span>
+              </div>
+            </div>
 
-              <div class="stat-metric-row">
-                <span>Modo Activo:</span>
-                <span id="metric-mode-label" style="color:var(--gql-cyan);">REST Tradicional</span>
-              </div>
-              <div class="stat-metric-row">
-                <span>Viajes de Red (Round-trips HTTP):</span>
-                <span id="metric-roundtrips" style="color:var(--gql-coral);">3 peticiones (N+1)</span>
-              </div>
-              <div class="stat-metric-row">
-                <span>Carga Útil Transferida:</span>
-                <span id="metric-payload-size" style="color:var(--gql-coral);">4,820 Bytes (Over-fetching)</span>
-              </div>
-              <div class="stat-metric-row">
-                <span>Latencia Acumulada Estimada (4G):</span>
-                <span id="metric-latency" style="color:var(--gql-coral);">~420 ms</span>
-              </div>
-              <div class="stat-metric-row">
-                <span>Eficiencia de Datos Requeridos:</span>
-                <span id="metric-efficiency" style="color:var(--gql-coral);">4.2% útil (95.8% desperdicio)</span>
-              </div>
-
-              <!-- Terminal de Payload Resultante -->
-              <div style="margin-top:14px;">
-                <span style="font:700 0.75rem 'Courier New', monospace; color:var(--muted);">PAYLOAD RECIBIDO EN EL CLIENTE:</span>
-                <pre id="payload-preview-box" style="background:#05050a; border:1px solid rgba(0,255,255,0.2); border-radius:4px; padding:10px; font:0.75rem 'Courier New', monospace; color:var(--ink); height:120px; overflow-y:auto; margin:6px 0 0;">Presiona 'Probar con REST' o 'Probar con GraphQL'</pre>
+            <!-- Banner Comparativo de Resultados -->
+            <div id="race-results-banner" style="display:none; padding:14px 18px; border-radius:8px; background:rgba(0, 255, 170, 0.1); border:1px solid var(--gql-green); margin-top:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="font-size:2rem;">🏆</span>
+                  <div>
+                    <h4 style="margin:0; font-size:1rem; color:var(--gql-green);">¡GraphQL completó la carga en 110 ms (3.6x más rápido)!</h4>
+                    <p style="margin:2px 0 0; font:0.8rem Verdana, sans-serif; color:var(--ink);">
+                      Ahorró <strong>94.8% de ancho de banda</strong> al transferir solo 320 Bytes frente a los 6,190 Bytes descartados por los 3 endpoints REST.
+                    </p>
+                  </div>
+                </div>
+                <div style="display:flex; gap:16px;">
+                  <div style="text-align:center;">
+                    <span style="display:block; font:700 1.1rem 'Courier New', monospace; color:var(--gql-green);">-94.8%</span>
+                    <span style="font:0.72rem Verdana, sans-serif; color:var(--muted);">Datos Móviles</span>
+                  </div>
+                  <div style="text-align:center;">
+                    <span style="display:block; font:700 1.1rem 'Courier New', monospace; color:var(--gql-cyan);">1 vs 3</span>
+                    <span style="font:0.72rem Verdana, sans-serif; color:var(--muted);">Round-Trips</span>
+                  </div>
+                  <div style="text-align:center;">
+                    <span style="display:block; font:700 1.1rem 'Courier New', monospace; color:var(--gold);">3.6x</span>
+                    <span style="font:0.72rem Verdana, sans-serif; color:var(--muted);">Velocidad</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+    </section>
 
       <!-- Pestaña 3: HotChocolate en .NET & EF Core -->
       <section id="tab-hotchocolate" class="content-panel">
@@ -503,83 +903,265 @@ ORDER BY p.Total DESC</code></pre>
     </main>
 
     <script>
-      // --- Lógica del Simulador REST vs GraphQL ---
-      function updateSimulation() {
-        // Solo refresca visual si ya se ejecutó una simulación
-      }
-
-      window.runSimulationTest = function (mode) {
-        const modeLabel = document.getElementById('metric-mode-label');
-        const roundtrips = document.getElementById('metric-roundtrips');
-        const payloadSize = document.getElementById('metric-payload-size');
-        const latency = document.getElementById('metric-latency');
-        const efficiency = document.getElementById('metric-efficiency');
-        const preview = document.getElementById('payload-preview-box');
-
-        const totalChecked = document.getElementById('chk-order-total').checked;
-        const clientNameChecked = document.getElementById('chk-client-name').checked;
-        const clientEmailChecked = document.getElementById('chk-client-email').checked;
-        const itemsChecked = document.getElementById('chk-items-count').checked;
-
-        if (mode === 'rest') {
-          modeLabel.innerText = 'REST Tradicional (Endpoints Fijos)';
-          modeLabel.style.color = 'var(--coral)';
-
-          // REST sufre Under-fetching (necesita llamar /pedidos, /clientes y /articulos)
-          let calls = 1;
-          if (clientNameChecked || clientEmailChecked) calls++;
-          if (itemsChecked) calls++;
-
-          roundtrips.innerText = `${calls} peticiones HTTP en cascada (Under-fetching)`;
-          roundtrips.style.color = 'var(--coral)';
-
-          const size = 1200 + calls * 1150;
-          payloadSize.innerText = `${size} Bytes (Over-fetching: incluye 35 campos no solicitados)`;
-          payloadSize.style.color = 'var(--coral)';
-
-          latency.innerText = `~${calls * 140} ms (Latencia acumulada)`;
-          latency.style.color = 'var(--coral)';
-
-          efficiency.innerText = '6.4% útil (93.6% de datos descartados)';
-          efficiency.style.color = 'var(--coral)';
-
-          preview.innerText = JSON.stringify({
-            pedido: { id: 10452, fecha: "2026-11-04", total: 8450.50, subtotal: 7280.00, iva: 1170.50, descuento: 0, metodo_pago: "Tarjeta", estatus: "PAGADO", direccion_entrega: "Calle 10...", codigo_postal: "01000", notas: "Dejar en caseta...", peso_total_kg: 4.5 },
-            cliente: { id: 501, rfc: "XAXX010101000", nombre: "Carlos Morales", telefono_fijo: "555-0000", celular: "555-1234", email: "carlos@example.com", fecha_registro: "2021-03-15", limite_credito: 50000, activo: true }
-          }, null, 2);
-
-        } else {
-          modeLabel.innerText = 'GraphQL + HotChocolate (Consulta Declarativa)';
-          modeLabel.style.color = 'var(--green)';
-
-          roundtrips.innerText = '1 sola petición HTTP (0% Under-fetching)';
-          roundtrips.style.color = 'var(--green)';
-
-          // Construir payload exacto
-          const result = { id: 10452 };
-          let usefulBytes = 25;
-          if (totalChecked) { result.total = 8450.50; usefulBytes += 20; }
-          if (clientNameChecked || clientEmailChecked) {
-            result.cliente = {};
-            if (clientNameChecked) { result.cliente.nombre = "Carlos Morales"; usefulBytes += 30; }
-            if (clientEmailChecked) { result.cliente.email = "carlos@example.com"; usefulBytes += 35; }
-          }
-          if (itemsChecked) { result.totalArticulos = 3; usefulBytes += 22; }
-
-          payloadSize.innerText = `${usefulBytes + 35} Bytes (-96% Reducción de ancho de banda)`;
-          payloadSize.style.color = 'var(--green)';
-
-          latency.innerText = '~110 ms (1 solo round-trip)';
-          latency.style.color = 'var(--green)';
-
-          efficiency.innerText = '100% útil (0% Over-fetching)';
-          efficiency.style.color = 'var(--green)';
-
-          preview.innerText = JSON.stringify({ data: { pedido: result } }, null, 2);
-        }
+      
+      // ==============================================================
+      // SIMULADOR VISUAL DE GRAFO DE NODOS & CARRERA DE RENDIMIENTO (GRAPHQL)
+      // ==============================================================
+      const schemaState = {
+        user: { id: true, nombre: true, email: false, nivel: false },
+        order: { id: true, total: true, fecha: false, estado: false },
+        item: { cantidad: true, precioUnitario: false, descuento: false },
+        product: { titulo: true, sku: false, stock: false }
       };
 
-      runSimulationTest('rest');
+      const dummyDB = {
+        user: { id: "101", nombre: "Carlos Morales", email: "carlos.morales@empresa.mx", nivel: "PLATINUM_VIP" },
+        order: { id: "ORD-8452", total: 8450.50, fecha: "2026-11-08", estado: "CONFIRMADO" },
+        item: { cantidad: 2, precioUnitario: 4225.25, descuento: 0.00 },
+        product: { titulo: "Monitor Profesional UltraWide 34\"", sku: "MON-34-UW-4K", stock: 18 }
+      };
+
+      window.toggleField = function(nodeKey, fieldKey, el) {
+        if (nodeKey === 'user' && fieldKey === 'id') return; // Clave raíz obligatoria
+        schemaState[nodeKey][fieldKey] = !schemaState[nodeKey][fieldKey];
+        
+        const chk = el.querySelector('input[type="checkbox"]');
+        if (chk) chk.checked = schemaState[nodeKey][fieldKey];
+        if (schemaState[nodeKey][fieldKey]) {
+          el.classList.add('field-active');
+        } else {
+          el.classList.remove('field-active');
+        }
+
+        updateGraphVisuals();
+      };
+
+      window.applyNodePreset = function(presetKey) {
+        if (presetKey === 'profile') {
+          schemaState.user = { id: true, nombre: true, email: true, nivel: true };
+          schemaState.order = { id: false, total: false, fecha: false, estado: false };
+          schemaState.item = { cantidad: false, precioUnitario: false, descuento: false };
+          schemaState.product = { titulo: false, sku: false, stock: false };
+        } else if (presetKey === 'orders') {
+          schemaState.user = { id: true, nombre: true, email: false, nivel: false };
+          schemaState.order = { id: true, total: true, fecha: true, estado: true };
+          schemaState.item = { cantidad: false, precioUnitario: false, descuento: false };
+          schemaState.product = { titulo: false, sku: false, stock: false };
+        } else if (presetKey === 'deep') {
+          schemaState.user = { id: true, nombre: true, email: false, nivel: false };
+          schemaState.order = { id: true, total: true, fecha: false, estado: false };
+          schemaState.item = { cantidad: true, precioUnitario: true, descuento: false };
+          schemaState.product = { titulo: true, sku: true, stock: false };
+        }
+
+        // Sincronizar checkboxes del DOM
+        document.querySelectorAll('.node-fields-list .field-pill').forEach(pill => {
+          const chk = pill.querySelector('input[type="checkbox"]');
+          if (!chk) return;
+          const onclickAttr = pill.getAttribute('onclick') || '';
+          const match = onclickAttr.match(/toggleField\('([^']+)',\s*'([^']+)'/);
+          if (match) {
+            const [_, n, f] = match;
+            chk.checked = schemaState[n][f];
+            if (schemaState[n][f]) pill.classList.add('field-active');
+            else pill.classList.remove('field-active');
+          }
+        });
+
+        updateGraphVisuals();
+      };
+
+      function updateGraphVisuals() {
+        const orderActive = Object.values(schemaState.order).some(Boolean);
+        const itemActive = Object.values(schemaState.item).some(Boolean);
+        const productActive = Object.values(schemaState.product).some(Boolean);
+
+        // Estilos de tarjetas de nodos
+        setNodeActiveStyle('node-card-orders', orderActive);
+        setNodeActiveStyle('node-card-items', orderActive && itemActive);
+        setNodeActiveStyle('node-card-product', orderActive && itemActive && productActive);
+
+        let activeCount = 1;
+        if (orderActive) activeCount++;
+        if (orderActive && itemActive) activeCount++;
+        if (orderActive && itemActive && productActive) activeCount++;
+        const counterEl = document.getElementById('active-nodes-counter');
+        if (counterEl) counterEl.innerText = `Nodos en Consulta: ${activeCount} Activos`;
+
+        // Generar texto GraphQL y JSON
+        generateCodePreviews(orderActive, itemActive, productActive);
+      }
+
+      function setNodeActiveStyle(elementId, isActive) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        if (isActive) {
+          el.classList.add('active-node');
+          el.classList.remove('inactive-node');
+        } else {
+          el.classList.remove('active-node');
+          el.classList.add('inactive-node');
+        }
+      }
+
+      function generateCodePreviews(orderActive, itemActive, productActive) {
+        // 1. Query GraphQL
+        let indent = '  ';
+        let gql = 'query ObtenerDatosUsuario {\n';
+        gql += indent + 'usuario(id: "101") {\n';
+        for (const [k, v] of Object.entries(schemaState.user)) {
+          if (v) gql += indent + '  ' + k + '\n';
+        }
+
+        if (orderActive) {
+          gql += indent + '  pedidos {\n';
+          for (const [k, v] of Object.entries(schemaState.order)) {
+            if (v) gql += indent + '    ' + k + '\n';
+          }
+
+          if (itemActive) {
+            gql += indent + '    articulos {\n';
+            for (const [k, v] of Object.entries(schemaState.item)) {
+              if (v) gql += indent + '      ' + k + '\n';
+            }
+
+            if (productActive) {
+              gql += indent + '      producto {\n';
+              for (const [k, v] of Object.entries(schemaState.product)) {
+                if (v) gql += indent + '        ' + k + '\n';
+              }
+              gql += indent + '      }\n';
+            }
+            gql += indent + '    }\n';
+          }
+          gql += indent + '  }\n';
+        }
+        gql += indent + '}\n}';
+
+        const queryBox = document.getElementById('graphql-query-code');
+        if (queryBox) queryBox.innerText = gql;
+
+        // 2. Respuesta JSON
+        const resUser = {};
+        for (const [k, v] of Object.entries(schemaState.user)) {
+          if (v) resUser[k] = dummyDB.user[k];
+        }
+
+        if (orderActive) {
+          const resOrder = {};
+          for (const [k, v] of Object.entries(schemaState.order)) {
+            if (v) resOrder[k] = dummyDB.order[k];
+          }
+
+          if (itemActive) {
+            const resItem = {};
+            for (const [k, v] of Object.entries(schemaState.item)) {
+              if (v) resItem[k] = dummyDB.item[k];
+            }
+
+            if (productActive) {
+              const resProd = {};
+              for (const [k, v] of Object.entries(schemaState.product)) {
+                if (v) resProd[k] = dummyDB.product[k];
+              }
+              resItem.producto = resProd;
+            }
+            resOrder.articulos = [resItem];
+          }
+          resUser.pedidos = [resOrder];
+        }
+
+        const jsonOutput = { data: { usuario: resUser } };
+        const jsonStr = JSON.stringify(jsonOutput, null, 2);
+        const resBox = document.getElementById('graphql-response-code');
+        if (resBox) resBox.innerText = jsonStr;
+
+        const sizeBadge = document.getElementById('response-size-badge');
+        if (sizeBadge) {
+          const bytes = new TextEncoder().encode(jsonStr).length;
+          sizeBadge.innerText = `Carga útil exacta: ${bytes} Bytes (0% Over-fetching)`;
+        }
+      }
+
+      // 4. ANIMACIÓN DE CARRERA DE RED
+      let isRacing = false;
+      window.startRaceSimulation = function() {
+        if (isRacing) return;
+        isRacing = true;
+
+        const startBtn = document.getElementById('btn-start-race');
+        if (startBtn) startBtn.disabled = true;
+
+        const restBar = document.getElementById('rest-progress-bar');
+        const gqlBar = document.getElementById('gql-progress-bar');
+        const restTimer = document.getElementById('rest-timer-label');
+        const gqlTimer = document.getElementById('gql-timer-label');
+        const restStatus = document.getElementById('rest-status-text');
+        const gqlStatus = document.getElementById('gql-status-text');
+        const resultsBanner = document.getElementById('race-results-banner');
+
+        if (resultsBanner) resultsBanner.style.display = 'none';
+
+        // Reset barras
+        restBar.style.width = '0%';
+        gqlBar.style.width = '0%';
+        restBar.innerText = '0%';
+        gqlBar.innerText = '0%';
+
+        // --- CARRERA GRAPHQL (1 Round-Trip Rápido: ~110 ms simulado a escala 1:10 -> 1.1s visual) ---
+        gqlTimer.innerText = 'Transmitiendo Single Query...';
+        gqlStatus.innerText = '1/1: POST /graphql (Resolviendo nodos en servidor...)';
+
+        let gqlProgress = 0;
+        const gqlInterval = setInterval(() => {
+          gqlProgress += 5;
+          if (gqlProgress > 100) gqlProgress = 100;
+          gqlBar.style.width = gqlProgress + '%';
+          gqlBar.innerText = gqlProgress + '%';
+
+          if (gqlProgress === 100) {
+            clearInterval(gqlInterval);
+            gqlTimer.innerText = '🏁 ¡META! 110 ms';
+            gqlStatus.innerText = '✓ Completado: 1 Round-trip, 320 Bytes, 0% Over-fetching.';
+          }
+        }, 50);
+
+        // --- CARRERA REST (3 Round-Trips en Cascada: ~400 ms simulado a escala -> 4.0s visual) ---
+        let restProgress = 0;
+        restTimer.innerText = 'Llamada 1/3: GET /api/v1/usuarios...';
+        restStatus.innerText = 'Petición 1/3: Obteniendo usuario (1,950 Bytes transferidos)';
+
+        const restInterval = setInterval(() => {
+          restProgress += 2;
+          if (restProgress <= 33) {
+            restTimer.innerText = 'Llamada 1/3: GET /api/v1/usuarios (120ms)';
+            restStatus.innerText = 'Petición 1/3: Recibiendo JSON usuario (Over-fetching: 30 campos no solicitados)';
+          } else if (restProgress <= 66) {
+            restTimer.innerText = 'Llamada 2/3: GET /api/v1/pedidos?user=101 (260ms)';
+            restStatus.innerText = 'Petición 2/3: Esperando respuesta cascada (Under-fetching: requiere artículos)';
+          } else if (restProgress < 100) {
+            restTimer.innerText = 'Llamada 3/3: GET /api/v1/articulos?order=501 (390ms)';
+            restStatus.innerText = 'Petición 3/3: Descargando artículos (6,190 Bytes acumulados)';
+          } else {
+            restProgress = 100;
+            clearInterval(restInterval);
+            restTimer.innerText = '🏁 Finalizado en 400 ms';
+            restStatus.innerText = '3 Round-trips en cascada completados (94.8% de datos descartados)';
+            if (resultsBanner) resultsBanner.style.display = 'block';
+            if (startBtn) startBtn.disabled = false;
+            isRacing = false;
+          }
+          restBar.style.width = restProgress + '%';
+          restBar.innerText = restProgress + '%';
+        }, 80);
+      };
+
+      // Inicializar visuales de grafo
+      window.addEventListener('DOMContentLoaded', () => {
+        updateGraphVisuals();
+      });
+      setTimeout(() => { updateGraphVisuals(); }, 300);
+
 
       // ========================================================
       // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
