@@ -26,22 +26,30 @@
 
       .modules-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 22px;
+      }
+
+      @media (max-width: 1024px) {
+        .modules-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 18px;
+        }
       }
 
       .module-card {
         border: 1px solid var(--line);
         background: rgba(34, 33, 61, 0.92);
         border-radius: 10px;
-        padding: 20px 18px;
+        padding: 22px 18px 18px;
         box-shadow: var(--shadow);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
+        width: 100%;
       }
 
       .module-card::before {
@@ -51,6 +59,8 @@
         left: 0;
         right: 0;
         height: 3px;
+        border-top-left-radius: 9px;
+        border-top-right-radius: 9px;
         opacity: 0.65;
         transition: opacity 0.25s ease;
       }
@@ -71,93 +81,115 @@
         font: 700 0.68rem/1 Verdana, sans-serif;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        margin-bottom: 10px;
+        margin-bottom: 0;
         border: 1px solid currentColor;
       }
 
       .card-header-row {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         gap: 10px;
         margin-bottom: 12px;
-        flex-wrap: wrap;
+        padding-right: 28px;
       }
 
       .card-header-row .badge {
         margin-bottom: 0;
-        flex: 1 1 auto;
-        max-width: fit-content;
+        flex: 0 1 auto;
+        max-width: calc(100% - 10px);
       }
 
-      .btn-card-check {
-        position: static !important;
-        flex-shrink: 0;
-        background: rgba(18, 17, 36, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--muted);
-        border-radius: 20px;
-        padding: 4px 10px;
-        font: 700 0.72rem "Courier New", monospace;
-        cursor: pointer;
-        display: inline-flex;
+      /* Checkbox flotante de visto en la esquina superior derecha */
+      .btn-card-checkbox {
+        position: absolute;
+        top: -9px;
+        right: -9px;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #0d0e1c;
+        border: 1.5px solid rgba(0, 255, 255, 0.38);
+        color: transparent;
+        display: flex;
         align-items: center;
-        gap: 5px;
-        transition: all 0.2s ease;
-        user-select: none;
-        white-space: nowrap;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        padding: 0;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
       }
 
-      .btn-card-check:hover {
-        background: rgba(0, 255, 170, 0.15);
-        border-color: var(--green);
-        color: var(--green);
-        transform: scale(1.03);
+      .btn-card-checkbox::after {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: -6px;
+        right: -6px;
+        bottom: -6px;
       }
 
-      .btn-card-check.is-viewed {
-        background: rgba(0, 255, 170, 0.22);
-        border-color: var(--green);
-        color: var(--green);
-        box-shadow: 0 0 10px rgba(0, 255, 170, 0.35);
+      .btn-card-checkbox:hover {
+        border-color: var(--cyan);
+        transform: scale(1.12);
+        box-shadow: 0 0 14px rgba(0, 255, 255, 0.55), 0 4px 12px rgba(0, 0, 0, 0.6);
+      }
+
+      .btn-card-checkbox:hover:not(.is-viewed) .check-icon {
+        opacity: 0.45;
+        stroke: var(--cyan);
+        transform: scale(0.85);
+      }
+
+      .btn-card-checkbox .check-icon {
+        width: 17px;
+        height: 17px;
+        stroke: #090a14;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-card-checkbox.is-viewed {
+        background: var(--green, #00ffaa);
+        border-color: var(--green, #00ffaa);
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.65), 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn-card-checkbox.is-viewed .check-icon {
+        opacity: 1;
+        transform: scale(1);
+        stroke: #090a14;
+      }
+
+      .btn-card-checkbox.is-viewed:hover {
+        background: #1bfdb2;
+        border-color: #1bfdb2;
+        box-shadow: 0 0 22px rgba(0, 255, 170, 0.85);
+        transform: scale(1.15);
+      }
+
+      .card-content-top {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
       }
 
       .module-title {
-        margin: 0 0 8px;
-        font-size: 1.25rem;
-        line-height: 1.2;
+        margin: 0 0 10px;
+        font-size: 1.18rem;
+        line-height: 1.25;
         color: #ffffff;
         font-weight: 700;
+        padding-right: 18px;
       }
 
       .module-desc {
         color: var(--muted);
         font: 0.82rem/1.5 Verdana, sans-serif;
-        margin: 0 0 14px;
-        flex-grow: 1;
-      }
-
-      .feature-list {
-        list-style: none;
-        padding: 0;
         margin: 0 0 18px;
-        border-top: 1px solid rgba(0, 255, 255, 0.15);
-        padding-top: 10px;
-      }
-
-      .feature-list li {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        color: var(--ink);
-        font: 0.74rem/1.5 Verdana, sans-serif;
-        margin-bottom: 4px;
-      }
-
-      .feature-list li::before {
-        content: "▹";
-        color: var(--cyan);
-        font-size: 0.85rem;
+        flex-grow: 1;
       }
 
       .btn-launch {
@@ -900,30 +932,27 @@
               const card = document.createElement('article');
               card.className = `module-card ${m.theme} ${isViewed ? 'is-viewed-card' : ''}`;
 
-              const featuresHtml = m.features.map(f => `<li>${f}</li>`).join('');
-
               // Limpiar número duplicado en badge
               const cleanBadge = m.badge.replace(/^\d+\s*·\s*/, '');
 
               card.innerHTML = `
-                <div>
+                <button
+                  type="button"
+                  class="btn-card-checkbox ${isViewed ? 'is-viewed' : ''}"
+                  data-mod-id="${m.id}"
+                  title="${isViewed ? 'Módulo visto. Clic para desmarcar' : 'Marcar módulo como visto'}"
+                  aria-label="${isViewed ? 'Desmarcar módulo visto' : 'Marcar módulo como visto'}"
+                >
+                  <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </button>
+                <div class="card-content-top">
                   <div class="card-header-row">
                     <span class="badge badge-theme">#${m.number} · ${cleanBadge}</span>
-                    <button
-                      class="btn-card-check ${isViewed ? 'is-viewed' : ''}"
-                      data-mod-id="${m.id}"
-                      title="${isViewed ? 'Módulo completado. Clic para marcar como pendiente' : 'Marcar módulo como visto'}"
-                      aria-label="Alternar visto módulo ${m.title}"
-                    >
-                      <span>${isViewed ? '✓' : '○'}</span>
-                      <span>${isViewed ? 'Visto' : 'Marcar'}</span>
-                    </button>
                   </div>
-                  <h3 class="module-title" style="font-size:1.18rem;">${m.title}</h3>
+                  <h3 class="module-title">${m.title}</h3>
                   <p class="module-desc">${m.desc}</p>
-                  <ul class="feature-list">
-                    ${featuresHtml}
-                  </ul>
                 </div>
                 <a
                   href="modulos/${m.filename}"
@@ -941,8 +970,8 @@
             container.appendChild(section);
           });
 
-          // Conectar eventos de palomita
-          container.querySelectorAll('.btn-card-check').forEach(btn => {
+          // Conectar eventos del checkbox flotante de visto
+          container.querySelectorAll('.btn-card-checkbox').forEach(btn => {
             btn.onclick = function (e) {
               e.preventDefault();
               e.stopPropagation();
