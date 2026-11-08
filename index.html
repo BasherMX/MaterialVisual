@@ -106,13 +106,13 @@
       /* Checkbox flotante de visto en la esquina superior derecha */
       .btn-card-checkbox {
         position: absolute;
-        top: -9px;
-        right: -9px;
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
+        top: -6px;
+        right: -6px;
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
         background: #0d0e1c;
-        border: 1.5px solid rgba(0, 255, 255, 0.38);
+        border: 1px solid rgba(0, 255, 255, 0.4);
         color: transparent;
         display: flex;
         align-items: center;
@@ -120,23 +120,23 @@
         cursor: pointer;
         z-index: 10;
         padding: 0;
-        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
       }
 
       .btn-card-checkbox::after {
         content: "";
         position: absolute;
-        top: -6px;
-        left: -6px;
-        right: -6px;
-        bottom: -6px;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
       }
 
       .btn-card-checkbox:hover {
         border-color: var(--cyan);
-        transform: scale(1.12);
-        box-shadow: 0 0 14px rgba(0, 255, 255, 0.55), 0 4px 12px rgba(0, 0, 0, 0.6);
+        transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
       }
 
       .btn-card-checkbox:hover:not(.is-viewed) .check-icon {
@@ -146,8 +146,8 @@
       }
 
       .btn-card-checkbox .check-icon {
-        width: 17px;
-        height: 17px;
+        width: 12px;
+        height: 12px;
         stroke: #090a14;
         opacity: 0;
         transform: scale(0.5);
@@ -157,7 +157,7 @@
       .btn-card-checkbox.is-viewed {
         background: var(--green, #00ffaa);
         border-color: var(--green, #00ffaa);
-        box-shadow: 0 0 16px rgba(0, 255, 170, 0.65), 0 2px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 10px rgba(0, 255, 170, 0.65);
       }
 
       .btn-card-checkbox.is-viewed .check-icon {
@@ -169,8 +169,8 @@
       .btn-card-checkbox.is-viewed:hover {
         background: #1bfdb2;
         border-color: #1bfdb2;
-        box-shadow: 0 0 22px rgba(0, 255, 170, 0.85);
-        transform: scale(1.15);
+        box-shadow: 0 0 14px rgba(0, 255, 170, 0.85);
+        transform: scale(1.12);
       }
 
       .card-content-top {
