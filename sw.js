@@ -3,7 +3,7 @@
  * Provee funcionamiento Offline y Caché Resiliente para toda la plataforma.
  * Estrategia: Cache First con Stale-While-Revalidate para recursos estáticos.
  */
-const CACHE_NAME = 'material-visual-cache-v4';
+const CACHE_NAME = 'material-visual-cache-v5';
 
 const STATIC_PRECACHE = [
   './',
@@ -13,6 +13,15 @@ const STATIC_PRECACHE = [
   './shared/nav.js',
   './shared/modules-data.js',
   './shared/exams-data.js',
+  './shared/flashcards-data.js',
+  './shared/exam-generator-engine.js',
+  './shared/questions-bank/bank-loader.js',
+  './shared/questions-bank/block-1-projects.js',
+  './shared/questions-bank/block-2-algorithms.js',
+  './shared/questions-bank/block-3-engineering.js',
+  './shared/questions-bank/block-4-platforms.js',
+  './shared/questions-bank/block-5-databases.js',
+  './shared/questions-bank/block-6-bi.js',
   './shared/plantilla-examen.json',
   './shared/simulacro-maestro-50.json',
   './assets/icons/icon-192.png',

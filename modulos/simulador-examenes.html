@@ -444,6 +444,297 @@
       to { transform: scale(1); opacity: 1; }
     }
 
+    /* ==========================================================================
+       Generador Parametrizado de Exámenes (Embedded en Centro de Exámenes)
+       ========================================================================== */
+    .exam-generator-card {
+      background: linear-gradient(135deg, rgba(26, 25, 48, 0.96), rgba(16, 15, 34, 0.98));
+      border: 1px solid var(--exam-gold);
+      border-radius: 12px;
+      padding: 24px 22px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 28px rgba(255, 215, 0, 0.15), var(--shadow);
+    }
+
+    .exam-generator-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--exam-gold), var(--exam-cyan), var(--exam-coral));
+    }
+
+    .gen-badge-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .gen-title {
+      font-size: 1.35rem;
+      color: #ffffff;
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .gen-subtitle {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0 0 20px;
+      font-family: Verdana, sans-serif;
+    }
+
+    .gen-presets-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .gen-preset-chip {
+      background: rgba(14, 13, 28, 0.85);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font: 700 0.8rem "Courier New", monospace;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      min-height: 44px;
+    }
+
+    .gen-preset-chip:hover {
+      border-color: var(--cyan);
+      color: #ffffff;
+      background: rgba(0, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .gen-preset-chip.active {
+      border-color: var(--exam-gold);
+      color: var(--exam-gold);
+      background: rgba(255, 215, 0, 0.14);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+    }
+
+    .gen-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .gen-section-box {
+      background: rgba(10, 9, 22, 0.65);
+      border: 1px solid rgba(0, 255, 255, 0.18);
+      border-radius: 8px;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .gen-section-label {
+      font: 700 0.82rem "Courier New", monospace;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .diff-slider-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .diff-slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-family: "Courier New", monospace;
+      font-weight: 700;
+    }
+
+    .diff-slider-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .diff-slider-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+    }
+
+    .diff-slider-easy::-webkit-slider-thumb {
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+    }
+    .diff-slider-med::-webkit-slider-thumb {
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold);
+    }
+    .diff-slider-hard::-webkit-slider-thumb {
+      background: var(--coral);
+      box-shadow: 0 0 10px var(--coral);
+    }
+
+    .diff-slider-input::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+    }
+    .diff-slider-easy::-moz-range-thumb {
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+    }
+    .diff-slider-med::-moz-range-thumb {
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold);
+    }
+    .diff-slider-hard::-moz-range-thumb {
+      background: var(--coral);
+      box-shadow: 0 0 10px var(--coral);
+    }
+
+    .diff-composition-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      display: flex;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 4px;
+    }
+
+    .diff-bar-segment {
+      height: 100%;
+      transition: width 0.25s ease;
+    }
+
+    .diff-bar-easy { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .diff-bar-med { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+    .diff-bar-hard { background: var(--coral); box-shadow: 0 0 8px var(--coral); }
+
+    .gen-blocks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+    }
+
+    .gen-block-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(18, 17, 36, 0.7);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      font-size: 0.82rem;
+      min-height: 44px;
+    }
+
+    .gen-block-toggle-row:hover {
+      border-color: var(--cyan);
+      background: rgba(0, 255, 255, 0.08);
+    }
+
+    .gen-block-toggle-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .gen-actions-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .btn-gen-primary {
+      flex: 1 1 260px;
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      border: none;
+      color: #0b0c16;
+      font: 800 0.96rem "Courier New", monospace;
+      padding: 14px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.03em;
+      min-height: 50px;
+      box-shadow: 0 0 22px rgba(0, 255, 170, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-gen-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 32px rgba(0, 255, 170, 0.55);
+    }
+
+    .btn-gen-secondary {
+      background: rgba(18, 17, 36, 0.9);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font: 700 0.82rem "Courier New", monospace;
+      padding: 12px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 46px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-gen-secondary:hover {
+      border-color: var(--cyan);
+      color: #ffffff;
+      background: rgba(0, 255, 255, 0.1);
+    }
+
     @media (max-width: 768px) {
       .exams-hub-grid {
         grid-template-columns: 1fr;
@@ -455,6 +746,39 @@
       .option-row-btn {
         padding: 12px 14px;
         font-size: 0.9rem;
+      }
+      .gen-grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .gen-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-gen-primary, .btn-gen-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .exam-generator-card {
+        padding: 16px 12px;
+      }
+      .gen-title {
+        font-size: 1.15rem;
+      }
+      .gen-preset-chip {
+        flex: 1 1 calc(50% - 6px);
+        justify-content: center;
+        padding: 8px 10px;
+        font-size: 0.74rem;
+      }
+      .gen-section-box {
+        padding: 14px 10px;
+      }
+      .gen-block-toggle-row {
+        padding: 8px 10px;
+        font-size: 0.78rem;
       }
     }
   </style>
@@ -491,14 +815,191 @@
 
     <!-- TAB 1: HUB / CENTRO DE EXÁMENES -->
     <section id="tab-hub" class="exam-panel active">
+
+      <!-- ====================================================================
+           1. HERO: GENERADOR PARAMETRIZADO INCRUSTADO (BANCO MAESTRO 180Q)
+           ==================================================================== -->
+      <div class="exam-generator-card" id="exam-generator-panel">
+        <div class="gen-badge-strip">
+          <span class="exam-meta-pill" style="color:var(--exam-gold); border-color:var(--exam-gold); font-weight:800;">🛠️ GENERADOR DINÁMICO</span>
+          <span class="exam-meta-pill" style="color:var(--cyan); border-color:var(--cyan);">ESTOCÁSTICO C(2,1)×C(5,3) = 20 VAR/Q</span>
+          <span class="exam-meta-pill" style="color:var(--green); border-color:var(--green);"><span id="gen-total-bank-count">180</span> REACTIVOS MAESTROS</span>
+        </div>
+
+        <h2 class="gen-title">
+          <span>🎯 Generador de Exámenes Técnicos Parametrizado</span>
+        </h2>
+        <p class="gen-subtitle">
+          Personaliza tu evaluación seleccionando volumen de reactivos, ritmo de tiempo, distribución de dificultad y bloques temáticos. Cada corrida selecciona estocásticamente 1 clave canónica y 3 distractores entre 7 opciones ($\binom{2}{1} \times \binom{5}{3} = 20$ variantes por pregunta) con barajado criptográfico insesgado.
+        </p>
+
+        <!-- Presets Rápidos -->
+        <div style="margin-bottom:20px;">
+          <label style="font:700 0.75rem 'Courier New', monospace; color:var(--muted); display:block; margin-bottom:8px; text-transform:uppercase;">
+            ⚡ Presets Rápidos de Simulación:
+          </label>
+          <div class="gen-presets-row">
+            <button type="button" class="gen-preset-chip" id="preset-chip-sprint-15" onclick="applyGenPreset('sprint-15')">
+              <span>⚡</span> 15Q · Sprint (22m)
+            </button>
+            <button type="button" class="gen-preset-chip active" id="preset-chip-diag-30" onclick="applyGenPreset('diag-30')">
+              <span>🎯</span> 30Q · Diagnóstico (45m)
+            </button>
+            <button type="button" class="gen-preset-chip" id="preset-chip-sim-50" onclick="applyGenPreset('sim-50')">
+              <span>🏆</span> 50Q · Simulacro (75m)
+            </button>
+            <button type="button" class="gen-preset-chip" id="preset-chip-marathon-100" onclick="applyGenPreset('marathon-100')">
+              <span>🚀</span> 100Q · Maratón (150m)
+            </button>
+          </div>
+        </div>
+
+        <!-- Cuadrícula de Configuración -->
+        <div class="gen-grid-layout">
+          <!-- Columna 1: Volumen y Temporizador -->
+          <div class="gen-section-box">
+            <div class="gen-section-label">
+              <span>📝</span> 1. Volumen &amp; Temporizador
+            </div>
+
+            <div>
+              <label for="gen-vol-input" style="font-size:0.78rem; font-family:'Courier New', monospace; color:var(--muted); display:block; margin-bottom:6px;">
+                CANTIDAD DE REACTIVOS (5 A 150):
+              </label>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <input type="number" id="gen-vol-input" min="5" max="150" value="30" onchange="onGenVolChange(this.value)" style="width:90px; background:#121124; border:1px solid var(--cyan); color:#ffffff; font:700 1.1rem 'Courier New', monospace; padding:8px 12px; border-radius:6px; outline:none; text-align:center; min-height:44px;" />
+                <span id="gen-vol-summary" style="font-size:0.8rem; color:var(--ink); font-family:Verdana, sans-serif;">30 reactivos configurados</span>
+              </div>
+            </div>
+
+            <div>
+              <label for="gen-time-mode-select" style="font-size:0.78rem; font-family:'Courier New', monospace; color:var(--muted); display:block; margin-bottom:6px;">
+                MODO DE TIEMPO Y RITMO:
+              </label>
+              <select id="gen-time-mode-select" onchange="onGenTimeModeChange(this.value)" style="width:100%; background:#121124; border:1px solid var(--line); color:var(--cyan); font:700 0.82rem 'Courier New', monospace; padding:10px 12px; border-radius:6px; outline:none; cursor:pointer; min-height:44px;">
+                <option value="auto" selected>⚡ Automático Inteligente (1.5 min / Q)</option>
+                <option value="15">⏱️ Fijo: 15 Minutos</option>
+                <option value="30">⏱️ Fijo: 30 Minutos</option>
+                <option value="45">⏱️ Fijo: 45 Minutos</option>
+                <option value="60">⏱️ Fijo: 60 Minutos (1 Hora)</option>
+                <option value="75">⏱️ Fijo: 75 Minutos</option>
+                <option value="90">⏱️ Fijo: 90 Minutos (1.5 Horas)</option>
+                <option value="120">⏱️ Fijo: 120 Minutos (2 Horas)</option>
+                <option value="150">⏱️ Fijo: 150 Minutos (2.5 Horas)</option>
+                <option value="unlimited">⏳ Modo Estudio Libre (Sin límite de tiempo)</option>
+              </select>
+              <p id="gen-time-preview" style="font-size:0.78rem; color:var(--green); font-family:'Courier New', monospace; margin:6px 0 0; font-weight:700;">
+                ⏱️ Tiempo asignado: 45 minutos (1.5 min/Q)
+              </p>
+            </div>
+          </div>
+
+          <!-- Columna 2: Sliders de Dificultad Dinámicos (Suma = 100%) -->
+          <div class="gen-section-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div class="gen-section-label">
+                <span>⚖️</span> 2. Calibración de Dificultad
+              </div>
+              <span class="exam-meta-pill" style="color:var(--gold); font-size:0.72rem; border-color:var(--gold);">Suma: 100%</span>
+            </div>
+
+            <!-- Barra Visual de Composición -->
+            <div class="diff-composition-bar" title="Composición: Verde (Fácil) / Amarillo (Medio) / Rojo (Difícil)">
+              <div id="diff-bar-easy" class="diff-bar-segment diff-bar-easy" style="width:30%;"></div>
+              <div id="diff-bar-med" class="diff-bar-segment diff-bar-med" style="width:50%;"></div>
+              <div id="diff-bar-hard" class="diff-bar-segment diff-bar-hard" style="width:20%;"></div>
+            </div>
+
+            <!-- Sliders -->
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="diff-slider-item">
+                <div class="diff-slider-header" style="color:var(--green);">
+                  <span>🟢 FÁCIL (Conceptos directos)</span>
+                  <span id="diff-val-easy">30%</span>
+                </div>
+                <input type="range" id="diff-slider-easy" class="diff-slider-input diff-slider-easy" min="0" max="100" value="30" oninput="onDiffSliderChange('easy', this.value)" />
+              </div>
+
+              <div class="diff-slider-item">
+                <div class="diff-slider-header" style="color:var(--gold);">
+                  <span>🟡 MEDIO (Causa-efecto / Mecanismos)</span>
+                  <span id="diff-val-med">50%</span>
+                </div>
+                <input type="range" id="diff-slider-med" class="diff-slider-input diff-slider-med" min="0" max="100" value="50" oninput="onDiffSliderChange('medium', this.value)" />
+              </div>
+
+              <div class="diff-slider-item">
+                <div class="diff-slider-header" style="color:var(--coral);">
+                  <span>🔴 DIFÍCIL (Código / Escenarios / Cotas)</span>
+                  <span id="diff-val-hard">20%</span>
+                </div>
+                <input type="range" id="diff-slider-hard" class="diff-slider-input diff-slider-hard" min="0" max="100" value="20" oninput="onDiffSliderChange('hard', this.value)" />
+              </div>
+            </div>
+
+            <!-- Presets de Dificultad -->
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
+              <button type="button" class="gen-preset-chip" style="font-size:0.72rem; padding:4px 8px; min-height:36px;" onclick="applyDiffPreset(60, 30, 10)">
+                Suave (60/30/10)
+              </button>
+              <button type="button" class="gen-preset-chip active" id="btn-diff-preset-realistic" style="font-size:0.72rem; padding:4px 8px; min-height:36px;" onclick="applyDiffPreset(30, 50, 20)">
+                Canónico (30/50/20)
+              </button>
+              <button type="button" class="gen-preset-chip" style="font-size:0.72rem; padding:4px 8px; min-height:36px;" onclick="applyDiffPreset(10, 40, 50)">
+                Extremo (10/40/50)
+              </button>
+            </div>
+          </div>
+
+          <!-- Columna 3: Cobertura de Bloques Temáticos -->
+          <div class="gen-section-box">
+            <div class="gen-section-label">
+              <span>📚</span> 3. Cobertura de Bloques
+            </div>
+
+            <div>
+              <label for="gen-block-dist-select" style="font-size:0.78rem; font-family:'Courier New', monospace; color:var(--muted); display:block; margin-bottom:6px;">
+                DISTRIBUCIÓN DE MUESTREO:
+              </label>
+              <select id="gen-block-dist-select" onchange="onBlockDistChange(this.value)" style="width:100%; background:#121124; border:1px solid var(--line); color:var(--cyan); font:700 0.82rem 'Courier New', monospace; padding:10px 12px; border-radius:6px; outline:none; cursor:pointer; min-height:44px;">
+                <option value="uniform" selected>⚖️ Uniforme (~16.6% por bloque)</option>
+                <option value="weighted">⚡ Ponderada (Mayor peso a Plataformas &amp; BD)</option>
+                <option value="focus">🎯 Focalizada (Personalizar bloques activos)</option>
+              </select>
+            </div>
+
+            <!-- Lista de Checkboxes de Bloques -->
+            <div id="gen-blocks-picker-wrap" class="gen-blocks-list">
+              <!-- Renderizado dinámicamente con los 6 bloques y contadores de MATERIAL_BANK -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra Heroica de Acciones -->
+        <div class="gen-actions-bar">
+          <button type="button" class="btn-gen-primary" id="btn-generate-exam-now" onclick="executeExamGenerationAndStart()">
+            <span>⚡ GENERAR &amp; COMENZAR EXAMEN AHORA</span>
+          </button>
+          <button type="button" class="btn-gen-secondary" onclick="executeExportGeneratedMarkdown()" title="Exportar examen en Markdown optimizado para NotebookLM y estudio offline">
+            <span>📋 Exportar Markdown (NotebookLM)</span>
+          </button>
+          <button type="button" class="btn-gen-secondary" onclick="executeExportGeneratedJSON()" title="Descargar examen en archivo JSON compatible">
+            <span>💾 Descargar JSON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           2. CATÁLOGO DE EVALUACIONES ESTÁNDAR PRECONFIGURADAS
+           ==================================================================== -->
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
         <div>
-          <h2 style="margin:0 0 6px; font-size:1.35rem; color:#ffffff;">Evaluaciones Técnicas Disponibles</h2>
-          <p style="margin:0; font-size:0.88rem; color:var(--muted); font-family:Verdana,sans-serif;">
-            Selecciona un examen para comenzar la prueba bajo condiciones estandarizadas.
+          <h2 style="margin:0 0 6px; font-size:1.25rem; color:#ffffff;">📦 Simulacros Canónicos Preconfigurados</h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted); font-family:Verdana,sans-serif;">
+            O bien, selecciona una evaluación fija del catálogo formal oficial.
           </p>
         </div>
-        <button class="btn-theme" onclick="switchExamTab('tab-manager')" style="padding:10px 18px; border-radius:6px; cursor:pointer; font:700 0.85rem 'Courier New', monospace; background:linear-gradient(135deg, var(--gold), var(--coral)); color:#000; border:none;">
+        <button class="btn-theme" onclick="switchExamTab('tab-manager')" style="padding:10px 18px; border-radius:6px; cursor:pointer; font:700 0.85rem 'Courier New', monospace; background:linear-gradient(135deg, var(--gold), var(--coral)); color:#000; border:none; min-height:44px;">
           ➕ Crear o Importar Examen
         </button>
       </div>
@@ -771,6 +1272,14 @@ D) Requiere Task.Run obligatoriamente.
 
   <script src="../shared/modules-data.js"></script>
   <script src="../shared/exams-data.js"></script>
+  <script src="../shared/exam-generator-engine.js"></script>
+  <script src="../shared/questions-bank/block-1-projects.js"></script>
+  <script src="../shared/questions-bank/block-2-algorithms.js"></script>
+  <script src="../shared/questions-bank/block-3-engineering.js"></script>
+  <script src="../shared/questions-bank/block-4-platforms.js"></script>
+  <script src="../shared/questions-bank/block-5-databases.js"></script>
+  <script src="../shared/questions-bank/block-6-bi.js"></script>
+  <script src="../shared/questions-bank/bank-loader.js"></script>
   <script src="../shared/nav.js"></script>
   <script>
     // ==========================================
@@ -2154,10 +2663,320 @@ D) Una instrucción de salto condicional con goto.
       reader.readAsText(file);
     }
 
+    // =========================================================================
+    // CONTROLADOR DEL GENERADOR PARAMETRIZADO DE EXÁMENES (BANCO MAESTRO)
+    // =========================================================================
+    let currentGenConfig = {
+      totalQuestions: 30,
+      timeMode: 'auto',
+      fixedMinutes: 45,
+      difficultyRatio: { easy: 30, medium: 50, hard: 20 },
+      blockDistribution: 'uniform',
+      selectedBlocks: ['bloque-1', 'bloque-2', 'bloque-3', 'bloque-4', 'bloque-5', 'bloque-6']
+    };
+
+    function initExamGeneratorUI() {
+      // 1. Contador del banco maestro
+      const totalBankQ = (typeof MATERIAL_BANK !== 'undefined' && typeof MATERIAL_BANK.getAllQuestions === 'function')
+        ? MATERIAL_BANK.getAllQuestions().length
+        : 180;
+      const countEl = document.getElementById('gen-total-bank-count');
+      if (countEl) countEl.innerText = String(totalBankQ);
+
+      // 2. Renderizar bloques interactivos
+      const blocksWrap = document.getElementById('gen-blocks-picker-wrap');
+      if (blocksWrap && typeof MATERIAL_BANK !== 'undefined' && typeof MATERIAL_BANK.getBlocksMetadata === 'function') {
+        const metadata = MATERIAL_BANK.getBlocksMetadata();
+        blocksWrap.innerHTML = '';
+        metadata.forEach(b => {
+          const isChecked = currentGenConfig.selectedBlocks.includes(b.id);
+          const row = document.createElement('label');
+          row.className = 'gen-block-toggle-row';
+          row.innerHTML = `
+            <input type="checkbox" value="${b.id}" ${isChecked ? 'checked' : ''} onchange="onBlockCheckboxChange()" />
+            <div style="flex:1;">
+              <strong style="color:#ffffff; font-family:'Courier New', monospace; font-size:0.8rem; display:block;">${b.title}</strong>
+              <span style="color:var(--muted); font-size:0.73rem; font-family:Verdana, sans-serif;">${b.theme}</span>
+            </div>
+            <span class="exam-meta-pill" style="font-size:0.7rem; color:var(--cyan); border-color:var(--cyan);">${b.questionCount} Q</span>
+          `;
+          blocksWrap.appendChild(row);
+        });
+      }
+
+      // 3. Refrescar sliders y barras
+      updateDiffSlidersUI();
+      updateGenTimePreview();
+    }
+
+    function onDiffSliderChange(changedKey, rawValue) {
+      if (typeof MATERIAL_EXAM_ENGINE === 'undefined') return;
+
+      const balanced = MATERIAL_EXAM_ENGINE.balanceDifficultySliders(
+        changedKey,
+        rawValue,
+        currentGenConfig.difficultyRatio
+      );
+
+      currentGenConfig.difficultyRatio = balanced;
+      updateDiffSlidersUI();
+
+      // Desactivar chips de presets de dificultad para indicar modo manual
+      document.querySelectorAll('#exam-generator-panel .diff-slider-item button').forEach(b => b.classList.remove('active'));
+      const realBtn = document.getElementById('btn-diff-preset-realistic');
+      if (realBtn && (balanced.easy !== 30 || balanced.medium !== 50 || balanced.hard !== 20)) {
+        realBtn.classList.remove('active');
+      }
+    }
+
+    function updateDiffSlidersUI() {
+      const { easy, medium, hard } = currentGenConfig.difficultyRatio;
+
+      const sEasy = document.getElementById('diff-slider-easy');
+      const sMed = document.getElementById('diff-slider-med');
+      const sHard = document.getElementById('diff-slider-hard');
+
+      const vEasy = document.getElementById('diff-val-easy');
+      const vMed = document.getElementById('diff-val-med');
+      const vHard = document.getElementById('diff-val-hard');
+
+      const bEasy = document.getElementById('diff-bar-easy');
+      const bMed = document.getElementById('diff-bar-med');
+      const bHard = document.getElementById('diff-bar-hard');
+
+      if (sEasy) sEasy.value = easy;
+      if (sMed) sMed.value = medium;
+      if (sHard) sHard.value = hard;
+
+      if (vEasy) vEasy.innerText = `${easy}%`;
+      if (vMed) vMed.innerText = `${medium}%`;
+      if (vHard) vHard.innerText = `${hard}%`;
+
+      if (bEasy) bEasy.style.width = `${easy}%`;
+      if (bMed) bMed.style.width = `${medium}%`;
+      if (bHard) bHard.style.width = `${hard}%`;
+    }
+
+    function applyDiffPreset(easy, med, hard) {
+      currentGenConfig.difficultyRatio = { easy, medium, hard };
+      updateDiffSlidersUI();
+
+      const realBtn = document.getElementById('btn-diff-preset-realistic');
+      if (realBtn) {
+        if (easy === 30 && med === 50 && hard === 20) realBtn.classList.add('active');
+        else realBtn.classList.remove('active');
+      }
+    }
+
+    function applyGenPreset(presetId) {
+      document.querySelectorAll('.gen-preset-chip').forEach(c => c.classList.remove('active'));
+
+      const chipEl = document.getElementById(`preset-chip-${presetId}`);
+      if (chipEl) chipEl.classList.add('active');
+
+      if (presetId === 'sprint-15') {
+        currentGenConfig.totalQuestions = 15;
+        currentGenConfig.timeMode = 'auto';
+        currentGenConfig.difficultyRatio = { easy: 40, medium: 40, hard: 20 };
+        currentGenConfig.blockDistribution = 'uniform';
+      } else if (presetId === 'diag-30') {
+        currentGenConfig.totalQuestions = 30;
+        currentGenConfig.timeMode = 'auto';
+        currentGenConfig.difficultyRatio = { easy: 30, medium: 50, hard: 20 };
+        currentGenConfig.blockDistribution = 'uniform';
+      } else if (presetId === 'sim-50') {
+        currentGenConfig.totalQuestions = 50;
+        currentGenConfig.timeMode = 'auto';
+        currentGenConfig.difficultyRatio = { easy: 30, medium: 50, hard: 20 };
+        currentGenConfig.blockDistribution = 'uniform';
+      } else if (presetId === 'marathon-100') {
+        currentGenConfig.totalQuestions = 100;
+        currentGenConfig.timeMode = 'auto';
+        currentGenConfig.difficultyRatio = { easy: 25, medium: 50, hard: 25 };
+        currentGenConfig.blockDistribution = 'uniform';
+      }
+
+      // Sincronizar inputs
+      const volInput = document.getElementById('gen-vol-input');
+      if (volInput) volInput.value = currentGenConfig.totalQuestions;
+
+      const timeSelect = document.getElementById('gen-time-mode-select');
+      if (timeSelect) timeSelect.value = currentGenConfig.timeMode;
+
+      const distSelect = document.getElementById('gen-block-dist-select');
+      if (distSelect) distSelect.value = currentGenConfig.blockDistribution;
+
+      const volSumm = document.getElementById('gen-vol-summary');
+      if (volSumm) volSumm.innerText = `${currentGenConfig.totalQuestions} reactivos configurados`;
+
+      updateDiffSlidersUI();
+      updateGenTimePreview();
+    }
+
+    function onGenVolChange(val) {
+      let num = parseInt(val, 10);
+      if (isNaN(num) || num < 5) num = 5;
+      if (num > 150) num = 150;
+
+      currentGenConfig.totalQuestions = num;
+      const volInput = document.getElementById('gen-vol-input');
+      if (volInput) volInput.value = num;
+
+      const volSumm = document.getElementById('gen-vol-summary');
+      if (volSumm) volSumm.innerText = `${num} reactivos configurados`;
+
+      updateGenTimePreview();
+    }
+
+    function onGenTimeModeChange(val) {
+      currentGenConfig.timeMode = val;
+      if (val !== 'auto' && val !== 'unlimited') {
+        currentGenConfig.fixedMinutes = parseInt(val, 10) || 45;
+      }
+      updateGenTimePreview();
+    }
+
+    function updateGenTimePreview() {
+      const previewEl = document.getElementById('gen-time-preview');
+      if (!previewEl) return;
+
+      if (currentGenConfig.timeMode === 'unlimited') {
+        previewEl.innerText = "⏳ Modo Estudio Libre: Sin límite de tiempo (cronómetro ascendente).";
+        previewEl.style.color = "var(--gold)";
+      } else if (currentGenConfig.timeMode === 'auto') {
+        const autoMin = Math.max(5, Math.round(currentGenConfig.totalQuestions * 1.5));
+        previewEl.innerText = `⏱️ Tiempo asignado: ${autoMin} minutos (1.5 min / reactivo).`;
+        previewEl.style.color = "var(--green)";
+      } else {
+        const fixedMin = currentGenConfig.fixedMinutes || 45;
+        previewEl.innerText = `⏱️ Tiempo fijo seleccionado: ${fixedMin} minutos.`;
+        previewEl.style.color = "var(--cyan)";
+      }
+    }
+
+    function onBlockDistChange(mode) {
+      currentGenConfig.blockDistribution = mode;
+      const pickerWrap = document.getElementById('gen-blocks-picker-wrap');
+      if (pickerWrap) {
+        if (mode === 'focus') {
+          pickerWrap.style.border = '1px solid var(--exam-gold)';
+          showQuickToast("🎯 Modo Focalizado: marca los bloques que deseas evaluar.");
+        } else {
+          pickerWrap.style.border = 'none';
+        }
+      }
+    }
+
+    function onBlockCheckboxChange() {
+      const checkedBoxes = Array.from(document.querySelectorAll('#gen-blocks-picker-wrap input[type="checkbox"]:checked'));
+      if (checkedBoxes.length === 0) {
+        alert("Debes seleccionar al menos un bloque temático.");
+        const first = document.querySelector('#gen-blocks-picker-wrap input[type="checkbox"]');
+        if (first) first.checked = true;
+        currentGenConfig.selectedBlocks = [first.value];
+        return;
+      }
+
+      currentGenConfig.selectedBlocks = checkedBoxes.map(c => c.value);
+
+      // Si el usuario manipuló manualmente los checkboxes, pasar a 'focus'
+      if (currentGenConfig.selectedBlocks.length < 6) {
+        currentGenConfig.blockDistribution = 'focus';
+        const distSelect = document.getElementById('gen-block-dist-select');
+        if (distSelect) distSelect.value = 'focus';
+      }
+    }
+
+    function executeExamGenerationAndStart() {
+      if (typeof MATERIAL_EXAM_ENGINE === 'undefined' || typeof MATERIAL_BANK === 'undefined') {
+        alert("El motor o el banco de reactivos aún no están disponibles.");
+        return;
+      }
+
+      const allBankQ = MATERIAL_BANK.getAllQuestions();
+      if (!allBankQ || allBankQ.length === 0) {
+        alert("El banco maestro de reactivos está vacío.");
+        return;
+      }
+
+      try {
+        const generatedExam = MATERIAL_EXAM_ENGINE.generateCustomExam(currentGenConfig, allBankQ);
+
+        // Registrar examen en allExams
+        allExams = allExams.filter(e => e.id !== generatedExam.id);
+        allExams.unshift(generatedExam);
+
+        showQuickToast(`⚡ Examen compilado con éxito (${generatedExam.questions.length} reactivos).`);
+
+        // Lanzar sesión de examen inmediatamente
+        // shouldShuffleQuestions=false y shouldShuffleOptions=false porque el engine ya permutó C(2,1)xC(5,3)
+        startExamSession(generatedExam.id, String(generatedExam.timeLimitMinutes), false, false);
+      } catch (err) {
+        alert("Error al generar el examen: " + err.message);
+      }
+    }
+
+    function executeExportGeneratedMarkdown() {
+      if (typeof MATERIAL_EXAM_ENGINE === 'undefined' || typeof MATERIAL_BANK === 'undefined') {
+        alert("El motor de generación no está cargado.");
+        return;
+      }
+
+      const allBankQ = MATERIAL_BANK.getAllQuestions();
+      try {
+        const generatedExam = MATERIAL_EXAM_ENGINE.generateCustomExam(currentGenConfig, allBankQ);
+        const md = MATERIAL_EXAM_ENGINE.exportExamToMarkdown(generatedExam, true);
+
+        // Copiar al portapapeles
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          navigator.clipboard.writeText(md).catch(() => {});
+        }
+
+        // Descargar archivo .md
+        const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `examen_personalizado_${generatedExam.totalQuestions}Q_${Date.now()}.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showQuickToast("📋 Examen exportado a Markdown y copiado al portapapeles (listo para NotebookLM).");
+      } catch (err) {
+        alert("Error al exportar: " + err.message);
+      }
+    }
+
+    function executeExportGeneratedJSON() {
+      if (typeof MATERIAL_EXAM_ENGINE === 'undefined' || typeof MATERIAL_BANK === 'undefined') {
+        alert("El motor de generación no está cargado.");
+        return;
+      }
+
+      const allBankQ = MATERIAL_BANK.getAllQuestions();
+      try {
+        const generatedExam = MATERIAL_EXAM_ENGINE.generateCustomExam(currentGenConfig, allBankQ);
+        const jsonStr = MATERIAL_EXAM_ENGINE.exportExamToJSON(generatedExam);
+
+        const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `examen_personalizado_${generatedExam.totalQuestions}Q_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showQuickToast("💾 Examen descargado en formato JSON.");
+      } catch (err) {
+        alert("Error al exportar JSON: " + err.message);
+      }
+    }
+
     // Inicialización
     window.addEventListener('DOMContentLoaded', () => {
       loadExamsFromStorage();
       renderExamsHub();
+      initExamGeneratorUI();
     });
   </script>
 </body>
