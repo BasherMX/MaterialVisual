@@ -793,13 +793,13 @@ footer.global-footer, footer {
   background: #080811;
   border: 1px solid rgba(0, 255, 255, 0.2);
   color: var(--ink);
-  padding: 14px 18px;
+  padding: 10px 14px;
   border-radius: 6px;
   cursor: pointer;
-  font: 0.88rem Verdana, sans-serif;
-  min-height: 46px;
+  font: 0.84rem/1.35 Verdana, sans-serif;
+  min-height: 40px;
   transition: all 0.2s ease;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   display: block;
 }
 
@@ -823,6 +823,14 @@ footer.global-footer, footer {
   background: rgba(255, 0, 110, 0.22) !important;
   border-color: var(--coral) !important;
   color: #ffffff !important;
+}
+
+#quiz-feedback {
+  margin-top: 10px !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+  line-height: 1.35 !important;
 }
 
 .snippet-nav-btn {

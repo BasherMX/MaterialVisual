@@ -883,9 +883,9 @@ ORDER BY p.Total DESC</code></pre>
         <div id="quiz-container">
           <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
           <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
-          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
-          <div style="margin-top:22px; text-align:right;">
-            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+          <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+          <div style="margin-top:12px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
               Siguiente Pregunta ➔
             </button>
           </div>
@@ -1248,6 +1248,23 @@ ORDER BY p.Total DESC</code></pre>
         const q = quizQuestions[currentQuizIdx];
         if (!q) return;
 
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        // Reconstruir el esqueleto interactivo si se mostró el resumen final
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
         const qNumEl = document.getElementById('quiz-question-number');
         const qScoreEl = document.getElementById('quiz-score');
         const qTextEl = document.getElementById('quiz-question-text');
@@ -1260,7 +1277,10 @@ ORDER BY p.Total DESC</code></pre>
         if (qTextEl) qTextEl.innerHTML = q.q || q.question;
 
         if (optsContainer) optsContainer.innerHTML = '';
-        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
         if (nextBtn) nextBtn.style.display = 'none';
 
         // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
@@ -1284,10 +1304,29 @@ ORDER BY p.Total DESC</code></pre>
         btns.forEach(b => (b.disabled = true));
 
         const feedbackBox = document.getElementById('quiz-feedback');
-        if (feedbackBox) feedbackBox.style.display = 'block';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+          feedbackBox.style.fontSize = '0.8rem';
+          feedbackBox.style.lineHeight = '1.35';
+          feedbackBox.style.padding = '8px 12px';
+          feedbackBox.style.marginTop = '10px';
+          feedbackBox.style.borderRadius = '6px';
+        }
 
         const chosen = currentShuffledOptions[idx];
         const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Feedback doctrinal conciso (máximo la primera oración significativa)
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) {
+          shortFeedback = firstSentenceMatch[1];
+        }
+        if (shortFeedback.length > 150) {
+          const cut = shortFeedback.lastIndexOf(' ', 145);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 145)) + '...';
+        }
 
         if (chosen && chosen.isCorrect) {
           quizScore++;
@@ -1299,7 +1338,7 @@ ORDER BY p.Total DESC</code></pre>
             feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
             feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
             feedbackBox.style.color = '#fff';
-            feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+            feedbackBox.innerHTML = `<strong style="color:var(--accent, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
           }
         } else {
           if (btns[idx]) {
@@ -1314,14 +1353,19 @@ ORDER BY p.Total DESC</code></pre>
             feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
             feedbackBox.style.border = '1px solid #ff006e';
             feedbackBox.style.color = '#fff';
-            feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+            feedbackBox.innerHTML = `<strong style="color:#ff006e; font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
           }
         }
 
         const qScoreEl = document.getElementById('quiz-score');
         if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
         const nextBtn = document.getElementById('btn-next-quiz');
-        if (nextBtn) nextBtn.style.display = 'inline-block';
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
       };
 
       window.nextQuizQuestion = function() {

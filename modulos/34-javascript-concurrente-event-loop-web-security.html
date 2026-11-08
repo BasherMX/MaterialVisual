@@ -323,9 +323,9 @@
         <div id="quiz-container">
           <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
           <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
-          <div id="quiz-feedback" style="display:none; margin-top:20px; padding:14px 18px; border-radius:8px; font-size:0.92rem; line-height:1.6;"></div>
-          <div style="margin-top:22px; text-align:right;">
-            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; border-radius:6px; cursor:pointer;" onclick="nextQuizQuestion()">
+          <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+          <div style="margin-top:12px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
               Siguiente Pregunta ➔
             </button>
           </div>
@@ -672,120 +672,164 @@ setTimeout(() => console.log('Macro 1'), 0);`,
     let currentShuffledOptions = [];
 
     window.renderQuizQuestion = function() {
-      const q = quizQuestions[currentQuizIdx];
-      if (!q) return;
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
 
-      const qNumEl = document.getElementById('quiz-question-number');
-      const qScoreEl = document.getElementById('quiz-score');
-      const qTextEl = document.getElementById('quiz-question-text');
-      const optsContainer = document.getElementById('quiz-options-container');
-      const feedbackBox = document.getElementById('quiz-feedback');
-      const nextBtn = document.getElementById('btn-next-quiz');
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
 
-      if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
-      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-      if (qTextEl) qTextEl.innerHTML = q.q || q.question;
-
-      if (optsContainer) optsContainer.innerHTML = '';
-      if (feedbackBox) feedbackBox.style.display = 'none';
-      if (nextBtn) nextBtn.style.display = 'none';
-
-      // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
-      currentShuffledOptions = q.options.map((opt, origIdx) => ({
-        text: opt,
-        isCorrect: origIdx === q.correct
-      })).sort(() => Math.random() - 0.5);
-
-      currentShuffledOptions.forEach((item, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-option-btn';
-        btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
-        btn.onclick = () => selectQuizOption(idx);
-        optsContainer.appendChild(btn);
-      });
-    };
-
-    window.selectQuizOption = function(idx) {
-      const q = quizQuestions[currentQuizIdx];
-      const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
-      btns.forEach(b => (b.disabled = true));
-
-      const feedbackBox = document.getElementById('quiz-feedback');
-      if (feedbackBox) feedbackBox.style.display = 'block';
-
-      const chosen = currentShuffledOptions[idx];
-      const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
-
-      if (chosen && chosen.isCorrect) {
-        quizScore++;
-        if (btns[idx]) {
-          btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+        // Reconstruir el esqueleto interactivo si se mostró el resumen final
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
         }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
         if (feedbackBox) {
-          feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
-          feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${q.feedback}`;
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
         }
-      } else {
-        if (btns[idx]) {
-          btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
-          btns[idx].style.borderColor = '#ff006e';
-        }
-        if (correctIdx !== -1 && btns[correctIdx]) {
-          btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
-          btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
-        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
         if (feedbackBox) {
-          feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
-          feedbackBox.style.border = '1px solid #ff006e';
-          feedbackBox.style.color = '#fff';
-          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${q.feedback}`;
+          feedbackBox.style.display = 'block';
+          feedbackBox.style.fontSize = '0.8rem';
+          feedbackBox.style.lineHeight = '1.35';
+          feedbackBox.style.padding = '8px 12px';
+          feedbackBox.style.marginTop = '10px';
+          feedbackBox.style.borderRadius = '6px';
         }
-      }
 
-      const qScoreEl = document.getElementById('quiz-score');
-      if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-      const nextBtn = document.getElementById('btn-next-quiz');
-      if (nextBtn) nextBtn.style.display = 'inline-block';
-    };
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
 
-    window.nextQuizQuestion = function() {
-      currentQuizIdx++;
-      if (currentQuizIdx < quizQuestions.length) {
+        // Feedback doctrinal conciso (máximo la primera oración significativa)
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) {
+          shortFeedback = firstSentenceMatch[1];
+        }
+        if (shortFeedback.length > 150) {
+          const cut = shortFeedback.lastIndexOf(' ', 145);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 145)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--accent, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:#ff006e; font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
         renderQuizQuestion();
-      } else {
-        showQuizSummary();
-      }
-    };
-
-    window.showQuizSummary = function() {
-      const container = document.getElementById('quiz-container');
-      if (!container) return;
-      const pct = Math.round((quizScore / quizQuestions.length) * 100);
-      container.innerHTML = `
-        <div style="text-align:center; padding:30px 10px;">
-          <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
-          <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
-          <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
-            Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
-          </p>
-          <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
-            ${pct >= 75 ? '¡Excelente! Demuestras una comprensión rigurosa y libre de sesgos en este laboratorio formativo.' : 'Buen esfuerzo. Te recomendamos revisar el material doctrinal e interactivo y reintentar la evaluación.'}
-          </p>
-          <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
-            🔄 Reiniciar Evaluación
-          </button>
-        </div>
-      `;
-    };
-
-    window.restartQuiz = function() {
-      currentQuizIdx = 0;
-      quizScore = 0;
-      renderQuizQuestion();
-    };
+      };
 
     // Auto-inicializar cuando el DOM esté listo
     if (document.readyState === 'loading') {
