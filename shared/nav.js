@@ -46,8 +46,31 @@
     STORAGE_KEY: STORAGE_KEY,
     getCompleted: getCompleted,
     isCompleted: isCompleted,
-    toggle: toggle
+    toggle: toggle,
+    updateFooter: updateGlobalFooterProgress
   };
+
+  function updateGlobalFooterProgress() {
+    let footer = document.querySelector('footer.global-footer, footer.module-footer, footer');
+    if (!footer) {
+      const mainEl = document.querySelector('main.page, main, .page') || document.body;
+      footer = document.createElement('footer');
+      footer.className = 'global-footer';
+      mainEl.appendChild(footer);
+    }
+
+    const completed = getCompleted();
+    const modules = window.MATERIAL_MODULES || [];
+    const total = modules.length || 36;
+    const count = modules.filter(m => completed.includes(String(m.id))).length;
+    const pct = total ? Math.round((count / total) * 100) : 0;
+
+    footer.innerHTML = `Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace; font-size:0.85rem;">${count} / ${total} (${pct}%)</strong>`;
+  }
+
+  window.addEventListener('material-progress-updated', function () {
+    updateGlobalFooterProgress();
+  });
 
   function initModuleNavigation() {
     if (!window.MATERIAL_MODULES || !Array.isArray(window.MATERIAL_MODULES)) {
@@ -68,6 +91,9 @@
       iconLink.href = prefix + 'assets/icons/favicon-32x32.png';
       document.head.appendChild(iconLink);
     }
+
+    // Actualizar progreso persistente en el pie de página
+    updateGlobalFooterProgress();
 
     // Si estamos en el índice principal o en la arena transversal, no inyectar barra secuencial de módulo
     if (currentFile === 'index.html' || currentFile === '' || currentFile === 'anki-arena.html') {
