@@ -58,6 +58,17 @@
     const currentPath = window.location.pathname.replace(/\\/g, '/');
     const currentFile = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
 
+    // Inyectar Favicon dinámicamente si no está presente en <head>
+    if (!document.querySelector('link[rel*="icon"]')) {
+      const isSub = currentPath.includes('/modulos/');
+      const prefix = isSub ? '../' : '';
+      const iconLink = document.createElement('link');
+      iconLink.rel = 'icon';
+      iconLink.type = 'image/png';
+      iconLink.href = prefix + 'assets/icons/favicon-32x32.png';
+      document.head.appendChild(iconLink);
+    }
+
     // Si estamos en el índice principal o en la arena transversal, no inyectar barra secuencial de módulo
     if (currentFile === 'index.html' || currentFile === '' || currentFile === 'anki-arena.html') {
       return;
@@ -111,9 +122,11 @@
       const homeLink = document.createElement('a');
       homeLink.href = '../index.html';
       homeLink.className = 'btn-back-index';
-      homeLink.innerHTML = '← Volver al Índice';
+      homeLink.innerHTML = '<img src="../assets/icons/favicon-32x32.png" style="width:16px; height:16px; border-radius:4px; vertical-align:middle; margin-right:6px;" alt="Logo" />← Volver al Índice';
       homeLink.style.marginBottom = '0';
       topBar.insertBefore(homeLink, topBar.firstChild);
+    } else if (backBtn && !backBtn.querySelector('img')) {
+      backBtn.innerHTML = '<img src="../assets/icons/favicon-32x32.png" style="width:16px; height:16px; border-radius:4px; vertical-align:middle; margin-right:6px;" alt="Logo" />' + backBtn.innerHTML;
     }
 
     // Contenedor de herramientas superiores derechas
