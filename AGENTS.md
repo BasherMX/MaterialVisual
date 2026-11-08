@@ -19,10 +19,16 @@ Este repositorio contiene visualizadores interactivos para Ciencias de la Comput
    - Los elementos interactivos (botones, pestañas, selectores) deben tener un tamaño táctil cómodo (mínimo 42-44px de altura) con espaciado adecuado para dedos.
 4. **Scrollbars Personalizados:**
    - Jamás permitir que aparezcan barras de desplazamiento nativas claras de Windows. Usar `scrollbar-width: thin;` y estilos WebKit neón definidos en `theme.css`.
-5. **Flujo de Publicación:**
+5. **Estructura Estándar de Contenido, Navegación y Didáctica:**
+   - **Orden de Contenido Obligatorio:** Siempre deben presentarse primero las explicaciones teóricas y doctrinales y luego las funcionalidades interactivas (o estar en paralelo/sincronizadas), nunca dejar la herramienta interactiva antes de la explicación que le da sentido.
+   - **Barra Superior Canónica:** Todo módulo debe tener en la parte superior (inyectada automáticamente por `nav.js`) el acceso a `Índice`, `Flash Cards`, `Simulador Exámenes` y el botón persistente `Marcar como Visto`.
+   - **Barra Inferior Canónica:** Al pie de página debe figurar la navegación secuencial `← Anterior Tema`, `Índice Principal`, `Siguiente Tema →`, junto con accesos directos a la Arena y Simulador.
+   - **Estandarización de Laboratorios Evaluativos (Quizzes por Pasos):** Todos los módulos deben implementar laboratorios evaluativos con flujo interactivo paso a paso (`renderQuizQuestion`, progreso tipo "Pregunta X de N", puntuación acumulada, opciones táctiles con feedback inmediato y avance con "Siguiente Pregunta ➔"), evitando listados planos de preguntas estáticas sin interacción progresiva.
+   - **Formato Tipográfico Matemático y Notaciones:** No dejar notaciones en texto plano crudo con escapes tipo `\(V(G)\)`. Deben formatearse con etiquetas semánticas claras (`<span class="math-expr"><em>V(G)</em></span>` o `<code>V(G) = E - N + 2P</code>`) con tipografía limpia en Courier New/Monospace para garantizar legibilidad universal sin dependencias rotas.
+6. **Flujo de Publicación:**
    - Todo nuevo módulo debe agregarse a `shared/modules-data.js`, al `<noscript>` de `index.html` y al listado de `README.md`.
    - Validar sintaxis con Node.js y realizar commit + push a `main` al finalizar.
-6. **Prohibición Estricta de Referencias Institucionales o Convocatorias:**
+7. **Prohibición Estricta de Referencias Institucionales o Convocatorias:**
    - Queda estrictamente prohibido mencionar o hacer alusión a "SPC", "Servicio Profesional de Carrera", "INEGI", "CENEVAL" o entidades/convocatorias gubernamentales o de oposición en cualquier parte del proyecto (código, contenido HTML, comentarios, títulos, metadatos, badges, reactivos o documentación).
    - Utilizar exclusivamente terminología técnica, universal y neutral: "Evaluación Técnica", "Certificación Técnica", "Simulador de Exámenes de Arquitectura e Ingeniería", "Examen Integrador Técnico", "Laboratorio Evaluativo Formativo", etc.
 

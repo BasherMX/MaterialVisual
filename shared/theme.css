@@ -560,5 +560,83 @@ footer.global-footer, footer {
   box-shadow: 0 0 12px rgba(0, 255, 170, 0.3);
 }
 
+/* ==========================================================================
+   Laboratorio de Evaluación Formativa Estandarizado (Quiz Wizard por Pasos)
+   ========================================================================== */
+.quiz-card {
+  background: var(--panel-dark);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.quiz-option-btn {
+  width: 100%;
+  text-align: left;
+  background: #080811;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  color: var(--ink);
+  padding: 14px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font: 0.88rem Verdana, sans-serif;
+  min-height: 46px;
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.quiz-option-btn:hover:not(:disabled) {
+  border-color: var(--cyan);
+  background: rgba(0, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.quiz-option-btn:disabled {
+  cursor: default;
+}
+
+.quiz-option-btn.opt-correct {
+  background: rgba(0, 255, 170, 0.22) !important;
+  border-color: var(--green) !important;
+  color: #ffffff !important;
+}
+
+.quiz-option-btn.opt-wrong {
+  background: rgba(255, 0, 110, 0.22) !important;
+  border-color: var(--coral) !important;
+  color: #ffffff !important;
+}
+
+.snippet-nav-btn {
+  background: rgba(18, 17, 36, 0.85);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font: 700 0.82rem "Courier New", monospace;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.snippet-nav-btn:hover {
+  background: rgba(0, 255, 255, 0.12);
+  border-color: var(--cyan);
+  color: #ffffff;
+}
+
+.snippet-nav-btn.active {
+  background: rgba(0, 255, 255, 0.2);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.35);
+}
+
 
 

@@ -84,29 +84,68 @@
     const prevModule = currentIndex > 0 ? modules[currentIndex - 1] : null;
     const nextModule = currentIndex < modules.length - 1 ? modules[currentIndex + 1] : modules[0];
 
-    // 1. Inyectar / Gestionar Botón de "Visto" en la parte superior
+    // 1. Inyectar / Gestionar Barra de Acciones Superior ('Flash Cards', 'Simulador Exámenes', 'Marcar Visto')
+    let topBar = document.querySelector('.top-nav-bar');
     const backBtn = document.querySelector('.btn-back-index');
-    if (backBtn && !document.querySelector('.top-nav-bar')) {
-      const topBar = document.createElement('div');
+
+    if (!topBar) {
+      topBar = document.createElement('div');
       topBar.className = 'top-nav-bar';
-      backBtn.parentNode.insertBefore(topBar, backBtn);
-      topBar.appendChild(backBtn);
-      backBtn.style.marginBottom = '0';
 
-      const toggleViewedTopBtn = document.createElement('button');
-      toggleViewedTopBtn.id = 'btn-toggle-viewed-top';
-      toggleViewedTopBtn.className = `btn-toggle-viewed ${isCompleted(currentModule.id) ? 'is-viewed' : ''}`;
-      toggleViewedTopBtn.innerHTML = isCompleted(currentModule.id)
-        ? `<span>✓</span> Módulo Visto`
-        : `<span>○</span> Marcar como Visto`;
-      toggleViewedTopBtn.title = "Marca este módulo como estudiado (se guarda en tu navegador)";
+      const mainEl = document.querySelector('main') || document.body;
+      const headerEl = mainEl.querySelector('header');
 
-      toggleViewedTopBtn.onclick = function () {
+      if (backBtn && backBtn.parentNode) {
+        backBtn.parentNode.insertBefore(topBar, backBtn);
+        topBar.appendChild(backBtn);
+        backBtn.style.marginBottom = '0';
+      } else if (headerEl && headerEl.parentNode) {
+        headerEl.parentNode.insertBefore(topBar, headerEl);
+      } else {
+        mainEl.insertBefore(topBar, mainEl.firstChild);
+      }
+    }
+
+    // Asegurar que exista enlace a Índice si no había btn-back-index
+    if (!topBar.querySelector('.btn-back-index')) {
+      const homeLink = document.createElement('a');
+      homeLink.href = '../index.html';
+      homeLink.className = 'btn-back-index';
+      homeLink.innerHTML = '← Volver al Índice';
+      homeLink.style.marginBottom = '0';
+      topBar.insertBefore(homeLink, topBar.firstChild);
+    }
+
+    // Contenedor de herramientas superiores derechas
+    let topActions = topBar.querySelector('.top-actions-cluster');
+    if (!topActions) {
+      topActions = document.createElement('div');
+      topActions.className = 'top-actions-cluster';
+      topActions.style.display = 'flex';
+      topActions.style.gap = '8px';
+      topActions.style.alignItems = 'center';
+      topActions.style.flexWrap = 'wrap';
+      topBar.appendChild(topActions);
+    }
+
+    topActions.innerHTML = `
+      <a href="anki-arena.html?modulo=${currentModule.id}" class="btn-toggle-viewed" style="text-decoration:none; background:rgba(121,40,202,0.25); border-color:var(--purple); color:#e7f6ff;" title="Entrenar Flashcards de este módulo">
+        <span>🗂️</span> Flash Cards
+      </a>
+      <a href="simulador-examenes.html" class="btn-toggle-viewed" style="text-decoration:none; background:rgba(255,215,0,0.18); border-color:var(--gold); color:#ffd700;" title="Simulador de Exámenes">
+        <span>📝</span> Simulador Exámenes
+      </a>
+      <button id="btn-toggle-viewed-top" class="btn-toggle-viewed ${isCompleted(currentModule.id) ? 'is-viewed' : ''}" title="Marca este módulo como estudiado (se guarda en tu navegador)">
+        ${isCompleted(currentModule.id) ? '<span>✓</span> Módulo Visto' : '<span>○</span> Marcar como Visto'}
+      </button>
+    `;
+
+    const topToggleBtn = document.getElementById('btn-toggle-viewed-top');
+    if (topToggleBtn) {
+      topToggleBtn.onclick = function () {
         const completed = toggle(currentModule.id);
         updateViewedButtons(completed);
       };
-
-      topBar.appendChild(toggleViewedTopBtn);
     }
 
     // 2. Buscar o crear la barra de navegación inferior

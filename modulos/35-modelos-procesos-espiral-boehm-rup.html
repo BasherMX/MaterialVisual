@@ -51,8 +51,17 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 340px;
+        min-height: 360px;
         position: relative;
+      }
+
+      .quadrant-bg {
+        transition: opacity 0.3s ease;
+        opacity: 0.15;
+      }
+      .quadrant-bg.active-quad {
+        opacity: 0.45;
+        filter: drop-shadow(0 0 10px currentColor);
       }
 
       /* Matriz RUP */
@@ -113,33 +122,82 @@
 
       <!-- Pestañas de Navegación -->
       <nav class="nav-tabs" role="tablist">
-        <button class="tab-btn active" onclick="switchProcessTab('tab-spiral')">
-          <span>🌀</span> 1. Espiral de Boehm (Riesgos)
+        <button class="tab-btn active" onclick="switchProcessTab('tab-compare')">
+          <span>📚</span> 1. Doctrina: Cascada vs Espiral vs RUP vs Ágil
+        </button>
+        <button class="tab-btn" onclick="switchProcessTab('tab-spiral')">
+          <span>🌀</span> 2. Espiral de Boehm (Simulador Animado)
         </button>
         <button class="tab-btn" onclick="switchProcessTab('tab-rup')">
-          <span>🏛️</span> 2. Fases de RUP &amp; Arquitectura
-        </button>
-        <button class="tab-btn" onclick="switchProcessTab('tab-compare')">
-          <span>⚖️</span> 3. Cascada vs Espiral vs Ágil
+          <span>🏛️</span> 3. Fases de RUP &amp; Arquitectura
         </button>
         <button class="tab-btn" onclick="switchProcessTab('tab-quiz')">
-          <span>📝</span> 4. Laboratorio Evaluativo
+          <span>📝</span> 4. Laboratorio Evaluativo Formativo
         </button>
       </nav>
 
-      <!-- TAB 1: ESPIRAL DE BOEHM -->
-      <section id="tab-spiral" class="content-panel active">
+      <!-- TAB 1: COMPARATIVA DOCTRINAL (PRIMERO LA TEORÍA) -->
+      <section id="tab-compare" class="content-panel active">
+        <div class="process-card">
+          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Cuadro Comparativo de Paradigmas de Proceso (Pressman &amp; Sommerville)</h2>
+          <p style="margin:0 0 16px; font-size:0.84rem; color:var(--muted);">
+            Diferencias metodológicas fundamentales para la toma de decisiones arquitectónicas en proyectos de software:
+          </p>
+
+          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+            <table style="width:100%; border-collapse:collapse; font-size:0.83rem; font-family:Verdana,sans-serif;">
+              <thead>
+                <tr style="background:rgba(34,33,61,0.9); color:var(--cyan); font-family:'Courier New', monospace;">
+                  <th style="padding:10px; text-align:left;">Modelo de Proceso</th>
+                  <th style="padding:10px; text-align:left;">Enfoque Principal</th>
+                  <th style="padding:10px; text-align:left;">Gestión de Riesgos</th>
+                  <th style="padding:10px; text-align:left;">Cuándo Seleccionarlo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;"><strong style="color:var(--muted);">Cascada Tradicional (Royce)</strong></td>
+                  <td style="padding:10px;">Secuencial y rígido por fases completas</td>
+                  <td style="padding:10px; color:var(--coral);">Tardía (Riesgos se descubren al integrar en pruebas)</td>
+                  <td style="padding:10px;">Requisitos perfectamente comprendidos y estables que no sufrirán cambios.</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;"><strong style="color:var(--gold);">Espiral (Boehm)</strong></td>
+                  <td style="padding:10px;">Iterativo, evolutivo y guiado por riesgos</td>
+                  <td style="padding:10px; color:var(--green);">Explícita en cada ciclo mediante prototipado continuo</td>
+                  <td style="padding:10px;">Sistemas grandes, costosos y complejos con alta incertidumbre técnica.</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;"><strong style="color:var(--cyan);">RUP (Unified Process)</strong></td>
+                  <td style="padding:10px;">Iterativo, incremental y centrado en la arquitectura</td>
+                  <td style="padding:10px; color:var(--cyan);">Focalizada en la fase de Elaboración (línea base ejecutable)</td>
+                  <td style="padding:10px;">Sistemas empresariales complejos que requieren rigor formal y trazabilidad.</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px;"><strong style="color:var(--green);">Ágil (Scrum / XP)</strong></td>
+                  <td style="padding:10px;">Adaptativo, entregas en sprints cortos (1-4 semanas)</td>
+                  <td style="padding:10px; color:var(--green);">Mitigación empírica mediante feedback frecuente del cliente</td>
+                  <td style="padding:10px;">Requisitos volátiles y desarrollo rápido centrado en valor de negocio.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: ESPIRAL DE BOEHM -->
+      <section id="tab-spiral" class="content-panel">
         <div class="process-card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
             <div>
               <h2 style="margin:0 0 4px; font-size:1.25rem; color:#fff;">Modelo en Espiral de Barry Boehm (1988)</h2>
               <p style="margin:0; font-size:0.84rem; color:var(--muted);">
-                Proceso guiado por riesgos. Cada ciclo alrededor de la espiral atraviesa 4 sectores o cuadrantes canónicos:
+                Proceso guiado por riesgos. Cada ciclo alrededor de la espiral recorre dinámicamente sus 4 cuadrantes canónicos:
               </p>
             </div>
-            <div style="display:flex; gap:10px;">
-              <button class="btn-theme" onclick="advanceSpiralCycle()" style="padding:10px 16px; font:800 0.85rem 'Courier New', monospace; background:linear-gradient(135deg, var(--gold), var(--coral)); color:#000; border:none; border-radius:6px; cursor:pointer;">
-                🔄 Avanzar Vuelta en la Espiral (<span id="lbl-spiral-cycle">Vuelta 1 / 4</span>)
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn-theme" id="btn-advance-spiral" onclick="advanceSpiralCycle()" style="padding:10px 16px; font:800 0.85rem 'Courier New', monospace; background:linear-gradient(135deg, var(--gold), var(--coral)); color:#000; border:none; border-radius:6px; cursor:pointer;">
+                ▶ Girar Vuelta Animada (<span id="lbl-spiral-cycle">Vuelta 1 / 4</span>)
               </button>
               <button class="btn-theme" onclick="resetSpiral()" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--line);">
                 ↺ Reiniciar
@@ -151,20 +209,33 @@
             <!-- Canvas SVG de la Espiral con los 4 Cuadrantes -->
             <div class="spiral-canvas-wrap">
               <svg id="spiral-svg" width="340" height="340" viewBox="-170 -170 340 340">
+                <!-- Fondos interactivos de cuadrantes -->
+                <!-- Q1: Objetivos (+X, -Y) -->
+                <rect id="bg-q1" class="quadrant-bg" x="0" y="-160" width="160" height="160" fill="var(--cyan)" />
+                <!-- Q2: Riesgos (-X, -Y) -->
+                <rect id="bg-q2" class="quadrant-bg" x="-160" y="-160" width="160" height="160" fill="var(--risk-coral)" />
+                <!-- Q3: Desarrollo (-X, +Y) -->
+                <rect id="bg-q3" class="quadrant-bg" x="-160" y="0" width="160" height="160" fill="var(--green)" />
+                <!-- Q4: Planificación (+X, +Y) -->
+                <rect id="bg-q4" class="quadrant-bg" x="0" y="0" width="160" height="160" fill="var(--spiral-gold)" />
+
                 <!-- Ejes Cartesianos -->
-                <line x1="-160" y1="0" x2="160" y2="0" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-                <line x1="0" y1="-160" x2="0" y2="160" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+                <line x1="-160" y1="0" x2="160" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" />
+                <line x1="0" y1="-160" x2="0" y2="160" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" />
 
                 <!-- Etiquetas de Cuadrantes -->
-                <text x="70" y="-80" fill="var(--cyan)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">1. OBJETIVOS &amp; RESTRICCIONES</text>
-                <text x="-80" y="-80" fill="var(--risk-coral)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">2. EVALUACIÓN DE RIESGOS</text>
-                <text x="-80" y="80" fill="var(--green)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">3. DESARROLLO &amp; V&amp;V</text>
-                <text x="70" y="80" fill="var(--spiral-gold)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">4. PLANIFICACIÓN DE FASE</text>
+                <text x="80" y="-80" fill="var(--cyan)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">1. DETERMINAR OBJETIVOS</text>
+                <text x="-80" y="-80" fill="var(--risk-coral)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">2. EVALUAR RIESGOS</text>
+                <text x="-80" y="80" fill="var(--green)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">3. DESARROLLAR &amp; VERIFICAR</text>
+                <text x="80" y="80" fill="var(--spiral-gold)" font-family="Courier New" font-size="9" font-weight="700" text-anchor="middle">4. PLANIFICAR SIGUIENTE FASE</text>
 
                 <!-- Curva de la Espiral -->
-                <path id="spiral-path" d="" fill="none" stroke="var(--spiral-gold)" stroke-width="3" stroke-linecap="round" />
-                <circle id="spiral-head" cx="0" cy="0" r="7" fill="var(--risk-coral)" />
+                <path id="spiral-path" d="" fill="none" stroke="var(--spiral-gold)" stroke-width="3.5" stroke-linecap="round" />
+                <circle id="spiral-head" cx="0" cy="0" r="8" fill="var(--risk-coral)" filter="drop-shadow(0 0 8px var(--risk-coral))" />
               </svg>
+              <div id="spiral-quadrant-hud" style="margin-top:10px; font:700 0.8rem 'Courier New', monospace; color:var(--cyan); min-height:22px; text-align:center;">
+                Listo para girar la espiral a través de los 4 cuadrantes.
+              </div>
             </div>
 
             <!-- Ficha Descriptiva del Ciclo Actual -->
@@ -190,7 +261,7 @@
         </div>
       </section>
 
-      <!-- TAB 2: FASES DE RUP -->
+      <!-- TAB 3: FASES DE RUP -->
       <section id="tab-rup" class="content-panel">
         <div class="process-card">
           <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Rational Unified Process (RUP): 4 Fases e Hitos Canónicos</h2>
@@ -246,107 +317,33 @@
         </div>
       </section>
 
-      <!-- TAB 3: COMPARATIVA DOCTRINAL -->
-      <section id="tab-compare" class="content-panel">
-        <div class="process-card">
-          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Cuadro Comparativo de Paradigmas de Proceso (Pressman &amp; Sommerville)</h2>
-          <p style="margin:0 0 16px; font-size:0.84rem; color:var(--muted);">
-            Diferencias metodológicas fundamentales para la toma de decisiones arquitectónicas en proyectos de software:
-          </p>
-
-          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-            <table style="width:100%; border-collapse:collapse; font-size:0.83rem; font-family:Verdana,sans-serif;">
-              <thead>
-                <tr style="background:rgba(34,33,61,0.9); color:var(--cyan); font-family:'Courier New', monospace;">
-                  <th style="padding:10px; text-align:left;">Modelo de Proceso</th>
-                  <th style="padding:10px; text-align:left;">Enfoque Principal</th>
-                  <th style="padding:10px; text-align:left;">Gestión de Riesgos</th>
-                  <th style="padding:10px; text-align:left;">Cuándo Seleccionarlo</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                  <td style="padding:10px;"><strong style="color:var(--muted);">Cascada Tradicional (Royce)</strong></td>
-                  <td style="padding:10px;">Secuencial y rígido por fases completas</td>
-                  <td style="padding:10px; color:var(--coral);">Tardía (Riesgos se descubren al integrar en pruebas)</td>
-                  <td style="padding:10px;">Requisitos perfectamente comprendidos y estables que no sufrirán cambios.</td>
-                </tr>
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                  <td style="padding:10px;"><strong style="color:var(--gold);">Espiral (Boehm)</strong></td>
-                  <td style="padding:10px;">Iterativo, evolutivo y guiado por riesgos</td>
-                  <td style="padding:10px; color:var(--green);">Explícita en cada ciclo mediante prototipado continuo</td>
-                  <td style="padding:10px;">Sistemas grandes, costosos y complejos con alta incertidumbre técnica.</td>
-                </tr>
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                  <td style="padding:10px;"><strong style="color:var(--cyan);">RUP (Unified Process)</strong></td>
-                  <td style="padding:10px;">Iterativo, incremental y centrado en la arquitectura</td>
-                  <td style="padding:10px; color:var(--cyan);">Focalizada en la fase de Elaboración (línea base ejecutable)</td>
-                  <td style="padding:10px;">Sistemas empresariales complejos que requieren rigor formal y trazabilidad.</td>
-                </tr>
-                <tr>
-                  <td style="padding:10px;"><strong style="color:var(--green);">Ágil (Scrum / XP)</strong></td>
-                  <td style="padding:10px;">Adaptativo, entregas en sprints cortos (1-4 semanas)</td>
-                  <td style="padding:10px; color:var(--green);">Mitigación empírica mediante feedback frecuente del cliente</td>
-                  <td style="padding:10px;">Requisitos volátiles y desarrollo rápido centrado en valor de negocio.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
       <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
       <section id="tab-quiz" class="content-panel">
-        <div class="process-card">
-          <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Procesos de Software</h2>
-          <p style="margin:0 0 20px; font-size:0.84rem; color:var(--muted);">
-            Reactivos de opción múltiple estructurados con estricta simetría anti-sesgo según Sommerville y Pressman.
-          </p>
-
-          <!-- Q1 -->
-          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px; margin-bottom:16px;">
-            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--gold);">REACTIVO 1 · SOMMERVILLE (MODELOS DE PROCESOS)</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              En el contexto de los modelos de procesos descritos por Ian Sommerville, ¿cuál es la diferencia crítica entre la gestión de riesgos en el Modelo en Espiral de Boehm y la fase de Elaboración en el Rational Unified Process (RUP)?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(1, 0)">
-                A) El modelo en Espiral evalúa e identifica riesgos continuamente en el segundo cuadrante de cada iteración; mientras que en RUP la mitigación de los riesgos arquitectónicos se concentra en construir la línea base ejecutable al cierre de Elaboración.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(1, 1)">
-                B) El modelo en Espiral prohíbe la creación de prototipos ejecutables antes del despliegue final; mientras que en RUP los riesgos se resuelven exclusivamente durante la fase de Transición al cliente.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(1, 2)">
-                C) El modelo en Espiral adopta una estructura estrictamente secuencial y lineal sin revisiones; mientras que RUP elimina la necesidad de contar con fases de inicio y análisis de negocio.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(1, 3)">
-                D) El modelo en Espiral se orienta exclusivamente a la redacción de contratos jurídicos mercantiles; mientras que RUP descarta las pruebas de software de componentes unitarios.
-              </button>
+        <div class="matrix-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+            <div>
+              <h2 style="margin:0 0 4px; font-size:1.25rem; color:#fff;">Laboratorio Formativo de Procesos de Software</h2>
+              <p style="margin:0; font-size:0.84rem; color:var(--muted);">
+                Reactivos de opción múltiple estructurados con estricta simetría anti-sesgo según Sommerville y Pressman.
+              </p>
             </div>
-            <div id="qproc-f1" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span id="quiz-progress" style="font:700 0.82rem 'Courier New', monospace; color:var(--cyan);">PREGUNTA 1 DE 4</span>
+              <span id="quiz-score" style="font:700 0.82rem 'Courier New', monospace; color:var(--green);">Puntuación: 0 / 4</span>
+            </div>
           </div>
 
-          <!-- Q2 -->
-          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px;">
-            <span style="font:700 0.72rem 'Courier New', monospace; color:var(--cyan);">REACTIVO 2 · RATIONAL UNIFIED PROCESS (RUP)</span>
-            <p style="color:#ffffff; font-size:0.92rem; margin:10px 0 14px; font-family:Verdana,sans-serif; line-height:1.55;">
-              ¿Cuál es el hito principal (milestone) que marca formalmente el término de la fase de Elaboración en RUP y qué artefacto técnico demuestra su cumplimiento?
-            </p>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(2, 0)">
-                A) Hito de Entrega Final del Producto, demostrado mediante el acta de finiquito contable y el cierre definitivo del repositorio Git.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(2, 1)">
-                B) Hito de Arquitectura del Ciclo de Vida (LCA), demostrado mediante una línea base de la arquitectura ejecutable que mitiga los principales riesgos técnicos.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(2, 2)">
-                C) Hito de Objetivos del Ciclo de Vida (LCO), demostrado únicamente mediante el cálculo del retorno de inversión (ROI) estimado a 10 años.
-              </button>
-              <button class="btn-theme" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="answerProcessQuiz(2, 3)">
-                D) Hito de Capacidad Operativa Inicial, demostrado cuando el 100% de los manuales de usuario han sido impresos y encuadernados para distribución.
-              </button>
+          <div class="quiz-card" style="margin-bottom:0;">
+            <div id="quiz-container">
+              <h3 id="quiz-question-text" style="color:#ffffff; font-size:1.02rem; line-height:1.55; margin:0 0 16px; font-family:Verdana,sans-serif;"></h3>
+              <div id="quiz-options-container"></div>
+              <div id="quiz-feedback-box" style="display:none; padding:14px; border-radius:6px; margin-top:16px; font:0.86rem/1.55 Verdana, sans-serif;"></div>
+              <div style="margin-top:20px; text-align:right;">
+                <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 22px; cursor:pointer; font:700 0.85rem 'Courier New', monospace;" onclick="nextProcessQuizQuestion()">
+                  Siguiente Pregunta ➔
+                </button>
+              </div>
             </div>
-            <div id="qproc-f2" style="display:none; margin-top:12px; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.5;"></div>
           </div>
         </div>
       </section>
@@ -393,51 +390,243 @@
       ];
 
       let currentCycleIdx = 0;
+      let spiralAnimTimer = null;
 
-      function renderSpiralPath() {
-        const c = spiralCycles[currentCycleIdx];
-        document.getElementById('lbl-spiral-cycle').innerText = `Vuelta ${currentCycleIdx + 1} / 4`;
+      function highlightQuadrant(theta) {
+        // En coordenadas SVG (x = r cos theta, y = -r sin theta):
+        // theta % 2pi:
+        // [0, pi/2): x > 0, y < 0 -> Q1 (Determinar Objetivos)
+        // [pi/2, pi): x < 0, y < 0 -> Q2 (Evaluar Riesgos)
+        // [pi, 3pi/2): x < 0, y > 0 -> Q3 (Desarrollar & V&V)
+        // [3pi/2, 2pi): x > 0, y > 0 -> Q4 (Planificar Siguiente Fase)
+        const normAngle = ((theta % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        const q1 = document.getElementById('bg-q1');
+        const q2 = document.getElementById('bg-q2');
+        const q3 = document.getElementById('bg-q3');
+        const q4 = document.getElementById('bg-q4');
+        const hud = document.getElementById('spiral-quadrant-hud');
+
+        [q1, q2, q3, q4].forEach(el => el && el.classList.remove('active-quad'));
+
+        if (normAngle < Math.PI / 2) {
+          if (q1) q1.classList.add('active-quad');
+          if (hud) hud.innerHTML = '<span style="color:var(--cyan)">★ Sector 1: Determinando Objetivos, Alternativas &amp; Restricciones</span>';
+        } else if (normAngle < Math.PI) {
+          if (q2) q2.classList.add('active-quad');
+          if (hud) hud.innerHTML = '<span style="color:var(--risk-coral)">⚠️ Sector 2: Evaluación y Mitigación de Riesgos (Prototipos)</span>';
+        } else if (normAngle < 3 * Math.PI / 2) {
+          if (q3) q3.classList.add('active-quad');
+          if (hud) hud.innerHTML = '<span style="color:var(--green)">⚙️ Sector 3: Desarrollo, Implementación &amp; V&amp;V</span>';
+        } else {
+          if (q4) q4.classList.add('active-quad');
+          if (hud) hud.innerHTML = '<span style="color:var(--spiral-gold)">📋 Sector 4: Revisión de Hitos &amp; Planificación de la Siguiente Vuelta</span>';
+        }
+      }
+
+      function renderSpiralPathAnimated(targetCycleIdx) {
+        if (spiralAnimTimer) cancelAnimationFrame(spiralAnimTimer);
+
+        const c = spiralCycles[targetCycleIdx];
+        document.getElementById('lbl-spiral-cycle').innerText = `Vuelta ${targetCycleIdx + 1} / 4`;
         document.getElementById('badge-cycle-name').innerText = c.name;
         document.getElementById('lbl-cycle-title').innerText = c.title;
         document.getElementById('lbl-cycle-desc').innerText = c.desc;
         document.getElementById('lbl-spiral-cost').innerText = c.cost;
         document.getElementById('lbl-spiral-risk').innerText = c.risk;
 
-        // Generar puntos para la espiral polar r = a * theta
         const a = 5.2;
-        const totalAngle = c.maxAngle;
-        const steps = 180 * (currentCycleIdx + 1);
-        let d = "";
-        let endX = 0, endY = 0;
+        const startAngle = targetCycleIdx === 0 ? 0 : spiralCycles[targetCycleIdx - 1].maxAngle;
+        const targetAngle = c.maxAngle;
+        const totalDuration = 1800; // 1.8 segundos de recorrido fluido
+        const startTime = performance.now();
 
-        for (let i = 0; i <= steps; i++) {
-          const theta = (totalAngle / steps) * i;
-          const r = a * theta;
-          // Iniciar en cuadrante 1 (+X, -Y en coordenadas SVG)
-          const x = r * Math.cos(theta);
-          const y = -r * Math.sin(theta);
+        const btnAdvance = document.getElementById('btn-advance-spiral');
+        if (btnAdvance) btnAdvance.disabled = true;
 
-          if (i === 0) d += `M ${x} ${y}`;
-          else d += ` L ${x} ${y}`;
+        function animate(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(1, elapsed / totalDuration);
+          const currentAngle = startAngle + (targetAngle - startAngle) * progress;
 
-          endX = x;
-          endY = y;
+          // Dibujar la trayectoria acumulada hasta currentAngle
+          const steps = Math.max(10, Math.floor(currentAngle * 25));
+          let d = "";
+          let endX = 0, endY = 0;
+
+          for (let i = 0; i <= steps; i++) {
+            const theta = (currentAngle / steps) * i;
+            const r = a * theta;
+            const x = r * Math.cos(theta);
+            const y = -r * Math.sin(theta);
+
+            if (i === 0) d += `M ${x} ${y}`;
+            else d += ` L ${x} ${y}`;
+
+            endX = x;
+            endY = y;
+          }
+
+          document.getElementById('spiral-path').setAttribute('d', d);
+          const head = document.getElementById('spiral-head');
+          if (head) {
+            head.setAttribute('cx', endX);
+            head.setAttribute('cy', endY);
+          }
+
+          highlightQuadrant(currentAngle);
+
+          if (progress < 1) {
+            spiralAnimTimer = requestAnimationFrame(animate);
+          } else {
+            if (btnAdvance) btnAdvance.disabled = false;
+            const hud = document.getElementById('spiral-quadrant-hud');
+            if (hud) hud.innerHTML = `<span style="color:var(--gold)">✓ ¡Vuelta ${targetCycleIdx + 1} completada! Riesgo mitigado a: ${c.risk}</span>`;
+          }
         }
 
-        document.getElementById('spiral-path').setAttribute('d', d);
-        const head = document.getElementById('spiral-head');
-        head.setAttribute('cx', endX);
-        head.setAttribute('cy', endY);
+        spiralAnimTimer = requestAnimationFrame(animate);
       }
 
       function advanceSpiralCycle() {
         currentCycleIdx = (currentCycleIdx + 1) % spiralCycles.length;
-        renderSpiralPath();
+        renderSpiralPathAnimated(currentCycleIdx);
       }
 
       function resetSpiral() {
+        if (spiralAnimTimer) cancelAnimationFrame(spiralAnimTimer);
         currentCycleIdx = 0;
-        renderSpiralPath();
+        renderSpiralPathAnimated(0);
+      }
+
+      // ==========================================
+      // LABORATORIO FORMATIVO DE PROCESOS (QUIZ STEP-BY-STEP)
+      // ==========================================
+      const processQuizQuestions = [
+        {
+          question: "En el contexto de los modelos de procesos descritos por Ian Sommerville, ¿cuál es la diferencia crítica entre la gestión de riesgos en el Modelo en Espiral de Boehm y la fase de Elaboración en el Rational Unified Process (RUP)?",
+          options: [
+            "El modelo en Espiral evalúa e identifica riesgos continuamente en el segundo cuadrante de cada iteración; mientras que en RUP la mitigación de los riesgos arquitectónicos se concentra en construir la línea base ejecutable al cierre de Elaboración.",
+            "El modelo en Espiral prohíbe la creación de prototipos ejecutables antes del despliegue final; mientras que en RUP los riesgos se resuelven exclusivamente durante la fase de Transición al cliente.",
+            "El modelo en Espiral adopta una estructura estrictamente secuencial y lineal sin revisiones; mientras que RUP elimina la necesidad de contar con fases de inicio y análisis de negocio.",
+            "El modelo en Espiral se orienta exclusivamente a la redacción de contratos jurídicos mercantiles; mientras que RUP descarta las pruebas de software de componentes unitarios."
+          ],
+          correct: 0,
+          feedback: "¡Correcto! En el Modelo en Espiral los riesgos se auditan continuamente en el segundo sector de cada vuelta; en RUP, los riesgos técnicos más críticos se mitigan específicamente durante la fase de Elaboración construyendo la línea base de arquitectura ejecutable."
+        },
+        {
+          question: "¿Cuál es el hito principal (milestone) que marca formalmente el término de la fase de Elaboración en RUP y qué artefacto técnico demuestra su cumplimiento?",
+          options: [
+            "Hito de Entrega Final del Producto, demostrado mediante el acta de finiquito contable y el cierre definitivo del repositorio Git.",
+            "Hito de Arquitectura del Ciclo de Vida (LCA), demostrado mediante una línea base de la arquitectura ejecutable que mitiga los principales riesgos técnicos.",
+            "Hito de Objetivos del Ciclo de Vida (LCO), demostrado únicamente mediante el cálculo del retorno de inversión (ROI) estimado a 10 años.",
+            "Hito de Capacidad Operativa Inicial, demostrado cuando el 100% de los manuales de usuario han sido impresos y encuadernados para distribución."
+          ],
+          correct: 1,
+          feedback: "¡Correcto! El hito canónico al finalizar Elaboración es el LCA (Lifecycle Architecture Milestone), cuyo artefacto clave es la línea base arquitectónica ejecutable que demuestra que los riesgos técnicos fundamentales han sido mitigados."
+        },
+        {
+          question: "¿Cuál es la principal debilidad del modelo en Cascada Tradicional (Waterfall de Royce) frente a sistemas con requerimientos inciertos?",
+          options: [
+            "La detección de riesgos e inconsistencias ocurre tardíamente en la fase de pruebas/integración, cuando el costo de modificación es exponencialmente mayor.",
+            "Exige la entrega de código ejecutable al cliente en las primeras dos semanas de iniciado el proyecto.",
+            "Prohíbe la redacción de documentación técnica y diagramas de diseño arquitectónico.",
+            "Requiere que todos los programadores utilicen obligatoriamente lenguajes de programación dinámicos."
+          ],
+          correct: 0,
+          feedback: "¡Exacto! En cascada el feedback es tardío. Si los requerimientos cambian o se entendieron mal, el error se manifiesta hasta la fase final de integración o despliegue con costos astronómicos."
+        },
+        {
+          question: "¿Qué dimensión geométrica del diagrama del Modelo en Espiral de Barry Boehm representa el costo acumulado incurrido por el proyecto?",
+          options: [
+            "La distancia radial (R) desde el centro u origen del sistema de coordenadas cartesianas.",
+            "El número de cuadrantes cruzados dividido por la cantidad de desarrolladores en nómina.",
+            "El grosor del trazo del lápiz utilizado en el diseño conceptual del prototipo.",
+            "El ángulo angular medido exclusivamente en sentido de las manecillas del reloj."
+          ],
+          correct: 0,
+          feedback: "¡Correcto! En la espiral polar de Boehm, la dimensión radial representa el costo acumulado invertido a medida que la espiral se expande hacia afuera, mientras que la dimensión angular representa el progreso a través de los sectores."
+        }
+      ];
+
+      let currentProcessQuizIdx = 0;
+      let processQuizScore = 0;
+
+      function renderProcessQuizQuestion() {
+        const q = processQuizQuestions[currentProcessQuizIdx];
+        document.getElementById('quiz-progress').innerText = `PREGUNTA ${currentProcessQuizIdx + 1} DE ${processQuizQuestions.length}`;
+        document.getElementById('quiz-score').innerText = `Puntuación: ${processQuizScore} / ${processQuizQuestions.length}`;
+        document.getElementById('quiz-question-text').innerText = q.question;
+
+        const cont = document.getElementById('quiz-options-container');
+        cont.innerHTML = '';
+        const fb = document.getElementById('quiz-feedback-box');
+        fb.style.display = 'none';
+        document.getElementById('btn-next-quiz').style.display = 'none';
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<strong>${String.fromCharCode(65 + idx)}.</strong> ${opt}`;
+          btn.onclick = () => handleProcessQuizAnswer(idx);
+          cont.appendChild(btn);
+        });
+      }
+
+      function handleProcessQuizAnswer(selectedIdx) {
+        const q = processQuizQuestions[currentProcessQuizIdx];
+        const btns = document.querySelectorAll('.quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const fb = document.getElementById('quiz-feedback-box');
+        fb.style.display = 'block';
+
+        if (selectedIdx === q.correct) {
+          processQuizScore++;
+          btns[selectedIdx].classList.add('opt-correct');
+          fb.style.background = 'rgba(0, 255, 170, 0.12)';
+          fb.style.border = '1px solid var(--green)';
+          fb.style.color = '#fff';
+          fb.innerHTML = `<strong>✓ ¡Correcto!</strong> ${q.feedback}`;
+        } else {
+          btns[selectedIdx].classList.add('opt-wrong');
+          btns[q.correct].classList.add('opt-correct');
+          fb.style.background = 'rgba(255, 0, 110, 0.12)';
+          fb.style.border = '1px solid var(--coral)';
+          fb.style.color = '#fff';
+          fb.innerHTML = `<strong>✗ Incorrecto.</strong> ${q.feedback}`;
+        }
+
+        document.getElementById('quiz-score').innerText = `Puntuación: ${processQuizScore} / ${processQuizQuestions.length}`;
+        document.getElementById('btn-next-quiz').style.display = 'inline-block';
+      }
+
+      function nextProcessQuizQuestion() {
+        currentProcessQuizIdx++;
+        if (currentProcessQuizIdx < processQuizQuestions.length) {
+          renderProcessQuizQuestion();
+        } else {
+          showProcessQuizSummary();
+        }
+      }
+
+      function showProcessQuizSummary() {
+        const cont = document.getElementById('quiz-container');
+        const pct = Math.round((processQuizScore / processQuizQuestions.length) * 100);
+        cont.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold); font-size:1.6rem; margin:0 0 10px;">Laboratorio de Procesos Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:var(--ink); margin:0 0 18px;">
+              Puntuación final: <strong>${processQuizScore} / ${processQuizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted); max-width:500px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Comprendes a cabalidad los ciclos de vida evolutivos, la mitigación de riesgos de Boehm y las fases del Unified Process.' : 'Buen intento. Repasa las comparativas doctrinales y vuelve a girar la espiral para reforzar.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="currentProcessQuizIdx = 0; processQuizScore = 0; renderProcessQuizQuestion();">
+              🔄 Reiniciar Laboratorio
+            </button>
+          </div>
+        `;
       }
 
       window.switchProcessTab = function(tabId) {
@@ -448,45 +637,15 @@
         if (panel) panel.classList.add('active');
 
         const btns = document.querySelectorAll('.tab-btn');
-        if (tabId === 'tab-spiral') btns[0].classList.add('active');
-        if (tabId === 'tab-rup') btns[1].classList.add('active');
-        if (tabId === 'tab-compare') btns[2].classList.add('active');
+        if (tabId === 'tab-compare') btns[0].classList.add('active');
+        if (tabId === 'tab-spiral') btns[1].classList.add('active');
+        if (tabId === 'tab-rup') btns[2].classList.add('active');
         if (tabId === 'tab-quiz') btns[3].classList.add('active');
       };
 
-      window.answerProcessQuiz = function(qNum, optIdx) {
-        const fb = document.getElementById(`qproc-f${qNum}`);
-        fb.style.display = 'block';
-
-        if (qNum === 1) {
-          if (optIdx === 0) {
-            fb.style.background = 'rgba(0, 255, 170, 0.15)';
-            fb.style.border = '1px solid var(--green)';
-            fb.style.color = 'var(--green)';
-            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> En el Modelo en Espiral los riesgos se auditan continuamente en el segundo sector de cada vuelta; en RUP, los riesgos técnicos más críticos se mitigan específicamente durante la fase de Elaboración construyendo la línea base de arquitectura ejecutable.';
-          } else {
-            fb.style.background = 'rgba(255, 0, 110, 0.15)';
-            fb.style.border = '1px solid var(--coral)';
-            fb.style.color = 'var(--coral)';
-            fb.innerHTML = '<strong>✗ Incorrecto.</strong> Doctrina Sommerville: La diferencia primordial es que la espiral maneja riesgos en cada ciclo formalmente, mientras RUP concentra la mitigación arquitectónica en Elaboración.';
-          }
-        } else if (qNum === 2) {
-          if (optIdx === 1) {
-            fb.style.background = 'rgba(0, 255, 170, 0.15)';
-            fb.style.border = '1px solid var(--green)';
-            fb.style.color = 'var(--green)';
-            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> El hito canónico al finalizar Elaboración es el LCA (Lifecycle Architecture Milestone), cuyo artefacto clave es la línea base arquitectónica ejecutable que demuestra que los riesgos técnicos fundamentales han sido mitigados.';
-          } else {
-            fb.style.background = 'rgba(255, 0, 110, 0.15)';
-            fb.style.border = '1px solid var(--coral)';
-            fb.style.color = 'var(--coral)';
-            fb.innerHTML = '<strong>✗ Incorrecto.</strong> El hito oficial de la fase de Elaboración en RUP es el Lifecycle Architecture (LCA).';
-          }
-        }
-      };
-
       window.addEventListener('DOMContentLoaded', () => {
-        renderSpiralPath();
+        renderSpiralPathAnimated(0);
+        renderProcessQuizQuestion();
       });
     </script>
     <script src="../shared/modules-data.js"></script>
