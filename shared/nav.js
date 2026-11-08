@@ -163,24 +163,37 @@
       }
     }
 
-    function getShortTitle(mod) {
-      if (!mod) return '';
-      const parts = mod.title.split(':');
-      const base = parts.length > 1 ? parts[0] : mod.title;
-      return `${mod.id} · ${base.trim()}`;
+    function getCleanTopic(mod, maxLen = 28) {
+      if (!mod || !mod.title) return '';
+      // Separar por ':' o '·' para quedarnos con el nombre principal del tema
+      let title = mod.title;
+      if (title.includes(':')) {
+        title = title.split(':')[0].trim();
+      } else if (title.includes('·')) {
+        const parts = title.split('·');
+        title = parts[parts.length - 1].trim();
+      }
+      // Limpiar prefijos numéricos si los tuviera
+      title = title.replace(/^\d+[\s\.\-·]+/, '').trim();
+      
+      // Limitar caracteres para asegurar ancho simétrico uniforme
+      if (title.length > maxLen) {
+        return title.substring(0, maxLen - 1).trim() + '…';
+      }
+      return title;
     }
 
     const prevHtml = prevModule
-      ? `<a href="${prevModule.filename}" class="btn-nav-standard btn-nav-prev" title="${prevModule.title}">← Anterior: ${getShortTitle(prevModule)}</a>`
+      ? `<a href="${prevModule.filename}" class="btn-nav-standard btn-nav-prev" title="${prevModule.title}">← Anterior: ${getCleanTopic(prevModule)}</a>`
       : `<a href="../index.html" class="btn-nav-standard btn-nav-home">← Volver al Inicio</a>`;
 
     const nextHtml = (currentIndex < modules.length - 1)
-      ? `<a href="${nextModule.filename}" class="btn-nav-standard btn-nav-next" title="${nextModule.title}">Siguiente: ${getShortTitle(nextModule)} →</a>`
-      : `<a href="${modules[0].filename}" class="btn-nav-standard btn-nav-prev" style="color:var(--gold); border-color:var(--gold);" title="${modules[0].title}">Reiniciar Módulo 01 ↻</a>`;
+      ? `<a href="${nextModule.filename}" class="btn-nav-standard btn-nav-next" title="${nextModule.title}">Siguiente: ${getCleanTopic(nextModule)} →</a>`
+      : `<a href="${modules[0].filename}" class="btn-nav-standard btn-nav-prev" style="color:var(--gold); border-color:var(--gold);" title="${modules[0].title}">Reiniciar Ciclo ↻</a>`;
 
     navBar.innerHTML = `
       <div class="nav-left">${prevHtml}</div>
-      <div class="nav-center" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:center;">
+      <div class="nav-center">
         <a href="../index.html" class="btn-nav-standard btn-nav-home">Índice Principal 🏠</a>
       </div>
       <div class="nav-right">${nextHtml}</div>
