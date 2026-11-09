@@ -935,6 +935,31 @@
       <footer class="global-footer">
       Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
     </footer>
+    
+      <!-- Laboratorio de Evaluación Formativa Estandarizado -->
+      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+        <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
+        <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
+          Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.
+        </p>
+        <div class="quiz-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(0,255,255,0.2); padding-bottom:10px;">
+            <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">Pregunta 1 de 5</span>
+            <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
+          </div>
+          <div id="quiz-container">
+            <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:14px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 20px; border-radius:6px; font:700 0.88rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <script>
@@ -1452,6 +1477,233 @@
       initPillar();
     </script>
     <!-- Navegación Dinámica Centralizada -->
+    
+    <script>
+      // =========================================================================
+      // Motor Canónico de Evaluación Formativa con Haptic Feedback
+      // =========================================================================
+      const quizQuestions = [
+  {
+    "q": "¿Cuál es el pilar de la Programación Orientada a Objetos (POO) que oculta los detalles de implementación interna y el estado de un objeto, exponiendo únicamente una interfaz controlada?",
+    "options": [
+      "Encapsulamiento.",
+      "Herencia múltiple.",
+      "Polimorfismo dinámico.",
+      "Despacho tardío."
+    ],
+    "correct": 0,
+    "feedback": "El encapsulamiento agrupa datos y métodos que operan sobre ellos, restringiendo el acceso directo a componentes internos para proteger la integridad del estado y reducir el acoplamiento."
+  },
+  {
+    "q": "¿Qué mecanismo permite que una llamada a un método como \"figura.CalcularArea()\" invoque la implementación específica de un Círculo o un Rectángulo en tiempo de ejecución?",
+    "options": [
+      "Polimorfismo dinámico mediante despacho dinámico (Dynamic Dispatch / Tabla virtual vtable).",
+      "Sobrecarga de operadores resuelta en tiempo de compilación por el analizador semántico.",
+      "Casting explícito obligatorio en cada invocación mediante punteros genéricos void.",
+      "Inyección de dependencias estática mediante interfaces marcadoras sin métodos."
+    ],
+    "correct": 0,
+    "feedback": "El polimorfismo dinámico permite tratar objetos de diferentes clases derivadas a través de una interfaz común de la clase base, resolviendo el método concreto en runtime mediante despacho dinámico (vtable)."
+  },
+  {
+    "q": "En el diseño de software orientado a objetos, ¿por qué se prescribe el objetivo de lograr \"Alta Cohesión y Bajo Acoplamiento\"?",
+    "options": [
+      "Porque un módulo cohesivo se enfoca en una sola responsabilidad clara, y el bajo acoplamiento minimiza las dependencias externas, facilitando el mantenimiento y las pruebas.",
+      "Porque un alto acoplamiento permite que todas las clases compartan variables globales en memoria sin necesidad de instanciar objetos.",
+      "Porque la cohesión baja reduce el número de métodos de una clase aumentando la velocidad de compilación en un 50%.",
+      "Porque el acoplamiento alto garantiza que cualquier cambio en una clase se propague automáticamente a todo el sistema."
+    ],
+    "correct": 0,
+    "feedback": "Alta cohesión significa que los elementos de un módulo están estrechamente relacionados con un propósito único; bajo acoplamiento significa independencia entre módulos, permitiendo modificarlos sin efectos colaterales."
+  },
+  {
+    "q": "Al diseñar jerarquías de herencia en la Programación Orientada a Objetos:",
+    "options": [
+      "Debe modelar estrictamente una relación de tipo \"es-un\" (is-a) cumpliendo con el Principio de Sustitución de Liskov.",
+      "No debe modelar estrictamente una relación de tipo \"es-un\" (is-a) permitiendo heredar por mera reutilización de código.",
+      "Debe modelar relaciones de agregación y composición \"tiene-un\" (has-a) sustituyendo a los atributos de clase.",
+      "No debe permitir clases abstractas ni interfaces debiendo instanciarse siempre todas las clases base."
+    ],
+    "correct": 0,
+    "feedback": "La herencia debe usarse solo cuando existe una relación genuina \"es-un\" donde la subclase puede sustituir a la superclase sin romper el comportamiento esperado (Liskov Substitution Principle)."
+  },
+  {
+    "q": "¿Cuál es la diferencia doctrinal entre Sobrecarga (Overloading) y Sobrescritura (Overriding) de métodos en POO?",
+    "options": [
+      "La sobrecarga define métodos con el mismo nombre y distinta firma en la misma clase (tiempo de compilación); la sobrescritura redefine un método de la superclase con idéntica firma en la subclase (tiempo de ejecución).",
+      "La sobrecarga se aplica únicamente a constructores primarios, mientras que la sobrescritura se aplica solo a destructores finales.",
+      "La sobrecarga ocurre en tiempo de ejecución mediante reflexión, mientras que la sobrescritura es resuelta por el preprocesador de código.",
+      "No existe diferencia alguna entre ambos conceptos, siendo términos sinónimos en la literatura de C++ y Java."
+    ],
+    "correct": 0,
+    "feedback": "Sobrecarga (ad-hoc polymorphism) = mismo nombre, diferentes parámetros, resuelto estáticamente en compilación. Sobrescritura = misma firma en subclase usando virtual/override, resuelto dinámicamente en ejecución."
+  }
+];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
+
+      window.renderQuizQuestion = function() {
+        if (!Array.isArray(quizQuestions) || quizQuestions.length === 0) return;
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Tactile Haptics en móviles compatibles
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          try {
+            if (chosen && chosen.isCorrect) navigator.vibrate(40);
+            else navigator.vibrate([30, 50, 30]);
+          } catch(e) {}
+        }
+
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) shortFeedback = firstSentenceMatch[1];
+        if (shortFeedback.length > 160) {
+          const cut = shortFeedback.lastIndexOf(' ', 155);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 155)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.12)';
+            feedbackBox.style.border = '1px solid var(--green, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--green, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-wrong');
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.12)';
+            feedbackBox.style.border = '1px solid var(--coral, #ff006e)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--coral, #ff006e); font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:24px 12px;">
+            <div style="font-size:3rem; margin-bottom:10px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
+            <h3 style="margin:0 0 8px; color:#fff; font-size:1.2rem;">Evaluación Completada</h3>
+            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:16px;">
+              Puntuación final: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'};">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <button class="btn-theme" style="padding:10px 22px; border-radius:6px; font:700 0.86rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reintentar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    </script>
+
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
   </body>

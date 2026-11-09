@@ -294,6 +294,8 @@
       }
 
       .search-input {
+        min-height: 44px;
+        padding: 12px 85px 12px 42px;
         width: 100%;
         padding: 12px 18px 12px 42px;
         background: #0a0914;
@@ -308,6 +310,21 @@
       .search-input:focus {
         border-color: var(--cyan);
         box-shadow: 0 0 16px rgba(0, 255, 255, 0.35);
+      }
+
+      .search-kbd {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 4px;
+        color: var(--cyan);
+        font: 700 0.72rem "Courier New", monospace;
+        padding: 3px 7px;
+        pointer-events: none;
+        user-select: none;
       }
 
       .search-icon {
@@ -328,7 +345,12 @@
       }
 
       .chip-btn {
-        padding: 7px 14px;
+        padding: 10px 16px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        touch-action: manipulation;
         border-radius: 6px;
         background: var(--panel-dark);
         border: 1px solid rgba(0, 255, 255, 0.2);

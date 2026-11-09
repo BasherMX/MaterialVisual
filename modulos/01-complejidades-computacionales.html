@@ -1722,6 +1722,31 @@
       <footer class="global-footer">
       Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
     </footer>
+    
+      <!-- Laboratorio de Evaluación Formativa Estandarizado -->
+      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+        <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
+        <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
+          Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.
+        </p>
+        <div class="quiz-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(0,255,255,0.2); padding-bottom:10px;">
+            <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">Pregunta 1 de 5</span>
+            <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
+          </div>
+          <div id="quiz-container">
+            <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:14px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 20px; border-radius:6px; font:700 0.88rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <script>
@@ -2727,6 +2752,233 @@
       };
     </script>
     <!-- Navegación Dinámica Centralizada -->
+    
+    <script>
+      // =========================================================================
+      // Motor Canónico de Evaluación Formativa con Haptic Feedback
+      // =========================================================================
+      const quizQuestions = [
+  {
+    "q": "¿Qué cota asintótica formal describe la notación Big-O (O) en el análisis de complejidad de algoritmos?",
+    "options": [
+      "Una cota superior asintótica que delimita el crecimiento del tiempo o espacio en el peor caso posible f(n) <= c * g(n).",
+      "Una cota inferior asintótica estricta que define el tiempo mínimo de ejecución en el mejor escenario posible.",
+      "El tiempo exacto medido en nanosegundos en un procesador y sistema operativo específico bajo pruebas de laboratorio.",
+      "El número total de llamadas recursivas almacenadas en la pila del sistema operativo durante la ejecución."
+    ],
+    "correct": 0,
+    "feedback": "Big-O representa el límite superior asintótico, garantizando que para entradas suficientemente grandes el tiempo o espacio del algoritmo no crecerá más rápido que c * g(n)."
+  },
+  {
+    "q": "¿Cuál es el orden jerárquico correcto de las siguientes clases de complejidad, ordenadas de menor a mayor tasa de crecimiento asintótico?",
+    "options": [
+      "O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n)",
+      "O(1) < O(n) < O(log n) < O(n^2) < O(n log n) < O(2^n)",
+      "O(log n) < O(1) < O(n) < O(n log n) < O(2^n) < O(n^2)",
+      "O(1) < O(n log n) < O(log n) < O(n) < O(n^2) < O(2^n)"
+    ],
+    "correct": 0,
+    "feedback": "La jerarquía canónica de complejidad asintótica sitúa a las constantes O(1) en la base, seguidas por logarítmicas, lineales, cuasi-lineales (n log n), polinómicas cuadráticas (n^2) y exponenciales (2^n)."
+  },
+  {
+    "q": "Al realizar la búsqueda de un elemento en un arreglo ordenado de N posiciones, ¿cuál es la complejidad del algoritmo de Búsqueda Binaria frente a la Búsqueda Secuencial?",
+    "options": [
+      "Búsqueda Binaria opera en O(log n), mientras que la Búsqueda Secuencial opera en O(n).",
+      "Búsqueda Binaria opera en O(n), mientras que la Búsqueda Secuencial opera en O(1).",
+      "Ambos algoritmos operan en O(log n) al encontrarse el arreglo previamente ordenado.",
+      "Búsqueda Binaria opera en O(n log n), mientras que la Búsqueda Secuencial opera en O(n^2)."
+    ],
+    "correct": 0,
+    "feedback": "La Búsqueda Binaria divide el espacio de búsqueda a la mitad en cada paso obteniendo O(log n), mientras que la búsqueda secuencial debe inspeccionar elemento por elemento en O(n)."
+  },
+  {
+    "q": "En el análisis de complejidad espacial de un algoritmo recursivo:",
+    "options": [
+      "Requiere memoria proporcional a la profundidad máxima alcanzada en la pila de llamadas (call stack).",
+      "No requiere memoria proporcional a la profundidad máxima alcanzada en la pila de llamadas (call stack).",
+      "Requiere memoria proporcional al número de ciclos ejecutados en el procesador durante el cálculo.",
+      "No requiere memoria adicional respecto a un bucle iterativo sin importar las llamadas anidadas."
+    ],
+    "correct": 0,
+    "feedback": "Cada llamada recursiva apila un nuevo marco de ejecución (stack frame) con variables locales y dirección de retorno; por tanto, la memoria espacial consumida es O(D), donde D es la profundidad máxima del árbol de recursión."
+  },
+  {
+    "q": "¿Qué significa que un algoritmo tenga una complejidad Theta estricta Θ(g(n))?",
+    "options": [
+      "Que la función g(n) es una cota asintótica ajustada, acotando el crecimiento del algoritmo tanto por arriba (Big-O) como por abajo (Big-Omega).",
+      "Que el algoritmo solo puede ejecutarse en tiempo constante para cualquier tamaño de entrada N.",
+      "Que el algoritmo pertenece a la clase NP-Completo y no puede resolverse en tiempo polinomial.",
+      "Que la complejidad del algoritmo depende exclusivamente de la velocidad de lectura de la memoria secundaria."
+    ],
+    "correct": 0,
+    "feedback": "La notación Big-Theta Θ(g(n)) indica que f(n) está acotada superior e inferiormente por g(n) multiplicada por constantes positivas para n >= n0, siendo una cota exacta y ajustada."
+  }
+];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
+
+      window.renderQuizQuestion = function() {
+        if (!Array.isArray(quizQuestions) || quizQuestions.length === 0) return;
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Tactile Haptics en móviles compatibles
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          try {
+            if (chosen && chosen.isCorrect) navigator.vibrate(40);
+            else navigator.vibrate([30, 50, 30]);
+          } catch(e) {}
+        }
+
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) shortFeedback = firstSentenceMatch[1];
+        if (shortFeedback.length > 160) {
+          const cut = shortFeedback.lastIndexOf(' ', 155);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 155)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.12)';
+            feedbackBox.style.border = '1px solid var(--green, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--green, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-wrong');
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.12)';
+            feedbackBox.style.border = '1px solid var(--coral, #ff006e)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--coral, #ff006e); font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:24px 12px;">
+            <div style="font-size:3rem; margin-bottom:10px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
+            <h3 style="margin:0 0 8px; color:#fff; font-size:1.2rem;">Evaluación Completada</h3>
+            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:16px;">
+              Puntuación final: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'};">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <button class="btn-theme" style="padding:10px 22px; border-radius:6px; font:700 0.86rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reintentar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    </script>
+
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
   </body>

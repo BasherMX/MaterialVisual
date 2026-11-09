@@ -1137,7 +1137,259 @@
       // Inicializar en Nivel 2 por defecto
       selectLevel(2);
     </script>
+    
+      <!-- Laboratorio de Evaluación Formativa Estandarizado -->
+      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+        <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
+        <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
+          Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.
+        </p>
+        <div class="quiz-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(0,255,255,0.2); padding-bottom:10px;">
+            <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">Pregunta 1 de 5</span>
+            <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
+          </div>
+          <div id="quiz-container">
+            <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:14px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 20px; border-radius:6px; font:700 0.88rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
     <!-- Navegación Dinámica Centralizada -->
+    
+    <script>
+      // =========================================================================
+      // Motor Canónico de Evaluación Formativa con Haptic Feedback
+      // =========================================================================
+      const quizQuestions = [
+  {
+    "q": "En el Modelo de Madurez de Richardson para servicios web, ¿qué caracteriza al Nivel 0 (conocido popularmente como \"The Swamp of POX\")?",
+    "options": [
+      "Usa HTTP meramente como un túnel de transporte remoto (RPC), enviando todas las peticiones a un único endpoint mediante POST con payloads en XML o JSON.",
+      "Usa una URI independiente para cada recurso del sistema pero sin emplear los códigos de estado HTTP estándar.",
+      "Implementa controles de hipermedios HATEOAS completos pero omite la autenticación de usuarios mediante tokens JWT.",
+      "Expone microservicios utilizando exclusivamente el protocolo binario gRPC sobre canales seguros HTTP/2."
+    ],
+    "correct": 0,
+    "feedback": "En el Nivel 0 (ej. SOAP o XML-RPC sobre HTTP) la aplicación ignora la semántica web: solo hay una URL (ej. /service) y todas las operaciones son POST transportando comandos y argumentos."
+  },
+  {
+    "q": "¿Qué hito arquitectónico se alcanza en el Nivel 1 del Modelo de Madurez de Richardson?",
+    "options": [
+      "La introducción de Recursos individuales, asignando URIs específicas y significativas a cada entidad del dominio (ej. /api/pedidos/42).",
+      "El uso estricto de los verbos HTTP GET, POST, PUT y DELETE para expresar la intención semántica de cada operación.",
+      "La inclusión obligatoria de cabeceras de control de caché ETag y Last-Modified en todas las respuestas del servidor.",
+      "La eliminación de las bases de datos relacionales en favor de almacenes de documentos NoSQL distribuidos."
+    ],
+    "correct": 0,
+    "feedback": "El Nivel 1 aborda la descomposición del monolito en recursos: en lugar de un único endpoint, se modelan identidades individuales identificables mediante URIs específicas para cada recurso."
+  },
+  {
+    "q": "¿Qué capacidad distingue al Nivel 2 del Modelo de Madurez de Richardson frente al Nivel 1?",
+    "options": [
+      "El uso riguroso de los Verbos HTTP (GET, POST, PUT, DELETE) con su semántica canónica y la utilización de los Códigos de Estado HTTP correspondientes.",
+      "La incorporación de enlaces de hipermedios dinámicos en los payloads para guiar las transiciones de estado de la aplicación.",
+      "La compresión automática de payloads utilizando el algoritmo Brotli en lugar de cadenas de texto plano UTF-8.",
+      "El soporte de streaming bidireccional continuo mediante conexiones persistentes WebSockets."
+    ],
+    "correct": 0,
+    "feedback": "El Nivel 2 adopta los verbos HTTP (GET para leer, POST para crear, PUT para reemplazar, etc.) y devuelve códigos estándar (200, 201 Created con Location, 404, 409) en lugar de retornar siempre 200 con un mensaje de error adentro."
+  },
+  {
+    "q": "El Nivel 3 del Modelo de Madurez de Richardson (HATEOAS):",
+    "options": [
+      "Incorpora controles de hipermedios en las respuestas para que el cliente descubra dinámicamente las acciones y transiciones de estado válidas.",
+      "No incorpora controles de hipermedios en las respuestas obligando al cliente a conocer previamente todas las URLs de forma estática en su código.",
+      "Incorpora protocolos de bajo nivel binario sustituyendo por completo la arquitectura web REST por llamadas remotas SOAP.",
+      "No incorpora códigos de estado HTTP debiendo viajar el resultado siempre codificado como una cadena de texto en el payload."
+    ],
+    "correct": 0,
+    "feedback": "El Nivel 3 (la cima de REST) proporciona HATEOAS: cada respuesta incluye enlaces (_links) a los siguientes estados posibles, desacoplando al cliente de la topología estática de URIs."
+  },
+  {
+    "q": "¿Qué significan las siglas del principio arquitectónico HATEOAS exigido en el nivel más alto de madurez REST?",
+    "options": [
+      "Hypermedia As The Engine Of Application State (Hipermedios como el motor del estado de la aplicación).",
+      "High Availability Through Encrypted Object Access Systems (Alta disponibilidad mediante sistemas de acceso encriptado).",
+      "Hierarchical Architecture To Enable Online Asynchronous Services (Arquitectura jerárquica para servicios asíncronos en línea).",
+      "Heterogeneous Access To Enterprise Open Application Standards (Acceso heterogéneo a estándares empresariales abiertos)."
+    ],
+    "correct": 0,
+    "feedback": "HATEOAS prescribe que el cliente interactúa con la aplicación de red completamente a través de hipermedios proporcionados dinámicamente por los servidores de aplicaciones."
+  }
+];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
+
+      window.renderQuizQuestion = function() {
+        if (!Array.isArray(quizQuestions) || quizQuestions.length === 0) return;
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Tactile Haptics en móviles compatibles
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          try {
+            if (chosen && chosen.isCorrect) navigator.vibrate(40);
+            else navigator.vibrate([30, 50, 30]);
+          } catch(e) {}
+        }
+
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) shortFeedback = firstSentenceMatch[1];
+        if (shortFeedback.length > 160) {
+          const cut = shortFeedback.lastIndexOf(' ', 155);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 155)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.12)';
+            feedbackBox.style.border = '1px solid var(--green, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--green, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-wrong');
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.12)';
+            feedbackBox.style.border = '1px solid var(--coral, #ff006e)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--coral, #ff006e); font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:24px 12px;">
+            <div style="font-size:3rem; margin-bottom:10px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
+            <h3 style="margin:0 0 8px; color:#fff; font-size:1.2rem;">Evaluación Completada</h3>
+            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:16px;">
+              Puntuación final: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'};">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <button class="btn-theme" style="padding:10px 22px; border-radius:6px; font:700 0.86rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reintentar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    </script>
+
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
   </body>

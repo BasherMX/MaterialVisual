@@ -3,7 +3,7 @@
  * Provee funcionamiento Offline y Caché Resiliente para toda la plataforma.
  * Estrategia: Cache First con Stale-While-Revalidate para recursos estáticos.
  */
-const CACHE_NAME = 'material-visual-cache-v6';
+const CACHE_NAME = 'material-visual-cache-v7';
 
 const STATIC_PRECACHE = [
   './',

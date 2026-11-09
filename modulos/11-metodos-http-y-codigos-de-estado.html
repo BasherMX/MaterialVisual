@@ -1082,7 +1082,259 @@
       // Inicializar con GET activo
       inspectMethod('GET');
     </script>
+    
+      <!-- Laboratorio de Evaluación Formativa Estandarizado -->
+      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+        <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
+        <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
+          Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.
+        </p>
+        <div class="quiz-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(0,255,255,0.2); padding-bottom:10px;">
+            <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">Pregunta 1 de 5</span>
+            <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
+          </div>
+          <div id="quiz-container">
+            <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:14px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 20px; border-radius:6px; font:700 0.88rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
     <!-- Navegación Dinámica Centralizada -->
+    
+    <script>
+      // =========================================================================
+      // Motor Canónico de Evaluación Formativa con Haptic Feedback
+      // =========================================================================
+      const quizQuestions = [
+  {
+    "q": "De acuerdo con el estándar HTTP/1.1 y HTTP/2 (RFC 9110), ¿qué define formalmente a un método HTTP como \"Idempotente\"?",
+    "options": [
+      "El efecto pretendido en el servidor al ejecutar N peticiones idénticas consecutivas es exactamente el mismo que si se ejecutara una sola vez (ej. GET, PUT, DELETE).",
+      "La petición no consume ancho de banda de red en el canal de comunicación al enviarse comprimida en formato GZIP.",
+      "El servidor garantiza devolver siempre el mismo código de estado 200 OK independientemente de si la petición contiene errores o no.",
+      "La petición puede ejecutarse en paralelo por múltiples subprocesos sin requerir bloqueos en el motor de bases de datos."
+    ],
+    "correct": 0,
+    "feedback": "La idempotencia significa que repetir la petición múltiples veces deja el estado del servidor en la misma condición final que una única ejecución (PUT sobre el mismo recurso genera el mismo estado final; POST en cambio crearía duplicados)."
+  },
+  {
+    "q": "¿Cuál es la diferencia semántica fundamental entre los verbos HTTP PUT y PATCH según el estándar RFC 9110 / RFC 5789?",
+    "options": [
+      "PUT reemplaza el recurso completo en el servidor (idempotente); PATCH aplica modificaciones parciales a campos específicos del recurso (no necesariamente idempotente).",
+      "PUT se utiliza únicamente para crear recursos nuevos en colecciones vacías; PATCH se utiliza únicamente para eliminar recursos existentes.",
+      "PUT es un método seguro que nunca modifica el estado del servidor; PATCH es un método no seguro que siempre requiere autenticación OAuth.",
+      "PUT transfiere datos exclusivamente en formato XML; PATCH transfiere datos exclusivamente mediante cadenas binarias serializadas con Protobuf."
+    ],
+    "correct": 0,
+    "feedback": "PUT envía la representación completa para sustituir la entidad (reemplazo total idempotente); PATCH envía solo un conjunto de cambios a aplicar sobre la entidad (actualización parcial)."
+  },
+  {
+    "q": "¿Qué significado semántico transmite el código de estado HTTP 409 Conflict?",
+    "options": [
+      "La petición no pudo procesarse debido a un conflicto con el estado actual del recurso en el servidor (ej. colisión de versiones en concurrencia optimista o claves duplicadas).",
+      "El cliente no proporcionó credenciales de autenticación válidas debiendo incluir la cabecera Authorization en la petición.",
+      "El servidor carece del permiso de archivo del sistema operativo para leer el archivo solicitado en el disco rígido.",
+      "La pasarela de enlace (gateway) intermedia no recibió una respuesta a tiempo por parte del servidor upstream de procesamiento."
+    ],
+    "correct": 0,
+    "feedback": "El código 409 Conflict indica que la operación colisiona con el estado actual de los datos (ej. intentar guardar un registro cuya versión cambió entre la lectura y la escritura, o violar una unicidad)."
+  },
+  {
+    "q": "En los métodos HTTP definidos por el RFC 9110:",
+    "options": [
+      "El método GET es seguro e idempotente, debiendo utilizarse exclusivamente para recuperar representaciones sin alterar el estado del recurso.",
+      "El método POST es seguro e idempotente, debiendo devolver siempre el mismo código 200 OK sin generar nuevos identificadores.",
+      "El método DELETE es no idempotente, debiendo fallar con error 500 si se ejecuta una segunda vez sobre un recurso eliminado.",
+      "El método HEAD no es seguro, obligando al servidor a enviar el cuerpo completo del mensaje en cada llamada."
+    ],
+    "correct": 0,
+    "feedback": "Un método Seguro (Safe) no altera el estado del servidor (propósito de sólo lectura). GET, HEAD y OPTIONS son seguros e idempotentes; POST no es seguro ni idempotente."
+  },
+  {
+    "q": "¿Cuándo es técnicamente apropiado que una API REST devuelva el código de estado HTTP 204 No Content?",
+    "options": [
+      "Cuando el servidor ha procesado exitosamente la petición pero deliberadamente no necesita devolver ningún contenido en el cuerpo de la respuesta (ej. tras un DELETE o PUT).",
+      "Cuando la base de datos se encuentra vacía y no existen tablas creadas en el motor de almacenamiento relacional.",
+      "Cuando el cliente envía una petición GET solicitando un recurso que no existe en el sistema ni en el servidor caché.",
+      "Cuando la petición contiene errores de validación de sintaxis en el payload JSON enviado por el navegador web."
+    ],
+    "correct": 0,
+    "feedback": "204 No Content confirma que la acción se ejecutó exitosamente pero que el servidor no envía payload alguno en la respuesta, permitiendo al cliente continuar sin actualizar su vista actual."
+  }
+];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
+
+      window.renderQuizQuestion = function() {
+        if (!Array.isArray(quizQuestions) || quizQuestions.length === 0) return;
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Tactile Haptics en móviles compatibles
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          try {
+            if (chosen && chosen.isCorrect) navigator.vibrate(40);
+            else navigator.vibrate([30, 50, 30]);
+          } catch(e) {}
+        }
+
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) shortFeedback = firstSentenceMatch[1];
+        if (shortFeedback.length > 160) {
+          const cut = shortFeedback.lastIndexOf(' ', 155);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 155)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.12)';
+            feedbackBox.style.border = '1px solid var(--green, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--green, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-wrong');
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.12)';
+            feedbackBox.style.border = '1px solid var(--coral, #ff006e)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--coral, #ff006e); font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:24px 12px;">
+            <div style="font-size:3rem; margin-bottom:10px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
+            <h3 style="margin:0 0 8px; color:#fff; font-size:1.2rem;">Evaluación Completada</h3>
+            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:16px;">
+              Puntuación final: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'};">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <button class="btn-theme" style="padding:10px 22px; border-radius:6px; font:700 0.86rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reintentar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    </script>
+
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
   </body>
