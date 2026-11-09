@@ -236,38 +236,145 @@ h1 {
   gap: 10px;
 }
 
-/* Tablas Comparativas Compartidas */
-.data-table-wrap {
+/* ========================================================
+   ESTÁNDAR CANÓNICO DE TABLAS COMPARATIVAS Y DE DATOS
+   ======================================================== */
+.data-table-wrap,
+.table-wrap,
+.table-container {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-top: 14px;
+  margin: 18px 0 24px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(18, 17, 36, 0.75);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
 }
 
-table.compare-table {
+table.compare-table,
+table.data-table,
+.data-table-wrap table,
+.table-wrap table,
+.table-container table,
+table.state-display-table,
+table.rtm-table,
+table.db-table,
+table.demo-table,
+table.big-o-table,
+table.eclipsing-table,
+table.crud-table {
   width: 100%;
   border-collapse: collapse;
-  font: 0.84rem/1.5 Verdana, sans-serif;
+  font: 0.85rem/1.6 Verdana, sans-serif;
   text-align: left;
 }
 
-table.compare-table th {
-  border-bottom: 2px solid var(--line);
-  padding: 12px 14px;
-  color: var(--cyan);
-  font-family: "Courier New", Courier, monospace;
-  letter-spacing: 0.05em;
-  background: rgba(0, 0, 0, 0.2);
+table.compare-table thead,
+table.data-table thead,
+.data-table-wrap table thead,
+.table-wrap table thead,
+.table-container table thead,
+table.state-display-table thead,
+table.rtm-table thead,
+table.db-table thead,
+table.demo-table thead,
+table.big-o-table thead,
+table.eclipsing-table thead,
+table.crud-table thead {
+  background: rgba(10, 9, 20, 0.96);
+  border-bottom: 2px solid var(--cyan);
 }
 
-table.compare-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+table.compare-table th,
+table.data-table th,
+.data-table-wrap table th,
+.table-wrap table th,
+.table-container table th,
+table.state-display-table th,
+table.rtm-table th,
+table.db-table th,
+table.demo-table th,
+table.big-o-table th,
+table.eclipsing-table th,
+table.crud-table th {
+  padding: 14px 18px;
+  color: var(--cyan);
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--cyan);
+  white-space: nowrap;
+}
+
+table.compare-table td,
+table.data-table td,
+.data-table-wrap table td,
+.table-wrap table td,
+.table-container table td,
+table.state-display-table td,
+table.rtm-table td,
+table.db-table td,
+table.demo-table td,
+table.big-o-table td,
+table.eclipsing-table td,
+table.crud-table td {
+  padding: 13px 18px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
   color: var(--ink);
   vertical-align: top;
 }
 
-table.compare-table tr:hover td {
-  background: rgba(0, 255, 255, 0.04);
+table.compare-table tbody tr:nth-child(even),
+table.data-table tbody tr:nth-child(even),
+.data-table-wrap table tbody tr:nth-child(even),
+.table-wrap table tbody tr:nth-child(even),
+.table-container table tbody tr:nth-child(even),
+table.state-display-table tbody tr:nth-child(even),
+table.rtm-table tbody tr:nth-child(even),
+table.db-table tbody tr:nth-child(even),
+table.demo-table tbody tr:nth-child(even),
+table.big-o-table tbody tr:nth-child(even),
+table.eclipsing-table tbody tr:nth-child(even),
+table.crud-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+table.compare-table tbody tr:hover td,
+table.data-table tbody tr:hover td,
+.data-table-wrap table tbody tr:hover td,
+.table-wrap table tbody tr:hover td,
+.table-container table tbody tr:hover td,
+table.state-display-table tbody tr:hover td,
+table.rtm-table tbody tr:hover td,
+table.db-table tbody tr:hover td,
+table.demo-table tbody tr:hover td,
+table.big-o-table tbody tr:hover td,
+table.eclipsing-table tbody tr:hover td,
+table.crud-table tbody tr:hover td {
+  background: rgba(0, 255, 255, 0.06);
+}
+
+/* Primer celda de fila (generalmente título, métrica o atributo clave) */
+table.compare-table td:first-child,
+table.data-table td:first-child,
+.data-table-wrap table td:first-child {
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Código y notaciones dentro de celdas de tabla */
+.data-table-wrap table td code,
+table.compare-table td code,
+table.data-table td code {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(0, 255, 255, 0.28);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.82rem;
+  color: #fff;
 }
 
 /* Pestañas de Navegación */

@@ -85,3 +85,16 @@ Al crear un nuevo módulo (ej. `modulos/XX-nombre.html`):
 ## 6. Prohibición de Referencias Institucionales o Convocatorias
 Queda terminantemente prohibido incluir referencias a "SPC", "Servicio Profesional de Carrera", "INEGI", "CENEVAL" o procesos/convocatorias específicas de oposición en títulos, textos, badges, metadatos, comentarios de código o reactivos.
 - Sustituir siempre por terminología técnica profesional y universal: "Evaluación Técnica", "Certificación Técnica", "Laboratorio Evaluativo", "Examen de Arquitectura e Ingeniería de Software", etc.
+
+---
+
+## 7. Estándar de Tablas Comparativas y de Datos (`.data-table-wrap`)
+Toda tabla técnica o matriz comparativa en los módulos debe cumplir con:
+1. **Contenedor Obligatorio:** Envolver siempre en `<div class="data-table-wrap">` y aplicar la clase `<table class="data-table">` o `<table class="compare-table">`.
+2. **Estética Unificada en `theme.css`:** Queda prohibido aplicar estilos inline sueltos a tablas. Se debe utilizar la paleta global:
+   - Cabeceras `th`: tipografía monospace Courier New, mayúsculas, color cian neón (`var(--cyan)`), fondo contrastante (`rgba(10, 9, 20, 0.96)`) y borde inferior `2px solid var(--cyan)`.
+   - Celdas `td`: padding uniforme (`13px 18px`), divisores sutiles (`1px solid rgba(0, 255, 255, 0.1)`), filas alternadas cebra (`rgba(255, 255, 255, 0.02)`) y resaltado hover (`rgba(0, 255, 255, 0.06)`).
+   - Primera columna destacada automáticamente (`font-weight: 600; color: #fff;`).
+   - Contenedor con bordes redondeados (`8px`), borde neón cian (`1px solid var(--line)`), sombra profunda y scroll táctil móvil (`-webkit-overflow-scrolling: touch`).
+3. **Semántica Limpia:** Prohibido dejar markdown crudo (`*texto*`, `**negrita**`) o notación LaTeX sin formatear (`$N$`, `\(...\)`). Utilizar etiquetas semánticas HTML: `<code>...</code>`, `<strong>...</strong>`, `<em>...</em>` o `<span class="math-expr"><em>N</em></span>`.
+

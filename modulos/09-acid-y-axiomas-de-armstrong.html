@@ -568,7 +568,7 @@
               </p>
               <div style="font-size:0.75rem; color:var(--muted); background:#080811; padding:8px; border-radius:4px;">
                 <strong>Ejemplo:</strong><br>
-                Si $Emp\_ID \to Depto\_ID$ y $Depto\_ID \to Gerente$, entonces $Emp\_ID \to Gerente$. (Criterio clave en 3FN).
+                Si <code>Emp_ID → Depto_ID</code> y <code>Depto_ID → Gerente</code>, entonces <code>Emp_ID → Gerente</code>. (Criterio clave en 3FN).
               </div>
             </div>
 
@@ -576,7 +576,7 @@
               <span class="badge-acid badge-d">PROPIEDAD</span>
               <h4 style="color:#fff; margin:0 0 6px;">Completitud & Solidez</h4>
               <p style="font:0.82rem/1.5 Verdana, sans-serif; color:var(--ink); margin:0 0 8px;">
-                Son los únicos 3 axiomas necesarios para generar la clausura total $F^+$.
+                Son los únicos 3 axiomas necesarios para generar la clausura total <code>F⁺</code>.
               </p>
               <div style="font-size:0.75rem; color:var(--muted); background:#080811; padding:8px; border-radius:4px;">
                 Cualquier otra regla de inferencia en diseño de bases de datos se deriva rigurosamente de estas tres.
@@ -599,29 +599,29 @@
               <tbody>
                 <tr>
                   <td><strong>Unión (Aditividad)</strong></td>
-                  <td>Si $X \to Y$ y $X \to Z$, entonces $X \to YZ$.</td>
+                  <td>Si <code>X → Y</code> y <code>X → Z</code>, entonces <code>X → YZ</code>.</td>
                   <td>
-                    1. $X \to XY$ (Aumento con $X$).<br>
-                    2. $XY \to YZ$ (Aumento de $X \to Z$ con $Y$).<br>
-                    3. $X \to YZ$ (Transitividad de 1 y 2).
+                    1. <code>X → XY</code> (Aumento con <code>X</code>).<br>
+                    2. <code>XY → YZ</code> (Aumento de <code>X → Z</code> con <code>Y</code>).<br>
+                    3. <code>X → YZ</code> (Transitividad de 1 y 2).
                   </td>
                   <td>Permite agrupar atributos dependientes bajo una misma clave.</td>
                 </tr>
                 <tr>
                   <td><strong>Descomposición (Proyectividad)</strong></td>
-                  <td>Si $X \to YZ$, entonces $X \to Y$ y $X \to Z$.</td>
+                  <td>Si <code>X → YZ</code>, entonces <code>X → Y</code> y <code>X → Z</code>.</td>
                   <td>
-                    1. $YZ \to Y$ (Reflexividad, pues $Y \subseteq YZ$).<br>
-                    2. $X \to Y$ (Transitividad de $X \to YZ$ y $YZ \to Y$).
+                    1. <code>YZ → Y</code> (Reflexividad, pues <code>Y ⊆ YZ</code>).<br>
+                    2. <code>X → Y</code> (Transitividad de <code>X → YZ</code> y <code>YZ → Y</code>).
                   </td>
                   <td>Fundamental para aislar dependencias en formas normales (BCNF/3FN).</td>
                 </tr>
                 <tr>
                   <td><strong>Pseudotransitividad</strong></td>
-                  <td>Si $X \to Y$ y $WY \to Z$, entonces $WX \to Z$.</td>
+                  <td>Si <code>X → Y</code> y <code>WY → Z</code>, entonces <code>WX → Z</code>.</td>
                   <td>
-                    1. $WX \to WY$ (Aumento de $X \to Y$ con $W$).<br>
-                    2. $WX \to Z$ (Transitividad de 1 y $WY \to Z$).
+                    1. <code>WX → WY</code> (Aumento de <code>X → Y</code> con <code>W</code>).<br>
+                    2. <code>WX → Z</code> (Transitividad de 1 y <code>WY → Z</code>).
                   </td>
                   <td>Simplifica cadenas de dependencias compuestas.</td>
                 </tr>
@@ -636,7 +636,7 @@
         <div class="matrix-card">
           <h2><span>🧮</span> Calculadora Interactiva de Clausura de Atributos ($X^+$)</h2>
           <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            La clausura de un conjunto de atributos $X$ con respecto a un conjunto de dependencias $F$, denotada como <strong>$X^+$</strong>, es el conjunto de todos los atributos que son funcionalmente determinados por $X$. Es el algoritmo central para encontrar <strong>claves candidatas</strong> y verificar formas normales.
+            La clausura de un conjunto de atributos <code>X</code> con respecto a un conjunto de dependencias <code>F</code>, denotada como <strong><code>X⁺</code></strong>, es el conjunto de todos los atributos que son funcionalmente determinados por $X$. Es el algoritmo central para encontrar <strong>claves candidatas</strong> y verificar formas normales.
           </p>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">

@@ -496,7 +496,7 @@ public void ProcesarTransferencia()
                 <tr>
                   <td><strong>Capacidad Máxima</strong></td>
                   <td style="color:var(--cpu-gold); font-weight:700;">Estrictamente 1 solo hilo/proceso a la vez.</td>
-                  <td style="color:var(--cpu-green); font-weight:700;">$N$ hilos simultáneos (Resource Throttling).</td>
+                  <td style="color:var(--cpu-green); font-weight:700;"><span class="math-expr"><em>N</em></span> hilos simultáneos (Resource Throttling).</td>
                 </tr>
                 <tr>
                   <td><strong>Nivel de Capa / Alcance</strong></td>
@@ -504,7 +504,7 @@ public void ProcesarTransferencia()
                   <td>Espacio de usuario de .NET. Exclusivo para un <strong>único proceso</strong> en memoria.</td>
                 </tr>
                 <tr>
-                  <td><strong>Propiedad de Hilo (*Thread Ownership*)</strong></td>
+                  <td><strong>Propiedad de Hilo (<em>Thread Ownership</em>)</strong></td>
                   <td><span style="color:var(--cpu-coral);">SÍ TIENE:</span> El hilo exacto que hace <code>WaitOne()</code> es el único legalmente autorizado a llamar a <code>ReleaseMutex()</code>.</td>
                   <td><span style="color:var(--cpu-green);">NO TIENE:</span> Cualquier hilo puede liberar una ranura con <code>Release()</code>, incluso diferente al que entró.</td>
                 </tr>

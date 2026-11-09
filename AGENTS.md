@@ -31,4 +31,12 @@ Este repositorio contiene visualizadores interactivos para Ciencias de la Comput
 7. **Prohibición Estricta de Referencias Institucionales o Convocatorias:**
    - Queda estrictamente prohibido mencionar o hacer alusión a "SPC", "Servicio Profesional de Carrera", "INEGI", "CENEVAL" o entidades/convocatorias gubernamentales o de oposición en cualquier parte del proyecto (código, contenido HTML, comentarios, títulos, metadatos, badges, reactivos o documentación).
    - Utilizar exclusivamente terminología técnica, universal y neutral: "Evaluación Técnica", "Certificación Técnica", "Simulador de Exámenes de Arquitectura e Ingeniería", "Examen Integrador Técnico", "Laboratorio Evaluativo Formativo", etc.
+8. **Estandarización Obligatoria de Tablas Comparativas y de Datos:**
+   - **Estructura HTML Canónica:** Toda tabla DEBE encapsularse en un contenedor con clase `<div class="data-table-wrap">` y utilizar la clase `<table class="data-table">` (o `<table class="compare-table">`).
+   - **Estética Centralizada en `shared/theme.css`:** Queda estrictamente prohibido aplicar estilos inline sueltos a tablas (`style="border-collapse..."`, padding manual en cada celda o fondos oscuros heterogéneos). Todo el diseño se hereda de `theme.css`:
+     - Cabeceras `th`: tipografía monospace Courier New, mayúsculas, color cian neón (`--cyan`), borde inferior `2px solid var(--cyan)` y fondo contrastante (`rgba(10, 9, 20, 0.96)`).
+     - Celdas `td`: padding uniforme (`13px 18px`), bordes sutiles entre filas (`1px solid rgba(0, 255, 255, 0.1)`), filas pares alternadas tipo cebra (`rgba(255, 255, 255, 0.02)`) y resplandor al hacer hover (`rgba(0, 255, 255, 0.06)`).
+     - Primera columna destacada (`font-weight: 600; color: #fff;`).
+     - Contenedor `.data-table-wrap` con bordes redondeados (`8px`), borde neón cian (`1px solid var(--line)`), sombra profunda (`box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45)`) y scroll horizontal táctil móvil (`-webkit-overflow-scrolling: touch;`).
+   - **Formato Semántico de Contenido en Celdas:** Nunca dejar texto markdown crudo (`*Thread Ownership*`, `$N$`, `\(...\)`) en celdas de tabla. Usar etiquetas semánticas HTML: `<code>...</code>`, `<strong>...</strong>`, `<em>...</em>` o `<span class="math-expr"><em>N</em></span>`.
 

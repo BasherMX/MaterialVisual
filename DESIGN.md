@@ -115,3 +115,12 @@ Todo módulo debe garantizar plena funcionalidad visual y táctil en pantallas d
 2. **Colapso Unificado de Rejillas:** Las cuadrículas (`.taxo-grid`, `.lab-layout`, `.sim-sparc-grid`, `.index-compare-grid`, etc.) colapsan a 1 columna en pantallas móviles (`@media (max-width: 768px)` y `600px`).
 3. **Contenedores de Desplazamiento Táctil:** Tablas (`.data-table-wrap`) y representaciones complejas (árboles B+, esquemas SPARC, diagramas ERD) deben incorporar scroll horizontal táctil suave (`-webkit-overflow-scrolling: touch`).
 4. **Ergonomía Táctil (Touch Targets):** Todo control accionable (pestañas, botones, selectores y reactivos del quiz) debe tener una altura mínima accesible de 42-44px y espacio suficiente para interacción precisa con los dedos.
+
+---
+
+## 8. Estándar Canónico de Tablas Comparativas y de Datos (`.data-table-wrap`)
+Las matrices de confrontación tecnológica y tablas de datos estructurados son componentes centrales para el análisis de trade-offs en arquitectura de software:
+1. **Contenedor Aislado con Scroll Táctil:** Toda tabla se envuelve en `<div class="data-table-wrap">` con `overflow-x: auto` y `-webkit-overflow-scrolling: touch`. Dispone de un borde `1px solid var(--line)`, esquinas redondeadas de `8px`, sombra profunda y fondo `rgba(18, 17, 36, 0.75)`.
+2. **Cabecera Canónica `th`:** Fondo `rgba(10, 9, 20, 0.96)`, tipografía Courier New monospace en mayúsculas (`color: var(--cyan)`), padding `14px 18px` y borde inferior `2px solid var(--cyan)`.
+3. **Cuerpo y Filas `td`:** Padding uniforme `13px 18px`, borde divisor sutil `1px solid rgba(0, 255, 255, 0.1)`, rayado alternado tipo cebra (`rgba(255, 255, 255, 0.02)`) y efecto `hover` iluminado (`rgba(0, 255, 255, 0.06)`).
+4. **Semántica de Notaciones:** Prohibición de notaciones crudas `$N$` o asteriscos de markdown `*texto*` dentro de celdas; usar etiquetas HTML explícitas (`<code>`, `<strong>`, `<em>`, `<span class="math-expr">`).

@@ -325,34 +325,34 @@
             Desde Android 8.0 (Oreo) y Android 14, el sistema suspende procesos en segundo plano agresivamente para ahorrar batería. Selecciona la primitiva correcta según el requerimiento:
           </p>
 
-          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-            <table style="width:100%; border-collapse:collapse; font-size:0.84rem; font-family:Verdana,sans-serif;">
+          <div class="data-table-wrap">
+            <table class="data-table">
               <thead>
-                <tr style="background:rgba(34,33,61,0.9); color:var(--cyan); font-family:'Courier New', monospace;">
-                  <th style="padding:10px; text-align:left;">Primitiva Técnica</th>
-                  <th style="padding:10px; text-align:left;">Garantía de Ejecución</th>
-                  <th style="padding:10px; text-align:left;">Percepción del Usuario</th>
-                  <th style="padding:10px; text-align:left;">Caso de Uso Canónico</th>
+                <tr>
+                  <th>Primitiva Técnica</th>
+                  <th>Garantía de Ejecución</th>
+                  <th>Percepción del Usuario</th>
+                  <th>Caso de Uso Canónico</th>
                 </tr>
               </thead>
               <tbody>
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                  <td style="padding:10px;"><strong style="color:var(--android-green);">WorkManager</strong></td>
-                  <td style="padding:10px; color:var(--green);">Garantizada (Persiste a reinicios)</td>
-                  <td style="padding:10px;">Diferible (Segundo plano silencioso)</td>
-                  <td style="padding:10px;">Sincronizar base de datos SQLite con el servidor al conectarse a Wi-Fi y cargador.</td>
-                </tr>
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                  <td style="padding:10px;"><strong style="color:var(--coral);">Foreground Service</strong></td>
-                  <td style="padding:10px; color:var(--cyan);">Inmediata mientras dure la tarea</td>
-                  <td style="padding:10px; color:var(--coral);">Perceptible (Notificación persistente)</td>
-                  <td style="padding:10px;">Reproductor de música, grabación de audio, navegación por GPS en tiempo real.</td>
+                <tr>
+                  <td><strong style="color:var(--android-green);">WorkManager</strong></td>
+                  <td style="color:var(--green);">Garantizada (Persiste a reinicios)</td>
+                  <td>Diferible (Segundo plano silencioso)</td>
+                  <td>Sincronizar base de datos SQLite con el servidor al conectarse a Wi-Fi y cargador.</td>
                 </tr>
                 <tr>
-                  <td style="padding:10px;"><strong style="color:var(--gold);">AlarmManager</strong></td>
-                  <td style="padding:10px; color:var(--gold);">Exacta a nivel de reloj de pared</td>
-                  <td style="padding:10px;">Dispara en instante temporal fijado</td>
-                  <td style="padding:10px;">Despertador, alarma de calendario o recordatorio de toma de medicamento.</td>
+                  <td><strong style="color:var(--coral);">Foreground Service</strong></td>
+                  <td style="color:var(--cyan);">Inmediata mientras dure la tarea</td>
+                  <td style="color:var(--coral);">Perceptible (Notificación persistente)</td>
+                  <td>Reproductor de música, grabación de audio, navegación por GPS en tiempo real.</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--gold);">AlarmManager</strong></td>
+                  <td style="color:var(--gold);">Exacta a nivel de reloj de pared</td>
+                  <td>Dispara en instante temporal fijado</td>
+                  <td>Despertador, alarma de calendario o recordatorio de toma de medicamento.</td>
                 </tr>
               </tbody>
             </table>
