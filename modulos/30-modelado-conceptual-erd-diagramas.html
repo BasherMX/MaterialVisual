@@ -75,6 +75,254 @@
         padding: 20px;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
       }
+    
+    /* === 2DO SIMULADOR INTERACTIVO: CONSTRUCTOR DE DIAGRAMAS ERD === */
+    .builder-sim-container {
+      background: rgba(18, 17, 34, 0.95);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .builder-scenarios-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .builder-scenario-btn {
+      background: rgba(34, 33, 61, 0.85);
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font: 700 0.78rem "Courier New", monospace;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .builder-scenario-btn:hover {
+      border-color: var(--cyan);
+      color: #fff;
+    }
+    .builder-scenario-btn.active {
+      background: rgba(0, 255, 255, 0.16);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.35);
+    }
+    .builder-scenario-btn.completed {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .scenario-prompt-box {
+      background: rgba(0, 255, 255, 0.05);
+      border-left: 3px solid var(--cyan);
+      padding: 16px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 20px;
+    }
+    .scenario-prompt-box h4 {
+      margin: 0 0 6px;
+      color: var(--cyan);
+      font-size: 0.96rem;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .scenario-prompt-box .target-notation-badge {
+      font-size: 0.72rem;
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .scenario-requirement-text {
+      margin: 8px 0 0;
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: #fff;
+      font-weight: 500;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .builder-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .builder-palette {
+      background: rgba(10, 9, 20, 0.88);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .builder-palette h5 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: "Courier New", monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .palette-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 120px;
+    }
+    .erd-token {
+      background: rgba(34, 33, 61, 0.9);
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 6px;
+      font: 600 0.82rem "Courier New", monospace;
+      cursor: grab;
+      user-select: none;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .erd-token:active {
+      cursor: grabbing;
+    }
+    .erd-token:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 255, 255, 0.25);
+    }
+    .erd-token.is-dragging {
+      opacity: 0.45;
+      border-style: dashed;
+    }
+    .erd-token.selected-mobile {
+      outline: 2px solid var(--green);
+      background: rgba(0, 255, 170, 0.22);
+      box-shadow: 0 0 14px rgba(0, 255, 170, 0.5);
+    }
+    .erd-token .token-badge {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.45);
+      text-transform: uppercase;
+    }
+    .token-badge.entidad { color: var(--cyan); border: 1px solid rgba(0, 255, 255, 0.4); }
+    .token-badge.relacion { color: var(--coral); border: 1px solid rgba(255, 0, 110, 0.4); }
+    .token-badge.cardinalidad { color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.4); }
+    .token-badge.linea { color: var(--green); border: 1px solid rgba(0, 255, 170, 0.4); }
+
+    .builder-canvas-panel {
+      background: rgba(10, 14, 26, 0.95);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .diagram-slots-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      min-height: 180px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      border: 1px dashed rgba(0, 255, 255, 0.2);
+      padding: 18px;
+    }
+    .canvas-slot-dropzone {
+      min-width: 130px;
+      min-height: 110px;
+      background: rgba(22, 21, 43, 0.7);
+      border: 2px dashed rgba(0, 255, 255, 0.35);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .canvas-slot-dropzone.drag-over {
+      border-color: var(--green);
+      background: rgba(0, 255, 170, 0.12);
+      box-shadow: 0 0 16px rgba(0, 255, 170, 0.35);
+    }
+    .canvas-slot-dropzone.slot-correct {
+      border: 2px solid var(--green);
+      background: rgba(0, 255, 170, 0.06);
+    }
+    .canvas-slot-dropzone.slot-error {
+      border: 2px solid var(--coral);
+      background: rgba(255, 0, 110, 0.08);
+    }
+    .canvas-slot-dropzone .slot-placeholder {
+      font-size: 0.74rem;
+      color: rgba(154, 168, 194, 0.6);
+      font-family: Verdana, sans-serif;
+    }
+    .canvas-slot-dropzone .slot-label-top {
+      font: 700 0.68rem "Courier New", monospace;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .builder-preview-box {
+      background: rgba(5, 7, 15, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .builder-preview-box h6 {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-family: "Courier New", monospace;
+    }
+    .live-construct-string {
+      font: 700 0.88rem "Courier New", monospace;
+      color: var(--ink);
+    }
+
     </style>
   </head>
   <body data-module-id="30">
@@ -101,11 +349,14 @@
         <button class="tab-btn" onclick="switchTab('tab-diagram-lab')">
           <span>📐</span> 2. Visualizador Dinámico Multi-Notación
         </button>
+        <button class="tab-btn" onclick="switchTab('tab-builder-sim')">
+          <span>🧩</span> 3. Constructor de Diagramas por Desafíos
+        </button>
         <button class="tab-btn" onclick="switchTab('tab-hierarchy')">
-          <span>🧬</span> 3. Jerarquías de Especialización (ISA)
+          <span>🧬</span> 4. Jerarquías de Especialización (ISA)
         </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 4. Laboratorio Evaluativo
+          <span>🎯</span> 5. Laboratorio Evaluativo
         </button>
       </nav>
 
@@ -948,6 +1199,446 @@
         // Inicializar quiz
         renderQuizQuestion();
       });
-</script>
+
+
+      // =========================================================================
+      // 🧩 2DO SIMULADOR INTERACTIVO: CONSTRUCTOR DE DIAGRAMAS ERD POR DESAFÍOS
+      // Soporta Drag & Drop Nativo y Touch / Tap Selection para Móviles
+      // =========================================================================
+
+      const builderScenarios = [
+        {
+          id: 1,
+          title: "Desafío 1: Peter Chen (1976)",
+          notation: "Notación Original de Peter Chen",
+          description: "La regla de negocio indica: <em>'Una CLASE puede tener múltiples ALUMNOS inscritos, y un ALUMNO puede pertenecer a una sola CLASE'</em>.",
+          doctrinalRule: "En Chen: Las entidades son Rectángulos, la relación es un Rombo con el verbo ('Inscribe' o 'Tiene'), y las cardinalidades extremas son etiquetas '1' y 'N'.",
+          tokens: [
+            { id: "ent_clase_rect", label: "CLASE", type: "entidad", desc: "Rectángulo Chen" },
+            { id: "rel_inscribe_rombo", label: "◇ Inscribe", type: "relacion", desc: "Rombo Chen" },
+            { id: "card_1", label: "1 (Uno)", type: "cardinalidad", desc: "Etiqueta 1" },
+            { id: "card_n", label: "N (Muchos)", type: "cardinalidad", desc: "Etiqueta N" },
+            { id: "ent_alumno_rect", label: "ALUMNO", type: "entidad", desc: "Rectángulo Chen" },
+            // Distractores
+            { id: "dist_pata", label: "Crow's Foot (Pata)", type: "linea", desc: "Símbolo IE erróneo" },
+            { id: "dist_rombo_err", label: "◇ Pertenece", type: "relacion", desc: "Verbo inverso" }
+          ],
+          slots: [
+            { id: "slot_e1", label: "Entidad Origen", expected: "ent_clase_rect", hint: "Rectángulo: CLASE" },
+            { id: "slot_c1", label: "Card. Izq", expected: "card_1", hint: "Cardinalidad 1" },
+            { id: "slot_rel", label: "Relación (Rombo)", expected: "rel_inscribe_rombo", hint: "Rombo: ◇ Inscribe" },
+            { id: "slot_c2", label: "Card. Der", expected: "card_n", hint: "Cardinalidad N" },
+            { id: "slot_e2", label: "Entidad Destino", expected: "ent_alumno_rect", hint: "Rectángulo: ALUMNO" }
+          ],
+          expectedSummary: "CLASE (1) ── ◇ Inscribe ── (N) ALUMNO"
+        },
+        {
+          id: 2,
+          title: "Desafío 2: Crow's Foot / Pata de Gallo (IE)",
+          notation: "Ingeniería de la Información (James Martin)",
+          description: "La regla de negocio indica: <em>'Una FACTURA contiene obligatoriamente una o más LÍNEAS de detalle, mientras que cada LÍNEA pertenece exactamente a una FACTURA'</em>.",
+          doctrinalRule: "En Crow's Foot (IE): No hay rombos. La relación es directa mediante conectores. El extremo de FACTURA lleva 'Uno y Sólo Uno' (||) y el extremo de LÍNEA lleva 'Uno o Varios' (Pata con barra).",
+          tokens: [
+            { id: "ent_factura_ie", label: "FACTURA", type: "entidad", desc: "Caja Atributos IE" },
+            { id: "sym_one_only", label: "|| (Uno y sólo uno)", type: "cardinalidad", desc: "Barra obligatoria" },
+            { id: "line_direct", label: "━━━━ Línea Directa", type: "linea", desc: "Vínculo sin rombo" },
+            { id: "sym_crows_foot_mand", label: ">| (Uno o muchos)", type: "cardinalidad", desc: "Pata con barra" },
+            { id: "ent_linea_ie", label: "LÍNEA_FACTURA", type: "entidad", desc: "Caja Débil Redondeada" },
+            // Distractores
+            { id: "dist_chen_rombo", label: "◇ Contiene", type: "relacion", desc: "Chen no se usa en IE" },
+            { id: "dist_zero_many", label: ">O (Cero o muchos)", type: "cardinalidad", desc: "Opcional (no aplica)" }
+          ],
+          slots: [
+            { id: "slot_e1", label: "Entidad Fuerte", expected: "ent_factura_ie", hint: "Caja: FACTURA" },
+            { id: "slot_c1", label: "Terminal Origen", expected: "sym_one_only", hint: "Símbolo ||" },
+            { id: "slot_rel", label: "Conector IE", expected: "line_direct", hint: "Línea Directa" },
+            { id: "slot_c2", label: "Terminal Destino", expected: "sym_crows_foot_mand", hint: "Pata >|" },
+            { id: "slot_e2", label: "Entidad Débil", expected: "ent_linea_ie", hint: "Caja: LÍNEA_FACTURA" }
+          ],
+          expectedSummary: "FACTURA || ━━━━━━ >| LÍNEA_FACTURA"
+        },
+        {
+          id: 3,
+          title: "Desafío 3: Diagrama de Clases UML",
+          notation: "Unified Modeling Language (OMG)",
+          description: "La regla de negocio indica: <em>'Un CLIENTE puede poseer de 0 a muchas CUENTAS bancarias, y cada CUENTA pertenece a un único CLIENTE titular'</em>.",
+          doctrinalRule: "En UML: Las entidades son clases de 3 compartimentos con <<Entity>>, conectadas por una asociación simple con multiplicidades en los extremos ('1' y '0..*').",
+          tokens: [
+            { id: "uml_cliente", label: "Cliente <<Entity>>", type: "entidad", desc: "Clase UML" },
+            { id: "uml_mult_1", label: "1 (Exactamente 1)", type: "cardinalidad", desc: "Multiplicidad 1" },
+            { id: "uml_assoc_line", label: "──── Asociación", type: "linea", desc: "Línea continua UML" },
+            { id: "uml_mult_many", label: "0..* (Cero o muchos)", type: "cardinalidad", desc: "Multiplicidad 0..*" },
+            { id: "uml_cuenta", label: "Cuenta <<Entity>>", type: "entidad", desc: "Clase UML" },
+            // Distractores
+            { id: "uml_dist_comp", label: "◆ Composición", type: "relacion", desc: "No hay ciclo de vida atado" },
+            { id: "uml_dist_1_n", label: "1..*", type: "cardinalidad", desc: "Obligatorio (no aplica)" }
+          ],
+          slots: [
+            { id: "slot_e1", label: "Clase Titular", expected: "uml_cliente", hint: "Clase: Cliente" },
+            { id: "slot_c1", label: "Mult. Origen", expected: "uml_mult_1", hint: "Multiplicidad 1" },
+            { id: "slot_rel", label: "Vínculo UML", expected: "uml_assoc_line", hint: "Línea Asociación" },
+            { id: "slot_c2", label: "Mult. Destino", expected: "uml_mult_many", hint: "Multiplicidad 0..*" },
+            { id: "slot_e2", label: "Clase Bancaria", expected: "uml_cuenta", hint: "Clase: Cuenta" }
+          ],
+          expectedSummary: "Cliente [1] ──────── [0..*] Cuenta"
+        },
+        {
+          id: 4,
+          title: "Desafío 4: Norma Federal IDEF1X (FIPS 184)",
+          notation: "IDEF1X Integration Definition for Information Modeling",
+          description: "La regla de negocio indica: <em>'Un PROFESOR imparte opcionalmente uno o más CURSOS (relación no identificadora donde la FK no forma parte de la PK)'</em>.",
+          doctrinalRule: "En IDEF1X: La relación no identificadora es una Línea Discontinua (dashed). El extremo dependiente lleva un punto sólido con 'P' (uno o más obligatorio) o 'Z' (cero o uno).",
+          tokens: [
+            { id: "idef_profesor", label: "PROFESOR", type: "entidad", desc: "Caja Independiente" },
+            { id: "idef_dashed_line", label: "╌╌╌ Línea Discontinua", type: "linea", desc: "No Identificadora" },
+            { id: "idef_dot_p", label: "● P (Uno o más)", type: "cardinalidad", desc: "Punto sólido con P" },
+            { id: "idef_curso", label: "CURSO", type: "entidad", desc: "Caja Independiente" },
+            // Distractores
+            { id: "idef_solid_line", label: "━━━ Línea Continua", type: "linea", desc: "Identificadora errónea" },
+            { id: "idef_dot_z", label: "● Z (Cero o uno)", type: "cardinalidad", desc: "Condición Z errónea" }
+          ],
+          slots: [
+            { id: "slot_e1", label: "Entidad Fuerte", expected: "idef_profesor", hint: "Caja: PROFESOR" },
+            { id: "slot_rel", label: "Vínculo IDEF1X", expected: "idef_dashed_line", hint: "Línea Discontinua" },
+            { id: "slot_c1", label: "Cardinalidad", expected: "idef_dot_p", hint: "Punto ● P" },
+            { id: "slot_e2", label: "Entidad Asignada", expected: "idef_curso", hint: "Caja: CURSO" }
+          ],
+          expectedSummary: "PROFESOR ╌╌╌╌╌╌ ● P CURSO"
+        }
+      ];
+
+      let currentScenIdx = 0;
+      let activeMobileToken = null;
+
+      window.loadBuilderScenario = function(scenId) {
+        currentScenIdx = scenId - 1;
+        const scen = builderScenarios[currentScenIdx];
+        if (!scen) return;
+
+        activeMobileToken = null;
+
+        // Actualizar botones de escenarios
+        document.querySelectorAll('.builder-scenario-btn').forEach((btn, idx) => {
+          btn.classList.toggle('active', idx === currentScenIdx);
+        });
+
+        // Actualizar Prompt y Regla Doctrinal
+        const promptBox = document.getElementById('scenario-prompt-box');
+        if (promptBox) {
+          promptBox.innerHTML = `
+            <h4>
+              <span>${scen.title}</span>
+              <span class="target-notation-badge">${scen.notation}</span>
+            </h4>
+            <div class="scenario-requirement-text">
+              ${scen.description}
+            </div>
+            <p style="margin:8px 0 0; color:var(--cyan); font-size:0.8rem; line-height:1.4;">
+              💡 <strong>Doctrina Gráfica:</strong> ${scen.doctrinalRule}
+            </p>
+          `;
+        }
+
+        // Renderizar Tokens en la Paleta
+        const paletteEl = document.getElementById('palette-items-list');
+        if (paletteEl) {
+          paletteEl.innerHTML = '';
+          scen.tokens.forEach(tok => {
+            const tokenDiv = document.createElement('div');
+            tokenDiv.className = 'erd-token';
+            tokenDiv.id = 'tok-' + tok.id;
+            tokenDiv.setAttribute('draggable', 'true');
+            tokenDiv.setAttribute('data-tok-id', tok.id);
+
+            tokenDiv.innerHTML = `
+              <span>${tok.label}</span>
+              <span class="token-badge ${tok.type}">${tok.type}</span>
+            `;
+
+            // Drag Events
+            tokenDiv.addEventListener('dragstart', handleBuilderDragStart);
+            tokenDiv.addEventListener('dragend', handleBuilderDragEnd);
+
+            // Mobile Click / Tap
+            tokenDiv.addEventListener('click', (e) => handleTokenMobileSelect(e, tokenDiv));
+
+            paletteEl.appendChild(tokenDiv);
+          });
+        }
+
+        // Renderizar Ranuras del Diagrama
+        const slotsStage = document.getElementById('diagram-slots-stage');
+        if (slotsStage) {
+          slotsStage.innerHTML = '';
+          scen.slots.forEach(slot => {
+            const slotBox = document.createElement('div');
+            slotBox.className = 'canvas-slot-dropzone';
+            slotBox.id = 'slotbox-' + slot.id;
+            slotBox.setAttribute('data-slot-id', slot.id);
+
+            slotBox.innerHTML = `
+              <span class="slot-label-top">${slot.label}</span>
+              <div class="slot-drop-inner" id="inner-${slot.id}"
+                   ondragover="handleBuilderDragOver(event)"
+                   ondragleave="handleBuilderDragLeave(event)"
+                   ondrop="handleDropToSlot(event, '${slot.id}')"
+                   style="width:100%; min-height:50px; display:flex; align-items:center; justify-content:center;">
+                <span class="slot-placeholder">${slot.hint}</span>
+              </div>
+            `;
+
+            // Mobile Drop on Click
+            slotBox.addEventListener('click', (e) => {
+              if (activeMobileToken && !e.target.closest('.erd-token')) {
+                const inner = slotBox.querySelector('.slot-drop-inner');
+                const placeholder = inner.querySelector('.slot-placeholder');
+                if (placeholder) placeholder.style.display = 'none';
+
+                // Si ya había otro token en la ranura, regresarlo a la paleta
+                const existing = inner.querySelector('.erd-token');
+                if (existing) {
+                  document.getElementById('palette-items-list').appendChild(existing);
+                }
+
+                inner.appendChild(activeMobileToken);
+                activeMobileToken.classList.remove('selected-mobile');
+                activeMobileToken = null;
+                updatePaletteCount();
+                updateConstructPreview();
+              }
+            });
+
+            slotsStage.appendChild(slotBox);
+          });
+        }
+
+        updatePaletteCount();
+        updateConstructPreview();
+
+        // Feedback inicial
+        const fb = document.getElementById('builder-feedback-msg');
+        if (fb) fb.innerHTML = '<span style="color:var(--muted);">Arrastra o toca los componentes correspondientes para satisfacer la notación solicitada.</span>';
+
+        const btnVerify = document.getElementById('btn-verify-builder');
+        if (btnVerify) btnVerify.style.display = 'inline-block';
+
+        const btnNext = document.getElementById('btn-next-scenario');
+        if (btnNext) btnNext.style.display = 'none';
+      };
+
+      function updatePaletteCount() {
+        const pal = document.getElementById('palette-items-list');
+        const countEl = document.getElementById('palette-count');
+        if (pal && countEl) {
+          const count = pal.querySelectorAll('.erd-token').length;
+          countEl.textContent = count + ' disponibles';
+        }
+      }
+
+      function updateConstructPreview() {
+        const scen = builderScenarios[currentScenIdx];
+        if (!scen) return;
+        const liveEl = document.getElementById('live-construct-string');
+        if (!liveEl) return;
+
+        let parts = [];
+        scen.slots.forEach(slot => {
+          const inner = document.getElementById('inner-' + slot.id);
+          const placedToken = inner ? inner.querySelector('.erd-token') : null;
+          if (placedToken) {
+            const tokId = placedToken.getAttribute('data-tok-id');
+            const tokData = scen.tokens.find(t => t.id === tokId);
+            parts.push(tokData ? tokData.label : '???');
+          } else {
+            parts.push('[' + slot.label + ']');
+          }
+        });
+
+        liveEl.textContent = parts.join('   ');
+      }
+
+      // Drag and Drop Core
+      let draggedToken = null;
+
+      window.handleBuilderDragStart = function(e) {
+        draggedToken = this;
+        this.classList.add('is-dragging');
+        e.dataTransfer.setData('text/plain', this.getAttribute('data-tok-id'));
+        e.dataTransfer.effectAllowed = 'move';
+      };
+
+      window.handleBuilderDragEnd = function(e) {
+        this.classList.remove('is-dragging');
+        draggedToken = null;
+        document.querySelectorAll('.canvas-slot-dropzone').forEach(z => z.classList.remove('drag-over'));
+      };
+
+      window.handleBuilderDragOver = function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const zone = e.currentTarget.closest('.canvas-slot-dropzone');
+        if (zone) zone.classList.add('drag-over');
+      };
+
+      window.handleBuilderDragLeave = function(e) {
+        const zone = e.currentTarget.closest('.canvas-slot-dropzone');
+        if (zone) zone.classList.remove('drag-over');
+      };
+
+      window.handleDropToSlot = function(e, slotId) {
+        e.preventDefault();
+        const zone = e.currentTarget.closest('.canvas-slot-dropzone');
+        if (zone) zone.classList.remove('drag-over');
+
+        const tokId = e.dataTransfer.getData('text/plain');
+        const token = document.getElementById('tok-' + tokId) || draggedToken;
+        if (!token) return;
+
+        const inner = document.getElementById('inner-' + slotId);
+        if (inner) {
+          const placeholder = inner.querySelector('.slot-placeholder');
+          if (placeholder) placeholder.style.display = 'none';
+
+          // Regresar el anterior si había uno
+          const existing = inner.querySelector('.erd-token');
+          if (existing) {
+            document.getElementById('palette-items-list').appendChild(existing);
+          }
+
+          inner.appendChild(token);
+          updatePaletteCount();
+          updateConstructPreview();
+        }
+      };
+
+      window.handleDropToPalette = function(e) {
+        e.preventDefault();
+        const tokId = e.dataTransfer.getData('text/plain');
+        const token = document.getElementById('tok-' + tokId) || draggedToken;
+        if (token) {
+          document.getElementById('palette-items-list').appendChild(token);
+          // Restaurar placeholders si quedaron ranuras vacías
+          document.querySelectorAll('.slot-drop-inner').forEach(inner => {
+            if (!inner.querySelector('.erd-token')) {
+              const ph = inner.querySelector('.slot-placeholder');
+              if (ph) ph.style.display = 'block';
+            }
+          });
+          updatePaletteCount();
+          updateConstructPreview();
+        }
+      };
+
+      // Mobile Touch Selection
+      function handleTokenMobileSelect(e, token) {
+        e.stopPropagation();
+        if (activeMobileToken === token) {
+          token.classList.remove('selected-mobile');
+          activeMobileToken = null;
+        } else {
+          if (activeMobileToken) activeMobileToken.classList.remove('selected-mobile');
+          activeMobileToken = token;
+          token.classList.add('selected-mobile');
+        }
+      }
+
+      // Devolver a paleta tocando la paleta en móvil
+      document.addEventListener('DOMContentLoaded', () => {
+        const pal = document.getElementById('palette-items-list');
+        if (pal) {
+          pal.addEventListener('click', (e) => {
+            if (activeMobileToken && !e.target.closest('.erd-token')) {
+              pal.appendChild(activeMobileToken);
+              activeMobileToken.classList.remove('selected-mobile');
+              activeMobileToken = null;
+              document.querySelectorAll('.slot-drop-inner').forEach(inner => {
+                if (!inner.querySelector('.erd-token')) {
+                  const ph = inner.querySelector('.slot-placeholder');
+                  if (ph) ph.style.display = 'block';
+                }
+              });
+              updatePaletteCount();
+              updateConstructPreview();
+            }
+          });
+        }
+      });
+
+      // Verificación de Diagrama Construido
+      window.verifyCurrentBuilderScenario = function() {
+        const scen = builderScenarios[currentScenIdx];
+        if (!scen) return;
+
+        let allCorrect = true;
+        let errors = [];
+
+        scen.slots.forEach(slot => {
+          const slotBox = document.getElementById('slotbox-' + slot.id);
+          const inner = document.getElementById('inner-' + slot.id);
+          if (!slotBox || !inner) return;
+
+          const placedToken = inner.querySelector('.erd-token');
+          if (!placedToken) {
+            allCorrect = false;
+            slotBox.classList.remove('slot-correct');
+            slotBox.classList.add('slot-error');
+            errors.push(`Falta asignar la ranura <strong>${slot.label}</strong>.`);
+          } else {
+            const tokId = placedToken.getAttribute('data-tok-id');
+            if (tokId === slot.expected) {
+              slotBox.classList.remove('slot-error');
+              slotBox.classList.add('slot-correct');
+            } else {
+              allCorrect = false;
+              slotBox.classList.remove('slot-correct');
+              slotBox.classList.add('slot-error');
+              errors.push(`El elemento colocado en <strong>${slot.label}</strong> no corresponde a la notación esperada.`);
+            }
+          }
+        });
+
+        const feedbackMsg = document.getElementById('builder-feedback-msg');
+        const btnNext = document.getElementById('btn-next-scenario');
+        const currentBtn = document.getElementById('btn-scen-' + (currentScenIdx + 1));
+
+        if (allCorrect) {
+          feedbackMsg.innerHTML = `<strong style="color:var(--green);">🎉 ¡Excelente! Diagrama Canónico Correcto:</strong> Has construido con total precisión la notación (${scen.expectedSummary}). La semántica coincide con el requerimiento doctrinal.`;
+          if (currentBtn) currentBtn.classList.add('completed');
+          if (btnNext) {
+            btnNext.style.display = 'inline-block';
+            if (currentScenIdx < builderScenarios.length - 1) {
+              btnNext.innerText = 'Avanzar al Desafío ' + (currentScenIdx + 2) + ' ➔';
+            } else {
+              btnNext.innerText = '🏆 ¡Desafíos Completados! Ir al Laboratorio Evaluativo ➔';
+            }
+          }
+        } else {
+          feedbackMsg.innerHTML = `<strong style="color:var(--coral);">⚠️ Corrección Requerida:</strong> ${errors.slice(0, 2).join(' ')}`;
+          if (btnNext) btnNext.style.display = 'none';
+        }
+      };
+
+      window.resetCurrentBuilderScenario = function() {
+        loadBuilderScenario(currentScenIdx + 1);
+      };
+
+      window.advanceBuilderScenario = function() {
+        if (currentScenIdx < builderScenarios.length - 1) {
+          loadBuilderScenario(currentScenIdx + 2);
+        } else {
+          switchTab('tab-quiz');
+          const quizEl = document.getElementById('laboratorio-evaluativo');
+          if (quizEl) quizEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+
+      // Inicializar Constructor
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { loadBuilderScenario(1); });
+      } else {
+        loadBuilderScenario(1);
+      }
+
+    </script>
   </body>
 </html>
