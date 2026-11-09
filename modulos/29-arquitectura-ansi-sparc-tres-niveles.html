@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arquitectura ANSI/SPARC de Tres Niveles | Laboratorio Interactivo</title>
+    <meta
+      name="description"
+      content="Simulador y laboratorio interactivo de la Arquitectura ANSI/SPARC de tres niveles: Niveles Externo, Conceptual/Lógico e Interno/Físico, Mapeos SGBD, Independencia Lógica y Física de datos y la discrepancia comercial de Andy Oppel."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --lvl-external: #00ffff;
+        --lvl-conceptual: #00ffaa;
+        --lvl-internal: #ff006e;
+        --lvl-mapping: #ffd700;
+      }
+
+      .content-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .content-panel.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Grid 3 Niveles ANSI/SPARC */
+      .ansi-levels-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .ansi-card {
+        background: var(--panel-dark);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 22px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .ansi-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .ansi-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+      }
+
+      .card-ext { border-color: rgba(0, 255, 255, 0.4); }
+      .card-ext::before { background: var(--lvl-external); }
+      .card-ext:hover { box-shadow: 0 0 20px rgba(0, 255, 255, 0.25); }
+
+      .card-con { border-color: rgba(0, 255, 170, 0.4); }
+      .card-con::before { background: var(--lvl-conceptual); }
+      .card-con:hover { box-shadow: 0 0 20px rgba(0, 255, 170, 0.25); }
+
+      .card-int { border-color: rgba(255, 0, 110, 0.4); }
+      .card-int::before { background: var(--lvl-internal); }
+      .card-int:hover { box-shadow: 0 0 20px rgba(255, 0, 110, 0.25); }
+
+      .badge-level {
+        display: inline-block;
+        font: 700 0.82rem "Courier New", monospace;
+        padding: 4px 10px;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        letter-spacing: 0.08em;
+      }
+
+      .badge-ext { color: var(--lvl-external); background: rgba(0, 255, 255, 0.1); }
+      .badge-con { color: var(--lvl-conceptual); background: rgba(0, 255, 170, 0.1); }
+      .badge-int { color: var(--lvl-internal); background: rgba(255, 0, 110, 0.1); }
+
+      /* Diagrama de Cascada de Mapeos */
+      .mapping-stack-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .layer-box {
+        background: var(--panel-dark);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 18px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .layer-box.highlight-active {
+        border-color: var(--gold) !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important;
+        transform: scale(1.01);
+      }
+
+      .mapping-connector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 10px 18px;
+        background: rgba(255, 215, 0, 0.08);
+        border: 1px dashed var(--lvl-mapping);
+        border-radius: 6px;
+        color: var(--gold);
+        font: 700 0.85rem "Courier New", monospace;
+      }
+
+      .mapping-connector.pulse-active {
+        animation: pulseConnector 1.5s infinite alternate;
+      }
+
+      @keyframes pulseConnector {
+        0% { background: rgba(255, 215, 0, 0.08); box-shadow: none; }
+        100% { background: rgba(255, 215, 0, 0.25); box-shadow: 0 0 16px rgba(255, 215, 0, 0.4); }
+      }
+
+      /* Botones de Simulación */
+      .btn-sim {
+        padding: 9px 16px;
+        border-radius: 6px;
+        font: 700 0.82rem "Courier New", monospace;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+      }
+
+      .btn-sim-primary {
+        background: linear-gradient(135deg, var(--cyan), #0080ff);
+        color: #080811;
+      }
+      .btn-sim-primary:hover {
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.5);
+        transform: translateY(-2px);
+      }
+
+      .btn-sim-success {
+        background: linear-gradient(135deg, #00ffaa, #0080ff);
+        color: #080811;
+      }
+      .btn-sim-success:hover {
+        box-shadow: 0 0 16px rgba(0, 255, 170, 0.5);
+        transform: translateY(-2px);
+      }
+
+      .btn-sim-warning {
+        background: rgba(255, 215, 0, 0.15);
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .btn-sim-warning:hover {
+        background: var(--gold);
+        color: #080811;
+      }
+
+      .btn-sim-danger {
+        background: linear-gradient(135deg, var(--coral), #ff4757);
+        color: #fff;
+      }
+
+      /* Simulador Layout */
+      .sim-sparc-grid {
+        display: grid;
+        grid-template-columns: minmax(320px, 1fr) minmax(360px, 1.3fr);
+        gap: 22px;
+      }
+
+      @media (max-width: 980px) {
+        .sim-sparc-grid { grid-template-columns: 1fr; }
+      }
+
+      .console-log-box {
+        background: #080811;
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        border-radius: 6px;
+        padding: 14px;
+        font: 0.82rem/1.5 "Courier New", monospace;
+        height: 220px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .log-line { line-height: 1.4; }
+      .log-tag-ext { color: var(--lvl-external); font-weight: 700; }
+      .log-tag-map { color: var(--lvl-mapping); font-weight: 700; }
+      .log-tag-con { color: var(--lvl-conceptual); font-weight: 700; }
+      .log-tag-int { color: var(--lvl-internal); font-weight: 700; }
+
+      /* Quiz */
+      .quiz-card-box {
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        border-radius: 8px;
+        padding: 22px;
+        margin-top: 16px;
+      }
+
+      .quiz-opt-btn {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        background: rgba(34, 33, 61, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--ink);
+        font: 700 0.84rem "Courier New", monospace;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .quiz-opt-btn:hover {
+        border-color: var(--gold);
+        background: rgba(255, 215, 0, 0.08);
+      }
+
+      .quiz-opt-btn.correct {
+        background: rgba(0, 255, 170, 0.25) !important;
+        border-color: var(--green) !important;
+        color: #fff !important;
+      }
+
+      .quiz-opt-btn.incorrect {
+        background: rgba(255, 0, 110, 0.25) !important;
+        border-color: var(--coral) !important;
+        color: #fff !important;
+      }
+    
+      @media (max-width: 768px) {
+        .ansi-levels-grid {
+          grid-template-columns: 1fr;
+        }
+        .sim-sparc-grid {
+          grid-template-columns: 1fr;
+        }
+        .sparc-level-visual {
+          padding: 14px 10px;
+        }
+        .sparc-controls button,
+        .btn-toggle-oppel {
+          min-height: 44px;
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .ansi-level-card {
+          padding: 14px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body data-module-id="29">
+    <main class="page">
+      <a href="../index.html" class="btn-back-index">
+        <span>←</span> Volver al Índice Principal
+      </a>
+
+      <header>
+        <div>
+          <p class="eyebrow">29 · Arquitectura DBMS</p>
+          <h1>Arquitectura ANSI/SPARC de Tres Niveles</h1>
+        </div>
+        <p class="intro">
+          El modelo fundacional de tres niveles para el aislamiento de programas frente al almacenamiento físico: Niveles Externo, Conceptual e Interno, Transformaciones de Mapeo, Independencia de Datos y la Discrepancia Teórica vs Comercial identificada por Andy Oppel.
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-sparc-theory')">
+          <span>🏛️</span> 1. Los Tres Niveles de Abstracción
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-sparc-sim')">
+          <span>🔄</span> 2. Simulador de Mapeos en Tiempo Real
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-independencia')">
+          <span>🛡️</span> 3. Independencia Física vs Lógica
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-oppel-discrepancy')">
+          <span>⚡</span> 4. Discrepancia Comercial (Punto Clave - Oppel)
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 5. Laboratorio de Diagnóstico (Quiz)
+        </button>
+      </nav>
+
+      <!-- SECCIÓN 1: LOS TRES NIVELES DE ABSTRACCIÓN -->
+      <section id="tab-sparc-theory" class="content-panel active">
+        <div class="matrix-card">
+          <h2><span>🏛️</span> La Doctrina ANSI/X3/SPARC (1975)</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
+            Propuesta por el comité <em>Standards Planning and Requirements Committee</em> (SPARC) de ANSI, esta arquitectura tiene como objetivo primordial <strong>separar las aplicaciones cliente del almacenamiento físico de los datos</strong>, permitiendo que la base de datos evolucione sin romper el software preexistente.
+          </p>
+
+          <div class="ansi-levels-grid">
+            <!-- Nivel Externo -->
+            <article class="ansi-card card-ext">
+              <span class="badge-level badge-ext">NIVEL 1 · EXTERNO</span>
+              <h3 style="color:#fff; margin:0 0 8px; font-size:1.15rem;">Vistas / Esquemas Secundarios</h3>
+              <p style="font:0.83rem/1.55 Verdana, sans-serif; color:var(--ink); margin:0 0 12px;">
+                Es la perspectiva individual del usuario final, del analista o de la aplicación de software.
+              </p>
+              <ul style="padding-left:18px; margin:0 0 12px; font:0.82rem/1.55 Verdana, sans-serif; color:var(--muted);">
+                <li><strong>Ocultamiento de Complejidad:</strong> Solo expone el subconjunto de datos relevante y autorizado para un rol específico.</li>
+                <li><strong>Multiplicidad:</strong> Pueden coexistir <strong>múltiples esquemas externos</strong> sobre una misma base de datos (ej. Vista Contabilidad, Vista RRHH, Vista App Móvil).</li>
+                <li><strong>Seguridad:</strong> Bloquea el acceso a columnas confidenciales (ej. ocultar salarios a contratistas).</li>
+              </ul>
+              <div style="background:#080811; border:1px solid rgba(0,255,255,0.3); padding:8px 12px; border-radius:4px; font:0.78rem 'Courier New', monospace; color:var(--cyan);">
+                SQL: <code>CREATE VIEW vista_publica AS SELECT id, nombre FROM empleados;</code>
+              </div>
+            </article>
+
+            <!-- Nivel Conceptual -->
+            <article class="ansi-card card-con">
+              <span class="badge-level badge-con">NIVEL 2 · CONCEPTUAL / LÓGICO</span>
+              <h3 style="color:#fff; margin:0 0 8px; font-size:1.15rem;">La Visión Comunitaria Global</h3>
+              <p style="font:0.83rem/1.55 Verdana, sans-serif; color:var(--ink); margin:0 0 12px;">
+                Describe <strong>QUÉ</strong> datos se almacenan en toda la organización, libre de ataduras al hardware físico.
+              </p>
+              <ul style="padding-left:18px; margin:0 0 12px; font:0.82rem/1.55 Verdana, sans-serif; color:var(--muted);">
+                <li><strong>Representación Unificada:</strong> Describe todas las entidades, atributos, relaciones, tipos de datos y restricciones de integridad (PK, FK, CHECK).</li>
+                <li><strong>Único:</strong> Solo existe <strong>un único esquema conceptual</strong> para toda la base de datos empresarial.</li>
+                <li><strong>Independiente del Almacenamiento:</strong> No sabe ni le importa si los datos se guardan en discos HDD, SSD, cintas o si usan compresión.</li>
+              </ul>
+              <div style="background:#080811; border:1px solid rgba(0,255,170,0.3); padding:8px 12px; border-radius:4px; font:0.78rem 'Courier New', monospace; color:var(--green);">
+                SQL: <code>CREATE TABLE empleados (id INT PK, nombre VARCHAR, salario NUMERIC);</code>
+              </div>
+            </article>
+
+            <!-- Nivel Interno -->
+            <article class="ansi-card card-int">
+              <span class="badge-level badge-int">NIVEL 3 · INTERNO / FÍSICO</span>
+              <h3 style="color:#fff; margin:0 0 8px; font-size:1.15rem;">La Representación Física en Disco</h3>
+              <p style="font:0.83rem/1.55 Verdana, sans-serif; color:var(--ink); margin:0 0 12px;">
+                Describe <strong>CÓMO</strong> se estructuran y ordenan los bits, bytes y bloques en el dispositivo persistente.
+              </p>
+              <ul style="padding-left:18px; margin:0 0 12px; font:0.82rem/1.55 Verdana, sans-serif; color:var(--muted);">
+                <li><strong>Bajo Nivel:</strong> Tamaño de páginas de disco (8 KB / 16 KB), ordenamiento de registros, estructuras B+ Tree y punteros de página.</li>
+                <li><strong>Estrategias Físicas:</strong> Asignación de Tablespaces, compresión columnar, particionamiento de archivos y hashing.</li>
+                <li><strong>Optimización de I/O:</strong> Busca maximizar el throughput y minimizar lecturas de disco.</li>
+              </ul>
+              <div style="background:#080811; border:1px solid rgba(255,0,110,0.3); padding:8px 12px; border-radius:4px; font:0.78rem 'Courier New', monospace; color:var(--coral);">
+                Estructura: Páginas de datos (Data Pages), Extents, Índices Clustered y WAL.
+              </div>
+            </article>
+          </div>
+
+          <!-- Mapeos Transformacionales -->
+          <h3 style="color:var(--gold); margin-top:24px;">🔄 Los Mapeos o Transformaciones del SGBD</h3>
+          <p style="font:0.84rem/1.5 Verdana, sans-serif; color:var(--muted); margin-bottom:14px;">
+            El Sistema Gestor de Bases de Datos (SGBD) es el responsable de traducir las peticiones entre capas mediante dos procesadores de mapeo:
+          </p>
+          <div class="data-table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Transformación de Mapeo</th>
+                  <th>Traducción que Realiza</th>
+                  <th>Propósito de Ingeniería</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color:var(--lvl-external);">Mapeo Externo / Lógico</strong></td>
+                  <td>Traduce consultas formuladas sobre una vista externa a sentencias sobre las tablas y relaciones del esquema global.</td>
+                  <td>Permite cambiar nombres o esquemas lógicos sin quebrar las vistas utilizadas por las aplicaciones cliente.</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--lvl-internal);">Mapeo Lógico / Interno</strong></td>
+                  <td>Traduce las sentencias lógicas (tuplas y columnas) a ubicaciones de bloques, punteros y lecturas físicas en los archivos de disco.</td>
+                  <td>Permite reorganizar el almacenamiento físico (mover a SSD o reindexar) sin alterar el esquema relacional lógico.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: SIMULADOR DE MAPEOS EN TIEMPO REAL -->
+      <section id="tab-sparc-sim" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🔄</span> Simulador de Mapeos: El Viaje de una Consulta</h2>
+          <p style="font: 0.88rem/1.55 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            Observa cómo una petición desde una <strong>Vista Externa</strong> atraviesa los traductores del motor de base de datos paso a paso hasta llegar al bloque físico de 8 KB en el almacenamiento persistente.
+          </p>
+
+          <div class="sim-sparc-grid">
+            <!-- Pila de Capas Interactivas -->
+            <div class="mapping-stack-container">
+              <!-- Capa Externa -->
+              <div class="layer-box" id="sim-layer-ext" style="border-left:4px solid var(--lvl-external);">
+                <div>
+                  <span class="badge-level badge-ext">1. ESQUEMA EXTERNO (VISTA)</span>
+                  <h4 style="margin:4px 0 0; color:#fff;">Vista: <code>v_nomina_resumen</code></h4>
+                  <small style="color:var(--muted);">Expone: <code>{ emp_id, nombre, departamento }</code> (Salario oculto)</small>
+                </div>
+                <button class="btn-sim btn-sim-primary" onclick="runQueryPipeline()">
+                  ▶ Ejecutar Consulta Cliente
+                </button>
+              </div>
+
+              <!-- Conector Mapeo Externo/Lógico -->
+              <div class="mapping-connector" id="connector-ext-log">
+                <span>⇣ MAPEO EXTERNO / LÓGICO ⇣ (Expande vista a tabla base)</span>
+              </div>
+
+              <!-- Capa Conceptual / Lógica -->
+              <div class="layer-box" id="sim-layer-con" style="border-left:4px solid var(--lvl-conceptual);">
+                <div>
+                  <span class="badge-level badge-con">2. ESQUEMA CONCEPTUAL / LÓGICO</span>
+                  <h4 style="margin:4px 0 0; color:#fff;">Tabla Base: <code>empleados</code></h4>
+                  <small style="color:var(--muted);" id="conceptual-schema-desc">
+                    Columnas: <code>{ emp_id, nombre, depto, salario, fecha_ingreso }</code>
+                  </small>
+                </div>
+                <span id="badge-conceptual-integrity" style="font-size:0.75rem; color:var(--green); font-weight:700;">
+                  [PK: emp_id, Salario &gt; 0]
+                </span>
+              </div>
+
+              <!-- Conector Mapeo Lógico/Interno -->
+              <div class="mapping-connector" id="connector-log-int">
+                <span>⇣ MAPEO LÓGICO / INTERNO ⇣ (Traduce columnas a bytes/bloques de disco)</span>
+              </div>
+
+              <!-- Capa Interna / Física -->
+              <div class="layer-box" id="sim-layer-int" style="border-left:4px solid var(--lvl-internal);">
+                <div>
+                  <span class="badge-level badge-int">3. ESQUEMA INTERNO / FÍSICO</span>
+                  <h4 style="margin:4px 0 0; color:#fff;">Estructura de Almacenamiento</h4>
+                  <small style="color:var(--muted);" id="internal-storage-desc">
+                    Medio: <strong>HDD Convencional</strong> · Organización: <strong>Heap File (Páginas 8 KB)</strong>
+                  </small>
+                </div>
+                <span id="badge-internal-status" style="font-size:0.75rem; color:var(--coral); font-weight:700;">
+                  [Pág 102, Slot 4, Offset 0x01F0]
+                </span>
+              </div>
+            </div>
+
+            <!-- Terminal de Trazas del SGBD -->
+            <div style="background:var(--panel-dark); border:1px solid rgba(0,255,255,0.22); border-radius:8px; padding:18px; display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="margin:0; color:var(--gold);">Traza del Traductor Interno del SGBD</h4>
+                <button class="btn-sim" style="background:#22213d; color:var(--muted);" onclick="clearSparcLog()">Limpiar</button>
+              </div>
+
+              <div class="console-log-box" id="sparc-console">
+                <div class="log-line">
+                  <span style="color:var(--muted);">[SGBD]:</span> Listo para recibir consultas del esquema externo.
+                </div>
+              </div>
+
+              <div id="sparc-narrative" style="font-size:0.82rem; color:var(--muted); line-height:1.5;">
+                Presiona <strong>"Ejecutar Consulta Cliente"</strong> para visualizar cómo los dos mapeos transforman la petición en cascada.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: INDEPENDENCIA FÍSICA VS LÓGICA -->
+      <section id="tab-independencia" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🛡️</span> Las Dos Grandes Independencias de Datos</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
+            El beneficio de ingeniería supremo de la arquitectura ANSI/SPARC es la <strong>Inmunidad al Cambio</strong>: modificar una capa inferior sin tener que reescribir ni recompilar las capas superiores.
+          </p>
+
+          <div class="ansi-levels-grid">
+            <!-- Independencia Física -->
+            <div class="ansi-card card-int">
+              <span class="badge-level badge-int">INDEPENDENCIA FÍSICA DE DATOS</span>
+              <h3 style="color:#fff; margin:0 0 10px; font-size:1.15rem;">Inmunidad del Esquema Lógico ante el Hardware</h3>
+              <p style="font:0.83rem/1.55 Verdana, sans-serif; color:var(--ink); margin:0 0 12px;">
+                Es la capacidad de modificar el <strong>esquema interno</strong> sin alterar el esquema conceptual ni los programas clientes.
+              </p>
+              <div style="background:#080811; border-left:3px solid var(--lvl-internal); padding:10px 12px; margin-bottom:12px; font-size:0.8rem; color:var(--muted);">
+                <strong>Acciones que soporta sin romper aplicaciones:</strong><br>
+                • Mover archivos a discos de estado sólido (SSD NVMe).<br>
+                • Reorganizar una tabla de Heap a un Árbol B+ Clustered.<br>
+                • Crear o destruir índices no agrupados.<br>
+                • Activar compresión de páginas o cambiar el tamaño de bloque.
+              </div>
+              <button class="btn-sim btn-sim-danger" onclick="testPhysicalIndependence()">
+                🧪 Probar: Migrar Almacenamiento a SSD & B+
+              </button>
+            </div>
+
+            <!-- Independencia Lógica -->
+            <div class="ansi-card card-con">
+              <span class="badge-level badge-con">INDEPENDENCIA LÓGICA DE DATOS</span>
+              <h3 style="color:#fff; margin:0 0 10px; font-size:1.15rem;">Inmunidad de las Vistas ante Cambios de Esquema</h3>
+              <p style="font:0.83rem/1.55 Verdana, sans-serif; color:var(--ink); margin:0 0 12px;">
+                Es la capacidad de modificar el <strong>esquema conceptual</strong> sin tener que reescribir las vistas externas ni los programas preexistentes.
+              </p>
+              <div style="background:#080811; border-left:3px solid var(--lvl-conceptual); padding:10px 12px; margin-bottom:12px; font-size:0.8rem; color:var(--muted);">
+                <strong>Acciones que soporta sin romper aplicaciones:</strong><br>
+                • Agregar nuevas columnas a una tabla (ej. <code>bono_anual</code>).<br>
+                • Crear nuevas tablas o relaciones en la base de datos.<br>
+                • Descomponer una tabla en dos respetando las vistas con JOIN.<br>
+                • Las aplicaciones antiguas que no usan las nuevas columnas no requieren recompilación.
+              </div>
+              <button class="btn-sim btn-sim-success" onclick="testLogicalIndependence()">
+                🧪 Probar: Agregar Columnas al Esquema Lógico
+              </button>
+            </div>
+          </div>
+
+          <!-- Cuadro de Estado de la Prueba -->
+          <div id="independence-test-output" style="background:#080811; border:1px solid rgba(0,255,255,0.25); border-radius:6px; padding:16px; font:0.84rem/1.6 'Courier New', monospace; color:var(--ink); margin-top:10px;">
+            Selecciona uno de los dos botones de prueba arriba para alterar una de las capas y comprobar cómo el SGBD aísla las demás capas mediante sus mapeos.
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4: DISCREPANCIA COMERCIAL (ANDY OPPEL) -->
+      <section id="tab-oppel-discrepancy" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>⚡</span> La Discrepancia Teórica vs Comercial: El Punto Clave de Andy Oppel</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
+            En su influyente literatura de diseño de bases de datos relacionales, el autor <strong>Andy Oppel</strong> subraya una distinción crucial que suele provocar confusiones entre la teoría académica y la práctica profesional:
+          </p>
+
+          <div style="background:rgba(255,215,0,0.08); border:1px solid var(--gold); border-radius:8px; padding:18px 22px; margin-bottom:24px;">
+            <h4 style="margin:0 0 10px; color:var(--gold); font-size:1.1rem;">
+              📖 La Tesis de Oppel: La Fusión de los Niveles Conceptual y Lógico
+            </h4>
+            <blockquote style="margin:0; font:italic 0.88rem/1.6 Georgia, serif; color:#fff; border-left:3px solid var(--gold); padding-left:14px;">
+              "Aunque la teoría formal de ANSI/SPARC postula la existencia de un nivel conceptual puro completamente abstracto e independiente de cualquier modelo, en los <strong>motores SGBD comerciales del mundo real</strong> (Oracle, SQL Server, PostgreSQL, MySQL, DB2) los niveles conceptual y lógico se implementan de forma <strong>fusionada</strong> en un único esquema lógico relacional gobernado por DDL."
+            </blockquote>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Criterio Comparativo</th>
+                  <th>Teoría Formal ANSI/SPARC</th>
+                  <th>Realidad Comercial en RDBMS (Oppel)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Separación Conceptual vs Lógico</strong></td>
+                  <td>Estricta. El nivel conceptual describe el universo del discurso sin asumir modelo relacional ni de red.</td>
+                  <td><strong>Fusionada:</strong> El esquema conceptual <em>ES</em> el esquema lógico de tablas, tipos de datos SQL, PKs y FKs.</td>
+                </tr>
+                <tr>
+                  <td><strong>Mapeos Requeridos</strong></td>
+                  <td>Dos mapeos teóricos separados (Externo-Conceptual y Conceptual-Interno).</td>
+                  <td>Se reduce a <strong>Mapeo Vista-Tabla</strong> (Externo/Lógico) y <strong>Mapeo Tabla-Disco</strong> (Lógico/Interno).</td>
+                </tr>
+                <tr>
+                  <td><strong>Lenguaje de Implementación</strong></td>
+                  <td>Lenguajes abstractos conceptuales independientes.</td>
+                  <td><strong>SQL DDL Estándar</strong> (<code>CREATE TABLE</code>, <code>ALTER TABLE</code>, <code>CREATE VIEW</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong>Definición del Esquema Interno</strong></td>
+                  <td>Completamente transparente y aislado por el motor.</td>
+                  <td>Permite directivas físicas parciales en DDL comercial (ej. <code>TABLESPACE</code>, <code>INDEX CLUSTERED</code>, <code>PARTITION BY</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: QUIZ INTERACTIVO -->
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Evaluativo · Arquitectura ANSI/SPARC de 3 Niveles
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos doctrinales sobre esquemas externo, conceptual e interno e independencia física y lógica de datos.
+          </p>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 6</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 6</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+          <div style="margin-top:12px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
+          </div>
+        </div>
+      </div>
+  
+    </section>
+
+      <nav class="module-nav-bar"></nav>
+
+    <footer class="global-footer">
+      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+    </footer>
+    </main>
+
+    <script>
+
+      // Gestor Universal Robusto de Pestañas
+      window.switchTab = function (tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel, .tab-content').forEach(p => p.classList.remove('active'));
+        
+        const panel = document.getElementById(tabId) || document.getElementById('tab-' + tabId);
+        if (panel) panel.classList.add('active');
+        
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+          const onclickAttr = b.getAttribute('onclick') || '';
+          return onclickAttr.includes(tabId);
+        });
+        if (activeBtn) activeBtn.classList.add('active');
+      };
+
+      // ========================================================
+      // 1. Control de Pestañas
+      // ========================================================
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+
+        const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+        if (targetBtn) targetBtn.classList.add('active');
+
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+      }
+
+      // ========================================================
+      // 2. Simulador de Mapeos en Tiempo Real
+      // ========================================================
+      const sparcSim = {
+        isSSD: false,
+        extraColumnsAdded: false,
+        isQueryRunning: false
+      };
+
+      function addSparcLog(layer, tagClass, text) {
+        const consoleEl = document.getElementById('sparc-console');
+        const now = new Date();
+        const timeStr = `[${now.toTimeString().split(' ')[0]}]`;
+
+        const div = document.createElement('div');
+        div.className = 'log-line';
+        div.innerHTML = `<span style="color:var(--muted);">${timeStr}</span> <span class="${tagClass}">[${layer}]:</span> ${text}`;
+        consoleEl.appendChild(div);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      }
+
+      function clearSparcLog() {
+        document.getElementById('sparc-console').innerHTML = '<div class="log-line"><span style="color:var(--muted);">[SGBD]:</span> Consola reiniciada. Listo.</div>';
+      }
+
+      function runQueryPipeline() {
+        if (sparcSim.isQueryRunning) return;
+        sparcSim.isQueryRunning = true;
+
+        const layerExt = document.getElementById('sim-layer-ext');
+        const layerCon = document.getElementById('sim-layer-con');
+        const layerInt = document.getElementById('sim-layer-int');
+        const connExtLog = document.getElementById('connector-ext-log');
+        const connLogInt = document.getElementById('connector-log-int');
+        const narrative = document.getElementById('sparc-narrative');
+
+        // Paso 1: Petición en Nivel Externo
+        layerExt.classList.add('highlight-active');
+        addSparcLog("EXTERNO", "log-tag-ext", "App solicita: SELECT * FROM v_nomina_resumen WHERE emp_id = 10;");
+        narrative.innerHTML = "<strong style='color:var(--lvl-external);'>Paso 1 (Nivel Externo):</strong> La aplicación emite una consulta sobre la vista. El usuario desconoce la estructura real de la tabla base.";
+
+        setTimeout(() => {
+          // Paso 2: Mapeo Externo / Lógico
+          layerExt.classList.remove('highlight-active');
+          connExtLog.classList.add('pulse-active');
+          addSparcLog("MAPEO EXT/LOG", "log-tag-map", "Traductor activa Regla de Vista: SELECT emp_id, nombre, depto FROM empleados WHERE emp_id = 10;");
+          narrative.innerHTML = "<strong style='color:var(--gold);'>Paso 2 (Mapeo Externo/Lógico):</strong> El SGBD descompone la vista y reescribe la sentencia apuntando a la tabla del esquema global.";
+
+          setTimeout(() => {
+            // Paso 3: Nivel Conceptual / Lógico
+            connExtLog.classList.remove('pulse-active');
+            layerCon.classList.add('highlight-active');
+            addSparcLog("CONCEPTUAL", "log-tag-con", "Valida diccionario: Tabla 'empleados' existe, tipos correctos y permisos concedidos.");
+            narrative.innerHTML = "<strong style='color:var(--lvl-conceptual);'>Paso 3 (Nivel Conceptual):</strong> El motor valida restricciones, claves foráneas y columnas de la entidad global.";
+
+            setTimeout(() => {
+              // Paso 4: Mapeo Lógico / Interno
+              layerCon.classList.remove('highlight-active');
+              connLogInt.classList.add('pulse-active');
+              addSparcLog("MAPEO LOG/INT", "log-tag-map", "Traductor físico: Calcula hash o árbol B+ para ubicar Bloque físico en disco.");
+              narrative.innerHTML = "<strong style='color:var(--gold);'>Paso 4 (Mapeo Lógico/Interno):</strong> Se resuelve la posición del puntero físico de almacenamiento (FileID:PageID:SlotID).";
+
+              setTimeout(() => {
+                // Paso 5: Nivel Interno
+                connLogInt.classList.remove('pulse-active');
+                layerInt.classList.add('highlight-active');
+                const diskType = sparcSim.isSSD ? "SSD NVMe (B+ Clustered)" : "HDD Convencional (Heap Page 102)";
+                addSparcLog("INTERNO", "log-tag-int", `Acceso a bloques en ${diskType}. Lectura de bytes 0x01F0 completada.`);
+                narrative.innerHTML = `<strong style='color:var(--lvl-internal);'>Paso 5 (Nivel Interno/Físico):</strong> El bloque físico devuelve las tuplas requeridas y el resultado viaja de regreso al cliente.`;
+
+                setTimeout(() => {
+                  layerInt.classList.remove('highlight-active');
+                  sparcSim.isQueryRunning = false;
+                }, 1000);
+              }, 900);
+            }, 900);
+          }, 900);
+        }, 800);
+      }
+
+      // ========================================================
+      // 3. Demostradores de Independencia Física y Lógica
+      // ========================================================
+      function testPhysicalIndependence() {
+        sparcSim.isSSD = !sparcSim.isSSD;
+        const desc = document.getElementById('internal-storage-desc');
+        const badge = document.getElementById('badge-internal-status');
+        const out = document.getElementById('independence-test-output');
+
+        if (sparcSim.isSSD) {
+          desc.innerHTML = "Medio: <strong style='color:var(--green);'>SSD NVMe Ultra Rápido</strong> · Organización: <strong style='color:var(--cyan);'>B+ Tree Clustered Index</strong>";
+          badge.innerHTML = "[Pág SSD 804, B+ Seek Instantáneo]";
+          badge.style.color = "var(--green)";
+          out.innerHTML = `
+            <strong style="color:var(--green);">[DEMOSTRACIÓN: INDEPENDENCIA FÍSICA EXITOSA]</strong><br>
+            • Acción ejecutada: Se alteró el <strong>esquema interno</strong> (se migraron los archivos de HDD a SSD NVMe y se reorganizó la tabla a un Árbol B+ Clustered).<br>
+            • Impacto en Nivel Conceptual: <strong>0 CAMBIOS</strong>. La tabla <code>empleados</code> conserva sus mismas columnas, PKs y tipos de datos.<br>
+            • Impacto en Nivel Externo: <strong>0 CAMBIOS</strong>. Las aplicaciones cliente y la vista <code>v_nomina_resumen</code> siguen ejecutando la misma consulta SQL sin recompilar ni una sola línea de código.<br>
+            • El SGBD solo actualizó el <em>Mapeo Lógico/Interno</em>.
+          `;
+          addSparcLog("SGBD", "log-tag-int", "Almacenamiento interno migrado a SSD y B+ Clustered. Mapeo Lógico/Interno actualizado automáticamente.");
+        } else {
+          desc.innerHTML = "Medio: <strong>HDD Convencional</strong> · Organización: <strong>Heap File (Páginas 8 KB)</strong>";
+          badge.innerHTML = "[Pág 102, Slot 4, Offset 0x01F0]";
+          badge.style.color = "var(--coral)";
+          out.innerHTML = `
+            <strong style="color:var(--coral);">[ESQUEMA INTERNO RESTABLECIDO A HEAP/HDD]</strong><br>
+            Nivel físico vuelto a estado base. Los programas externos continúan operando sin interrupción.
+          `;
+        }
+      }
+
+      function testLogicalIndependence() {
+        sparcSim.extraColumnsAdded = !sparcSim.extraColumnsAdded;
+        const desc = document.getElementById('conceptual-schema-desc');
+        const out = document.getElementById('independence-test-output');
+
+        if (sparcSim.extraColumnsAdded) {
+          desc.innerHTML = "Columnas: <code>{ emp_id, nombre, depto, salario, fecha_ingreso, <strong style='color:var(--gold);'>bono_anual</strong>, <strong style='color:var(--gold);'>evaluacion_desempeno</strong> }</code>";
+          out.innerHTML = `
+            <strong style="color:var(--lvl-conceptual);">[DEMOSTRACIÓN: INDEPENDENCIA LÓGICA EXITOSA]</strong><br>
+            • Acción ejecutada: Se alteró el <strong>esquema conceptual/lógico</strong> mediante DDL agregando dos nuevas columnas: <code>bono_anual</code> y <code>evaluacion_desempeno</code>.<br>
+            • Impacto en Vistas Externas: <strong>0 CAMBIOS</strong>. La vista <code>v_nomina_resumen</code> ignora las nuevas columnas y sigue respondiendo normalmente.<br>
+            • Los programas antiguos de consulta no se rompen porque operan a través del <em>Mapeo Externo/Lógico</em>.<br>
+            • Solo las nuevas aplicaciones que expresamente requieran los bonos deberán crear una nueva vista o extender su consulta.
+          `;
+          addSparcLog("SGBD", "log-tag-con", "ALTER TABLE ejecutado: Añadidas columnas bono_anual y evaluacion_desempeno al esquema lógico.");
+        } else {
+          desc.innerHTML = "Columnas: <code>{ emp_id, nombre, depto, salario, fecha_ingreso }</code>";
+          out.innerHTML = `
+            <strong style="color:var(--muted);">[ESQUEMA LÓGICO RESTABLECIDO A COLUMNAS BASE]</strong><br>
+            Columnas adicionales retiradas.
+          `;
+        }
+      }
+
+      // ========================================================
+      // ========================================================
+      // LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+      // ========================================================
+      const quizQuestions = [
+  {
+    "q": "¿Cuál es el objetivo primordial de la Arquitectura ANSI/SPARC de tres niveles en los sistemas de gestión de bases de datos?",
+    "options": [
+      "Aumentar la velocidad de la CPU en servidores dedicados mediante paralelismo de hilos nativos.",
+      "Aislar las aplicaciones de los usuarios de los detalles físicos de almacenamiento y gestión de datos.",
+      "Obligar a que todas las bases de datos utilicen el modelo relacional puro sin admitir vistas externas.",
+      "Eliminar la necesidad de crear índices secundarios y archivos de log transaccional en el disco duro."
+    ],
+    "correct": 1,
+    "feedback": "El propósito canónico de la arquitectura ANSI/SPARC de 3 niveles (Externo, Conceptual, Interno) es proporcionar independencia de datos: separar las vistas del usuario (nivel externo) de la estructura lógica global (nivel conceptual) y del almacenamiento físico en disco (nivel interno)."
+  },
+  {
+    "q": "¿Qué transformación de mapeo se encarga de convertir una consulta sobre una vista de usuario en operaciones sobre las tablas del catálogo global?",
+    "options": [
+      "Mapeo Lógico / Interno, traduciendo registros lógicos a estructuras de bloques de disco.",
+      "Mapeo Externo / Conceptual, traduciendo consultas de vista a entidades de esquema global.",
+      "Mapeo Conceptual / Físico, transformando sentencias SQL a comandos de hardware y CPU.",
+      "Mapeo de Red / Dispositivo, enrutando paquetes TCP/IP hacia el servidor de base de datos."
+    ],
+    "correct": 1,
+    "feedback": "El mapeo Externo/Conceptual traduce las solicitudes de una vista de usuario específica (nivel externo) a las tablas o entidades del esquema lógico global (nivel conceptual). El mapeo Conceptual/Interno traduce dicho esquema global al almacenamiento físico en disco."
+  },
+  {
+    "q": "¿Qué tipo de independencia permite migrar los archivos de la base de datos a discos SSD o cambiar de Heap a Árbol B+ sin alterar los programas de aplicación?",
+    "options": [
+      "Independencia Física de Datos, aislando el esquema conceptual de los métodos de almacenamiento interno.",
+      "Independencia Lógica de Datos, permitiendo modificar esquemas conceptuales sin alterar las vistas externas.",
+      "Independencia Transaccional ACID, asegurando la durabilidad de las escrituras ante cortes de energía.",
+      "Independencia Conceptual de Vistas, permitiendo crear índices agrupados sin privilegios de administrador."
+    ],
+    "correct": 0,
+    "feedback": "La Independencia Física de Datos es la capacidad de modificar el esquema interno (métodos de acceso, organización de archivos, tipos de índices o medios de almacenamiento) sin necesidad de modificar el esquema conceptual ni las aplicaciones existentes."
+  },
+  {
+    "q": "¿Qué tipo de independencia permite agregar una nueva columna (ej. 'telefono_secundario') a una tabla sin tener que recompilar las aplicaciones existentes?",
+    "options": [
+      "Independencia Física de Datos, aislando las páginas de datos en los bloques de almacenamiento magnético.",
+      "Independencia Lógica de Datos, aislando los esquemas externos de alteraciones al esquema conceptual global.",
+      "Independencia de Dispositivo, permitiendo que el DBMS opere en múltiples arquitecturas de procesador.",
+      "Independencia de Concurrencia, garantizando que múltiples transacciones se ejecuten con bloqueos de fila."
+    ],
+    "correct": 1,
+    "feedback": "La Independencia Lógica de Datos es la capacidad de modificar el esquema conceptual (añadir nuevas tablas, campos o relaciones) sin obligar a cambiar los esquemas externos existentes que no requieren dichos cambios."
+  },
+  {
+    "q": "Según la doctrina de bases de datos de Andy Oppel, ¿cuál es la discrepancia principal entre la teoría pura de ANSI/SPARC y los RDBMS comerciales del mundo real (Oracle, PostgreSQL, SQL Server)?",
+    "options": [
+      "Que los motores comerciales eliminaron por completo el concepto de índices y vistas de consulta.",
+      "Que los motores comerciales unifican los niveles conceptual e interno, exponiendo sentencias DDL físicas.",
+      "Que los motores comerciales prohíben la coexistencia de múltiples usuarios conectados simultáneamente.",
+      "Que la arquitectura ANSI/SPARC fue formulada exclusivamente para bases de datos no relacionales NoSQL."
+    ],
+    "correct": 1,
+    "feedback": "En la teoría ANSI/SPARC, el nivel conceptual es puramente abstracto e independiente del hardware. Sin embargo, en los RDBMS comerciales, el lenguaje DDL (como CREATE TABLE o CREATE INDEX) a menudo mezcla definiciones conceptuales con parámetros de almacenamiento físico (ej. tablespaces, fillfactor, storage clauses)."
+  },
+  {
+    "q": "¿Cuántos esquemas conceptuales pueden existir en una base de datos empresarial bajo la arquitectura canónica ANSI/SPARC?",
+    "options": [
+      "Tantos esquemas conceptuales como usuarios o aplicaciones cliente conectadas existan en la red.",
+      "Exactamente un único esquema conceptual que describe la totalidad de los datos para toda la organización.",
+      "Uno por cada índice secundario o clustered index creado en las particiones de almacenamiento de disco.",
+      "Ninguno, puesto que la arquitectura ANSI/SPARC prescribe únicamente la existencia de esquemas externos."
+    ],
+    "correct": 1,
+    "feedback": "En la arquitectura ANSI/SPARC existe un solo esquema conceptual (la visión comunitaria global de la base de datos), un solo esquema interno (la estructura física), y potencialmente múltiples esquemas externos (vistas adaptadas para cada tipo de usuario o programa)."
+  }
+];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
+
+      window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        // Reconstruir el esqueleto interactivo si se mostró el resumen final
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+          feedbackBox.style.fontSize = '0.8rem';
+          feedbackBox.style.lineHeight = '1.35';
+          feedbackBox.style.padding = '8px 12px';
+          feedbackBox.style.marginTop = '10px';
+          feedbackBox.style.borderRadius = '6px';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Feedback doctrinal conciso (máximo la primera oración significativa)
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) {
+          shortFeedback = firstSentenceMatch[1];
+        }
+        if (shortFeedback.length > 150) {
+          const cut = shortFeedback.lastIndexOf(' ', 145);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 145)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--accent, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:#ff006e; font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      // Auto-inicializar
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    
+    </script>
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>
+

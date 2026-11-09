@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Árboles AVL y Auto-balanceo | Estructuras de Datos</title>
+    <meta name="description" content="Laboratorio interactivo de Árboles AVL (Adelson-Velsky y Landis): Factor de Balance, las 4 Rotaciones (LL, RR, LR, RL), simulador en tiempo real y análisis asintótico según Osvaldo Cairo." />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      /* Estilos específicos de Árboles AVL */
+      .avl-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 20px;
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .avl-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .svg-canvas-box {
+        background: rgba(10, 14, 26, 0.95);
+        border: 1px solid var(--line, rgba(0, 255, 255, 0.2));
+        border-radius: 10px;
+        min-height: 440px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: auto;
+        box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.6);
+      }
+
+      .control-cluster {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .input-avl {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--line, rgba(0, 255, 255, 0.25));
+        border-radius: 6px;
+        padding: 9px 14px;
+        color: #fff;
+        font: 700 0.95rem 'Courier New', monospace;
+        width: 100px;
+        outline: none;
+      }
+      .input-avl:focus {
+        border-color: var(--cyan, #00ffff);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      }
+
+      .avl-preset-btn {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line, rgba(0, 255, 255, 0.2));
+        color: var(--muted, #94a3b8);
+        padding: 8px 12px;
+        border-radius: 6px;
+        font: 600 0.78rem 'Courier New', monospace;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .avl-preset-btn:hover {
+        border-color: var(--cyan, #00ffff);
+        color: #fff;
+      }
+
+      .console-log-box {
+        background: rgba(5, 7, 15, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 16px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.82rem;
+        line-height: 1.55;
+        max-height: 380px;
+        overflow-y: auto;
+      }
+      .log-entry {
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      }
+      .log-entry:last-child {
+        border-bottom: none;
+      }
+      .log-tag {
+        color: var(--cyan, #00ffff);
+        font-weight: bold;
+      }
+      .log-rot {
+        color: var(--gold, #ffd166);
+        font-weight: bold;
+      }
+      .log-bal {
+        color: var(--green, #00ffaa);
+      }
+    </style>
+  </head>
+  <body data-module-id="06">
+    <main class="page">
+      <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
+        <span>←</span> Volver al Índice Principal
+      </a>
+
+      <header>
+        <div>
+          <p class="eyebrow">06 · Estructuras de Datos Avanzadas</p>
+          <h1>Árboles AVL y Auto-balanceo<br />(Adelson-Velsky &amp; Landis)</h1>
+        </div>
+        <p class="intro">
+          Domina los Árboles Binarios de Búsqueda Auto-Balanceados (AVL) según la doctrina de <strong>Osvaldo Cairo</strong> y <strong>Luis Joyanes Aguilar</strong>: condición estricta de balanceo, Factor de Balance (FB), las cuatro rotaciones canónicas (LL, RR, LR, RL) y garantía de cota logarítmica estricta $O(\log n)$.
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación Canónicas -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-theory')">
+          <span>📖</span> 1. Doctrina &amp; Factor de Balance
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-rotations')">
+          <span>🔄</span> 2. Las 4 Rotaciones Canónicas
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-simulator')">
+          <span>🌳</span> 3. Simulador Interactivo AVL
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-log')">
+          <span>📝</span> 4. Registro de Pasos &amp; Trazas
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 5. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+      <!-- PESTAÑA 1: DOCTRINA Y FACTOR DE BALANCE -->
+      <section id="tab-theory" class="content-panel active">
+        <div class="matrix-card">
+          <h2><span>📖</span> Principio Rector del Árbol AVL (Osvaldo Cairo)</h2>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+            Un árbol AVL es un Árbol Binario de Búsqueda (ABB) en el cual las alturas de los subárboles izquierdo y derecho de cualquier nodo difieren a lo sumo en una unidad. Fue la primera estructura de datos auto-balanceada en la historia de la computación, inventada en 1962 por los matemáticos soviéticos Georgii Adelson-Velsky y Evgenii Landis.
+          </p>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:24px;">
+            <div style="background:rgba(0,255,255,0.04); border:1px solid rgba(0,255,255,0.25); border-radius:8px; padding:18px;">
+              <h3 style="margin:0 0 8px; color:var(--cyan); font-size:0.95rem;"><span>📐</span> Cálculo del Factor de Balance (FB)</h3>
+              <p style="margin:0 0 10px; font-size:0.85rem; color:var(--muted); line-height:1.5;">
+                Para todo nodo $N$, su Factor de Balance se define formalmente como:
+              </p>
+              <div style="background:rgba(0,0,0,0.4); border:1px solid var(--line); border-radius:6px; padding:10px; text-align:center; font:700 0.95rem 'Courier New', monospace; color:var(--cyan);">
+                FB(N) = Altura(Subárbol_Derecho) - Altura(Subárbol_Izquierdo)
+              </div>
+              <p style="margin:10px 0 0; font-size:0.8rem; color:var(--muted);">
+                Condición de Equilibrio AVL: <code>FB(N) ∈ {-1, 0, +1}</code>.
+              </p>
+            </div>
+
+            <div style="background:rgba(255,209,102,0.04); border:1px solid rgba(255,209,102,0.25); border-radius:8px; padding:18px;">
+              <h3 style="margin:0 0 8px; color:var(--gold); font-size:0.95rem;"><span>⚡</span> Por qué es Crítico el Balanceo</h3>
+              <p style="margin:0; font-size:0.84rem; color:var(--muted); line-height:1.55;">
+                En un ABB común no balanceado, si se insertan datos ya ordenados (ej. 1, 2, 3, 4, 5), el árbol se degenera en una lista enlazada con altura $H = O(n)$, colapsando las búsquedas a tiempo lineal $O(n)$. El auto-balanceo AVL garantiza matemáticamente que la altura máxima sea $H \le 1.44 \log_2(n)$, preservando búsquedas en estricto $O(\log n)$.
+              </p>
+            </div>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Estructura de Datos</th>
+                  <th>Búsqueda (Peor Caso)</th>
+                  <th>Inserción (Peor Caso)</th>
+                  <th>Criterio de Auto-balanceo</th>
+                  <th>Caso de Uso Típico</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ABB No Balanceado</strong></td>
+                  <td><span style="color:var(--coral);">O(n)</span> (Degenerado)</td>
+                  <td><span style="color:var(--coral);">O(n)</span></td>
+                  <td>Sin balanceo automático</td>
+                  <td>Prototipos simples con datos aleatorios</td>
+                </tr>
+                <tr>
+                  <td><strong>Árbol AVL</strong></td>
+                  <td><span style="color:var(--green);">O(log n)</span> (Estricto)</td>
+                  <td><span style="color:var(--green);">O(log n)</span></td>
+                  <td>|FB| ≤ 1 estricto con rotaciones inmediatas</td>
+                  <td>Bases de datos en memoria donde las lecturas superan a escrituras</td>
+                </tr>
+                <tr>
+                  <td><strong>Árbol Rojo-Negro</strong></td>
+                  <td><span style="color:var(--green);">O(log n)</span> (Ligeramente más alto)</td>
+                  <td><span style="color:var(--green);">O(log n)</span> (Menos rotaciones)</td>
+                  <td>Propiedades de color y camino negro</td>
+                  <td>Colecciones estándar de SO y lenguajes (std::map, TreeMap)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 2: LAS 4 ROTACIONES CANÓNICAS -->
+      <section id="tab-rotations" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🔄</span> Taxonomía Doctrinal de las 4 Rotaciones AVL</h2>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+            Cuando una inserción o eliminación rompe el equilibrio de un nodo ($|FB| = 2$), se aplica exactamente una de cuatro rotaciones en tiempo constante $O(1)$ para restaurar el balance:
+          </p>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px;">
+            <div style="background:rgba(15,23,42,0.9); border:1px solid rgba(0,255,255,0.25); border-radius:8px; padding:18px;">
+              <span style="font:700 0.76rem 'Courier New', monospace; color:var(--cyan); text-transform:uppercase;">Rotación Simple 1</span>
+              <h3 style="margin:4px 0 8px; color:#fff; font-size:1.02rem;">Simple Derecha (RSD / LL)</h3>
+              <p style="margin:0 0 10px; font-size:0.83rem; color:var(--muted); line-height:1.5;">
+                <strong>Causa:</strong> Inserción en el subárbol izquierdo del hijo izquierdo ($FB = -2$, hijo $FB = -1$).
+              </p>
+              <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:8px 12px; font-size:0.8rem; font-family:'Courier New', monospace; color:var(--cyan);">
+                Acción: El hijo izquierdo sube como nueva raíz; la antigua raíz pasa a ser su hijo derecho.
+              </div>
+            </div>
+
+            <div style="background:rgba(15,23,42,0.9); border:1px solid rgba(0,255,170,0.25); border-radius:8px; padding:18px;">
+              <span style="font:700 0.76rem 'Courier New', monospace; color:var(--green); text-transform:uppercase;">Rotación Simple 2</span>
+              <h3 style="margin:4px 0 8px; color:#fff; font-size:1.02rem;">Simple Izquierda (RSI / RR)</h3>
+              <p style="margin:0 0 10px; font-size:0.83rem; color:var(--muted); line-height:1.5;">
+                <strong>Causa:</strong> Inserción en el subárbol derecho del hijo derecho ($FB = +2$, hijo $FB = +1$).
+              </p>
+              <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:8px 12px; font-size:0.8rem; font-family:'Courier New', monospace; color:var(--green);">
+                Acción: El hijo derecho sube como nueva raíz; la antigua raíz pasa a ser su hijo izquierdo.
+              </div>
+            </div>
+
+            <div style="background:rgba(15,23,42,0.9); border:1px solid rgba(255,209,102,0.25); border-radius:8px; padding:18px;">
+              <span style="font:700 0.76rem 'Courier New', monospace; color:var(--gold); text-transform:uppercase;">Rotación Doble 1</span>
+              <h3 style="margin:4px 0 8px; color:#fff; font-size:1.02rem;">Doble Izquierda-Derecha (RDID / LR)</h3>
+              <p style="margin:0 0 10px; font-size:0.83rem; color:var(--muted); line-height:1.5;">
+                <strong>Causa:</strong> Inserción en el subárbol derecho del hijo izquierdo ($FB = -2$, hijo $FB = +1$).
+              </p>
+              <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:8px 12px; font-size:0.8rem; font-family:'Courier New', monospace; color:var(--gold);">
+                Acción: 1° Rotación simple izquierda sobre el hijo; 2° Rotación simple derecha sobre el nodo raíz.
+              </div>
+            </div>
+
+            <div style="background:rgba(15,23,42,0.9); border:1px solid rgba(255,95,126,0.25); border-radius:8px; padding:18px;">
+              <span style="font:700 0.76rem 'Courier New', monospace; color:var(--coral); text-transform:uppercase;">Rotación Doble 2</span>
+              <h3 style="margin:4px 0 8px; color:#fff; font-size:1.02rem;">Doble Derecha-Izquierda (RDDI / RL)</h3>
+              <p style="margin:0 0 10px; font-size:0.83rem; color:var(--muted); line-height:1.5;">
+                <strong>Causa:</strong> Inserción en el subárbol izquierdo del hijo derecho ($FB = +2$, hijo $FB = -1$).
+              </p>
+              <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:8px 12px; font-size:0.8rem; font-family:'Courier New', monospace; color:var(--coral);">
+                Acción: 1° Rotación simple derecha sobre el hijo; 2° Rotación simple izquierda sobre el nodo raíz.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 3: SIMULADOR INTERACTIVO AVL -->
+      <section id="tab-simulator" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🌳</span> Laboratorio de Auto-balanceo en Tiempo Real</h2>
+          
+          <div class="control-cluster">
+            <input type="number" id="nodeValue" class="input-avl" placeholder="Valor" value="25" min="1" max="999" />
+            <button id="btnInsert" class="btn-theme" style="padding:9px 18px; border-radius:6px; cursor:pointer;" onclick="insertFromInput()">
+              Insertar Nodo
+            </button>
+            <button id="btnReset" class="btn-theme" style="padding:9px 16px; border-radius:6px; background:rgba(255,255,255,0.06); border-color:var(--line); cursor:pointer;" onclick="resetTree()">
+              Limpiar
+            </button>
+            <button class="avl-preset-btn" onclick="loadPreset('LL')">Preset Caso LL (30, 20, 10)</button>
+            <button class="avl-preset-btn" onclick="loadPreset('RR')">Preset Caso RR (10, 20, 30)</button>
+            <button class="avl-preset-btn" onclick="loadPreset('LR')">Preset Caso LR (30, 10, 20)</button>
+            <button class="avl-preset-btn" onclick="loadPreset('RL')">Preset Caso RL (10, 30, 20)</button>
+          </div>
+
+          <div class="avl-layout">
+            <div class="svg-canvas-box" id="canvas-container">
+              <svg id="treeSvg" width="600" height="420" viewBox="0 0 600 420" style="width:100%; height:auto; display:block;"></svg>
+            </div>
+
+            <div style="background:rgba(15,23,42,0.95); border:1px solid var(--line); border-radius:8px; padding:18px;">
+              <h3 style="margin:0 0 12px; color:var(--cyan); font-size:0.95rem;"><span>📊</span> Estado del Árbol</h3>
+              <div style="display:flex; flex-direction:column; gap:10px; font-size:0.84rem;">
+                <div><strong>Nodos Totales:</strong> <span id="lblNodeCount" style="color:var(--cyan); font-family:'Courier New', monospace;">0</span></div>
+                <div><strong>Altura del Árbol (H):</strong> <span id="lblTreeHeight" style="color:var(--gold); font-family:'Courier New', monospace;">0</span></div>
+                <div><strong>Estado de Equilibrio:</strong> <span id="lblBalanceStatus" style="color:var(--green); font-family:'Courier New', monospace;">Equilibrado</span></div>
+                <div><strong>Última Rotación:</strong> <span id="lblLastRotation" style="color:var(--coral); font-family:'Courier New', monospace;">Ninguna</span></div>
+              </div>
+
+              <div style="margin-top:20px; border-top:1px dashed rgba(255,255,255,0.1); padding-top:14px;">
+                <h4 style="margin:0 0 8px; font-size:0.8rem; color:var(--muted); text-transform:uppercase;">Leyenda Visual</h4>
+                <div style="display:flex; flex-direction:column; gap:6px; font-size:0.78rem; color:var(--muted);">
+                  <div style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:50%; background:var(--cyan); display:inline-block;"></span> Nodo Normal (FB ∈ {-1,0,1})</div>
+                  <div style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:50%; background:var(--gold); display:inline-block;"></span> Nodo Recién Insertado</div>
+                  <div style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:50%; background:var(--coral); display:inline-block;"></span> Nodo Desbalanceado (|FB| ≥ 2)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 4: REGISTRO DE PASOS Y TRAZAS -->
+      <section id="tab-log" class="content-panel">
+        <div class="matrix-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h2 style="margin:0;"><span>📝</span> Bitácora de Auditoría Algorítmica</h2>
+            <button class="btn-theme" style="padding:6px 14px; font-size:0.78rem; cursor:pointer;" onclick="clearLog()">Limpiar Log</button>
+          </div>
+          <div class="console-log-box" id="avlLog">
+            <div class="log-entry"><span class="log-tag">[INIT]:</span> Sistema inicializado. Árbol AVL vacío listo para inserciones.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 5: LABORATORIO EVALUATIVO FORMATIVO -->
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+        <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:0;" aria-label="Laboratorio de Evaluación Formativa">
+          <div style="margin-bottom:18px;">
+            <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+              <span>🎯</span> Laboratorio Evaluativo · Árboles AVL
+            </h2>
+            <p style="margin:0; font-size:0.86rem; color:var(--muted); line-height:1.5;">
+              Reactivos psicométricos sobre condición de balanceo, Factor de Balance, las 4 rotaciones y cotas de complejidad.
+            </p>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">Pregunta 1 de 5</span>
+            <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
+          </div>
+          <div id="quiz-container">
+            <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:10px 14px; border-radius:6px; font-size:0.82rem; line-height:1.45;"></div>
+            <div style="margin-top:14px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 20px; border-radius:6px; font:700 0.88rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Barra de Navegación Estandarizada -->
+      <nav class="module-nav-bar"></nav>
+
+      <footer class="global-footer">
+        Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+      </footer>
+    </main>
+
+    <!-- Scripts de Lógica Interactiva y Simulación -->
+    <script>
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+          const onclickAttr = b.getAttribute('onclick') || '';
+          return onclickAttr.includes(tabId);
+        });
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+
+      // ==========================================
+      // MOTOR DE ÁRBOL AVL
+      // ==========================================
+      class AVLNode {
+        constructor(val) {
+          this.val = val;
+          this.left = null;
+          this.right = null;
+          this.height = 1;
+          this.fb = 0;
+          this.x = 0;
+          this.y = 0;
+        }
+      }
+
+      let avlRoot = null;
+      let lastInsertedVal = null;
+      let lastRotName = "Ninguna";
+
+      function getNodeHeight(node) {
+        return node ? node.height : 0;
+      }
+
+      function updateNodeHeight(node) {
+        if (!node) return;
+        node.height = 1 + Math.max(getNodeHeight(node.left), getNodeHeight(node.right));
+        node.fb = getNodeHeight(node.right) - getNodeHeight(node.left);
+      }
+
+      function rotateRight(y) {
+        const x = y.left;
+        const T2 = x.right;
+        x.right = y;
+        y.left = T2;
+        updateNodeHeight(y);
+        updateNodeHeight(x);
+        return x;
+      }
+
+      function rotateLeft(x) {
+        const y = x.right;
+        const T2 = y.left;
+        y.left = x;
+        x.right = T2;
+        updateNodeHeight(x);
+        updateNodeHeight(y);
+        return y;
+      }
+
+      function insertAVL(node, val) {
+        if (!node) {
+          logMessage(`Inserción: Nodo ${val} creado exitosamente como hoja.`, "log-bal");
+          return new AVLNode(val);
+        }
+
+        if (val < node.val) {
+          node.left = insertAVL(node.left, val);
+        } else if (val > node.val) {
+          node.right = insertAVL(node.right, val);
+        } else {
+          logMessage(`Aviso: El valor ${val} ya existe en el árbol. Los AVL típicos no admiten claves duplicadas.`, "log-tag");
+          return node;
+        }
+
+        updateNodeHeight(node);
+        const balance = node.fb;
+
+        // Caso 1: Rotación Simple Derecha (LL)
+        if (balance < -1 && val < node.left.val) {
+          lastRotName = "Simple Derecha (LL)";
+          logMessage(`Desbalance en ${node.val} (FB: ${balance}) con inserción a la izquierda. Ejecutando Rotación Simple Derecha (LL).`, "log-rot");
+          return rotateRight(node);
+        }
+
+        // Caso 2: Rotación Simple Izquierda (RR)
+        if (balance > 1 && val > node.right.val) {
+          lastRotName = "Simple Izquierda (RR)";
+          logMessage(`Desbalance en ${node.val} (FB: ${balance}) con inserción a la derecha. Ejecutando Rotación Simple Izquierda (RR).`, "log-rot");
+          return rotateLeft(node);
+        }
+
+        // Caso 3: Rotación Doble Izquierda-Derecha (LR)
+        if (balance < -1 && val > node.left.val) {
+          lastRotName = "Doble Izquierda-Derecha (LR)";
+          logMessage(`Desbalance en ${node.val} (FB: ${balance}) con subárbol izquierdo inclinado a la derecha. Ejecutando Rotación Doble LR.`, "log-rot");
+          node.left = rotateLeft(node.left);
+          return rotateRight(node);
+        }
+
+        // Caso 4: Rotación Doble Derecha-Izquierda (RL)
+        if (balance > 1 && val < node.right.val) {
+          lastRotName = "Doble Derecha-Izquierda (RL)";
+          logMessage(`Desbalance en ${node.val} (FB: ${balance}) con subárbol derecho inclinado a la izquierda. Ejecutando Rotación Doble RL.`, "log-rot");
+          node.right = rotateRight(node.right);
+          return rotateLeft(node);
+        }
+
+        return node;
+      }
+
+      function logMessage(msg, cls = "") {
+        const box = document.getElementById("avlLog");
+        if (!box) return;
+        const entry = document.createElement("div");
+        entry.className = "log-entry";
+        const time = new Date().toLocaleTimeString();
+        entry.innerHTML = `<span style="opacity:0.6;">[${time}]</span> <span class="${cls}">${msg}</span>`;
+        box.appendChild(entry);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function clearLog() {
+        const box = document.getElementById("avlLog");
+        if (box) box.innerHTML = '';
+      }
+
+      function insertFromInput() {
+        const input = document.getElementById("nodeValue");
+        const val = parseInt(input.value, 10);
+        if (isNaN(val)) return;
+        lastInsertedVal = val;
+        lastRotName = "Ninguna";
+        avlRoot = insertAVL(avlRoot, val);
+        renderTreeSvg();
+        input.value = Math.floor(Math.random() * 90) + 10;
+      }
+
+      function resetTree() {
+        avlRoot = null;
+        lastInsertedVal = null;
+        lastRotName = "Ninguna";
+        clearLog();
+        logMessage("Árbol limpiado.", "log-tag");
+        renderTreeSvg();
+      }
+
+      function loadPreset(type) {
+        resetTree();
+        logMessage(`Cargando Preset de Demostración: Caso ${type}...`, "log-tag");
+        let vals = [];
+        if (type === 'LL') vals = [30, 20, 10];
+        if (type === 'RR') vals = [10, 20, 30];
+        if (type === 'LR') vals = [30, 10, 20];
+        if (type === 'RL') vals = [10, 30, 20];
+
+        vals.forEach(v => {
+          lastInsertedVal = v;
+          avlRoot = insertAVL(avlRoot, v);
+        });
+        renderTreeSvg();
+      }
+
+      function countNodes(node) {
+        if (!node) return 0;
+        return 1 + countNodes(node.left) + countNodes(node.right);
+      }
+
+      function renderTreeSvg() {
+        const svg = document.getElementById("treeSvg");
+        const lblCount = document.getElementById("lblNodeCount");
+        const lblHeight = document.getElementById("lblTreeHeight");
+        const lblRot = document.getElementById("lblLastRotation");
+        const lblBal = document.getElementById("lblBalanceStatus");
+
+        if (!svg) return;
+
+        lblCount.textContent = countNodes(avlRoot);
+        lblHeight.textContent = getNodeHeight(avlRoot);
+        lblRot.textContent = lastRotName;
+
+        let maxFb = 0;
+        function checkMaxFb(n) {
+          if (!n) return;
+          maxFb = Math.max(maxFb, Math.abs(n.fb));
+          checkMaxFb(n.left);
+          checkMaxFb(n.right);
+        }
+        checkMaxFb(avlRoot);
+        lblBal.textContent = maxFb <= 1 ? "Equilibrado (AVL Válido)" : "Desbalance Temporal";
+        lblBal.style.color = maxFb <= 1 ? "var(--green)" : "var(--coral)";
+
+        svg.innerHTML = '';
+        if (!avlRoot) {
+          svg.innerHTML = '<text x="300" y="210" text-anchor="middle" fill="#64748b" font-family="Courier New" font-size="14">Árbol vacío. Inserta un nodo o selecciona un preset.</text>';
+          return;
+        }
+
+        // Asignar posiciones geométricas con algoritmo de layout
+        assignPositions(avlRoot, 1, 0, 600);
+        drawLinks(svg, avlRoot);
+        drawNodes(svg, avlRoot);
+      }
+
+      function assignPositions(node, depth, left, right) {
+        if (!node) return;
+        node.x = (left + right) / 2;
+        node.y = depth * 70 - 20;
+        assignPositions(node.left, depth + 1, left, node.x);
+        assignPositions(node.right, depth + 1, node.x, right);
+      }
+
+      function drawLinks(svg, node) {
+        if (!node) return;
+        if (node.left) {
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", node.x);
+          line.setAttribute("y1", node.y);
+          line.setAttribute("x2", node.left.x);
+          line.setAttribute("y2", node.left.y);
+          line.setAttribute("stroke", "rgba(0, 255, 255, 0.35)");
+          line.setAttribute("stroke-width", "2");
+          svg.appendChild(line);
+          drawLinks(svg, node.left);
+        }
+        if (node.right) {
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", node.x);
+          line.setAttribute("y1", node.y);
+          line.setAttribute("x2", node.right.x);
+          line.setAttribute("y2", node.right.y);
+          line.setAttribute("stroke", "rgba(0, 255, 255, 0.35)");
+          line.setAttribute("stroke-width", "2");
+          svg.appendChild(line);
+          drawLinks(svg, node.right);
+        }
+      }
+
+      function drawNodes(svg, node) {
+        if (!node) return;
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", node.x);
+        circle.setAttribute("cy", node.y);
+        circle.setAttribute("r", "20");
+
+        let strokeColor = "var(--cyan, #00ffff)";
+        let fillColor = "rgba(10, 14, 26, 0.95)";
+        if (node.val === lastInsertedVal) {
+          strokeColor = "var(--gold, #ffd166)";
+          fillColor = "rgba(255, 209, 102, 0.2)";
+        }
+        if (Math.abs(node.fb) >= 2) {
+          strokeColor = "var(--coral, #ff5f7e)";
+          fillColor = "rgba(255, 95, 126, 0.2)";
+        }
+
+        circle.setAttribute("stroke", strokeColor);
+        circle.setAttribute("stroke-width", "2.5");
+        circle.setAttribute("fill", fillColor);
+
+        const txtVal = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        txtVal.setAttribute("x", node.x);
+        txtVal.setAttribute("y", node.y + 5);
+        txtVal.setAttribute("text-anchor", "middle");
+        txtVal.setAttribute("fill", "#ffffff");
+        txtVal.setAttribute("font-family", "Courier New");
+        txtVal.setAttribute("font-weight", "bold");
+        txtVal.setAttribute("font-size", "13");
+        txtVal.textContent = node.val;
+
+        // Badge con FB
+        const txtFb = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        txtFb.setAttribute("x", node.x + 18);
+        txtFb.setAttribute("y", node.y - 12);
+        txtFb.setAttribute("text-anchor", "middle");
+        txtFb.setAttribute("fill", node.fb === 0 ? "var(--green)" : "var(--gold)");
+        txtFb.setAttribute("font-family", "Courier New");
+        txtFb.setAttribute("font-weight", "bold");
+        txtFb.setAttribute("font-size", "10");
+        txtFb.textContent = `FB:${node.fb > 0 ? '+' : ''}${node.fb}`;
+
+        g.appendChild(circle);
+        g.appendChild(txtVal);
+        g.appendChild(txtFb);
+        svg.appendChild(g);
+
+        drawNodes(svg, node.left);
+        drawNodes(svg, node.right);
+      }
+
+      // =========================================================================
+      // BANCO DE REACTIVOS FORMATIVOS (OSVALDO CAIRO)
+      // =========================================================================
+      const quizQuestions = [
+        {
+          "q": "¿Qué condición matemática define formalmente a un Árbol Binario de Búsqueda como un Árbol AVL según Osvaldo Cairo?",
+          "options": [
+            "Para todo nodo del árbol, el valor absoluto de la diferencia de alturas entre su subárbol derecho e izquierdo no debe superar 1 (|FB| ≤ 1).",
+            "Para todo nodo del árbol, el número total de hojas en el subárbol derecho debe ser estrictamente idéntico al del subárbol izquierdo.",
+            "Todos los nodos hoja deben residir exactamente en el mismo nivel de profundidad sin excepción alguna.",
+            "La raíz principal del árbol debe poseer siempre un número par de descendientes directos."
+          ],
+          "correct": 0,
+          "feedback": "La definición formal de Adelson-Velsky y Landis (AVL) exige que para cada nodo, la altura de sus subárboles derecho e izquierdo difiera a lo sumo en una unidad: |h_d - h_i| ≤ 1."
+        },
+        {
+          "q": "Si tras una inserción en un árbol AVL se produce un desbalance en el nodo raíz con FB = -2, y el hijo izquierdo posee un FB = +1, ¿qué tipo de rotación debe ejecutarse?",
+          "options": [
+            "Rotación Doble Izquierda-Derecha (RDID / LR).",
+            "Rotación Simple Derecha (RSD / LL).",
+            "Rotación Simple Izquierda (RSI / RR).",
+            "Rotación Doble Derecha-Izquierda (RDDI / RL)."
+          ],
+          "correct": 0,
+          "feedback": "Cuando el desbalance del nodo padre es hacia la izquierda (FB = -2) pero su hijo izquierdo está inclinado a la derecha (FB = +1), se tiene el caso 'Left-Right' (LR), el cual exige una Rotación Doble Izquierda-Derecha."
+        },
+        {
+          "q": "¿Cuál es la cota de complejidad temporal en el peor caso para buscar un elemento en un árbol AVL de N nodos?",
+          "options": [
+            "O(log n), debido a que el factor de balance estricto impide que el árbol se degrade a una lista enlazada.",
+            "O(n), porque el árbol debe recorrerse secuencialmente elemento por elemento en cada consulta.",
+            "O(1), porque cada nodo almacena un puntero de acceso hash directo a su posición en memoria física.",
+            "O(n log n), debido a que cada búsqueda requiere recalcular los factores de balance de todos los nodos."
+          ],
+          "correct": 0,
+          "feedback": "El auto-balanceo asegura que la altura máxima sea proporcional a log₂(n). En consecuencia, búsqueda, inserción y eliminación tienen una cota de tiempo garantizada de O(log n)."
+        },
+        {
+          "q": "Al insertar un nuevo nodo en un árbol AVL, ¿cuántas rotaciones como máximo son necesarias para restaurar el balance completo del árbol?",
+          "options": [
+            "A lo sumo una rotación (ya sea simple o doble) en el nodo desbalanceado más profundo en el camino de regreso hacia la raíz.",
+            "Tantas rotaciones como nodos existan en el árbol, afectando a cada nivel de profundidad de manera recursiva.",
+            "Exactamente dos rotaciones dobles obligatorias en todos los casos de inserción sin excepción.",
+            "Ninguna rotación, ya que el árbol AVL se balancea exclusivamente mediante operaciones de compresión de bits."
+          ],
+          "correct": 0,
+          "feedback": "En una inserción AVL, una única rotación (simple o doble) sobre el primer ancestro desbalanceado restablece la altura que tenía el subárbol antes de la inserción, concluyendo el balanceo global del árbol."
+        },
+        {
+          "q": "¿Cómo se calcula formalmente el Factor de Balance (FB) de un nodo en un árbol AVL según la convención estándar?",
+          "options": [
+            "FB = Altura(Subárbol Derecho) - Altura(Subárbol Izquierdo)",
+            "FB = Altura(Subárbol Derecho) × Altura(Subárbol Izquierdo)",
+            "FB = Número de Nodos Hijos ÷ 2",
+            "FB = Profundidad del Nodo + Grado de Conexión del Grafo"
+          ],
+          "correct": 0,
+          "feedback": "El Factor de Balance estándar se calcula restando la altura del subárbol izquierdo de la altura del subárbol derecho (o viceversa según autor, manteniendo consistencia en |FB| ≤ 1)."
+        }
+      ];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+
+      function renderQuizQuestion() {
+        const qContainer = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const qNum = document.getElementById('quiz-question-number');
+        const qScore = document.getElementById('quiz-score');
+        const btnNext = document.getElementById('btn-next-quiz');
+
+        if (!qContainer) return;
+
+        const cur = quizQuestions[currentQuizIdx];
+        qNum.textContent = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        qScore.textContent = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        qContainer.textContent = cur.q;
+
+        feedbackBox.style.display = 'none';
+        btnNext.style.display = 'none';
+        optsContainer.innerHTML = '';
+
+        cur.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.style.cssText = "display:block; width:100%; text-align:left; padding:12px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.03); color:#fff; font-size:0.88rem; line-height:1.45; cursor:pointer; transition:all 0.2s ease;";
+          btn.textContent = `${String.fromCharCode(65 + idx)}) ${opt}`;
+          btn.onclick = () => selectQuizOption(idx, btn);
+          optsContainer.appendChild(btn);
+        });
+      }
+
+      function selectQuizOption(selectedIdx, btnEl) {
+        const cur = quizQuestions[currentQuizIdx];
+        const allBtns = document.querySelectorAll('.quiz-option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const btnNext = document.getElementById('btn-next-quiz');
+        const qScore = document.getElementById('quiz-score');
+
+        const isCorrect = (selectedIdx === cur.correct);
+        if (isCorrect) {
+          quizScore++;
+          btnEl.style.borderColor = "var(--green, #00ffaa)";
+          btnEl.style.background = "rgba(0, 255, 170, 0.15)";
+          feedbackBox.style.borderColor = "var(--green, #00ffaa)";
+          feedbackBox.style.color = "var(--green, #00ffaa)";
+          feedbackBox.style.background = "rgba(0, 255, 170, 0.08)";
+          feedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${cur.feedback}`;
+        } else {
+          btnEl.style.borderColor = "var(--coral, #ff5f7e)";
+          btnEl.style.background = "rgba(255, 95, 126, 0.15)";
+          allBtns[cur.correct].style.borderColor = "var(--green, #00ffaa)";
+          allBtns[cur.correct].style.background = "rgba(0, 255, 170, 0.15)";
+          feedbackBox.style.borderColor = "var(--coral, #ff5f7e)";
+          feedbackBox.style.color = "var(--coral, #ff5f7e)";
+          feedbackBox.style.background = "rgba(255, 95, 126, 0.08)";
+          feedbackBox.innerHTML = `<strong>Incorrecto.</strong> ${cur.feedback}`;
+        }
+
+        feedbackBox.style.display = 'block';
+        qScore.textContent = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+
+        if (currentQuizIdx < quizQuestions.length - 1) {
+          btnNext.textContent = 'Siguiente Pregunta ➔';
+        } else {
+          btnNext.textContent = 'Ver Resumen Final 🏆';
+        }
+        btnNext.style.display = 'inline-block';
+      }
+
+      function nextQuizQuestion() {
+        if (currentQuizIdx < quizQuestions.length - 1) {
+          currentQuizIdx++;
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      }
+
+      function showQuizSummary() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:28px 16px;">
+            <div style="font-size:3.2rem; margin-bottom:12px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
+            <h3 style="margin:0 0 8px; color:#fff; font-size:1.3rem;">Evaluación de Árboles AVL Completada</h3>
+            <p style="color:var(--muted); font-size:0.92rem; margin-bottom:20px;">
+              Puntuación obtenida: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'}; font-size:1.1rem;">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.88rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reintentar Evaluación
+            </button>
+          </div>
+        `;
+      }
+
+      function restartQuiz() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        loadPreset('LR');
+        renderQuizQuestion();
+      });
+    </script>
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>

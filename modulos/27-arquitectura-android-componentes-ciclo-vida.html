@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arquitectura Móvil Android: Componentes ABCD &amp; Ciclo de Vida | Laboratorio Interactivo</title>
+    <meta
+      name="description"
+      content="Simulador interactivo de arquitectura Android nativa basado en Head First Android (Dawn Griffiths) y Tomás Gironés. Máquina de estados del ciclo de vida de Activity, preservación de estado con ViewModel vs muerte por configuración, y WorkManager para background diferible."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --android-green: #3ddc84;
+        --lifecycle-active: #00ffff;
+        --lifecycle-pause: #ffd700;
+        --lifecycle-dead: #ff006e;
+      }
+
+      p, li {
+        font-family: Verdana, sans-serif;
+      }
+
+      .content-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .content-panel.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .mobile-lab-grid {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      /* Mockup de Teléfono Android */
+      .phone-chassis {
+        background: #080811;
+        border: 3px solid #2d2b45;
+        border-radius: 36px;
+        padding: 18px 14px;
+        box-shadow: 0 0 30px rgba(61, 220, 132, 0.15), inset 0 0 10px rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 330px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .phone-notch {
+        width: 90px;
+        height: 16px;
+        background: #181729;
+        border-radius: 0 0 12px 12px;
+        margin-bottom: 12px;
+      }
+
+      .phone-screen {
+        width: 100%;
+        background: #121124;
+        border-radius: 20px;
+        min-height: 420px;
+        padding: 16px;
+        box-sizing: border-box;
+        border: 1px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .phone-status-bar {
+        display: flex;
+        justify-content: space-between;
+        font: 700 0.65rem "Courier New", monospace;
+        color: var(--muted);
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding-bottom: 4px;
+      }
+
+      .phone-btn-bar {
+        display: flex;
+        justify-content: space-around;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .phone-soft-key {
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 4px 10px;
+        transition: color 0.2s;
+      }
+      .phone-soft-key:hover { color: var(--android-green); }
+
+      /* Visualizador de Máquina de Estados */
+      .lifecycle-flow-card {
+        background: var(--panel-dark);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .callback-badge {
+        display: inline-block;
+        font: 700 0.78rem "Courier New", monospace;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(18, 17, 36, 0.8);
+        color: var(--muted);
+        transition: all 0.25s ease;
+      }
+
+      .callback-badge.active-cb {
+        background: rgba(61, 220, 132, 0.25);
+        border-color: var(--android-green);
+        color: var(--android-green);
+        box-shadow: 0 0 14px rgba(61, 220, 132, 0.4);
+        transform: scale(1.05);
+      }
+
+      /* Inspector de Memoria */
+      .memory-inspector-box {
+        background: rgba(10, 9, 22, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        margin-top: 14px;
+      }
+
+      @media (max-width: 820px) {
+        .mobile-lab-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body data-module-id="27">
+    <main class="page">
+      <header>
+        <div>
+          <p class="eyebrow">Bloque IV · Plataformas de Programación &amp; Web</p>
+          <h1>Arquitectura Móvil Android: Componentes ABCD &amp; Ciclo de Vida</h1>
+        </div>
+        <p class="intro">
+          Simulador interactivo del stack nativo de Android basado en *Head First Android Development* (Dawn &amp; David Griffiths) y *El Gran Libro de Android* (Jesús Tomás Gironés). Experimenta las transiciones del Ciclo de Vida de Activities, la preservación de estado con ViewModel frente a rotaciones de pantalla y la orquestación de tareas en segundo plano con WorkManager.
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="tab-btn active" onclick="switchTab('tab-lifecycle')">
+          <span>📱</span> 1. Ciclo de Vida &amp; Smartphone
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-abcd')">
+          <span>🧱</span> 2. Componentes ABCD
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-background')">
+          <span>⚙️</span> 3. Tareas en Segundo Plano
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>📝</span> 4. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+      <!-- TAB 1: SMARTPHONE VIRTUAL & CICLO DE VIDA -->
+      <section id="tab-lifecycle" class="content-panel active">
+        <div class="mobile-lab-grid">
+          <!-- Columna Izquierda: Smartphone Interactivo -->
+          <div class="phone-chassis">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div>
+                <div class="phone-status-bar">
+                  <span>10:45 AM</span>
+                  <span>📶 5G  🔋 92%</span>
+                </div>
+                <div style="text-align:center; margin-top:14px;">
+                  <span style="font:700 0.72rem 'Courier New', monospace; color:var(--android-green); border:1px solid var(--android-green); padding:2px 8px; border-radius:4px;">
+                    ACTIVITY ACTIVA
+                  </span>
+                  <h3 id="phone-app-title" style="margin:12px 0 6px; font-size:1.1rem; color:#fff;">App Bancaria</h3>
+                  <p id="phone-screen-status" style="font-size:0.78rem; color:var(--cyan); margin:0;">
+                    Estado: RESUMED (En Primer Plano)
+                  </p>
+                </div>
+
+                <!-- Panel de Contador en Pantalla -->
+                <div style="background:rgba(8,7,18,0.85); border:1px solid var(--line); border-radius:8px; padding:14px; margin-top:20px; text-align:center;">
+                  <span style="font-size:0.75rem; color:var(--muted); font-family:'Courier New', monospace;">VALOR EN PANTALLA:</span>
+                  <div id="disp-screen-counter" style="font:800 2.2rem 'Courier New', monospace; color:var(--gold); margin:4px 0;">0</div>
+                  <button class="btn-theme" onclick="incrementCounter()" style="width:100%; padding:8px; font:700 0.8rem 'Courier New', monospace; background:linear-gradient(135deg, var(--android-green), var(--cyan)); color:#000; border:none; border-radius:6px; cursor:pointer;">
+                    ➕ Incrementar Contador
+                  </button>
+                </div>
+              </div>
+
+              <!-- Barra Inferior de Navegación del SO -->
+              <div class="phone-btn-bar">
+                <button class="phone-soft-key" onclick="triggerLifecycle('back')" title="Botón Atrás (Destruir)">◀</button>
+                <button class="phone-soft-key" onclick="triggerLifecycle('home')" title="Botón Home (onStop)">●</button>
+                <button class="phone-soft-key" onclick="triggerLifecycle('overview')" title="Multitarea (onPause)">■</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Controles de Eventos & Máquina de Estados -->
+          <div class="lifecycle-flow-card">
+            <h2 style="margin:0 0 8px; font-size:1.25rem; color:#fff;">Controlador de Eventos del Sistema Operativo</h2>
+            <p style="margin:0 0 16px; font-size:0.84rem; color:var(--muted);">
+              Dispara eventos de hardware o del sistema para observar qué callbacks se ejecutan en tiempo real y qué ocurre con la memoria:
+            </p>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+              <button class="btn-theme" onclick="triggerLifecycle('rotate')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--cyan);">
+                🔄 Rotar Pantalla (Config Change)
+              </button>
+              <button class="btn-theme" onclick="triggerLifecycle('call')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--gold);">
+                📞 Llamada Entrante (onPause)
+              </button>
+              <button class="btn-theme" onclick="triggerLifecycle('lowmem')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--coral);">
+                ☠️ Muerte por RAM (Low Memory Killer)
+              </button>
+              <button class="btn-theme" onclick="triggerLifecycle('resume')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--android-green);">
+                ▶ Reanudar App
+              </button>
+            </div>
+
+            <!-- Grafo Secuencial de Callbacks -->
+            <div style="font:700 0.8rem 'Courier New', monospace; color:var(--android-green); margin-bottom:8px;">
+              MÁQUINA DE ESTADOS DEL CICLO DE VIDA (CALL STACK):
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+              <span class="callback-badge active-cb" id="cb-onCreate">onCreate()</span>
+              <span class="callback-badge active-cb" id="cb-onStart">onStart()</span>
+              <span class="callback-badge active-cb" id="cb-onResume">onResume()</span>
+              <span class="callback-badge" id="cb-onPause">onPause()</span>
+              <span class="callback-badge" id="cb-onStop">onStop()</span>
+              <span class="callback-badge" id="cb-onDestroy">onDestroy()</span>
+            </div>
+
+            <!-- Auditoría de Memoria: Normal vs ViewModel -->
+            <div class="memory-inspector-box">
+              <strong style="color:var(--gold); font-family:'Courier New', monospace; font-size:0.85rem;">
+                AUDITORÍA DE ESTADO DE MEMORIA (Persistencia ante Rotación):
+              </strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;">
+                <div style="background:rgba(255,0,110,0.08); border:1px solid var(--coral); padding:10px; border-radius:6px;">
+                  <span style="font:700 0.76rem 'Courier New', monospace; color:var(--coral);">VARIABLE EN ACTIVITY (int count):</span>
+                  <div id="mem-activity-val" style="font:800 1.2rem 'Courier New', monospace; color:#fff; margin-top:4px;">0</div>
+                  <small style="color:var(--muted); font-size:0.72rem;">Se reinicia a 0 en onDestroy() / onCreate().</small>
+                </div>
+                <div style="background:rgba(61,220,132,0.08); border:1px solid var(--android-green); padding:10px; border-radius:6px;">
+                  <span style="font:700 0.76rem 'Courier New', monospace; color:var(--android-green);">VIEWMODEL (StateFlow / LiveData):</span>
+                  <div id="mem-viewmodel-val" style="font:800 1.2rem 'Courier New', monospace; color:#fff; margin-top:4px;">0</div>
+                  <small style="color:var(--android-green); font-size:0.72rem;">¡Sobrevive intacto a la rotación!</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Registro de Bitácora -->
+            <div style="margin-top:14px;">
+              <span style="font:700 0.76rem 'Courier New', monospace; color:var(--muted);">LOGCAT DEL SISTEMA:</span>
+              <pre id="logcat-box" style="background:#080811; border:1px solid var(--line); border-radius:6px; padding:10px; font:0.75rem 'Courier New', monospace; color:#a5d6ff; max-height:90px; overflow-y:auto; margin:4px 0 0;">[10:45:00] onCreate() -> Inicializando vistas y ViewBinding
+[10:45:01] onStart() -> Activity visible
+[10:45:02] onResume() -> Obteniendo foco e interactividad</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: COMPONENTES ABCD -->
+      <section id="tab-abcd" class="content-panel">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
+          <div class="lifecycle-flow-card" style="border-top:3px solid var(--android-green);">
+            <strong style="color:var(--android-green); font-family:'Courier New', monospace; font-size:1.1rem;">A · Activities</strong>
+            <p style="font-size:0.83rem; color:var(--muted); margin:8px 0;">
+              Representan un punto de entrada visual para el usuario con una pantalla (Window). Controlan la interacción táctil y el renderizado del layout. Toda Activity debe declararse obligatoriamente en el <code>AndroidManifest.xml</code>.
+            </p>
+          </div>
+
+          <div class="lifecycle-flow-card" style="border-top:3px solid var(--cyan);">
+            <strong style="color:var(--cyan); font-family:'Courier New', monospace; font-size:1.1rem;">B · Broadcast Receivers</strong>
+            <p style="font-size:0.83rem; color:var(--muted); margin:8px 0;">
+              Componentes reactivos que escuchan y responden a anuncios del sistema operativo o de otras apps (ej. <code>ACTION_BATTERY_LOW</code>, <code>BOOT_COMPLETED</code>, <code>CONNECTIVITY_CHANGE</code>). No tienen interfaz gráfica directa.
+            </p>
+          </div>
+
+          <div class="lifecycle-flow-card" style="border-top:3px solid var(--gold);">
+            <strong style="color:var(--gold); font-family:'Courier New', monospace; font-size:1.1rem;">C · Content Providers</strong>
+            <p style="font-size:0.83rem; color:var(--muted); margin:8px 0;">
+              Administran el acceso seguro a un repositorio centralizado de datos estructurados para compartir información entre diferentes aplicaciones mediante esquemas de URIs (ej. contactos del teléfono, galería multimedia).
+            </p>
+          </div>
+
+          <div class="lifecycle-flow-card" style="border-top:3px solid var(--coral);">
+            <strong style="color:var(--coral); font-family:'Courier New', monospace; font-size:1.1rem;">D · Delivered Services</strong>
+            <p style="font-size:0.83rem; color:var(--muted); margin:8px 0;">
+              Ejecutan operaciones prolongadas en segundo plano sin interfaz visual. En Android moderno, los servicios en segundo plano están estrictamente restringidos en favor de <code>WorkManager</code> y <code>Foreground Services</code>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: TAREAS EN SEGUNDO PLANO -->
+      <section id="tab-background" class="content-panel">
+        <div class="lifecycle-flow-card">
+          <h2 style="margin:0 0 10px; font-size:1.25rem; color:#fff;">Guía Doctrinal: ¿Qué Primitiva de Background Usar?</h2>
+          <p style="margin:0 0 16px; font-size:0.84rem; color:var(--muted);">
+            Desde Android 8.0 (Oreo) y Android 14, el sistema suspende procesos en segundo plano agresivamente para ahorrar batería. Selecciona la primitiva correcta según el requerimiento:
+          </p>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Primitiva Técnica</th>
+                  <th>Garantía de Ejecución</th>
+                  <th>Percepción del Usuario</th>
+                  <th>Caso de Uso Canónico</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color:var(--android-green);">WorkManager</strong></td>
+                  <td style="color:var(--green);">Garantizada (Persiste a reinicios)</td>
+                  <td>Diferible (Segundo plano silencioso)</td>
+                  <td>Sincronizar base de datos SQLite con el servidor al conectarse a Wi-Fi y cargador.</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--coral);">Foreground Service</strong></td>
+                  <td style="color:var(--cyan);">Inmediata mientras dure la tarea</td>
+                  <td style="color:var(--coral);">Perceptible (Notificación persistente)</td>
+                  <td>Reproductor de música, grabación de audio, navegación por GPS en tiempo real.</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--gold);">AlarmManager</strong></td>
+                  <td style="color:var(--gold);">Exacta a nivel de reloj de pared</td>
+                  <td>Dispara en instante temporal fijado</td>
+                  <td>Despertador, alarma de calendario o recordatorio de toma de medicamento.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: LABORATORIO EVALUATIVO FORMATIVO -->
+      <section id="tab-quiz" class="content-panel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio Formativo de Arquitectura Móvil & Ciclo de Vida
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos técnicos con simetría intra-inciso sobre el ciclo de vida de componentes Android y persistencia de estado.
+          </p>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+          <div style="margin-top:12px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
+          </div>
+        </div>
+      </div>
+  
+    </section>
+
+      <nav class="module-nav-bar"></nav>
+
+    <footer class="global-footer">
+      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+    </footer>
+    </main>
+
+    <script>
+
+      // Gestor Universal Robusto de Pestañas
+      window.switchTab = function (tabId) {
+        document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel, .tab-content').forEach(p => p.classList.remove('active'));
+        
+        const panel = document.getElementById(tabId) || document.getElementById('tab-' + tabId);
+        if (panel) panel.classList.add('active');
+        
+        const activeBtn = Array.from(document.querySelectorAll('.nav-tabs .tab-btn')).find(b => {
+          const onclickAttr = b.getAttribute('onclick') || '';
+          return onclickAttr.includes(tabId);
+        });
+        if (activeBtn) activeBtn.classList.add('active');
+      };
+
+
+      let currentCounter = 0;
+      let viewModelCounter = 0;
+
+      function incrementCounter() {
+        currentCounter++;
+        viewModelCounter++;
+        document.getElementById('disp-screen-counter').innerText = currentCounter;
+        document.getElementById('mem-activity-val').innerText = currentCounter;
+        document.getElementById('mem-viewmodel-val').innerText = viewModelCounter;
+        appendLog(`[EVENT] Contador incrementado a ${currentCounter}`);
+      }
+
+      function appendLog(msg) {
+        const box = document.getElementById('logcat-box');
+        const now = new Date().toTimeString().split(' ')[0];
+        box.innerText += `\n[${now}] ${msg}`;
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function setCallbackActive(cbId) {
+        document.querySelectorAll('.callback-badge').forEach(b => b.classList.remove('active-cb'));
+        const target = document.getElementById(cbId);
+        if (target) target.classList.add('active-cb');
+      }
+
+      function triggerLifecycle(action) {
+        if (action === 'rotate') {
+          appendLog("⚠️ [CONFIG_CHANGE] Rotación detectada. Destruyendo Activity previa...");
+          setCallbackActive('cb-onDestroy');
+          currentCounter = 0; // La variable en la Activity muere
+          document.getElementById('mem-activity-val').innerText = "0 (¡Perdida!)";
+          document.getElementById('mem-activity-val').style.color = "var(--coral)";
+
+          setTimeout(() => {
+            appendLog("✓ [LIFECYCLE] Recreando Activity en Horizontal: onCreate() -> onStart() -> onResume()");
+            setCallbackActive('cb-onResume');
+            // ViewModel preserva el valor y restaura la UI
+            currentCounter = viewModelCounter;
+            document.getElementById('disp-screen-counter').innerText = currentCounter;
+            document.getElementById('mem-activity-val').innerText = currentCounter;
+            document.getElementById('mem-activity-val').style.color = "#fff";
+            document.getElementById('phone-screen-status').innerText = "Estado: RESUMED (Rotada)";
+          }, 600);
+        } else if (action === 'call') {
+          appendLog("📞 [INCOMING_CALL] Foco perdido: onPause()");
+          setCallbackActive('cb-onPause');
+          document.getElementById('phone-screen-status').innerText = "Estado: PAUSED (Llamada entrante)";
+        } else if (action === 'home') {
+          appendLog("● [HOME_PRESS] Activity oculta: onPause() -> onStop()");
+          setCallbackActive('cb-onStop');
+          document.getElementById('phone-screen-status').innerText = "Estado: STOPPED (Segundo plano)";
+        } else if (action === 'resume') {
+          appendLog("▶ [RESUME_APP] Reanudando: onRestart() -> onStart() -> onResume()");
+          setCallbackActive('cb-onResume');
+          document.getElementById('phone-screen-status').innerText = "Estado: RESUMED (En Primer Plano)";
+        } else if (action === 'lowmem') {
+          appendLog("☠️ [LOW_MEMORY_KILLER] Proceso finalizado por el Kernel para liberar RAM.");
+          setCallbackActive('cb-onDestroy');
+          currentCounter = 0;
+          document.getElementById('disp-screen-counter').innerText = "-";
+          document.getElementById('mem-activity-val').innerText = "0";
+          document.getElementById('phone-screen-status').innerText = "Estado: KILLED (Proceso Destruido)";
+        } else if (action === 'back') {
+          appendLog("◀ [BACK_PRESSED] Activity finalizada por usuario: finish()");
+          setCallbackActive('cb-onDestroy');
+          document.getElementById('phone-screen-status').innerText = "Estado: DESTROYED";
+        }
+      }
+
+      window.switchAndroidTab = function(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+
+        const btns = document.querySelectorAll('.tab-btn');
+        if (tabId === 'tab-lifecycle') btns[0].classList.add('active');
+        if (tabId === 'tab-abcd') btns[1].classList.add('active');
+        if (tabId === 'tab-background') btns[2].classList.add('active');
+        if (tabId === 'tab-quiz') btns[3].classList.add('active');
+      };
+
+      window.answerAndroidQuiz = function(qNum, optIdx) {
+        const fb = document.getElementById(`qand-f${qNum}`);
+        fb.style.display = 'block';
+
+        if (qNum === 1) {
+          if (optIdx === 0) {
+            fb.style.background = 'rgba(0, 255, 170, 0.15)';
+            fb.style.border = '1px solid var(--green)';
+            fb.style.color = 'var(--green)';
+            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> En Android, un cambio de configuración como la rotación destruye la Activity por completo (onDestroy) y la vuelve a instanciar (onCreate) para vincular los layouts alternativos (layout-land). Por ello es imprescindible aislar el estado en un ViewModel.';
+          } else {
+            fb.style.background = 'rgba(255, 0, 110, 0.15)';
+            fb.style.border = '1px solid var(--coral)';
+            fb.style.color = 'var(--coral)';
+            fb.innerHTML = '<strong>✗ Incorrecto.</strong> Doctrina Griffiths: La rotación dispara la destrucción y recreación completa de la Activity (onDestroy -> onCreate).';
+          }
+        } else if (qNum === 2) {
+          if (optIdx === 1) {
+            fb.style.background = 'rgba(0, 255, 170, 0.15)';
+            fb.style.border = '1px solid var(--green)';
+            fb.style.color = 'var(--green)';
+            fb.innerHTML = '<strong>✓ ¡Correcto!</strong> WorkManager es la biblioteca canónica de Android Jetpack para tareas diferibles garantizadas que requieren restricciones del entorno (batería, red no medida), persistiendo los trabajos en SQLite interno.';
+          } else {
+            fb.style.background = 'rgba(255, 0, 110, 0.15)';
+            fb.style.border = '1px solid var(--coral)';
+            fb.style.color = 'var(--coral)';
+            fb.innerHTML = '<strong>✗ Incorrecto.</strong> Para trabajo garantizado y diferible con restricciones del dispositivo, el estándar oficial es WorkManager.';
+          }
+        }
+      };
+    
+
+    /* ==============================================================
+       LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+       ============================================================== */
+    const quizQuestions = [
+  {
+    "q": "Cuando el usuario rota físicamente el dispositivo de vertical a horizontal mientras usa una app, ¿qué ciclo ejecuta el sistema operativo Android sobre la Activity activa por defecto?",
+    "options": [
+      "Destruye la instancia ejecutando onPause(), onStop() y onDestroy(), y crea una nueva con onCreate(), onStart() y onResume().",
+      "Mantiene la instancia intacta en memoria suspendiendo temporalmente el hilo principal mediante el método onFreeze().",
+      "Ejecuta únicamente onConfigurationChanged() preservando todas las variables locales del hilo sin redibujar vistas.",
+      "Envía la Activity a segundo plano invocando onRestart() sin destruir ni recargar los recursos gráficos del layout."
+    ],
+    "correct": 0,
+    "feedback": "Por defecto, un cambio de configuración (como rotación de pantalla o cambio de idioma) destruye por completo la Activity activa (onPause -> onStop -> onDestroy) y recrea una nueva instancia (onCreate -> onStart -> onResume) para cargar los recursos adecuados del calificador (ej. layout-land)."
+  },
+  {
+    "q": "¿Por qué el componente ViewModel de Android Jetpack previene fugas de memoria (Memory Leaks) y pérdida de datos durante los cambios de configuración?",
+    "options": [
+      "Porque se ejecuta en un proceso aislado del kernel de Linux con permisos de administrador root.",
+      "Porque sobrevive al ciclo de vida de la Activity y retiene los datos hasta que el Activity se finaliza con finish().",
+      "Porque serializa automáticamente todas las entidades a disco mediante una base de datos SQLite en cada frame.",
+      "Porque reemplaza el Garbage Collector nativo de ART liberando memoria síncronamente en el hilo de renderizado."
+    ],
+    "correct": 1,
+    "feedback": "El ViewModel está vinculado al ViewModelStoreOwner y no al ciclo de vida efímero de la Activity individual. Permanece en memoria mientras la Activity se recrea por rotación y solo se destruye cuando la Activity se finaliza definitivamente (finish()) o el usuario remueve la tarea."
+  },
+  {
+    "q": "En el ciclo de vida de una Activity, ¿en qué callback preciso deja de ser visible la pantalla para el usuario antes de pasar a segundo plano?",
+    "options": [
+      "onPause(), ya que se invoca en cuanto la ventana pierde el foco visual parcial del usuario.",
+      "onStop(), ya que se ejecuta cuando la Activity deja de ser completamente visible para el usuario.",
+      "onDestroy(), ya que es el único callback que notifica la pérdida de visibilidad de componentes.",
+      "onSaveInstanceState(), ya que se ejecuta antes de cualquier transición de visibilidad en la vista."
+    ],
+    "correct": 1,
+    "feedback": "onPause() se ejecuta cuando la Activity pierde el foco (pero aún puede ser parcialmente visible, ej. un diálogo modal flotante). onStop() se dispara cuando la Activity deja de ser visible por completo (ej. el usuario presionó Home o abrió otra app)."
+  },
+  {
+    "q": "¿Cuál de los siguientes componentes arquitectónicos de Android está diseñado para realizar tareas en segundo plano sin proporcionar interfaz gráfica de usuario?",
+    "options": [
+      "BroadcastReceiver, para desplegar vistas complejas en ventanas flotantes de prioridad alta.",
+      "Service, para ejecutar operaciones de larga duración en background como reproducción de audio o sincronización.",
+      "ContentProvider, para capturar eventos de pulsaciones táctiles directas sobre la pantalla táctil.",
+      "Fragment, para gestionar la cola de eventos de hardware del chip de comunicaciones Bluetooth."
+    ],
+    "correct": 1,
+    "feedback": "Un Service es un componente de aplicación que puede realizar operaciones de larga duración en segundo plano (background) y no proporciona una interfaz de usuario visual, a diferencia de una Activity o Fragment."
+  }
+];
+
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let currentShuffledOptions = [];
+
+    window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        // Reconstruir el esqueleto interactivo si se mostró el resumen final
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+          feedbackBox.style.fontSize = '0.8rem';
+          feedbackBox.style.lineHeight = '1.35';
+          feedbackBox.style.padding = '8px 12px';
+          feedbackBox.style.marginTop = '10px';
+          feedbackBox.style.borderRadius = '6px';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Feedback doctrinal conciso (máximo la primera oración significativa)
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) {
+          shortFeedback = firstSentenceMatch[1];
+        }
+        if (shortFeedback.length > 150) {
+          const cut = shortFeedback.lastIndexOf(' ', 145);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 145)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--accent, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:#ff006e; font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+    // Auto-inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+    } else {
+      renderQuizQuestion();
+    }
+  
+    </script>
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>

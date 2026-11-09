@@ -1,0 +1,1282 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estructuras de Indexación: Árbol B+ vs Tablas Hash | Laboratorio Interactivo</title>
+    <meta
+      name="description"
+      content="Laboratorio comparativo interactivo de estructuras de indexación física de bases de datos: inserción de tuplas en tiempo real, división de nodos (splits), dispersión en buckets, resolución de colisiones y rendimiento en búsquedas puntuales vs de rango."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --bplus-color: #00ffff;
+        --hash-color: #ffd700;
+        --split-color: #ff006e;
+        --chain-color: #00ffaa;
+      }
+
+      p, li {
+        font-family: Verdana, sans-serif;
+      }
+
+      .content-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .content-panel.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Barra de Entrada y Presets */
+      .input-console-bar {
+        background: var(--panel-dark);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin-bottom: 22px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .console-controls-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .console-input {
+        background: #080811;
+        border: 1px solid var(--line);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font: 700 0.9rem "Courier New", monospace;
+        min-height: 44px;
+        box-sizing: border-box;
+      }
+
+      .console-input:focus {
+        outline: none;
+        border-color: var(--cyan);
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+      }
+
+      .btn-console {
+        padding: 10px 18px;
+        border-radius: 6px;
+        font: 700 0.85rem "Courier New", monospace;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        min-height: 44px;
+        border: 1px solid transparent;
+      }
+
+      .btn-console-primary {
+        background: linear-gradient(135deg, var(--green), var(--cyan));
+        color: #000;
+        box-shadow: 0 0 14px rgba(0, 255, 170, 0.35);
+      }
+      .btn-console-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 22px rgba(0, 255, 170, 0.6);
+      }
+
+      .btn-console-secondary {
+        background: rgba(34, 33, 61, 0.9);
+        border-color: var(--line);
+        color: var(--cyan);
+      }
+      .btn-console-secondary:hover {
+        background: rgba(0, 255, 255, 0.15);
+        color: #fff;
+      }
+
+      /* Pantalla Dividida Side-by-Side */
+      .dual-engine-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 24px;
+      }
+
+      .engine-panel {
+        background: rgba(22, 21, 40, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        min-height: 460px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .engine-panel::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+      }
+
+      .engine-bplus::before { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+      .engine-hash::before { background: linear-gradient(90deg, var(--gold), var(--coral)); }
+
+      .engine-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .engine-badge {
+        font: 700 0.74rem/1 "Courier New", monospace;
+        padding: 4px 10px;
+        border-radius: 4px;
+        letter-spacing: 0.08em;
+      }
+
+      .badge-bplus { background: rgba(0, 255, 255, 0.12); color: var(--cyan); border: 1px solid var(--cyan); }
+      .badge-hash { background: rgba(255, 215, 0, 0.12); color: var(--gold); border: 1px solid var(--gold); }
+
+      /* Estructura del Árbol B+ */
+      .tree-level {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .bplus-node-box {
+        background: #0d0c1c;
+        border: 1px solid rgba(0, 255, 255, 0.4);
+        border-radius: 6px;
+        padding: 8px 10px;
+        display: flex;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        transition: all 0.25s ease;
+      }
+
+      .bplus-node-box.leaf-node {
+        border-color: rgba(0, 255, 170, 0.45);
+        background: #081017;
+      }
+
+      .bplus-node-box.pulse-split {
+        border-color: var(--coral) !important;
+        animation: nodeSplitPulse 0.8s ease infinite alternate;
+      }
+
+      @keyframes nodeSplitPulse {
+        0% { transform: scale(1); box-shadow: 0 0 6px var(--coral); }
+        100% { transform: scale(1.05); box-shadow: 0 0 18px var(--coral); }
+      }
+
+      .bplus-key-item {
+        background: rgba(0, 255, 255, 0.12);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font: 700 0.82rem "Courier New", monospace;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .bplus-key-item.leaf-item {
+        background: rgba(0, 255, 170, 0.12);
+        border-color: rgba(0, 255, 170, 0.35);
+        color: var(--green);
+      }
+
+      .bplus-key-item small {
+        font-size: 0.65rem;
+        color: var(--muted);
+      }
+
+      .leaf-link-connector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--cyan);
+        font: 700 0.8rem "Courier New", monospace;
+        margin: 4px 0 12px;
+      }
+
+      /* Estructura de la Tabla Hash */
+      .hash-table-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 380px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .bucket-row {
+        background: #0a0914;
+        border: 1px solid rgba(255, 215, 0, 0.25);
+        border-radius: 6px;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s ease;
+      }
+
+      .bucket-row.bucket-active {
+        border-color: var(--gold);
+        background: rgba(255, 215, 0, 0.1);
+        box-shadow: 0 0 14px rgba(255, 215, 0, 0.3);
+      }
+
+      .bucket-id-pill {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        background: rgba(255, 215, 0, 0.15);
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font: 700 0.85rem "Courier New", monospace;
+      }
+
+      .bucket-chain-list {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        flex-grow: 1;
+      }
+
+      .chain-node {
+        background: rgba(0, 255, 170, 0.12);
+        border: 1px solid var(--green);
+        color: #fff;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font: 0.78rem "Courier New", monospace;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .chain-node .node-val {
+        color: var(--green);
+        font-weight: 700;
+      }
+
+      .chain-arrow {
+        color: var(--cyan);
+        font-weight: 700;
+        font-size: 0.8rem;
+      }
+
+      /* Traza de Auditoría en Tiempo Real */
+      .engine-log-box {
+        margin-top: auto;
+        background: #06050e;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 6px;
+        padding: 10px 12px;
+        font: 0.8rem/1.5 "Courier New", monospace;
+        color: var(--ink);
+        min-height: 54px;
+      }
+
+      /* Responsividad Mobile-First */
+      @media (max-width: 900px) {
+        .dual-engine-grid {
+          grid-template-columns: 1fr;
+        }
+        .console-controls-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .console-controls-row input, .console-controls-row button, .console-controls-row select {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body data-module-id="35">
+    <main class="page">
+      <a href="../index.html" class="btn-back-index">
+        <span>←</span> Volver al Catálogo Principal
+      </a>
+
+      <header>
+        <div>
+          <p class="eyebrow">35 · Indexación &amp; Algoritmos de Bases de Datos</p>
+          <h1>Estructuras de Indexación: Árbol B+ vs Tablas Hash</h1>
+        </div>
+        <p class="intro">
+          Laboratorio comparativo en tiempo real. Ingresa tuplas y observa cómo el <strong>Árbol B+</strong> las organiza en orden total y enlaces secuenciales de hojas, mientras el <strong>Índice Hash</strong> las dispersa en buckets con acceso $O(1)$ pero anulando las búsquedas por rango.
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-dual-sim')">
+          <span>🌳⚡</span> 1. Laboratorio Dual: Inserción en Vivo
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-hash-deep')">
+          <span>⚙️</span> 2. Mecánica Hash &amp; Colisiones
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-bplus-deep')">
+          <span>🌲</span> 3. Anatomía del Árbol B+ &amp; Splits
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-query-duel')">
+          <span>⏱️</span> 4. Duelo: Búsqueda Puntual vs Rango
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 5. Laboratorio de Diagnóstico: Evaluación Técnica
+        </button>
+      </nav>
+
+      <!-- PESTAÑA 1: LABORATORIO DUAL SINCRONIZADO -->
+      <section id="tab-dual-sim" class="content-panel active">
+        <!-- Consola de Captura de Registros -->
+        <div class="input-console-bar">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <strong style="color:var(--cyan); font-size:0.92rem;">Captura de Tupla / Registro</strong>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="font-size:0.8rem; color:var(--muted);">Estrategia Colisión Hash:</span>
+              <select id="collision-mode-select" class="console-input" style="padding:4px 8px; min-height:36px;" onchange="updateCollisionStrategy()">
+                <option value="chaining" selected>Separate Chaining (Listas)</option>
+                <option value="linear">Open Addressing (Linear Probing)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="console-controls-row">
+            <div style="display:flex; gap:8px; align-items:center; flex-grow:1;">
+              <label for="input-reg-id" style="font-size:0.82rem; color:var(--gold); font-weight:700;">ID (Clave):</label>
+              <input type="number" id="input-reg-id" class="console-input" value="28" min="1" max="999" style="width:90px;" />
+              
+              <label for="input-reg-name" style="font-size:0.82rem; color:var(--green); font-weight:700;">Nombre:</label>
+              <input type="text" id="input-reg-name" class="console-input" value="Carlos" style="flex-grow:1; min-width:120px;" />
+            </div>
+
+            <button class="btn-console btn-console-primary" onclick="handleAddRecord()">
+              <span>➕</span> Insertar en Ambos Motores
+            </button>
+
+            <button class="btn-console btn-console-secondary" onclick="handleRandomRecord()">
+              <span>🎲</span> Registro Aleatorio
+            </button>
+
+            <button class="btn-console btn-console-secondary" onclick="resetDualEngines()" style="color:var(--coral); border-color:rgba(255,0,110,0.3);">
+              <span>↺</span> Limpiar Todo
+            </button>
+          </div>
+
+          <!-- Presets Guiados -->
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+            <span style="font-size:0.75rem; color:var(--muted); font-weight:700; text-transform:uppercase;">Casos de Estudio / Presets:</span>
+            <button class="btn-theme" style="padding:4px 10px; font-size:0.74rem; border-radius:4px;" onclick="loadDualPreset('sequential')">
+              1. Inserción Secuencial (10, 20, 30, 40, 50)
+            </button>
+            <button class="btn-theme" style="padding:4px 10px; font-size:0.74rem; border-radius:4px;" onclick="loadDualPreset('collisions')">
+              2. Colisiones Hash Forzadas (Módulo 7: 7, 14, 21, 28)
+            </button>
+            <button class="btn-theme" style="padding:4px 10px; font-size:0.74rem; border-radius:4px;" onclick="loadDualPreset('split-cascade')">
+              3. Split en Cascada Árbol B+
+            </button>
+          </div>
+        </div>
+
+        <!-- Pantalla Dividida en Tiempo Real -->
+        <div class="dual-engine-grid">
+          <!-- MOTOR 1: ÁRBOL B+ -->
+          <div class="engine-panel engine-bplus">
+            <div class="engine-header">
+              <div>
+                <span class="engine-badge badge-bplus">MOTOR 1 · ÁRBOL B+ (B+ TREE)</span>
+                <h3 style="margin:4px 0 0; color:#fff; font-size:1.1rem;">Estructura Jerárquica &amp; Orden Total</h3>
+              </div>
+              <span id="bplus-stats-badge" style="font:700 0.8rem 'Courier New', monospace; color:var(--cyan);">0 Registros | Altura: 1</span>
+            </div>
+
+            <p style="font-size:0.8rem; color:var(--muted); margin:0 0 14px; font-family:Verdana,sans-serif;">
+              Capacidad máxima por nodo: $M=3$. Todos los registros residen en el nivel hoja y están conectados en lista doblemente enlazada para búsquedas por rango.
+            </p>
+
+            <div id="bplus-visual-canvas" style="flex-grow:1; display:flex; flex-direction:column; justify-content:center; min-height:220px;">
+              <!-- Nodos generados dinámicamente -->
+            </div>
+
+            <div class="engine-log-box" id="bplus-log-text">
+              <span style="color:var(--cyan);">[B+ READY]:</span> Esperando tuplas. Las claves se insertan ordenadas numéricamente.
+            </div>
+          </div>
+
+          <!-- MOTOR 2: ÍNDICE HASH -->
+          <div class="engine-panel engine-hash">
+            <div class="engine-header">
+              <div>
+                <span class="engine-badge badge-hash">MOTOR 2 · ÍNDICE HASH (HASH INDEX)</span>
+                <h3 style="margin:4px 0 0; color:#fff; font-size:1.1rem;">Dispersión O(1) en Buckets</h3>
+              </div>
+              <span id="hash-stats-badge" style="font:700 0.8rem 'Courier New', monospace; color:var(--gold);">Factor Carga &alpha;: 0.00</span>
+            </div>
+
+            <p style="font-size:0.8rem; color:var(--muted); margin:0 0 14px; font-family:Verdana,sans-serif;">
+              Función: $h(k) = k \pmod 7$. No existe orden secuencial. Las tuplas se indexan calculando el resto de la división entre 7.
+            </p>
+
+            <div class="hash-table-layout" id="hash-visual-canvas">
+              <!-- Buckets generados dinámicamente -->
+            </div>
+
+            <div class="engine-log-box" id="hash-log-text">
+              <span style="color:var(--gold);">[HASH READY]:</span> 7 buckets inicializados. La clave calcula $h(k)$ para acceder a la ranura.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 2: MECÁNICA HASH & COLISIONES -->
+      <section id="tab-hash-deep" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>⚙️</span> Mecánica de la Función Hash y Resolución de Colisiones</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
+            Una tabla hash o índice hash utiliza una <strong>función de dispersión matemática</strong> para transformar una clave arbitraria en un número de índice entero acotado dentro de un arreglo de <em>Buckets</em>.
+          </p>
+
+          <div class="taxo-grid-4">
+            <div class="matrix-card" style="background:#0c0b1a;">
+              <h4 style="color:var(--gold); margin:0 0 8px;">1. Función Módulo</h4>
+              <p style="font-size:0.82rem; color:var(--muted); line-height:1.5;">
+                $h(k) = k \pmod M$<br>
+                Donde $M$ suele elegirse como un <strong>número primo</strong> lejano de potencias de 2 para minimizar agrupamientos no uniformes.
+              </p>
+            </div>
+
+            <div class="matrix-card" style="background:#0c0b1a;">
+              <h4 style="color:var(--green); margin:0 0 8px;">2. Separate Chaining</h4>
+              <p style="font-size:0.82rem; color:var(--muted); line-height:1.5;">
+                Cada bucket es la cabecera de una <strong>lista ligada</strong>. Si dos claves tienen el mismo hash, se agregan al final de la lista. En el peor caso (todas las claves al mismo bucket), se degrada a $O(N)$.
+              </p>
+            </div>
+
+            <div class="matrix-card" style="background:#0c0b1a;">
+              <h4 style="color:var(--cyan); margin:0 0 8px;">3. Linear Probing</h4>
+              <p style="font-size:0.82rem; color:var(--muted); line-height:1.5;">
+                Si el bucket $h(k)$ está ocupado, sondea la celda contigua $h(k) + 1, h(k) + 2...$ Sufre del fenómeno de <strong>Agrupamiento Primario</strong> (*Primary Clustering*).
+              </p>
+            </div>
+
+            <div class="matrix-card" style="background:#0c0b1a;">
+              <h4 style="color:var(--coral); margin:0 0 8px;">4. Factor de Carga (&alpha;)</h4>
+              <p style="font-size:0.82rem; color:var(--muted); line-height:1.5;">
+                $\alpha = \frac{N}{M}$ (número de registros entre número de buckets). Si $\alpha > 0.75$, se produce una degradación exponencial de colisiones y se requiere <strong>Rehashing</strong> ($2M$).
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 3: ANATOMÍA DEL ÁRBOL B+ & SPLITS -->
+      <section id="tab-bplus-deep" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🌲</span> Anatomía del Árbol B+ y la División de Nodos (*Splits*)</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
+            El Árbol B+ es la estructura estándar de índices en motores como <strong>PostgreSQL, MySQL (InnoDB), SQL Server y Oracle</strong>. A diferencia del Árbol B tradicional inventado por Bayer y McCreight:
+          </p>
+
+          <div style="background:rgba(18,17,36,0.9); border:1px solid var(--line); border-radius:8px; padding:18px; margin-bottom:20px;">
+            <ul style="color:var(--ink); font-size:0.88rem; line-height:1.8; margin:0; padding-left:22px; font-family:Verdana,sans-serif;">
+              <li><strong>Nodos Internos de Enrutamiento:</strong> Solo guardan claves y punteros a nodos hijos. No guardan registros ni datos de filas, lo que permite un gigantesco factor de ramificación (*Fan-Out* $\approx 500$ claves por página de 8 KB).</li>
+              <li><strong>Nodos Hoja de Datos:</strong> Todos los datos de las tuplas residen exclusivamente en el nivel hoja.</li>
+              <li><strong>Secuencia Horizontal Enlazada:</strong> Los nodos hoja están interconectados mediante una lista doblemente enlazada (*Next* y *Prev*), permitiendo lecturas secuenciales ultra veloces para rangos sin tener que volver a subir a la raíz.</li>
+              <li><strong>Balanceo Estricto:</strong> Todas las hojas residen exactamente a la misma profundidad (*Depth*), garantizando un tiempo determinista de búsqueda $O(\log_M N)$.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 4: DUELO DE CONSULTAS: PUNTUAL VS RANGO -->
+      <section id="tab-query-duel" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>⏱️</span> Duelo de Consultas: Búsqueda Puntual vs Escaneo de Rango</h2>
+          <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
+            Comprueba experimentalmente por qué los gestores de bases de datos relacionales utilizan <strong>Árboles B+ por defecto</strong> y relegan los Índices Hash únicamente a casos muy concretos (como tablas en memoria o *join caches*).
+          </p>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:22px;">
+            <button class="btn-console btn-console-primary" onclick="simulateDuelQuery('point')">
+              🔍 1. Consulta Puntual: WHERE id = 28
+            </button>
+            <button class="btn-console" style="background:linear-gradient(135deg, var(--gold), var(--coral)); color:#000; font-weight:800;" onclick="simulateDuelQuery('range')">
+              ⚡ 2. Consulta por Rango: WHERE id BETWEEN 15 AND 40
+            </button>
+          </div>
+
+          <div id="duel-results-box" style="background:#090814; border:1px solid var(--line); border-radius:8px; padding:20px; font-family:Verdana,sans-serif; line-height:1.6;">
+            <p style="color:var(--muted); margin:0;">
+              Haz clic en cualquiera de las consultas arriba para disparar la prueba de rendimiento comparativo entre Árbol B+ y Tabla Hash.
+            </p>
+          </div>
+
+          <!-- Matriz Doctrinal de Operaciones -->
+          <div style="margin-top:24px;">
+            <h3 style="color:var(--cyan); margin-bottom:12px;">Matriz Doctrinal: Soporte de Operadores SQL</h3>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Operación / Cláusula SQL</th>
+                    <th>Árbol B+ (B-Tree)</th>
+                    <th>Índice Hash (Hash Index)</th>
+                    <th>Veredicto Doctrinal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>WHERE id = 42</code> (Igualdad estricta)</td>
+                    <td style="color:var(--green); font-weight:700;">$O(\log N)$</td>
+                    <td style="color:var(--green); font-weight:700;">$O(1)$ Excelente</td>
+                    <td>Hash gana en tiempo constante; B+ requiere 3 o 4 lecturas de página.</td>
+                  </tr>
+                  <tr>
+                    <td><code>WHERE id BETWEEN 10 AND 50</code> (Rango)</td>
+                    <td style="color:var(--green); font-weight:700;">$O(\log N + K)$ Óptimo</td>
+                    <td style="color:var(--coral); font-weight:700;">$O(N)$ Desastroso</td>
+                    <td>Hash no preserva orden; requiere <strong>Full Table Scan</strong>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>ORDER BY id ASC / DESC</code></td>
+                    <td style="color:var(--green); font-weight:700;">$O(1)$ Sin costo extra</td>
+                    <td style="color:var(--coral); font-weight:700;">$O(N \log N)$ Sort en RAM</td>
+                    <td>El Árbol B+ ya entrega las tuplas físicamente ordenadas.</td>
+                  </tr>
+                  <tr>
+                    <td><code>WHERE nombre LIKE 'CAR%'</code> (Prefijo)</td>
+                    <td style="color:var(--green); font-weight:700;">$O(\log N + K)$ Seek en rama</td>
+                    <td style="color:var(--coral); font-weight:700;">No soportado (Full Scan)</td>
+                    <td>La función hash cambia por completo ante una sola letra; no soporta prefijos.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 5: QUIZ FORMATIVO -->
+      <section id="tab-quiz" class="content-panel">
+
+      <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 8px; font-size:1.3rem; color:#fff; display:flex; align-items:center; gap:8px;">
+            <span>🎯</span> Laboratorio de Diagnóstico: Evaluación Técnica de Indexación
+          </h2>
+          <p style="margin:0; font-size:0.86rem; color:var(--muted, #94a3b8); line-height:1.5;">
+            Reactivos de alta exigencia técnica sobre estructuras físicas de indexación B+ Tree frente a Tablas Hash.
+          </p>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--accent, #00ffff);">Pregunta 1 de 4</span>
+          <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold, #ffd166);">Puntuación: 0 / 4</span>
+        </div>
+        <div id="quiz-container">
+          <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+          <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+          <div style="margin-top:12px; text-align:right;">
+            <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+              Siguiente Pregunta ➔
+            </button>
+          </div>
+        </div>
+      </div>
+  
+    </section>
+
+      <nav class="module-nav-bar"></nav>
+
+    <footer class="global-footer">
+      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+    </footer>
+    </main>
+
+    <script>
+
+      // ==========================================
+      // SIMULADOR DUAL: ÁRBOL B+ VS ÍNDICE HASH
+      // ==========================================
+      let recordsList = [];
+      const HASH_BUCKET_COUNT = 7;
+      let collisionStrategy = 'chaining';
+
+      // 1. Estado del Árbol B+ (M=3)
+      // Representación simplificada y determinista para visualización didáctica
+      let bPlusRoot = null;
+
+      class BPlusNode {
+        constructor(isLeaf = false) {
+          this.isLeaf = isLeaf;
+          this.keys = []; // [ { key: 28, name: "Carlos" } ]
+          this.children = [];
+          this.next = null;
+          this.prev = null;
+        }
+      }
+
+      function initBPlusTree() {
+        bPlusRoot = new BPlusNode(true);
+      }
+
+      function insertBPlus(key, name) {
+        if (!bPlusRoot) initBPlusTree();
+
+        // Si la raíz se divide
+        let root = bPlusRoot;
+        if (root.keys.length === 3) {
+          let newRoot = new BPlusNode(false);
+          newRoot.children.push(bPlusRoot);
+          splitChild(newRoot, 0, bPlusRoot);
+          bPlusRoot = newRoot;
+          insertNonFull(bPlusRoot, key, name);
+        } else {
+          insertNonFull(bPlusRoot, key, name);
+        }
+      }
+
+      function insertNonFull(node, key, name) {
+        let i = node.keys.length - 1;
+        if (node.isLeaf) {
+          // Inserción ordenada en hoja
+          while (i >= 0 && key < node.keys[i].key) {
+            i--;
+          }
+          node.keys.splice(i + 1, 0, { key, name });
+        } else {
+          // Búsqueda en nodos internos
+          while (i >= 0 && key < node.keys[i].key) {
+            i--;
+          }
+          i++;
+          if (node.children[i].keys.length === 3) {
+            splitChild(node, i, node.children[i]);
+            if (key > node.keys[i].key) {
+              i++;
+            }
+          }
+          insertNonFull(node.children[i], key, name);
+        }
+      }
+
+      function splitChild(parent, i, child) {
+        let newNode = new BPlusNode(child.isLeaf);
+        // Mediana en índice 1 para M=3
+        let median = child.keys[1];
+
+        if (child.isLeaf) {
+          // En hojas, el nodo derecho conserva claves 1 y 2
+          newNode.keys = child.keys.splice(1);
+          newNode.next = child.next;
+          newNode.prev = child;
+          if (child.next) child.next.prev = newNode;
+          child.next = newNode;
+
+          parent.keys.splice(i, 0, { key: median.key, name: median.name });
+          parent.children.splice(i + 1, 0, newNode);
+        } else {
+          // En nodos internos, la mediana asciende y se elimina del hijo
+          newNode.keys = child.keys.splice(2);
+          child.keys.pop(); // quitar mediana
+          parent.keys.splice(i, 0, median);
+          newNode.children = child.children.splice(2);
+          parent.children.splice(i + 1, 0, newNode);
+        }
+      }
+
+      // 2. Estado de la Tabla Hash
+      let hashBuckets = Array.from({ length: HASH_BUCKET_COUNT }, () => []);
+
+      function insertHash(key, name) {
+        let bucketIdx = key % HASH_BUCKET_COUNT;
+        if (collisionStrategy === 'chaining') {
+          hashBuckets[bucketIdx].push({ key, name });
+          return { bucketIdx, chained: hashBuckets[bucketIdx].length > 1 };
+        } else {
+          // Linear probing
+          let original = bucketIdx;
+          let hops = 0;
+          while (hashBuckets[bucketIdx].length > 0 && hops < HASH_BUCKET_COUNT) {
+            bucketIdx = (bucketIdx + 1) % HASH_BUCKET_COUNT;
+            hops++;
+          }
+          if (hops < HASH_BUCKET_COUNT) {
+            hashBuckets[bucketIdx].push({ key, name });
+            return { bucketIdx, chained: hops > 0, hops };
+          } else {
+            return { bucketIdx: -1, overflow: true };
+          }
+        }
+      }
+
+      // 3. Renderizado Gráfico
+      function renderDualEngines(lastAction = null) {
+        renderBPlusTree();
+        renderHashTable(lastAction);
+      }
+
+      function renderBPlusTree() {
+        const canvas = document.getElementById('bplus-visual-canvas');
+        if (!canvas) return;
+        canvas.innerHTML = '';
+
+        if (!bPlusRoot || bPlusRoot.keys.length === 0) {
+          canvas.innerHTML = `<div style="text-align:center; color:var(--muted); font-size:0.85rem;">[Árbol B+ Vacío · Esperando tuplas]</div>`;
+          document.getElementById('bplus-stats-badge').innerText = `0 Registros | Altura: 0`;
+          return;
+        }
+
+        // BFS para renderizar por niveles
+        let levels = [];
+        let queue = [{ node: bPlusRoot, level: 0 }];
+
+        while (queue.length > 0) {
+          let { node, level } = queue.shift();
+          if (!levels[level]) levels[level] = [];
+          levels[level].push(node);
+
+          if (!node.isLeaf) {
+            node.children.forEach(c => queue.push({ node: c, level: level + 1 }));
+          }
+        }
+
+        document.getElementById('bplus-stats-badge').innerText = `${recordsList.length} Registros | Altura: ${levels.length}`;
+
+        levels.forEach((lvlNodes, lIdx) => {
+          const row = document.createElement('div');
+          row.className = 'tree-level';
+
+          lvlNodes.forEach(n => {
+            const nodeBox = document.createElement('div');
+            nodeBox.className = `bplus-node-box ${n.isLeaf ? 'leaf-node' : ''}`;
+
+            n.keys.forEach(kObj => {
+              const item = document.createElement('div');
+              item.className = `bplus-key-item ${n.isLeaf ? 'leaf-item' : ''}`;
+              item.innerHTML = `<span>${kObj.key}</span>${n.isLeaf ? `<small>${kObj.name}</small>` : ''}`;
+              nodeBox.appendChild(item);
+            });
+
+            row.appendChild(nodeBox);
+          });
+
+          canvas.appendChild(row);
+
+          if (lIdx === levels.length - 1 && lvlNodes.length > 1) {
+            const linkRow = document.createElement('div');
+            linkRow.className = 'leaf-link-connector';
+            linkRow.innerHTML = `⟵ Punteros Secuenciales Doblemente Enlazados (Hojas Conectadas para Rangos) ⟶`;
+            canvas.appendChild(linkRow);
+          }
+        });
+      }
+
+      function renderHashTable(lastAction) {
+        const canvas = document.getElementById('hash-visual-canvas');
+        if (!canvas) return;
+        canvas.innerHTML = '';
+
+        let totalItems = 0;
+        hashBuckets.forEach(b => totalItems += b.length);
+        const alpha = (totalItems / HASH_BUCKET_COUNT).toFixed(2);
+        document.getElementById('hash-stats-badge').innerText = `Factor Carga α: ${alpha} (${totalItems}/${HASH_BUCKET_COUNT})`;
+
+        hashBuckets.forEach((bucket, bIdx) => {
+          const row = document.createElement('div');
+          row.className = `bucket-row ${(lastAction && lastAction.bucketIdx === bIdx) ? 'bucket-active' : ''}`;
+
+          const idBadge = document.createElement('div');
+          idBadge.className = 'bucket-id-pill';
+          idBadge.innerText = bIdx;
+          row.appendChild(idBadge);
+
+          const chainList = document.createElement('div');
+          chainList.className = 'bucket-chain-list';
+
+          if (bucket.length === 0) {
+            chainList.innerHTML = `<span style="color:rgba(255,255,255,0.2); font-size:0.75rem;">--- Vacío ---</span>`;
+          } else {
+            bucket.forEach((item, i) => {
+              const node = document.createElement('span');
+              node.className = 'chain-node';
+              node.innerHTML = `<span class="node-val">[${item.key}]</span> ${item.name}`;
+              chainList.appendChild(node);
+
+              if (i < bucket.length - 1) {
+                const arrow = document.createElement('span');
+                arrow.className = 'chain-arrow';
+                arrow.innerText = '➔';
+                chainList.appendChild(arrow);
+              }
+            });
+          }
+
+          row.appendChild(chainList);
+          canvas.appendChild(row);
+        });
+      }
+
+      // 4. Inserción de Registros
+      window.handleAddRecord = function() {
+        const idInput = document.getElementById('input-reg-id');
+        const nameInput = document.getElementById('input-reg-name');
+        const key = parseInt(idInput.value, 10);
+        const name = nameInput.value.trim() || 'Dato';
+
+        if (isNaN(key)) return;
+
+        recordsList.push({ key, name });
+        insertBPlus(key, name);
+        const hashResult = insertHash(key, name);
+
+        // Logs didácticos
+        const bLog = document.getElementById('bplus-log-text');
+        bLog.innerHTML = `<span style="color:var(--cyan);">[B+ INSERT]:</span> Clave <strong>${key}</strong> ordenada secuencialmente en las hojas. Altura total balanceada.`;
+
+        const hLog = document.getElementById('hash-log-text');
+        if (hashResult.overflow) {
+          hLog.innerHTML = `<span style="color:var(--coral);">[HASH OVERFLOW]:</span> Tabla Hash llena sin ranuras disponibles. Requiere Rehashing.`;
+        } else {
+          hLog.innerHTML = `<span style="color:var(--gold);">[HASH COMPUTE]:</span> h(${key}) = ${key} % 7 = <strong>Bucket ${hashResult.bucketIdx}</strong>. ${hashResult.chained ? '<strong style="color:var(--coral);">¡Colisión resuelta!</strong>' : 'Asignación limpia sin colisión.'}`;
+        }
+
+        renderDualEngines(hashResult);
+
+        // Incrementar valor sugerido para la siguiente tupla
+        idInput.value = key + Math.floor(Math.random() * 8) + 1;
+      };
+
+      window.handleRandomRecord = function() {
+        const names = ["Ana", "Mario", "Sofia", "Jorge", "Lucia", "Pedro", "Karla", "David", "Valeria"];
+        const randId = Math.floor(Math.random() * 90) + 10;
+        const randName = names[Math.floor(Math.random() * names.length)];
+
+        document.getElementById('input-reg-id').value = randId;
+        document.getElementById('input-reg-name').value = randName;
+        handleAddRecord();
+      };
+
+      window.resetDualEngines = function() {
+        recordsList = [];
+        hashBuckets = Array.from({ length: HASH_BUCKET_COUNT }, () => []);
+        initBPlusTree();
+        renderDualEngines();
+        document.getElementById('bplus-log-text').innerHTML = `<span style="color:var(--cyan);">[B+ RESET]:</span> Árbol reiniciado a estado vacío.`;
+        document.getElementById('hash-log-text').innerHTML = `<span style="color:var(--gold);">[HASH RESET]:</span> Buckets vaciados.`;
+      };
+
+      window.updateCollisionStrategy = function() {
+        collisionStrategy = document.getElementById('collision-mode-select').value;
+        // Reinsertar todo con la nueva estrategia
+        hashBuckets = Array.from({ length: HASH_BUCKET_COUNT }, () => []);
+        recordsList.forEach(r => insertHash(r.key, r.name));
+        renderDualEngines();
+      };
+
+      window.loadDualPreset = function(presetType) {
+        resetDualEngines();
+        let items = [];
+
+        if (presetType === 'sequential') {
+          items = [
+            { key: 10, name: "Ana" },
+            { key: 20, name: "Beto" },
+            { key: 30, name: "Celia" },
+            { key: 40, name: "Daniel" },
+            { key: 50, name: "Elena" }
+          ];
+        } else if (presetType === 'collisions') {
+          // Módulo 7 idéntico (todos residuo 0)
+          items = [
+            { key: 7, name: "Siete" },
+            { key: 14, name: "Catorce" },
+            { key: 21, name: "Veintiuno" },
+            { key: 28, name: "Veintiocho" }
+          ];
+        } else if (presetType === 'split-cascade') {
+          items = [
+            { key: 15, name: "Nodo1" },
+            { key: 25, name: "Nodo2" },
+            { key: 35, name: "Nodo3" },
+            { key: 45, name: "Nodo4" },
+            { key: 55, name: "Nodo5" },
+            { key: 65, name: "Nodo6" }
+          ];
+        }
+
+        items.forEach(it => {
+          recordsList.push(it);
+          insertBPlus(it.key, it.name);
+          insertHash(it.key, it.name);
+        });
+
+        renderDualEngines();
+        document.getElementById('bplus-log-text').innerHTML = `<span style="color:var(--cyan);">[PRESET]:</span> Cargado lote de ${items.length} registros. Observa la distribución.`;
+      };
+
+      // 5. Duelo de Consultas
+      window.simulateDuelQuery = function(type) {
+        const box = document.getElementById('duel-results-box');
+        if (recordsList.length === 0) {
+          box.innerHTML = `<span style="color:var(--coral);">⚠️ Inserta registros en la Pestaña 1 antes de ejecutar el duelo.</span>`;
+          return;
+        }
+
+        if (type === 'point') {
+          const sample = recordsList[Math.floor(recordsList.length / 2)];
+          const bIdx = sample.key % HASH_BUCKET_COUNT;
+          box.innerHTML = `
+            <h4 style="color:var(--green); margin:0 0 10px;">Consulta Puntual: SELECT * FROM tabla WHERE id = ${sample.key}</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div style="background:#0e0c1e; padding:14px; border-radius:6px; border:1px solid var(--cyan);">
+                <strong style="color:var(--cyan);">Árbol B+ (B-Tree): O(log_M N)</strong>
+                <p style="font-size:0.84rem; color:var(--muted); margin:6px 0 0;">
+                  Navega desde la raíz descendiendo por los nodos internos mediante comparaciones binarias hasta la página hoja correspondiente. 
+                  <br><strong>Costo de I/O:</strong> 2 lecturas de página. Determinista y rápido.
+                </p>
+              </div>
+              <div style="background:#0e0c1e; padding:14px; border-radius:6px; border:1px solid var(--gold);">
+                <strong style="color:var(--gold);">Índice Hash: O(1) Ganador</strong>
+                <p style="font-size:0.84rem; color:var(--muted); margin:6px 0 0;">
+                  Calcula $h(${sample.key}) = ${sample.key} \\pmod 7 = ${bIdx}$. Salta directamente a la cabecera del Bucket ${bIdx}.
+                  <br><strong>Costo de I/O:</strong> 1 lectura inmediata. Rendimiento óptimo en memoria.
+                </p>
+              </div>
+            </div>
+          `;
+        } else {
+          box.innerHTML = `
+            <h4 style="color:var(--coral); margin:0 0 10px;">Consulta por Rango: SELECT * FROM tabla WHERE id BETWEEN 15 AND 40</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div style="background:#0e0c1e; padding:14px; border-radius:6px; border:1px solid var(--green);">
+                <strong style="color:var(--green);">Árbol B+ (B-Tree): O(log N + K) ¡Victoria Absoluta!</strong>
+                <p style="font-size:0.84rem; color:var(--muted); margin:6px 0 0;">
+                  1) Localiza la clave mínima 15 en $O(\\log N)$.<br>
+                  2) Recorre secuencialmente las hojas adyacentes usando los punteros <code>next</code> hasta superar 40.<br>
+                  <strong>Costo:</strong> Solo lee los bloques físicos contiguos requeridos. No toca páginas ajenas.
+                </p>
+              </div>
+              <div style="background:#0e0c1e; padding:14px; border-radius:6px; border:1px solid var(--coral);">
+                <strong style="color:var(--coral);">Índice Hash: ¡Inútil! Forzado a Full Table Scan</strong>
+                <p style="font-size:0.84rem; color:var(--muted); margin:6px 0 0;">
+                  El operador módulo dispersa 15 en Bucket 1, 16 en Bucket 2, 21 en Bucket 0... Las tuplas están desparramadas aleatoriamente. 
+                  <br><strong>Costo:</strong> El motor no puede usar el índice hash; debe escanear el 100% de la tabla.
+                </p>
+              </div>
+            </div>
+          `;
+        }
+      };
+
+      // 6. Quiz de Indexación
+      window.answerQuiz = function(qNum, optIdx) {
+        const feedback = document.getElementById(`q${qNum}-feedback`);
+        feedback.style.display = 'block';
+
+        if (qNum === 1) {
+          if (optIdx === 1) {
+            feedback.style.background = 'rgba(0, 255, 170, 0.15)';
+            feedback.style.border = '1px solid var(--green)';
+            feedback.style.color = 'var(--green)';
+            feedback.innerHTML = '<strong>✓ ¡Correcto!</strong> Las funciones hash dispersan pseudo-aleatoriamente las tuplas en buckets independientes, haciendo imposible resolver predicados de desigualdad o rangos sin escanear todos los registros. El Árbol B+ mantiene orden total y hojas enlazadas.';
+          } else {
+            feedback.style.background = 'rgba(255, 0, 110, 0.15)';
+            feedback.style.border = '1px solid var(--coral)';
+            feedback.style.color = 'var(--coral)';
+            feedback.innerHTML = '<strong>✗ Incorrecto.</strong> La limitación esencial es matemática y de orden: las funciones hash rompen el orden secuencial de los datos, impidiendo búsquedas de rango y cláusulas ORDER BY.';
+          }
+        } else if (qNum === 2) {
+          if (optIdx === 2) {
+            feedback.style.background = 'rgba(0, 255, 170, 0.15)';
+            feedback.style.border = '1px solid var(--green)';
+            feedback.style.color = 'var(--green)';
+            feedback.innerHTML = '<strong>✓ ¡Correcto!</strong> Si todas las claves generan colisión en un único bucket, la estructura se transforma de facto en una lista ligada simple de N elementos, donde cualquier búsqueda debe recorrer los elementos uno por uno con costo O(N).';
+          } else {
+            feedback.style.background = 'rgba(255, 0, 110, 0.15)';
+            feedback.style.border = '1px solid var(--coral)';
+            feedback.style.color = 'var(--coral)';
+            feedback.innerHTML = '<strong>✗ Incorrecto.</strong> En el peor caso de colisión absoluta bajo Separate Chaining, todas las entradas cuelgan de una misma lista ligada, resultando en complejidad lineal O(N).';
+          }
+        }
+      };
+
+      // 7. Pestañas
+      window.switchTab = function(tabId) {
+        document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+
+        // Resaltar botón activo
+        const btns = document.querySelectorAll('.tab-btn');
+        if (tabId === 'tab-dual-sim') btns[0].classList.add('active');
+        if (tabId === 'tab-hash-deep') btns[1].classList.add('active');
+        if (tabId === 'tab-bplus-deep') btns[2].classList.add('active');
+        if (tabId === 'tab-query-duel') btns[3].classList.add('active');
+        if (tabId === 'tab-quiz-indices') btns[4].classList.add('active');
+      };
+
+      // Inicialización
+      window.addEventListener('DOMContentLoaded', () => {
+        initBPlusTree();
+        loadDualPreset('sequential');
+      });
+    
+
+    /* ==============================================================
+       LABORATORIO EVALUATIVO FORMATIVO (ESTANDARIZADO CON SHUFFLE)
+       ============================================================== */
+    const quizQuestions = [
+  {
+    "q": "¿Cuál es la razón arquitectónica fundamental por la que motores como PostgreSQL y MySQL InnoDB utilizan Árboles B+ y **NO** Tablas Hash para sus índices primarios por defecto?",
+    "options": [
+      "Porque las funciones hash no admiten claves alfanuméricas compuestas en tablas transaccionales.",
+      "Porque las tablas hash no preservan el orden de claves, impidiendo búsquedas de rango eficientes.",
+      "Porque los árboles B+ consumen la mitad de memoria RAM que una tabla hash de direccionamiento abierto.",
+      "Porque el estándar ANSI SQL prohíbe el uso de estructuras hash en claves primarias clasterizadas."
+    ],
+    "correct": 1,
+    "feedback": "Las funciones hash distribuyen las claves de manera pseudoaleatoria para evitar colisiones, destruyendo todo orden lineal. Por ende, operaciones de rango (BETWEEN, >, <) u ordenamiento (ORDER BY) requerirían un escaneo de tabla completo en un Hash Index, mientras que el Árbol B+ las resuelve en O(log N + K) mediante sus hojas doblemente enlazadas."
+  },
+  {
+    "q": "En una tabla hash con resolución de colisiones por encadenamiento (Separate Chaining), ¿cuál es la complejidad computacional en el peor de los casos (Worst-Case)?",
+    "options": [
+      "O(1) Constante, manteniendo acceso indexado directo por puntero a bucket.",
+      "O(log N) Logarítmico, debido a la altura de un árbol binario balanceado interno.",
+      "O(N) Lineal, al degenerar la búsqueda en el recorrido secuencial de la lista ligada.",
+      "O(N²) Cuadrático, al requerir comparar cada elemento del bucket contra todos los demás."
+    ],
+    "correct": 2,
+    "feedback": "Si la función hash mapea todas las N claves al mismo bucket (el peor escenario patológico o ataque DoS por colisión hash), la estructura se degrada en una lista enlazada simple de tamaño N, con costo de búsqueda lineal O(N)."
+  },
+  {
+    "q": "En un Árbol B+ de orden $M$, ¿qué característica estructural distingue a sus nodos hoja de los nodos internos para optimizar las consultas de base de datos?",
+    "options": [
+      "Los nodos hoja almacenan únicamente punteros a subárboles sin claves de datos asociadas.",
+      "Los nodos hoja contienen todos los datos/punteros y están interconectados mediante una lista doblemente enlazada.",
+      "Los nodos hoja se ubican en niveles de profundidad variables para minimizar la memoria no utilizada.",
+      "Los nodos hoja ejecutan funciones hash de compresión para eliminar duplicados de claves secundarias."
+    ],
+    "correct": 1,
+    "feedback": "En un Árbol B+, a diferencia de un Árbol B estándar, los nodos internos solo contienen claves de enrutamiento y punteros a hijos. Todas las claves y los registros (o RID) residen en las hojas, las cuales están unidas mediante punteros bidireccionales, permitiendo escaneos secuenciales rápidos sin regresar a la raíz."
+  },
+  {
+    "q": "¿Por qué el factor de ramificación (Fan-out) elevado de un Árbol B+ es un atributo crítico para el diseño físico de bases de datos en almacenamiento secundario?",
+    "options": [
+      "Porque reduce drásticamente la altura del árbol, requiriendo muy pocas lecturas de E/S de disco.",
+      "Porque elimina la necesidad de mantener un búfer de páginas en memoria RAM para el DBMS.",
+      "Porque garantiza que cada página de disco contenga exactamente una sola fila de datos transaccionales.",
+      "Porque permite que las transacciones concurrentes lean las páginas sin adquirir cerrojos de fila."
+    ],
+    "correct": 0,
+    "feedback": "Al tener un fan-out masivo (ej. 100 a 500 hijos por nodo), un Árbol B+ puede almacenar millones de filas con una altura de apenas 3 o 4 niveles. Esto significa que localizar cualquier registro requiere a lo sumo 3 o 4 operaciones de E/S de bloque, optimizando el cuello de botella del disco."
+  }
+];
+
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let currentShuffledOptions = [];
+
+    window.renderQuizQuestion = function() {
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        // Reconstruir el esqueleto interactivo si se mostró el resumen final
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        // Barajar aleatoriamente las opciones preservando la referencia a la respuesta correcta
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+          feedbackBox.style.fontSize = '0.8rem';
+          feedbackBox.style.lineHeight = '1.35';
+          feedbackBox.style.padding = '8px 12px';
+          feedbackBox.style.marginTop = '10px';
+          feedbackBox.style.borderRadius = '6px';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Feedback doctrinal conciso (máximo la primera oración significativa)
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) {
+          shortFeedback = firstSentenceMatch[1];
+        }
+        if (shortFeedback.length > 150) {
+          const cut = shortFeedback.lastIndexOf(' ', 145);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 145)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[idx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.1)';
+            feedbackBox.style.border = '1px solid var(--accent, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--accent, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].style.background = 'rgba(255, 0, 110, 0.2)';
+            btns[idx].style.borderColor = '#ff006e';
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].style.background = 'rgba(0, 255, 170, 0.2)';
+            btns[correctIdx].style.borderColor = 'var(--accent, #00ffaa)';
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.1)';
+            feedbackBox.style.border = '1px solid #ff006e';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:#ff006e; font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🏆</div>
+            <h3 style="color:var(--gold, #ffd166); font-size:1.6rem; margin:0 0 10px;">Laboratorio Evaluativo Completado</h3>
+            <p style="font:1rem Verdana, sans-serif; color:#fff; margin:0 0 18px;">
+              Puntuación final: <strong>${quizScore} / ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <p style="font:0.88rem/1.5 Verdana, sans-serif; color:var(--muted, #94a3b8); max-width:520px; margin:0 auto 24px;">
+              ${pct >= 75 ? '¡Excelente! Demuestras un dominio riguroso de los conceptos doctrinales evaluados.' : 'Buen esfuerzo. Te recomendamos repasar los temas teóricos y herramientas interactivas del módulo.'}
+            </p>
+            <button class="btn-theme" style="padding:12px 24px; border-radius:6px; font:700 0.9rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reiniciar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+    // Auto-inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+    } else {
+      renderQuizQuestion();
+    }
+  
+    </script>
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>

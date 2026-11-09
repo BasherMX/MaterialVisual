@@ -1,0 +1,1348 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Métodos HTTP y Códigos de Estado Estándar | Arquitectura RESTful</title>
+    <meta
+      name="description"
+      content="Laboratorio y simulador interactivo de los métodos HTTP (GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS) y códigos de estado estándar (1xx, 2xx, 3xx, 4xx, 5xx), conceptos de seguridad e idempotencia, y diseño de respuestas REST."
+    />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      :root {
+        --ink: #e7f6ff;
+        --muted: #9aa8c2;
+        --paper: #1a1a2e;
+        --panel: #22213d;
+        --panel-dark: #121124;
+        --line: rgba(0, 255, 255, 0.28);
+        --cyan: #00ffff;
+        --blue: #0080ff;
+        --coral: #ff006e;
+        --purple: #7928ca;
+        --gold: #ffd700;
+        --green: #00ffaa;
+        --shadow: 0 0 24px rgba(0, 255, 255, 0.16);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: radial-gradient(circle at 50% -10%, rgba(0, 128, 255, 0.28), transparent 45%), var(--paper);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body::before {
+        position: fixed;
+        z-index: 4;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
+        opacity: 0.45;
+      }
+
+      body::after {
+        position: fixed;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image: linear-gradient(rgba(0, 128, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 128, 255, 0.04) 1px, transparent 1px);
+        background-size: 38px 38px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 34px 0 54px;
+      }
+
+      .btn-back-index {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: rgba(34, 33, 61, 0.85);
+        color: var(--blue);
+        text-decoration: none;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 12px rgba(0, 128, 255, 0.15);
+      }
+
+      .btn-back-index:hover {
+        background: rgba(0, 128, 255, 0.15);
+        border-color: var(--blue);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(0, 128, 255, 0.35);
+        transform: translateX(-3px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--blue);
+        font: 700 0.76rem/1.2 Verdana, sans-serif;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(0, 128, 255, 0.7);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 860px;
+        font-size: clamp(2.1rem, 4.4vw, 3.8rem);
+        line-height: 1.05;
+        color: var(--coral);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        text-shadow: 3px 0 0 rgba(0, 255, 255, 0.35), 0 0 18px rgba(255, 0, 110, 0.42);
+      }
+
+      .intro {
+        max-width: 520px;
+        margin: 0 0 4px;
+        color: var(--muted);
+        font: 0.95rem/1.55 Verdana, sans-serif;
+      }
+
+      /* Navigation Tabs */
+      .nav-tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 12px;
+      }
+
+      .tab-btn {
+        padding: 10px 22px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        background: var(--panel-dark);
+        color: var(--ink);
+        font: 700 0.9rem "Courier New", Courier, monospace;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .tab-btn:hover {
+        border-color: var(--cyan);
+        background: rgba(0, 255, 255, 0.1);
+      }
+
+      .tab-btn.active {
+        background: var(--blue);
+        color: #fff;
+        border-color: var(--cyan);
+        box-shadow: 0 0 14px rgba(0, 128, 255, 0.4);
+      }
+
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Method cards grid */
+      .methods-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+
+      .method-card {
+        background: rgba(34, 33, 61, 0.92);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .method-card:hover, .method-card.active {
+        border-color: var(--cyan);
+        background: rgba(0, 255, 255, 0.08);
+        box-shadow: 0 0 18px rgba(0, 255, 255, 0.25);
+        transform: translateY(-3px);
+      }
+
+      .method-badge-large {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 10px;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .m-badge-get { background: #00ffaa; color: #0b0b1a; }
+      .m-badge-post { background: #ffaa00; color: #0b0b1a; }
+      .m-badge-put { background: #00bbff; color: #0b0b1a; }
+      .m-badge-patch { background: #bd00ff; color: #ffffff; }
+      .m-badge-delete { background: #ff0055; color: #ffffff; }
+      .m-badge-head { background: #55ffcc; color: #0b0b1a; }
+      .m-badge-options { background: #e0e0e0; color: #0b0b1a; }
+
+      .props-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .prop-tag {
+        font-size: 0.72rem;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: Verdana, sans-serif;
+        font-weight: 600;
+      }
+
+      .prop-safe-yes { background: rgba(0, 255, 170, 0.2); color: #00ffaa; border: 1px solid #00ffaa; }
+      .prop-safe-no { background: rgba(255, 0, 85, 0.2); color: #ff0055; border: 1px solid #ff0055; }
+      .prop-idem-yes { background: rgba(0, 187, 255, 0.2); color: #00bbff; border: 1px solid #00bbff; }
+      .prop-idem-no { background: rgba(255, 170, 0, 0.2); color: #ffaa00; border: 1px solid #ffaa00; }
+
+      /* Interactive Method Tester */
+      .layout-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      @media (max-width: 1024px) {
+        .layout-grid { grid-template-columns: 1fr; }
+      }
+
+      .panel-card {
+        background: rgba(34, 33, 61, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .panel-card h2 {
+        margin: 0 0 16px;
+        color: var(--cyan);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .http-packet {
+        background: #0d0c18;
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 14px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.88rem;
+        overflow-x: auto;
+      }
+
+      .code-line {
+        margin: 2px 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .c-dim { color: #6e7992; }
+      .c-hl { color: var(--gold); font-weight: 700; }
+      .c-cyan { color: var(--cyan); }
+      .c-green { color: var(--green); }
+      .c-coral { color: var(--coral); }
+
+      /* Status codes visual catalog */
+      .status-group {
+        margin-bottom: 20px;
+      }
+
+      .status-group-title {
+        font-size: 1.1rem;
+        color: #fff;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 6px;
+      }
+
+      .status-cards-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+      }
+
+      .status-card-item {
+        background: var(--panel-dark);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 6px;
+        padding: 12px 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .status-card-item:hover, .status-card-item.active {
+        border-color: var(--cyan);
+        background: rgba(0, 255, 255, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .st-code {
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .st-group-2xx { color: var(--green); }
+      .st-group-3xx { color: var(--cyan); }
+      .st-group-4xx { color: var(--coral); }
+      .st-group-5xx { color: #ff5555; }
+
+      .st-phrase {
+        font-size: 0.82rem;
+        color: #fff;
+        font-family: Verdana, sans-serif;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .st-desc {
+        font-size: 0.76rem;
+        color: var(--muted);
+        font-family: Verdana, sans-serif;
+        line-height: 1.35;
+      }
+
+      /* Safe and Idempotent Simulator */
+      .sim-action-box {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .btn-pulse {
+        padding: 8px 18px;
+        background: var(--coral);
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font: 700 0.85rem "Courier New", Courier, monospace;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 0 10px rgba(255, 0, 110, 0.3);
+      }
+
+      .btn-pulse:hover {
+        background: #ff3388;
+        box-shadow: 0 0 15px rgba(255, 0, 110, 0.6);
+      }
+
+      .state-display-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+        font-family: Verdana, sans-serif;
+        margin-top: 10px;
+      }
+
+      .state-display-table th, .state-display-table td {
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        padding: 8px 10px;
+      }
+      .state-display-table th {
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--cyan);
+      }
+
+      .btn-nav-prev {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: 1px solid var(--cyan);
+        background: rgba(0, 255, 255, 0.1);
+        color: #ffffff;
+        text-decoration: none;
+        font: 700 0.85rem "Courier New", Courier, monospace;
+        transition: all 0.2s ease;
+      }
+
+      .btn-nav-prev:hover {
+        background: var(--cyan);
+        color: #0b0b1a;
+      }
+    
+      /* Barra de navegacion estandarizada entre modulos */
+      .module-nav-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line, rgba(0, 255, 255, 0.28));
+        flex-wrap: wrap;
+      }
+      .module-nav-bar .nav-left,
+      .module-nav-bar .nav-center,
+      .module-nav-bar .nav-right {
+        display: flex;
+        align-items: center;
+      }
+      .module-nav-bar .nav-center {
+        margin: 0 auto;
+      }
+      .btn-nav-standard {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font: 700 0.82rem/1.2 "Courier New", Courier, monospace;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        transition: all 0.25s ease;
+      }
+      .btn-nav-prev {
+        background: rgba(34, 33, 61, 0.9);
+        border: 1px solid rgba(0, 255, 255, 0.35);
+        color: var(--cyan, #00ffff);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+      }
+      .btn-nav-prev:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: var(--cyan, #00ffff);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
+        transform: translateX(-3px);
+      }
+      .btn-nav-next {
+        background: rgba(255, 0, 110, 0.18);
+        border: 1px solid var(--coral, #ff006e);
+        color: #ffffff;
+        box-shadow: 0 0 14px rgba(255, 0, 110, 0.25);
+      }
+      .btn-nav-next:hover {
+        background: var(--coral, #ff006e);
+        color: #ffffff;
+        box-shadow: 0 0 22px rgba(255, 0, 110, 0.6);
+        transform: translateX(3px);
+      }
+      .btn-nav-home {
+        background: rgba(34, 33, 61, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--muted, #9aa8c2);
+      }
+      .btn-nav-home:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--ink, #e7f6ff);
+        color: #ffffff;
+      }
+      @media (max-width: 768px) {
+        .module-nav-bar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+        .module-nav-bar .nav-left,
+        .module-nav-bar .nav-center,
+        .module-nav-bar .nav-right {
+          width: 100%;
+          justify-content: center;
+        }
+        .btn-nav-standard {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body data-module-id="18">
+    <main class="page">
+      <a href="../index.html" class="btn-back-index">← Volver al Índice Principal</a>
+
+      <header>
+        <div>
+          <div class="eyebrow">Arquitectura de Software · RESTful APIs</div>
+          <h1>Métodos HTTP y Códigos de Estado</h1>
+        </div>
+        <p class="intro">
+          Catálogo interactivo y simulador de semántica HTTP (RFC 9110): métodos estándar, seguridad (Safe), idempotencia, diferencias críticas entre PUT y PATCH, y taxonomía de códigos de estado (2xx, 3xx, 4xx, 5xx).
+        </p>
+      </header>
+
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-metodos')">1. Métodos HTTP y Semántica</button>
+        <button class="tab-btn" onclick="switchTab('tab-codigos')">2. Catálogo de Códigos de Estado</button>
+        <button class="tab-btn" onclick="switchTab('tab-simulador')">3. Laboratorio: Idempotencia en Acción</button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">🎯 4. Laboratorio Evaluativo</button>
+      </nav>
+
+      <!-- PESTAÑA 1: MÉTODOS HTTP -->
+      <section id="tab-metodos" class="content-panel active">
+        <!-- Rejilla de Métodos -->
+        <div class="methods-grid">
+          <!-- GET -->
+          <div class="method-card active" onclick="inspectMethod('GET')" id="mcard-GET">
+            <span class="method-badge-large m-badge-get">GET</span>
+            <div class="props-row">
+              <span class="prop-tag prop-safe-yes">🛡️ Seguro</span>
+              <span class="prop-tag prop-idem-yes">🔁 Idempotente</span>
+            </div>
+            <p style="font-size: 0.82rem; font-family: Verdana; color: var(--muted); margin: 0;">
+              Recupera la representación del recurso. Jamás debe alterar el estado del servidor. Cacheable por defecto.
+            </p>
+          </div>
+
+          <!-- POST -->
+          <div class="method-card" onclick="inspectMethod('POST')" id="mcard-POST">
+            <span class="method-badge-large m-badge-post">POST</span>
+            <div class="props-row">
+              <span class="prop-tag prop-safe-no">⚠️ No Seguro</span>
+              <span class="prop-tag prop-idem-no">❌ No Idempotente</span>
+            </div>
+            <p style="font-size: 0.82rem; font-family: Verdana; color: var(--muted); margin: 0;">
+              Crea un nuevo recurso subordinado o procesa una orden. Múltiples ejecuciones crean múltiples registros.
+            </p>
+          </div>
+
+          <!-- PUT -->
+          <div class="method-card" onclick="inspectMethod('PUT')" id="mcard-PUT">
+            <span class="method-badge-large m-badge-put">PUT</span>
+            <div class="props-row">
+              <span class="prop-tag prop-safe-no">⚠️ No Seguro</span>
+              <span class="prop-tag prop-idem-yes">🔁 Idempotente</span>
+            </div>
+            <p style="font-size: 0.82rem; font-family: Verdana; color: var(--muted); margin: 0;">
+              Reemplaza por completo el recurso existente en la URI destino. Si no existe, puede crearlo.
+            </p>
+          </div>
+
+          <!-- PATCH -->
+          <div class="method-card" onclick="inspectMethod('PATCH')" id="mcard-PATCH">
+            <span class="method-badge-large m-badge-patch">PATCH</span>
+            <div class="props-row">
+              <span class="prop-tag prop-safe-no">⚠️ No Seguro</span>
+              <span class="prop-tag prop-idem-no">⚠️ No garantizado Idempotente</span>
+            </div>
+            <p style="font-size: 0.82rem; font-family: Verdana; color: var(--muted); margin: 0;">
+              Modificación parcial de un recurso (solo los campos enviados en el payload). Idempotencia depende de la operación.
+            </p>
+          </div>
+
+          <!-- DELETE -->
+          <div class="method-card" onclick="inspectMethod('DELETE')" id="mcard-DELETE">
+            <span class="method-badge-large m-badge-delete">DELETE</span>
+            <div class="props-row">
+              <span class="prop-tag prop-safe-no">⚠️ No Seguro</span>
+              <span class="prop-tag prop-idem-yes">🔁 Idempotente</span>
+            </div>
+            <p style="font-size: 0.82rem; font-family: Verdana; color: var(--muted); margin: 0;">
+              Elimina el recurso identificado. Múltiples llamadas dejan al recurso igualmente inexistente en el servidor.
+            </p>
+          </div>
+
+          <!-- HEAD & OPTIONS -->
+          <div class="method-card" onclick="inspectMethod('OPTIONS')" id="mcard-OPTIONS">
+            <span class="method-badge-large m-badge-options">OPTIONS / HEAD</span>
+            <div class="props-row">
+              <span class="prop-tag prop-safe-yes">🛡️ Seguro</span>
+              <span class="prop-tag prop-idem-yes">🔁 Idempotente</span>
+            </div>
+            <p style="font-size: 0.82rem; font-family: Verdana; color: var(--muted); margin: 0;">
+              HEAD obtiene headers sin body. OPTIONS consulta las capacidades y métodos permitidos (CORS Preflight).
+            </p>
+          </div>
+        </div>
+
+        <!-- Detalle del Método Seleccionado -->
+        <div class="layout-grid">
+          <div class="panel-card">
+            <h2><span>📦</span> Anatomía de la Petición y Respuesta Estándar</h2>
+            <div class="http-packet">
+              <div class="code-line"><span class="c-hl" id="disp-method-line">GET /empleados/482 HTTP/1.1</span></div>
+              <div class="code-line c-dim">Host: api.ejemplo.org</div>
+              <div class="code-line c-dim">Accept: application/json</div>
+              <div id="disp-req-body" class="code-line c-cyan" style="margin-top: 8px;">/* Sin payload en GET */</div>
+            </div>
+
+            <div class="http-packet">
+              <div class="code-line"><span class="c-green" id="disp-res-line">HTTP/1.1 200 OK</span></div>
+              <div class="code-line c-dim" id="disp-res-headers">Content-Type: application/json; charset=utf-8</div>
+              <div id="disp-res-body" class="code-line c-cyan" style="margin-top: 8px;">{\n  "id": 482,\n  "nombre": "Ulises",\n  "puesto": "Especialista en Sistemas",\n  "departamento": "Informática"\n}</div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h2><span>💡</span> Reglas Semánticas y Casos de Examen</h2>
+            <div id="disp-method-notes" style="font-family: Verdana; font-size: 0.88rem; line-height: 1.6; color: var(--ink);">
+              <!-- Contenido dinámico -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 2: CÓDIGOS DE ESTADO -->
+      <section id="tab-codigos" class="content-panel">
+        <div class="panel-card" style="margin-bottom: 24px;">
+          <h2><span>🚦</span> Los 5 Grandes Bloques de Respuestas HTTP</h2>
+          <p style="font-family: Verdana; font-size: 0.9rem; color: var(--muted); margin: 0 0 16px;">
+            El primer dígito del código de tres dígitos define la categoría general del resultado:
+          </p>
+
+          <!-- 2xx Éxito -->
+          <div class="status-group">
+            <div class="status-group-title"><span class="st-group-2xx">🟢 2xx: Respuestas Exitosas</span> (La solicitud fue recibida, entendida y aceptada)</div>
+            <div class="status-cards-row">
+              <div class="status-card-item" onclick="showStatusDetail('200')">
+                <div class="st-code st-group-2xx">200 OK</div>
+                <div class="st-phrase">Petición exitosa estándar</div>
+                <div class="st-desc">Usual en GET, PUT, PATCH exitosos. Retorna el payload del recurso.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('201')">
+                <div class="st-code st-group-2xx">201 Created</div>
+                <div class="st-phrase">Recurso Creado</div>
+                <div class="st-desc">Usual tras un POST. DEBE incluir la cabecera <code>Location: /recurso/id</code>.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('204')">
+                <div class="st-code st-group-2xx">204 No Content</div>
+                <div class="st-phrase">Éxito sin cuerpo</div>
+                <div class="st-desc">Típico tras un DELETE o un PUT/PATCH donde no hay datos que devolver.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3xx Redirección -->
+          <div class="status-group">
+            <div class="status-group-title"><span class="st-group-3xx">🔵 3xx: Redirección</span> (Se deben tomar acciones adicionales para completar la solicitud)</div>
+            <div class="status-cards-row">
+              <div class="status-card-item" onclick="showStatusDetail('301')">
+                <div class="st-code st-group-3xx">301 Moved Permanently</div>
+                <div class="st-phrase">Movido permanentemente</div>
+                <div class="st-desc">La URI cambió de por vida. El cliente y motores de búsqueda deben actualizar la URL.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('304')">
+                <div class="st-code st-group-3xx">304 Not Modified</div>
+                <div class="st-phrase">Caché Vigente</div>
+                <div class="st-desc">Uso de cabeceras condicionales (ETag, If-None-Match). No envía cuerpo para ahorrar ancho de banda.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4xx Errores de Cliente -->
+          <div class="status-group">
+            <div class="status-group-title"><span class="st-group-4xx">🟠 4xx: Errores del Cliente</span> (La solicitud contiene sintaxis errónea o no puede cumplirse)</div>
+            <div class="status-cards-row">
+              <div class="status-card-item" onclick="showStatusDetail('400')">
+                <div class="st-code st-group-4xx">400 Bad Request</div>
+                <div class="st-phrase">Sintaxis inválida</div>
+                <div class="st-desc">JSON mal formado, tipos de datos erróneos o validaciones de esquema fallidas.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('401')">
+                <div class="st-code st-group-4xx">401 Unauthorized</div>
+                <div class="st-phrase">No Autenticado</div>
+                <div class="st-desc">Falta token JWT o credenciales válidas. Exige cabecera WWW-Authenticate.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('403')">
+                <div class="st-code st-group-4xx">403 Forbidden</div>
+                <div class="st-phrase">Prohibido / Sin Autorización</div>
+                <div class="st-desc">El usuario SÍ está autenticado, pero NO tiene los permisos o roles requeridos.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('404')">
+                <div class="st-code st-group-4xx">404 Not Found</div>
+                <div class="st-phrase">No Encontrado</div>
+                <div class="st-desc">La URI no apunta a ningún recurso existente en el servidor.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('405')">
+                <div class="st-code st-group-4xx">405 Method Not Allowed</div>
+                <div class="st-phrase">Método no permitido</div>
+                <div class="st-desc">Ejemplo: Intentar un DELETE en una colección que solo acepta GET y POST.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('409')">
+                <div class="st-code st-group-4xx">409 Conflict</div>
+                <div class="st-phrase">Conflicto de Estado</div>
+                <div class="st-desc">Violación de unicidad (email duplicado) o choque de versiones concurrentes.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5xx Errores de Servidor -->
+          <div class="status-group">
+            <div class="status-group-title"><span class="st-group-5xx">🔴 5xx: Errores del Servidor</span> (El servidor falló al intentar procesar una solicitud aparentemente válida)</div>
+            <div class="status-cards-row">
+              <div class="status-card-item" onclick="showStatusDetail('500')">
+                <div class="st-code st-group-5xx">500 Internal Server Error</div>
+                <div class="st-phrase">Fallo interno del servidor</div>
+                <div class="st-desc">Excepción no controlada, NullPointer, caída de base de datos o bug en el código.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('502')">
+                <div class="st-code st-group-5xx">502 Bad Gateway</div>
+                <div class="st-phrase">Puerta de enlace errónea</div>
+                <div class="st-desc">Un proxy o API Gateway (ej. NGINX) recibió respuesta inválida del backend.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('503')">
+                <div class="st-code st-group-5xx">503 Service Unavailable</div>
+                <div class="st-phrase">Servicio No Disponible</div>
+                <div class="st-desc">Sobrecarga temporal de peticiones o mantenimiento programado. Cabecera Retry-After.</div>
+              </div>
+              <div class="status-card-item" onclick="showStatusDetail('504')">
+                <div class="st-code st-group-5xx">504 Gateway Timeout</div>
+                <div class="st-phrase">Tiempo de espera agotado</div>
+                <div class="st-desc">El backend tardó más tiempo del permitido en responderle al proxy intermedio.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal / Visor de detalle de código -->
+        <div id="status-deep-dive" class="panel-card" style="display: none;">
+          <h2 id="deep-dive-title" style="color: var(--cyan);">Detalle de Código</h2>
+          <div id="deep-dive-body" style="font-family: Verdana; font-size: 0.9rem; line-height: 1.6;"></div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 3: LABORATORIO DE IDEMPOTENCIA Y PUT VS PATCH -->
+      <section id="tab-simulador" class="content-panel">
+        <div class="layout-grid">
+          <!-- Comparador PUT vs PATCH -->
+          <div class="panel-card">
+            <h2><span>⚖️</span> PUT vs PATCH: El Dilema del Reemplazo Total vs Parcial</h2>
+            <p style="font-family: Verdana; font-size: 0.85rem; color: var(--muted);">
+              Observa el estado final de una entidad tras enviar una actualización parcial usando PUT (error común) versus PATCH:
+            </p>
+
+            <div style="background: var(--panel-dark); padding: 14px; border-radius: 6px; margin-bottom: 14px; border: 1px solid var(--line);">
+              <div style="font-weight: bold; color: var(--gold); margin-bottom: 6px;">Estado Inicial del Empleado (ID: 482):</div>
+              <div class="code-line c-green">{ "nombre": "Ulises", "puesto": "Analista", "salario": 45000, "activo": true }</div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+              <button class="btn-pulse" onclick="simularUpdate('put')">Ejecutar PUT con solo { "salario": 50000 }</button>
+              <button class="btn-pulse" style="background: var(--blue);" onclick="simularUpdate('patch')">Ejecutar PATCH con solo { "salario": 50000 }</button>
+            </div>
+
+            <div id="update-sim-result" style="background: #0d0c18; padding: 14px; border-radius: 6px; border: 1px solid rgba(0, 255, 255, 0.3);">
+              <div class="code-line c-dim">// Haz clic en uno de los botones para ver qué le pasa a los otros atributos</div>
+            </div>
+          </div>
+
+          <!-- Experimento de Idempotencia -->
+          <div class="panel-card">
+            <h2><span>🔁</span> Laboratorio de Idempotencia: POST vs PUT</h2>
+            <p style="font-family: Verdana; font-size: 0.85rem; color: var(--muted);">
+              <strong>Idempotente:</strong> Realizar la misma petición N veces consecutivas produce exactamente el mismo estado en el servidor que ejecutarla una sola vez: <em>f(f(x)) = f(x)</em>.
+            </p>
+
+            <div class="sim-action-box">
+              <button class="btn-pulse" onclick="ejecutarPeticion('POST')">+ Repetir Petición POST</button>
+              <button class="btn-pulse" style="background: var(--cyan); color: #0b0b1a;" onclick="ejecutarPeticion('PUT')">+ Repetir Petición PUT</button>
+              <button class="btn-pulse" style="background: #555;" onclick="resetSimIdem()">Reiniciar</button>
+            </div>
+
+            <div class="data-table-wrap">
+<table class="state-display-table">
+              <thead>
+                <tr>
+                  <th>Intento</th>
+                  <th>Método Enviado</th>
+                  <th>Efecto en la Base de Datos</th>
+                  <th>Registros Totales</th>
+                </tr>
+              </thead>
+              <tbody id="idem-log-body">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--muted);">Sin peticiones ejecutadas. Presiona un botón.</td>
+                </tr>
+              </tbody>
+            </table>
+</div>
+          </div>
+        </div>
+      </div>
+
+      
+
+      
+      </section>
+<script>
+      // Control de Pestañas
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(c => c.classList.remove('active'));
+
+        const panel = document.getElementById(tabId) || document.getElementById('tab-' + tabId);
+        if (panel) panel.classList.add('active');
+
+        const activeBtn = Array.from(document.querySelectorAll('.nav-tabs .tab-btn')).find(b => {
+          const onclickAttr = b.getAttribute('onclick') || '';
+          return onclickAttr.includes(tabId);
+        });
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+
+      // Base de datos de Métodos
+      const methodsData = {
+        GET: {
+          line: "GET /empleados/482 HTTP/1.1",
+          reqBody: "/* GET no debe incluir cuerpo en la petición (RFC 9110) */",
+          resLine: "HTTP/1.1 200 OK",
+          resHeaders: "Content-Type: application/json; charset=utf-8\nCache-Control: max-age=3600, public\nETag: \"737060cd8c284d8af7ad3082f209582d\"",
+          resBody: '{\n  "id": 482,\n  "nombre": "Ulises",\n  "puesto": "Especialista en Sistemas",\n  "departamento": "Informática"\n}',
+          notes: `
+            <h4 style="color: var(--cyan); margin: 0 0 6px;">Propiedades Fundamentales:</h4>
+            <ul>
+              <li><strong>Seguro (Safe):</strong> Su invocación es puramente de lectura. No tiene efectos secundarios que modifiquen el estado del servidor.</li>
+              <li><strong>Idempotente:</strong> Llamar a GET 1 vez o 100 veces produce el mismo estado del sistema.</li>
+              <li><strong>Cacheable:</strong> Respuestas con GET son candidatas naturales para caché en CDNs, proxies y navegadores web mediante cabeceras ETag y Cache-Control.</li>
+            </ul>
+            <div style="background: rgba(0, 255, 170, 0.1); border-left: 3px solid var(--green); padding: 8px 12px; margin-top: 10px;">
+              <strong>Pregunta Típica de Examen:</strong> ¿Puede un GET recibir parámetros en la URL? Sí, mediante <em>Query Strings</em> (ej. <code>/empleados?departamento=TI&page=2</code>), pero nunca debe modificar registros.
+            </div>
+          `
+        },
+        POST: {
+          line: "POST /empleados HTTP/1.1",
+          reqBody: '{\n  "nombre": "María López",\n  "puesto": "Auditora",\n  "departamento": "Finanzas"\n}',
+          resLine: "HTTP/1.1 201 Created",
+          resHeaders: "Content-Type: application/json\nLocation: /empleados/483",
+          resBody: '{\n  "id": 483,\n  "nombre": "María López",\n  "puesto": "Auditora",\n  "departamento": "Finanzas",\n  "fechaIngreso": "2026-10-28T19:15:00Z"\n}',
+          notes: `
+            <h4 style="color: #ffaa00; margin: 0 0 6px;">Propiedades Fundamentales:</h4>
+            <ul>
+              <li><strong>No Seguro ni Idempotente:</strong> Cada vez que envías un POST a una colección, se crea un registro adicional con un identificador único nuevo.</li>
+              <li><strong>Uso Canónico:</strong> Creación de recursos subordinados en colecciones (<code>POST /coleccion</code>) o procesamiento de órdenes no reversibles (ej. procesar transacciones bancarias).</li>
+              <li><strong>Cabecera Obligatoria en 201:</strong> El estándar exige devolver la cabecera <code>Location</code> apuntando a la URI del recurso recién creado.</li>
+            </ul>
+          `
+        },
+        PUT: {
+          line: "PUT /empleados/482 HTTP/1.1",
+          reqBody: '{\n  "nombre": "Ulises",\n  "puesto": "Subdirector de Tecnologías",\n  "departamento": "Informática",\n  "activo": true\n}',
+          resLine: "HTTP/1.1 200 OK  (o 204 No Content)",
+          resHeaders: "Content-Type: application/json",
+          resBody: '{\n  "id": 482,\n  "nombre": "Ulises",\n  "puesto": "Subdirector de Tecnologías",\n  "departamento": "Informática",\n  "activo": true\n}',
+          notes: `
+            <h4 style="color: #00bbff; margin: 0 0 6px;">Propiedades Fundamentales:</h4>
+            <ul>
+              <li><strong>Reemplazo Completo:</strong> PUT sustituye la representación completa del recurso en la URI. Los atributos no incluidos se borran o adquieren su valor default.</li>
+              <li><strong>Idempotente:</strong> Enviar el mismo PUT 5 veces seguidas deja el recurso exactamente en el mismo estado final.</li>
+              <li><strong>Upsert:</strong> Si el ID no existe en el destino, PUT puede crearlo (respondiendo 201 Created) o rechazarlo si solo se permite actualización.</li>
+            </ul>
+          `
+        },
+        PATCH: {
+          line: "PATCH /empleados/482 HTTP/1.1",
+          reqBody: '{\n  "puesto": "Director General"\n}',
+          resLine: "HTTP/1.1 200 OK",
+          resHeaders: "Content-Type: application/json",
+          resBody: '{\n  "id": 482,\n  "nombre": "Ulises",  /* Se conservó intacto */\n  "puesto": "Director General",  /* Modificado */\n  "departamento": "Informática",  /* Se conservó intacto */\n  "activo": true\n}',
+          notes: `
+            <h4 style="color: #bd00ff; margin: 0 0 6px;">Propiedades Fundamentales:</h4>
+            <ul>
+              <li><strong>Modificación Parcial (RFC 5789):</strong> Solo se envían los campos que se desean alterar. El resto de las propiedades se preservan intactas.</li>
+              <li><strong>Idempotencia Condicional:</strong> Un PATCH que fija un valor absoluto (ej. <code>puesto = "Director"</code>) es idempotente. Un PATCH que realiza un incremento relativo (ej. <code>incrementarIntentos: +1</code>) NO es idempotente.</li>
+            </ul>
+          `
+        },
+        DELETE: {
+          line: "DELETE /empleados/482 HTTP/1.1",
+          reqBody: "/* DELETE usualmente no lleva payload en REST */",
+          resLine: "HTTP/1.1 204 No Content",
+          resHeaders: "Date: Wed, 28 Oct 2026 19:15:00 GMT",
+          resBody: "/* Sin cuerpo de respuesta (204) */",
+          notes: `
+            <h4 style="color: #ff0055; margin: 0 0 6px;">Propiedades Fundamentales:</h4>
+            <ul>
+              <li><strong>Idempotente:</strong> Si ejecutas <code>DELETE /empleados/482</code> por primera vez, el recurso se borra (204 o 200). Si lo vuelves a ejecutar, el recurso sigue borrado (el servidor puede devolver 204 o 404 Not Found, pero el estado final del sistema es el mismo: el recurso no existe).</li>
+              <li><strong>No Seguro:</strong> Modifica destructivamente el estado del servidor.</li>
+            </ul>
+          `
+        },
+        OPTIONS: {
+          line: "OPTIONS /empleados HTTP/1.1",
+          reqBody: "/* Solicitud preflight CORS */",
+          resLine: "HTTP/1.1 204 No Content",
+          resHeaders: "Allow: GET, POST, OPTIONS, HEAD\nAccess-Control-Allow-Origin: *\nAccess-Control-Allow-Methods: GET, POST, OPTIONS",
+          resBody: "/* Sin cuerpo */",
+          notes: `
+            <h4 style="color: var(--cyan); margin: 0 0 6px;">OPTIONS y HEAD:</h4>
+            <ul>
+              <li><strong>OPTIONS:</strong> Utilizado ampliamente en navegadores modernos para peticiones CORS Preflight, preguntándole al servidor qué métodos HTTP y qué cabeceras están autorizadas antes de enviar un POST o PUT real.</li>
+              <li><strong>HEAD:</strong> Idéntico a un GET, pero el servidor NUNCA envía el cuerpo de respuesta, solo las cabeceras (sirve para verificar si un archivo grande cambió usando ETag o Last-Modified sin descargarlo).</li>
+            </ul>
+          `
+        }
+      };
+
+      function inspectMethod(method) {
+        document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+        const card = document.getElementById(`mcard-${method}`);
+        if (card) card.classList.add('active');
+
+        const d = methodsData[method];
+        if (!d) return;
+
+        document.getElementById('disp-method-line').innerText = d.line;
+        document.getElementById('disp-req-body').innerText = d.reqBody;
+        document.getElementById('disp-res-line').innerText = d.resLine;
+        document.getElementById('disp-res-headers').innerText = d.resHeaders;
+        document.getElementById('disp-res-body').innerText = d.resBody;
+        document.getElementById('disp-method-notes').innerHTML = d.notes;
+      }
+
+      // Detalle de Códigos de Estado
+      const statusesCatalog = {
+        '200': {
+          title: "200 OK",
+          text: "Indica que la solicitud ha tenido éxito. El significado del resultado depende del método: en GET se devuelve el recurso; en HEAD las cabeceras; en POST/PUT el resultado de la acción."
+        },
+        '201': {
+          title: "201 Created",
+          text: "La solicitud ha tenido éxito y ha llevado a la creación de un nuevo recurso en el servidor. Debe incluir la cabecera 'Location' con la URI del nuevo elemento (ej. Location: /usuarios/42)."
+        },
+        '204': {
+          title: "204 No Content",
+          text: "La petición se procesó exitosamente pero la respuesta deliberadamente no incluye cuerpo. Típico de DELETEs o actualizaciones de estado donde no es necesario devolver datos."
+        },
+        '301': {
+          title: "301 Moved Permanently",
+          text: "El recurso solicitado ha sido asignado a una nueva URI permanente. Los navegadores y crawlers de búsqueda actualizan automáticamente sus enlaces a la nueva ubicación especificada en 'Location'."
+        },
+        '304': {
+          title: "304 Not Modified",
+          text: "Respuesta a una petición condicional (usando If-None-Match con ETag). Informa al cliente que su copia local en caché sigue siendo idéntica a la del servidor, ahorrando la transmisión de bytes del cuerpo."
+        },
+        '400': {
+          title: "400 Bad Request",
+          text: "El servidor no puede o no procesará la petición debido a algo que se percibe como un error del cliente (ej. sintaxis de JSON malformada, parámetros inválidos o validaciones fallidas)."
+        },
+        '401': {
+          title: "401 Unauthorized",
+          text: "Aunque el estándar HTTP la llama 'Unauthorized', semánticamente significa 'Unauthenticated'. El cliente no ha presentado credenciales de identidad válidas (falta token Bearer, API Key o credenciales incorrectas)."
+        },
+        '403': {
+          title: "403 Forbidden",
+          text: "El servidor conoce la identidad del cliente (está autenticado), pero este NO posee los privilegios o roles de acceso necesarios para operar sobre el recurso solicitado."
+        },
+        '404': {
+          title: "404 Not Found",
+          text: "El servidor no ha encontrado ninguna coincidencia para la URI solicitada. En APIs RESTful, se usa cuando el ID del recurso solicitado no existe en la base de datos."
+        },
+        '405': {
+          title: "405 Method Not Allowed",
+          text: "El método HTTP recibido es conocido por el servidor pero no está soportado por el recurso destino. El servidor DEBE generar una cabecera 'Allow' listando los métodos válidos (ej. Allow: GET, POST)."
+        },
+        '409': {
+          title: "409 Conflict",
+          text: "La solicitud no se pudo procesar debido a un conflicto con el estado actual del recurso. Común al intentar registrar un email que ya existe (violación de unicidad) o colisiones de versiones (Optimistic Locking)."
+        },
+        '500': {
+          title: "500 Internal Server Error",
+          text: "Condición inesperada del servidor que le impidió completar la solicitud. Indica un bug en el código backend, una excepción no controlada o una falla en la conexión con la base de datos."
+        },
+        '502': {
+          title: "502 Bad Gateway",
+          text: "El servidor, actuando como proxy o pasarela (como NGINX o API Gateway), recibió una respuesta no válida o caída del servidor upstream (backend Node.js, Spring Boot, etc.)."
+        },
+        '503': {
+          title: "503 Service Unavailable",
+          text: "El servidor no puede atender la petición en este momento por sobrecarga de tráfico o mantenimiento programado. Suele acompañarse de la cabecera 'Retry-After'."
+        },
+        '504': {
+          title: "504 Gateway Timeout",
+          text: "El proxy o gateway intermediario no recibió a tiempo una respuesta del servidor upstream dentro del umbral de tiempo límite (timeout) configurado."
+        }
+      };
+
+      function showStatusDetail(code) {
+        const item = statusesCatalog[code];
+        if (!item) return;
+
+        const box = document.getElementById('status-deep-dive');
+        box.style.display = 'block';
+        document.getElementById('deep-dive-title').innerText = item.title;
+        document.getElementById('deep-dive-body').innerHTML = `
+          <p>${item.text}</p>
+          <div style="font-size: 0.8rem; color: var(--gold); margin-top: 8px;">
+            RFC 9110 HTTP Semantics Standard Reference.
+          </div>
+        `;
+        box.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Simulador de PUT vs PATCH
+      function simularUpdate(tipo) {
+        const resBox = document.getElementById('update-sim-result');
+        if (tipo === 'put') {
+          resBox.innerHTML = `
+            <div style="color: #ff5555; font-weight: bold; margin-bottom: 6px;">⚠️ Peligro con PUT (Reemplazo Total):</div>
+            <div class="code-line c-coral">Petición: PUT /empleados/482 { "salario": 50000 }</div>
+            <div class="code-line c-cyan">Resultado en Base de Datos:</div>
+            <div class="code-line">{ "id": 482, "salario": 50000, "nombre": null, "puesto": null, "activo": false }</div>
+            <div style="font-size: 0.78rem; color: #ffb3b3; margin-top: 8px; font-family: Verdana;">
+              ¡Al usar PUT sin enviar los otros atributos, el servidor sobreescribe todo el objeto! Los datos previos de nombre y puesto se perdieron.
+            </div>
+          `;
+        } else {
+          resBox.innerHTML = `
+            <div style="color: var(--green); font-weight: bold; margin-bottom: 6px;">✅ Modificación Quirúrgica con PATCH:</div>
+            <div class="code-line c-cyan">Petición: PATCH /empleados/482 { "salario": 50000 }</div>
+            <div class="code-line c-green">Resultado en Base de Datos:</div>
+            <div class="code-line">{ "id": 482, "nombre": "Ulises", "puesto": "Analista", "salario": 50000, "activo": true }</div>
+            <div style="font-size: 0.78rem; color: #b3ffe0; margin-top: 8px; font-family: Verdana;">
+              PATCH únicamente mutó la propiedad "salario". Todos los demás campos del recurso se conservaron intactos.
+            </div>
+          `;
+        }
+      }
+
+      // Laboratorio de Idempotencia
+      let postCount = 0;
+      let totalDbRecords = 1;
+      let simAttempts = 0;
+
+      function ejecutarPeticion(metodo) {
+        simAttempts++;
+        const tbody = document.getElementById('idem-log-body');
+        if (simAttempts === 1) tbody.innerHTML = "";
+
+        const tr = document.createElement('tr');
+        let efecto = "";
+        let estiloMetodo = "";
+
+        if (metodo === 'POST') {
+          postCount++;
+          totalDbRecords++;
+          efecto = `Se insertó un NUEVO registro (ID: ${100 + postCount}) en la tabla.`;
+          estiloMetodo = "color: #ffaa00; font-weight: bold;";
+        } else {
+          efecto = `Se actualizó el registro fijo (ID: 482). No se añadieron filas.`;
+          estiloMetodo = "color: #00bbff; font-weight: bold;";
+        }
+
+        tr.innerHTML = `
+          <td>#${simAttempts}</td>
+          <td style="${estiloMetodo}">${metodo}</td>
+          <td>${efecto}</td>
+          <td style="font-weight: bold; color: var(--gold); text-align: center;">${totalDbRecords} registros</td>
+        `;
+        tbody.prepend(tr);
+      }
+
+      function resetSimIdem() {
+        simAttempts = 0;
+        postCount = 0;
+        totalDbRecords = 1;
+        document.getElementById('idem-log-body').innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--muted);">Sin peticiones ejecutadas. Presiona un botón.</td>
+          </tr>
+        `;
+      }
+
+      // Inicializar con GET activo
+      inspectMethod('GET');
+    </script>
+    
+      <!-- Pestaña 4: Laboratorio Evaluativo -->
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+      <!-- Laboratorio de Evaluación Formativa Estandarizado -->
+      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+        <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
+        <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
+          Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.
+        </p>
+        <div class="quiz-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(0,255,255,0.2); padding-bottom:10px;">
+            <span id="quiz-question-number" style="font:700 0.85rem 'Courier New', monospace; color:var(--cyan);">Pregunta 1 de 5</span>
+            <span id="quiz-score" style="font:700 0.85rem 'Courier New', monospace; color:var(--gold);">Puntuación: 0 / 5</span>
+          </div>
+          <div id="quiz-container">
+            <p id="quiz-question-text" style="font-size:1.02rem; font-weight:600; color:#fff; line-height:1.6; margin-bottom:20px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:14px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:10px 20px; border-radius:6px; font:700 0.88rem 'Courier New', monospace; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Barra de Navegación Estandarizada -->
+    <nav class="module-nav-bar"></nav>
+
+    <footer class="global-footer">
+      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+    </footer>
+  </main><!-- Navegación Dinámica Centralizada -->
+    
+    <script>
+      // =========================================================================
+      // Motor Canónico de Evaluación Formativa con Haptic Feedback
+      // =========================================================================
+      const quizQuestions = [
+  {
+    "q": "De acuerdo con el estándar HTTP/1.1 y HTTP/2 (RFC 9110), ¿qué define formalmente a un método HTTP como \"Idempotente\"?",
+    "options": [
+      "El efecto pretendido en el servidor al ejecutar N peticiones idénticas consecutivas es exactamente el mismo que si se ejecutara una sola vez (ej. GET, PUT, DELETE).",
+      "La petición no consume ancho de banda de red en el canal de comunicación al enviarse comprimida en formato GZIP.",
+      "El servidor garantiza devolver siempre el mismo código de estado 200 OK independientemente de si la petición contiene errores o no.",
+      "La petición puede ejecutarse en paralelo por múltiples subprocesos sin requerir bloqueos en el motor de bases de datos."
+    ],
+    "correct": 0,
+    "feedback": "La idempotencia significa que repetir la petición múltiples veces deja el estado del servidor en la misma condición final que una única ejecución (PUT sobre el mismo recurso genera el mismo estado final; POST en cambio crearía duplicados)."
+  },
+  {
+    "q": "¿Cuál es la diferencia semántica fundamental entre los verbos HTTP PUT y PATCH según el estándar RFC 9110 / RFC 5789?",
+    "options": [
+      "PUT reemplaza el recurso completo en el servidor (idempotente); PATCH aplica modificaciones parciales a campos específicos del recurso (no necesariamente idempotente).",
+      "PUT se utiliza únicamente para crear recursos nuevos en colecciones vacías; PATCH se utiliza únicamente para eliminar recursos existentes.",
+      "PUT es un método seguro que nunca modifica el estado del servidor; PATCH es un método no seguro que siempre requiere autenticación OAuth.",
+      "PUT transfiere datos exclusivamente en formato XML; PATCH transfiere datos exclusivamente mediante cadenas binarias serializadas con Protobuf."
+    ],
+    "correct": 0,
+    "feedback": "PUT envía la representación completa para sustituir la entidad (reemplazo total idempotente); PATCH envía solo un conjunto de cambios a aplicar sobre la entidad (actualización parcial)."
+  },
+  {
+    "q": "¿Qué significado semántico transmite el código de estado HTTP 409 Conflict?",
+    "options": [
+      "La petición no pudo procesarse debido a un conflicto con el estado actual del recurso en el servidor (ej. colisión de versiones en concurrencia optimista o claves duplicadas).",
+      "El cliente no proporcionó credenciales de autenticación válidas debiendo incluir la cabecera Authorization en la petición.",
+      "El servidor carece del permiso de archivo del sistema operativo para leer el archivo solicitado en el disco rígido.",
+      "La pasarela de enlace (gateway) intermedia no recibió una respuesta a tiempo por parte del servidor upstream de procesamiento."
+    ],
+    "correct": 0,
+    "feedback": "El código 409 Conflict indica que la operación colisiona con el estado actual de los datos (ej. intentar guardar un registro cuya versión cambió entre la lectura y la escritura, o violar una unicidad)."
+  },
+  {
+    "q": "En los métodos HTTP definidos por el RFC 9110:",
+    "options": [
+      "El método GET es seguro e idempotente, debiendo utilizarse exclusivamente para recuperar representaciones sin alterar el estado del recurso.",
+      "El método POST es seguro e idempotente, debiendo devolver siempre el mismo código 200 OK sin generar nuevos identificadores.",
+      "El método DELETE es no idempotente, debiendo fallar con error 500 si se ejecuta una segunda vez sobre un recurso eliminado.",
+      "El método HEAD no es seguro, obligando al servidor a enviar el cuerpo completo del mensaje en cada llamada."
+    ],
+    "correct": 0,
+    "feedback": "Un método Seguro (Safe) no altera el estado del servidor (propósito de sólo lectura). GET, HEAD y OPTIONS son seguros e idempotentes; POST no es seguro ni idempotente."
+  },
+  {
+    "q": "¿Cuándo es técnicamente apropiado que una API REST devuelva el código de estado HTTP 204 No Content?",
+    "options": [
+      "Cuando el servidor ha procesado exitosamente la petición pero deliberadamente no necesita devolver ningún contenido en el cuerpo de la respuesta (ej. tras un DELETE o PUT).",
+      "Cuando la base de datos se encuentra vacía y no existen tablas creadas en el motor de almacenamiento relacional.",
+      "Cuando el cliente envía una petición GET solicitando un recurso que no existe en el sistema ni en el servidor caché.",
+      "Cuando la petición contiene errores de validación de sintaxis en el payload JSON enviado por el navegador web."
+    ],
+    "correct": 0,
+    "feedback": "204 No Content confirma que la acción se ejecutó exitosamente pero que el servidor no envía payload alguno en la respuesta, permitiendo al cliente continuar sin actualizar su vista actual."
+  }
+];
+
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let currentShuffledOptions = [];
+
+      window.renderQuizQuestion = function() {
+        if (!Array.isArray(quizQuestions) || quizQuestions.length === 0) return;
+        const q = quizQuestions[currentQuizIdx];
+        if (!q) return;
+
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+
+        if (!document.getElementById('quiz-question-text')) {
+          container.innerHTML = `
+            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
+            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
+            <div style="margin-top:12px; text-align:right;">
+              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          `;
+        }
+
+        const qNumEl = document.getElementById('quiz-question-number');
+        const qScoreEl = document.getElementById('quiz-score');
+        const qTextEl = document.getElementById('quiz-question-text');
+        const optsContainer = document.getElementById('quiz-options-container');
+        const feedbackBox = document.getElementById('quiz-feedback');
+        const nextBtn = document.getElementById('btn-next-quiz');
+
+        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
+
+        if (optsContainer) optsContainer.innerHTML = '';
+        if (feedbackBox) {
+          feedbackBox.style.display = 'none';
+          feedbackBox.innerHTML = '';
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        currentShuffledOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        })).sort(() => Math.random() - 0.5);
+
+        currentShuffledOptions.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
+          btn.onclick = () => selectQuizOption(idx);
+          optsContainer.appendChild(btn);
+        });
+      };
+
+      window.selectQuizOption = function(idx) {
+        const q = quizQuestions[currentQuizIdx];
+        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
+        btns.forEach(b => (b.disabled = true));
+
+        const feedbackBox = document.getElementById('quiz-feedback');
+        if (feedbackBox) {
+          feedbackBox.style.display = 'block';
+        }
+
+        const chosen = currentShuffledOptions[idx];
+        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
+
+        // Tactile Haptics en móviles compatibles
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          try {
+            if (chosen && chosen.isCorrect) navigator.vibrate(40);
+            else navigator.vibrate([30, 50, 30]);
+          } catch(e) {}
+        }
+
+        const rawFeedback = (q.feedback || '').trim();
+        let shortFeedback = rawFeedback;
+        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
+        if (firstSentenceMatch) shortFeedback = firstSentenceMatch[1];
+        if (shortFeedback.length > 160) {
+          const cut = shortFeedback.lastIndexOf(' ', 155);
+          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 155)) + '...';
+        }
+
+        if (chosen && chosen.isCorrect) {
+          quizScore++;
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(0, 255, 170, 0.12)';
+            feedbackBox.style.border = '1px solid var(--green, #00ffaa)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--green, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
+          }
+        } else {
+          if (btns[idx]) {
+            btns[idx].classList.add('opt-wrong');
+          }
+          if (correctIdx !== -1 && btns[correctIdx]) {
+            btns[correctIdx].classList.add('opt-correct');
+          }
+          if (feedbackBox) {
+            feedbackBox.style.background = 'rgba(255, 0, 110, 0.12)';
+            feedbackBox.style.border = '1px solid var(--coral, #ff006e)';
+            feedbackBox.style.color = '#fff';
+            feedbackBox.innerHTML = `<strong style="color:var(--coral, #ff006e); font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
+          }
+        }
+
+        const qScoreEl = document.getElementById('quiz-score');
+        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
+        const nextBtn = document.getElementById('btn-next-quiz');
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          try {
+            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch(e) {}
+        }
+      };
+
+      window.nextQuizQuestion = function() {
+        currentQuizIdx++;
+        if (currentQuizIdx < quizQuestions.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      };
+
+      window.showQuizSummary = function() {
+        const container = document.getElementById('quiz-container');
+        if (!container) return;
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+        container.innerHTML = `
+          <div style="text-align:center; padding:24px 12px;">
+            <div style="font-size:3rem; margin-bottom:10px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
+            <h3 style="margin:0 0 8px; color:#fff; font-size:1.2rem;">Evaluación Completada</h3>
+            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:16px;">
+              Puntuación final: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'};">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
+            </p>
+            <button class="btn-theme" style="padding:10px 22px; border-radius:6px; font:700 0.86rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
+              🔄 Reintentar Evaluación
+            </button>
+          </div>
+        `;
+      };
+
+      window.restartQuiz = function() {
+        currentQuizIdx = 0;
+        quizScore = 0;
+        renderQuizQuestion();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+      } else {
+        renderQuizQuestion();
+      }
+    </script>
+
+    <script src="../shared/modules-data.js"></script>
+    <script src="../shared/nav.js"></script>
+  </body>
+</html>

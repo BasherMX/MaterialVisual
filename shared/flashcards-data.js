@@ -16,8 +16,8 @@
 
     // Módulo 01: Complejidad Computacional: Big O
     {
-      id: "fc-01-01",
-      moduleId: "01",
+      id: "fc-04-01",
+      moduleId: "04",
       moduleTitle: "Complejidad Computacional",
       category: "Estructuras & Algoritmos",
       question: "¿Cuál es la complejidad temporal de buscar un elemento en un arreglo NO ordenado vs ordenado mediante Búsqueda Binaria?",
@@ -33,8 +33,8 @@
       correctOption: 0
     },
     {
-      id: "fc-01-02",
-      moduleId: "01",
+      id: "fc-04-02",
+      moduleId: "04",
       moduleTitle: "Complejidad Computacional",
       category: "Estructuras & Algoritmos",
       question: "¿Qué propiedad matemática permite simplificar f(n) = 5n³ + 100n² + 4000 a O(n³)?",
@@ -50,8 +50,8 @@
       correctOption: 0
     },
     {
-      id: "fc-01-03",
-      moduleId: "01",
+      id: "fc-04-03",
+      moduleId: "04",
       moduleTitle: "Complejidad Computacional",
       category: "Estructuras & Algoritmos",
       question: "¿Por qué un algoritmo de complejidad O(2ⁿ) es considerado intratable para entradas moderadas (n > 50)?",
@@ -69,8 +69,8 @@
 
     // Módulo 02: Greedy vs Divide & Conquer
     {
-      id: "fc-02-01",
-      moduleId: "02",
+      id: "fc-05-01",
+      moduleId: "05",
       moduleTitle: "Greedy vs Divide & Conquer",
       category: "Estructuras & Algoritmos",
       question: "¿Por qué el enfoque voraz (Greedy) garantiza la solución óptima en la Mochila Fraccionaria pero FALLA en la Mochila 0/1?",
@@ -86,8 +86,8 @@
       correctOption: 0
     },
     {
-      id: "fc-02-02",
-      moduleId: "02",
+      id: "fc-05-02",
+      moduleId: "05",
       moduleTitle: "Greedy vs Divide & Conquer",
       category: "Estructuras & Algoritmos",
       question: "¿Cuáles son las 3 etapas canónicas del paradigma Divide y Vencerás?",
@@ -105,8 +105,8 @@
 
     // Módulo 03: Árboles AVL: Equilibrio en Movimiento
     {
-      id: "fc-03-01",
-      moduleId: "03",
+      id: "fc-06-01",
+      moduleId: "06",
       moduleTitle: "Árboles AVL",
       category: "Estructuras & Algoritmos",
       question: "¿Cómo se define el Factor de Balance (FB) de un nodo en un árbol AVL y cuál es su rango válido?",
@@ -122,8 +122,8 @@
       correctOption: 0
     },
     {
-      id: "fc-03-02",
-      moduleId: "03",
+      id: "fc-06-02",
+      moduleId: "06",
       moduleTitle: "Árboles AVL",
       category: "Estructuras & Algoritmos",
       question: "¿Cuándo se debe aplicar una Rotación Doble Izquierda-Derecha (LR) en un Árbol AVL?",
@@ -141,8 +141,8 @@
 
     // Módulo 04: Explorador de Grafos: BFS vs DFS
     {
-      id: "fc-04-01",
-      moduleId: "04",
+      id: "fc-07-01",
+      moduleId: "07",
       moduleTitle: "Explorador de Grafos",
       category: "Estructuras & Algoritmos",
       question: "¿Qué estructura de datos subyacente gobierna a BFS (Anchura) vs DFS (Profundidad)?",
@@ -158,8 +158,8 @@
       correctOption: 0
     },
     {
-      id: "fc-04-02",
-      moduleId: "04",
+      id: "fc-07-02",
+      moduleId: "07",
       moduleTitle: "Explorador de Grafos",
       category: "Estructuras & Algoritmos",
       question: "¿Por qué BFS garantiza encontrar el camino más corto en grafos no ponderados mientras que DFS no?",
@@ -181,8 +181,8 @@
 
     // Módulo 05: Arquitectura ANSI/SPARC de Tres Niveles
     {
-      id: "fc-05-01",
-      moduleId: "05",
+      id: "fc-29-01",
+      moduleId: "29",
       moduleTitle: "Arquitectura ANSI/SPARC",
       category: "Bases de Datos",
       question: "¿Cuáles son los 3 niveles de la arquitectura ANSI/SPARC y qué función tiene cada uno?",
@@ -198,8 +198,8 @@
       correctOption: 0
     },
     {
-      id: "fc-05-02",
-      moduleId: "05",
+      id: "fc-29-02",
+      moduleId: "29",
       moduleTitle: "Arquitectura ANSI/SPARC",
       category: "Bases de Datos",
       question: "¿Cuál es la diferencia fundamental entre Independencia Física e Independencia Lógica de Datos?",
@@ -215,8 +215,8 @@
       correctOption: 0
     },
     {
-      id: "fc-05-03",
-      moduleId: "05",
+      id: "fc-29-03",
+      moduleId: "29",
       moduleTitle: "Arquitectura ANSI/SPARC",
       category: "Bases de Datos",
       question: "Según Andrew Oppel, ¿cuál es la discrepancia principal entre la teoría ANSI/SPARC y los RDBMS comerciales reales?",
@@ -234,8 +234,8 @@
 
     // Módulo 06: Modelado Conceptual ERD y Notaciones
     {
-      id: "fc-06-01",
-      moduleId: "06",
+      id: "fc-30-01",
+      moduleId: "30",
       moduleTitle: "Modelado Conceptual ERD",
       category: "Bases de Datos",
       question: "¿Cómo se representa una Entidad Débil en la notación Chen tradicional y qué requisito tiene?",
@@ -251,8 +251,8 @@
       correctOption: 0
     },
     {
-      id: "fc-06-02",
-      moduleId: "06",
+      id: "fc-30-02",
+      moduleId: "30",
       moduleTitle: "Modelado Conceptual ERD",
       category: "Bases de Datos",
       question: "En la notación de Pata de Gallo (Crow's Foot / Martin), ¿qué significan un círculo y tres líneas ramificadas?",
@@ -270,8 +270,8 @@
 
     // Módulo 07: Normalización de Bases de Datos
     {
-      id: "fc-07-01",
-      moduleId: "07",
+      id: "fc-31-01",
+      moduleId: "31",
       moduleTitle: "Normalización de Bases de Datos",
       category: "Bases de Datos",
       question: "¿Cuál es el requisito indispensable para que una relación esté en Segunda Forma Normal (2FN)?",
@@ -287,8 +287,8 @@
       correctOption: 0
     },
     {
-      id: "fc-07-02",
-      moduleId: "07",
+      id: "fc-31-02",
+      moduleId: "31",
       moduleTitle: "Normalización de Bases de Datos",
       category: "Bases de Datos",
       question: "¿Qué anomalía elimina la Tercera Forma Normal (3FN)?",
@@ -306,8 +306,8 @@
 
     // Módulo 08: Taxonomía de Sublenguajes SQL
     {
-      id: "fc-08-01",
-      moduleId: "08",
+      id: "fc-32-01",
+      moduleId: "32",
       moduleTitle: "Taxonomía de Sublenguajes SQL",
       category: "Bases de Datos",
       question: "Aunque ambos vacían los datos de una tabla, ¿por qué TRUNCATE es DDL y DELETE es DML?",
@@ -323,8 +323,8 @@
       correctOption: 0
     },
     {
-      id: "fc-08-02",
-      moduleId: "08",
+      id: "fc-32-02",
+      moduleId: "32",
       moduleTitle: "Taxonomía de Sublenguajes SQL",
       category: "Bases de Datos",
       question: "¿A qué sublenguajes pertenecen respectivamente las sentencias GRANT y ROLLBACK TO SAVEPOINT?",
@@ -342,8 +342,8 @@
 
     // Módulo 09: Propiedades ACID y Axiomas de Armstrong
     {
-      id: "fc-09-01",
-      moduleId: "09",
+      id: "fc-33-01",
+      moduleId: "33",
       moduleTitle: "ACID y Axiomas de Armstrong",
       category: "Bases de Datos",
       question: "¿Qué componente del motor DBMS garantiza la DURABILIDAD frente a caídas de energía imprevistas?",
@@ -359,8 +359,8 @@
       correctOption: 0
     },
     {
-      id: "fc-09-02",
-      moduleId: "09",
+      id: "fc-33-02",
+      moduleId: "33",
       moduleTitle: "ACID y Axiomas de Armstrong",
       category: "Bases de Datos",
       question: "¿Cuáles son los 3 axiomas primarios de Armstrong para la inferencia de dependencias funcionales?",
@@ -378,8 +378,8 @@
 
     // Módulo 10: Diseño Físico: Índices y Árboles B+
     {
-      id: "fc-10-01",
-      moduleId: "10",
+      id: "fc-34-01",
+      moduleId: "34",
       moduleTitle: "Diseño Físico e Índices B+",
       category: "Bases de Datos",
       question: "¿Por qué solo puede existir UN ÚNICO índice agrupado (Clustered Index) por tabla?",
@@ -395,8 +395,8 @@
       correctOption: 0
     },
     {
-      id: "fc-10-02",
-      moduleId: "10",
+      id: "fc-34-02",
+      moduleId: "34",
       moduleTitle: "Diseño Físico e Índices B+",
       category: "Bases de Datos",
       question: "¿Qué ventaja estructural crítica tiene un Árbol B+ sobre un Árbol B tradicional para bases de datos?",
@@ -418,8 +418,8 @@
 
     // Módulo 11: Métodos HTTP y Códigos de Estado
     {
-      id: "fc-11-01",
-      moduleId: "11",
+      id: "fc-18-01",
+      moduleId: "18",
       moduleTitle: "Métodos HTTP y Códigos de Estado",
       category: "Arquitectura & Web",
       question: "¿Qué diferencia semántica define el estándar HTTP entre PUT y PATCH para actualizar un recurso?",
@@ -435,8 +435,8 @@
       correctOption: 0
     },
     {
-      id: "fc-11-02",
-      moduleId: "11",
+      id: "fc-18-02",
+      moduleId: "18",
       moduleTitle: "Métodos HTTP y Códigos de Estado",
       category: "Arquitectura & Web",
       question: "¿Cuál es la diferencia crítica entre los códigos de error de cliente 401 Unauthorized y 403 Forbidden?",
@@ -454,8 +454,8 @@
 
     // Módulo 12: Modelo de Madurez de Richardson
     {
-      id: "fc-12-01",
-      moduleId: "12",
+      id: "fc-19-01",
+      moduleId: "19",
       moduleTitle: "Modelo de Madurez de Richardson",
       category: "Arquitectura & Web",
       question: "¿Qué caracteriza al Nivel 3 del Modelo de Madurez de Richardson (La Gloria de REST)?",
@@ -471,8 +471,8 @@
       correctOption: 0
     },
     {
-      id: "fc-12-02",
-      moduleId: "12",
+      id: "fc-19-02",
+      moduleId: "19",
       moduleTitle: "Modelo de Madurez de Richardson",
       category: "Arquitectura & Web",
       question: "¿Por qué el Nivel 0 de Richardson se denomina 'The Swamp of POX' (El pantano de POX)?",
@@ -494,8 +494,8 @@
 
     // Módulo 13: Programación Orientada a Objetos (POO)
     {
-      id: "fc-13-01",
-      moduleId: "13",
+      id: "fc-08-01",
+      moduleId: "08",
       moduleTitle: "Programación Orientada a Objetos",
       category: "Diseño & UI/UX",
       question: "¿Qué mecanismo permite al Polimorfismo ejecutar el método de la subclase correcta en tiempo de ejecución?",
@@ -511,8 +511,8 @@
       correctOption: 0
     },
     {
-      id: "fc-13-02",
-      moduleId: "13",
+      id: "fc-08-02",
+      moduleId: "08",
       moduleTitle: "Programación Orientada a Objetos",
       category: "Diseño & UI/UX",
       question: "¿Cuál es la diferencia fundamental entre Sobrecarga (Overloading) y Sobreescritura (Overriding)?",
@@ -530,8 +530,8 @@
 
     // Módulo 14: Patrones de Diseño GoF
     {
-      id: "fc-14-01",
-      moduleId: "14",
+      id: "fc-09-01",
+      moduleId: "09",
       moduleTitle: "Patrones de Diseño GoF",
       category: "Diseño & UI/UX",
       question: "¿Cuáles son las 3 grandes familias en que el Gang of Four (GoF) clasifica los 23 patrones de diseño?",
@@ -547,8 +547,8 @@
       correctOption: 0
     },
     {
-      id: "fc-14-02",
-      moduleId: "14",
+      id: "fc-09-02",
+      moduleId: "09",
       moduleTitle: "Patrones de Diseño GoF",
       category: "Diseño & UI/UX",
       question: "¿Qué patrón GoF define una familia de algoritmos intercambiables encapsulados en clases independientes?",
@@ -566,8 +566,8 @@
 
     // Módulo 15: Las 3 Reglas de Oro de Theo Mandel
     {
-      id: "fc-15-01",
-      moduleId: "15",
+      id: "fc-11-01",
+      moduleId: "11",
       moduleTitle: "Reglas de Oro de Theo Mandel",
       category: "Diseño & UI/UX",
       question: "¿Cuáles son las 3 Reglas de Oro para el diseño de interfaces de Theo Mandel (citadas por Roger Pressman)?",
@@ -583,8 +583,8 @@
       correctOption: 0
     },
     {
-      id: "fc-15-02",
-      moduleId: "15",
+      id: "fc-11-02",
+      moduleId: "11",
       moduleTitle: "Reglas de Oro de Theo Mandel",
       category: "Diseño & UI/UX",
       question: "En la Regla 2 de Theo Mandel, ¿qué postula la Ley de Miller sobre la memoria humana de corto plazo?",
@@ -606,8 +606,8 @@
 
     // Módulo 16: El Triángulo de Hierro: Triple Restricción
     {
-      id: "fc-16-01",
-      moduleId: "16",
+      id: "fc-01-01",
+      moduleId: "01",
       moduleTitle: "El Triángulo de Hierro",
       category: "Gestión de Proyectos",
       question: "¿Cuáles son los 3 vértices de la Triple Restricción clásica y cuál es el resultado en el centro?",
@@ -623,8 +623,8 @@
       correctOption: 0
     },
     {
-      id: "fc-16-02",
-      moduleId: "16",
+      id: "fc-01-02",
+      moduleId: "01",
       moduleTitle: "El Triángulo de Hierro",
       category: "Gestión de Proyectos",
       question: "¿Qué postula la Ley de Brooks sobre la compresión de tiempos de entrega en proyectos de software atrasados?",
@@ -642,8 +642,8 @@
 
     // Módulo 17: EDT / WBS: Descomposición del Trabajo
     {
-      id: "fc-17-01",
-      moduleId: "17",
+      id: "fc-02-01",
+      moduleId: "02",
       moduleTitle: "EDT / WBS",
       category: "Gestión de Proyectos",
       question: "¿En qué consiste la 'Regla del 100%' en la Estructura de Descomposición del Trabajo (EDT/WBS)?",
@@ -659,8 +659,8 @@
       correctOption: 0
     },
     {
-      id: "fc-17-02",
-      moduleId: "17",
+      id: "fc-02-02",
+      moduleId: "02",
       moduleTitle: "EDT / WBS",
       category: "Gestión de Proyectos",
       question: "¿Qué es el 'Paquete de Trabajo' (Work Package) en una EDT/WBS y cuál es su nivel jerárquico?",
@@ -682,8 +682,8 @@
 
     // Módulo 18: Inyección de Dependencias & C# 12
     {
-      id: "fc-18-01",
-      moduleId: "18",
+      id: "fc-20-01",
+      moduleId: "20",
       moduleTitle: "Inyección de Dependencias & C# 12",
       category: "Arquitectura & Backend",
       question: "¿Cuál es el ciclo de vida apropiado para un servicio que gestiona la sesión y datos de autenticación del usuario actual?",
@@ -699,8 +699,8 @@
       correctOption: 0
     },
     {
-      id: "fc-18-02",
-      moduleId: "18",
+      id: "fc-20-02",
+      moduleId: "20",
       moduleTitle: "Inyección de Dependencias & C# 12",
       category: "Arquitectura & Backend",
       question: "¿Qué es una Dependencia Cautiva (Captive Dependency) y por qué genera fallos en .NET?",
@@ -716,8 +716,8 @@
       correctOption: 0
     },
     {
-      id: "fc-18-03",
-      moduleId: "18",
+      id: "fc-20-03",
+      moduleId: "20",
       moduleTitle: "Inyección de Dependencias & C# 12",
       category: "Arquitectura & Backend",
       question: "¿Qué ventaja ofrecen los Constructores Primarios en C# 12 para servicios con inyección de dependencias?",
@@ -735,8 +735,8 @@
 
     // Módulo 19: EF Core: Concurrencia & Optimización
     {
-      id: "fc-19-01",
-      moduleId: "19",
+      id: "fc-21-01",
+      moduleId: "21",
       moduleTitle: "EF Core: Concurrencia & Optimización",
       category: "Arquitectura & Backend",
       question: "¿Por qué falla Task.WhenAll al ejecutar múltiples consultas paralelas sobre una misma instancia de DbContext?",
@@ -752,8 +752,8 @@
       correctOption: 0
     },
     {
-      id: "fc-19-02",
-      moduleId: "19",
+      id: "fc-21-02",
+      moduleId: "21",
       moduleTitle: "EF Core: Concurrencia & Optimización",
       category: "Arquitectura & Backend",
       question: "¿Cómo resuelve IDbContextFactory<TContext> la paralelización de consultas concurrentes?",
@@ -769,8 +769,8 @@
       correctOption: 0
     },
     {
-      id: "fc-19-03",
-      moduleId: "19",
+      id: "fc-21-03",
+      moduleId: "21",
       moduleTitle: "EF Core: Concurrencia & Optimización",
       category: "Arquitectura & Backend",
       question: "¿En qué se diferencia .AsNoTrackingWithIdentityResolution() de .AsNoTracking() tradicional en EF Core?",
@@ -786,8 +786,8 @@
       correctOption: 0
     },
     {
-      id: "fc-19-04",
-      moduleId: "19",
+      id: "fc-21-04",
+      moduleId: "21",
       moduleTitle: "EF Core: Concurrencia & Optimización",
       category: "Arquitectura & Backend",
       question: "¿Por qué Native AOT en .NET 8+ exige JSON Source Generators en lugar de Reflection en tiempo de ejecución?",
@@ -803,8 +803,8 @@
       correctOption: 0
     },
     {
-      id: "fc-19-05",
-      moduleId: "19",
+      id: "fc-21-05",
+      moduleId: "21",
       moduleTitle: "EF Core: Concurrencia & Optimización",
       category: "Arquitectura & Backend",
       question: "En el modelo relacional canónico Northwind utilizado por Mark J. Price para EF Core, ¿cuál es la estructura de clave de la tabla Order Details?",
@@ -826,8 +826,8 @@
 
     // Módulo 20: gRPC & Patrones de Streaming
     {
-      id: "fc-20-01",
-      moduleId: "20",
+      id: "fc-22-01",
+      moduleId: "22",
       moduleTitle: "gRPC & Patrones de Streaming",
       category: "Arquitectura & Web",
       question: "¿Por qué gRPC logra un rendimiento y compresión drásticamente superiores frente a una API REST tradicional basada en JSON?",
@@ -843,8 +843,8 @@
       correctOption: 0
     },
     {
-      id: "fc-20-02",
-      moduleId: "20",
+      id: "fc-22-02",
+      moduleId: "22",
       moduleTitle: "gRPC & Patrones de Streaming",
       category: "Arquitectura & Web",
       question: "¿En qué consiste el patrón de llamada 'Bidirectional Streaming' en gRPC y cómo operan el cliente y servidor?",
@@ -860,8 +860,8 @@
       correctOption: 0
     },
     {
-      id: "fc-20-04",
-      moduleId: "20",
+      id: "fc-22-04",
+      moduleId: "22",
       moduleTitle: "gRPC & Patrones de Streaming",
       category: "Arquitectura & Web",
       question: "¿Por qué ASP.NET Core SignalR es la tecnología idónea para tableros en vivo y chats en navegadores frente a gRPC?",
@@ -877,8 +877,8 @@
       correctOption: 0
     },
     {
-      id: "fc-20-05",
-      moduleId: "20",
+      id: "fc-22-05",
+      moduleId: "22",
       moduleTitle: "gRPC & Patrones de Streaming",
       category: "Arquitectura & Web",
       question: "¿Qué es fundamentalmente 'gRPC JSON Transcoding' en ASP.NET Core y qué limitación arquitectónica debe tenerse clara en evaluaciones técnicas?",
@@ -896,8 +896,8 @@
 
     // Módulo 21: GraphQL & HotChocolate: Over/Under-fetching
     {
-      id: "fc-21-01",
-      moduleId: "21",
+      id: "fc-23-01",
+      moduleId: "23",
       moduleTitle: "GraphQL & HotChocolate: Over/Under-fetching",
       category: "Arquitectura & Web",
       question: "¿Qué patologías de red resuelven las consultas de GraphQL frente al diseño rígido de endpoints REST?",
@@ -913,8 +913,8 @@
       correctOption: 0
     },
     {
-      id: "fc-21-02",
-      moduleId: "21",
+      id: "fc-23-02",
+      moduleId: "23",
       moduleTitle: "GraphQL & HotChocolate: Over/Under-fetching",
       category: "Arquitectura & Web",
       question: "¿Cómo optimiza HotChocolate en .NET el consumo de base de datos al usar el atributo [UseProjection] junto con Entity Framework Core?",
@@ -932,8 +932,8 @@
 
     // Módulo 22: JWT: Tokens & Criptografía
     {
-      id: "fc-22-01",
-      moduleId: "22",
+      id: "fc-24-01",
+      moduleId: "24",
       moduleTitle: "JWT: Tokens & Criptografía",
       category: "Arquitectura & Backend",
       question: "¿Cuál es el mito y error más crítico de seguridad sobre los JSON Web Tokens (JWS estándar)?",
@@ -949,8 +949,8 @@
       correctOption: 0
     },
     {
-      id: "fc-22-02",
-      moduleId: "22",
+      id: "fc-24-02",
+      moduleId: "24",
       moduleTitle: "JWT: Tokens & Criptografía",
       category: "Arquitectura & Backend",
       question: "¿Por qué se recomienda almacenar el Refresh Token en una cookie HttpOnly, Secure y SameSite en lugar de Web Storage (localStorage)?",
@@ -972,8 +972,8 @@
 
     // Módulo 23: Error, Defecto, Falla & V&V
     {
-      id: "fc-23-01",
-      moduleId: "23",
+      id: "fc-12-01",
+      moduleId: "12",
       moduleTitle: "Error, Defecto, Falla & V&V",
       category: "Ingeniería de Software",
       question: "En la taxonomía formal IEEE 610.12 e ISTQB, ¿cuál es la diferencia entre un Error, un Defecto (Bug/Fault) y una Falla (Failure)?",
@@ -989,8 +989,8 @@
       correctOption: 0
     },
     {
-      id: "fc-23-02",
-      moduleId: "23",
+      id: "fc-12-02",
+      moduleId: "12",
       moduleTitle: "Error, Defecto, Falla & V&V",
       category: "Ingeniería de Software",
       question: "Según la doctrina clásica de Barry Boehm y el estándar IEEE 1012, ¿cuál es la distinción entre Verificación y Validación?",
@@ -1006,8 +1006,8 @@
       correctOption: 0
     },
     {
-      id: "fc-23-03",
-      moduleId: "23",
+      id: "fc-12-03",
+      moduleId: "12",
       moduleTitle: "Error, Defecto, Falla & V&V",
       category: "Ingeniería de Software",
       question: "¿Qué ocurre en un proyecto de software cuando el sistema está 'Verificado con éxito' pero 'NO está Validado'?",
@@ -1023,8 +1023,8 @@
       correctOption: 0
     },
     {
-      id: "fc-23-04",
-      moduleId: "23",
+      id: "fc-12-04",
+      moduleId: "12",
       moduleTitle: "Error, Defecto, Falla & V&V",
       category: "Ingeniería de Software",
       question: "En la taxonomía de pruebas de SWEBOK v4, ¿cuál es la diferencia metodológica entre 'Monkey Testing' y 'Smoke Testing'?",
@@ -1042,8 +1042,8 @@
 
     // Módulo 24: Métricas de Confiabilidad: ROCOF, POFOD & MTTF
     {
-      id: "fc-24-01",
-      moduleId: "24",
+      id: "fc-13-01",
+      moduleId: "13",
       moduleTitle: "Métricas de Confiabilidad: ROCOF, POFOD & MTTF",
       category: "Ingeniería de Software",
       question: "¿Cuándo es POFOD (Probability of Failure on Demand) la métrica adecuada de confiabilidad en lugar de ROCOF?",
@@ -1059,8 +1059,8 @@
       correctOption: 0
     },
     {
-      id: "fc-24-02",
-      moduleId: "24",
+      id: "fc-13-02",
+      moduleId: "13",
       moduleTitle: "Métricas de Confiabilidad: ROCOF, POFOD & MTTF",
       category: "Ingeniería de Software",
       question: "¿Cómo se calcula la Disponibilidad Operativa (A) de un sistema a partir de su MTTF y MTTR, y qué significa lograr 'Cinco Nueves' (99.999%)?",
@@ -1076,8 +1076,8 @@
       correctOption: 0
     },
     {
-      id: "fc-24-03",
-      moduleId: "24",
+      id: "fc-13-03",
+      moduleId: "13",
       moduleTitle: "Métricas de Confiabilidad: ROCOF, POFOD & MTTF",
       category: "Ingeniería de Software",
       question: "¿Qué mide la métrica de 'Densidad de Defectos' expresada en función de KLOC (Kilo Lines Of Code)?",
@@ -1277,8 +1277,8 @@
 
     // Módulo 27: Estimación PERT & Validación de Estrategia (Marion E. Haynes)
     {
-      id: "fc-27-01",
-      moduleId: "27",
+      id: "fc-03-01",
+      moduleId: "03",
       moduleTitle: "Estimación PERT & Validación de Estrategia",
       category: "Gestión de Proyectos",
       question: "¿Cuáles son las fórmulas canónicas de PERT para calcular el Tiempo Esperado (Te), Desviación Estándar (σ) y Varianza (σ²)?",
@@ -1294,8 +1294,8 @@
       correctOption: 0
     },
     {
-      id: "fc-27-02",
-      moduleId: "27",
+      id: "fc-03-02",
+      moduleId: "03",
       moduleTitle: "Estimación PERT & Validación de Estrategia",
       category: "Gestión de Proyectos",
       question: "En diagramas de red PERT (método flechas AOA), ¿cuál es la definición, consumo y propósito de una Actividad Ficticia (Dummy)?",
@@ -1311,8 +1311,8 @@
       correctOption: 0
     },
     {
-      id: "fc-27-03",
-      moduleId: "27",
+      id: "fc-03-03",
+      moduleId: "03",
       moduleTitle: "Estimación PERT & Validación de Estrategia",
       category: "Gestión de Proyectos",
       question: "Según Marion E. Haynes en la Fase de Definición (Capítulo 1), ¿cuáles son los TRES métodos formales para validar una estrategia ('¿Funcionará?')?",
@@ -1330,8 +1330,8 @@
 
     // Módulo 28: Direccionamiento de Memoria en Matrices (Osvaldo Cairó)
     {
-      id: "fc-28-01",
-      moduleId: "28",
+      id: "fc-10-01",
+      moduleId: "10",
       moduleTitle: "Direccionamiento de Memoria en Matrices A[m×n]",
       category: "Estructuras & Algoritmos",
       question: "En una matriz A[m×n] con base 1, ¿cuál es la fórmula canónica de Osvaldo Cairó para calcular la dirección de memoria por renglones (Row-Major)?",
@@ -1347,8 +1347,8 @@
       correctOption: 0
     },
     {
-      id: "fc-28-02",
-      moduleId: "28",
+      id: "fc-10-02",
+      moduleId: "10",
       moduleTitle: "Direccionamiento de Memoria en Matrices A[m×n]",
       category: "Estructuras & Algoritmos",
       question: "En una matriz A[m×n] con base 1, ¿cuál es la fórmula canónica de Osvaldo Cairó para calcular la dirección de memoria por columnas (Column-Major)?",
@@ -1366,8 +1366,8 @@
 
     // Módulo 29: Executable UML (xUML) · Ian Sommerville (Cap. 5)
     {
-      id: "fc-29-01",
-      moduleId: "29",
+      id: "fc-14-01",
+      moduleId: "14",
       moduleTitle: "Executable UML (xUML) · Ian Sommerville",
       category: "Ingeniería de Software",
       question: "De acuerdo con Ian Sommerville (Cap. 5), ¿cuáles son los TRES modelos que conforman el subconjunto formal estricto de Executable UML (xUML) para compilar a código?",
@@ -1383,8 +1383,8 @@
       correctOption: 0
     },
     {
-      id: "fc-29-02",
-      moduleId: "29",
+      id: "fc-14-02",
+      moduleId: "14",
       moduleTitle: "Executable UML (xUML) · Ian Sommerville",
       category: "Ingeniería de Software",
       question: "¿Por qué los Diagramas de Secuencia y los Diagramas de Casos de Uso quedan EXCLUIDOS del estándar de compilación en Executable UML (xUML)?",
