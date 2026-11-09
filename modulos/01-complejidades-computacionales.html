@@ -3,13 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Complejidad Computacional | Big O Interactivo</title>
-    <meta
-      name="description"
-      content="Laboratorio visual interactivo para comprender la notación Big O y las complejidades computacionales O(1), O(log n), O(n), O(n log n) y O(n²)."
-    />
+    <title>Complejidades Computacionales y Notación Asintótica | Algoritmos</title>
+    <meta name="description" content="Laboratorio didáctico interactivo sobre complejidades computacionales (Big-O, Big-Omega, Big-Theta), reglas de reducción asintótica, simulador visual de curvas, árbol recursivo y benchmark en tiempo real." />
     <link rel="stylesheet" href="../shared/theme.css" />
     <style>
+
       :root {
         --ink: #e7f6ff;
         --muted: #9aa8c2;
@@ -1171,25 +1169,26 @@
           justify-content: center;
         }
       }
+    
     </style>
   </head>
   <body>
     <main class="page">
       <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
-        <span>←</span> Volver al Índice
+        <span>←</span> Volver al Índice Principal
       </a>
 
       <header>
         <div>
-          <p class="eyebrow">01 · Análisis Algorítmico</p>
-          <h1>Complejidad Computacional:<br />La Notación Big O</h1>
+          <p class="eyebrow">01 · Algoritmos y Estructuras de Datos</p>
+          <h1>Complejidades Computacionales<br />y Notación Asintótica (Big-O)</h1>
         </div>
         <p class="intro">
-          Comprende cómo escala el tiempo y esfuerzo computacional de un algoritmo a medida que crece el tamaño de los datos de entrada (n).
+          Domina la notación asintótica (Big-O, &Omega;, &Theta;), las reglas de reducción algebraica, el comportamiento ante crecimiento masivo de datos ($N$) y la eficiencia temporal vs espacial según la doctrina de <strong>Sergio A. Cardona Torres</strong> y <strong>Luis Joyanes Aguilar</strong>.
         </p>
       </header>
 
-      <!-- Pestañas de Navegación -->
+      <!-- Pestañas de Navegación Canónicas -->
       <nav class="nav-tabs" aria-label="Secciones del módulo">
         <button class="tab-btn active" onclick="switchTab('tab-theory')">
           <span>⚡</span> 1. Guía de Complejidades &amp; Reglas
@@ -1208,9 +1207,7 @@
         </button>
       </nav>
 
-
-      <!-- Tabla Comparativa Requerida -->
-      <!-- Pestaña 1: Guía & Reglas -->
+      <!-- PESTAÑA 1: TEORÍA Y REGLAS DE REDUCCIÓN -->
       <section id="tab-theory" class="content-panel active">
         <section class="matrix-card" aria-label="Resumen de Notaciones Big O">
         <h2><span>⚡</span> Guía Esencial de Complejidades</h2>
@@ -1260,144 +1257,8 @@
 </div>
       </section>
 
-      <!-- Selector de Modo de Complejidad -->
-      <nav class="tabs-bar" aria-label="Seleccionar complejidad interactiva">
-        <button class="tab-btn active" data-complexity="o1">
-          <span class="tab-badge">O(1)</span>
-          <span class="tab-name">Constante</span>
-        </button>
-        <button class="tab-btn" data-complexity="logn">
-          <span class="tab-badge">O(log n)</span>
-          <span class="tab-name">Logarítmico</span>
-        </button>
-        <button class="tab-btn" data-complexity="on">
-          <span class="tab-badge">O(n)</span>
-          <span class="tab-name">Lineal</span>
-        </button>
-        <button class="tab-btn" data-complexity="nlogn">
-          <span class="tab-badge">O(n log n)</span>
-          <span class="tab-name">Linealítmico</span>
-        </button>
-        <button class="tab-btn" data-complexity="on2">
-          <span class="tab-badge">O(n²)</span>
-          <span class="tab-name">Cuadrático</span>
-        </button>
-      </nav>
-
-      <!-- Laboratorio Interactivo -->
-        </section>
-      <!-- Pestaña 2: Curvas & Simulador -->
-      <section id="tab-visualizer" class="content-panel">
-      <section class="lab-layout">
-        <div class="workspace">
-          <div class="control-panel">
-            <label class="input-group">
-              <span>Tamaño (n):</span>
-              <input type="number" id="inputN" min="4" max="32" value="16" />
-            </label>
-
-            <div id="targetParamGroup" class="input-group">
-              <span>Elemento a buscar:</span>
-              <input type="number" id="inputTarget" min="1" max="99" value="28" />
-            </div>
-
-            <button class="btn-action" id="btnRun">Ejecutar Simulación</button>
-            <button class="btn-secondary" id="btnReset">Reiniciar</button>
-          </div>
-
-          <div class="canvas-stage">
-            <div class="stage-header">
-              <h3 class="stage-title" id="stageTitle">Visualización O(1): Acceso Directo por Índice</h3>
-              <span class="stage-status" id="stageStatus">Listo para ejecutar</span>
-            </div>
-
-            <div class="visual-container" id="visualContainer">
-              <!-- Render dinámico según la notación seleccionada -->
-            </div>
-          </div>
-
-          <div class="metrics-grid">
-            <div class="metric-box">
-              <div class="metric-lbl">Tamaño Entrada (n)</div>
-              <div class="metric-val" id="metricN">16</div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-lbl">Operaciones Realizadas</div>
-              <div class="metric-val" id="metricOps">0</div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-lbl">Crecimiento Teórico</div>
-              <div class="metric-val" id="metricFormula">1</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sidebar con Explicación y Bitácora -->
-        <aside class="sidebar">
-          <article class="card">
-            <h3 style="margin: 0 0 10px; color: var(--cyan); font-size: 1.05rem;">Comportamiento</h3>
-            <p id="explainText" style="margin: 0; color: var(--muted); font: 0.82rem/1.6 Verdana, sans-serif;">
-              En O(1), el tiempo de ejecución no cambia sin importar si la lista tiene 10 o 1,000,000 de elementos. El acceso por índice se calcula en memoria en un solo paso aritmético instantáneo.
-            </p>
-          </article>
-
-          <article class="card">
-            <h3 style="margin: 0 0 10px; color: var(--cyan); font-size: 1.05rem;">Paso a Paso</h3>
-            <ul class="log-box" id="logList">
-              <li>Esperando inicio de la simulación...</li>
-            </ul>
-          </article>
-        </aside>
-      </section>
-
-      <!-- Gráfico Comparativo SVG de Funciones de Crecimiento -->
-      <section class="chart-card">
-        <div class="chart-header">
-          <h2><span>📈</span> Curvas Comparativas de Escalamiento</h2>
-          <span style="font-size: 0.8rem; color: var(--muted); font-family: Verdana, sans-serif;">
-            Operaciones vs Tamaño de n
-          </span>
-        </div>
-        <div class="chart-wrapper">
-          <svg class="chart-svg" viewBox="0 0 900 240" preserveAspectRatio="none">
-            <!-- Grid -->
-            <line x1="60" y1="20" x2="60" y2="210" stroke="rgba(0,255,255,0.2)" stroke-width="1.5" />
-            <line x1="60" y1="210" x2="880" y2="210" stroke="rgba(0,255,255,0.2)" stroke-width="1.5" />
-            
-            <line x1="60" y1="160" x2="880" y2="160" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
-            <line x1="60" y1="110" x2="880" y2="110" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
-            <line x1="60" y1="60" x2="880" y2="60" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
-
-            <!-- Ejes Labels -->
-            <text x="65" y="32" fill="#9aa8c2" font-size="11" font-family="Verdana">Operaciones (Tiempo)</text>
-            <text x="810" y="202" fill="#9aa8c2" font-size="11" font-family="Verdana">Tamaño (n) →</text>
-
-            <!-- Curvas -->
-            <!-- O(1) Constante -->
-            <path d="M 60 200 L 880 200" fill="none" stroke="#00ffaa" stroke-width="3" />
-            <!-- O(log n) Logarítmica -->
-            <path d="M 60 205 Q 200 178 880 168" fill="none" stroke="#00ffff" stroke-width="3" />
-            <!-- O(n) Lineal -->
-            <path d="M 60 210 L 880 115" fill="none" stroke="#ffd700" stroke-width="3" />
-            <!-- O(n log n) Linealítmica -->
-            <path d="M 60 210 Q 400 150 880 62" fill="none" stroke="#ff9100" stroke-width="3" />
-            <!-- O(n^2) Cuadrática -->
-            <path d="M 60 210 Q 240 185 410 25" fill="none" stroke="#ff006e" stroke-width="3.5" />
-          </svg>
-        </div>
-        <div class="chart-legend">
-          <div class="legend-item"><span class="legend-color" style="background:#00ffaa;"></span> O(1) Constante</div>
-          <div class="legend-item"><span class="legend-color" style="background:#00ffff;"></span> O(log n) Logarítmico</div>
-          <div class="legend-item"><span class="legend-color" style="background:#ffd700;"></span> O(n) Lineal</div>
-          <div class="legend-item"><span class="legend-color" style="background:#ff9100;"></span> O(n log n) Linealítmico</div>
-          <div class="legend-item"><span class="legend-color" style="background:#ff006e;"></span> O(n²) Cuadrático</div>
-        </div>
-      </section>
-
-      <!-- SECCIÓN: Reglas de Simplificación Big-O y Variaciones -->
-      </section>
-      <!-- Reglas añadidas en pestaña 1 o visualizer; reubicamos en tab-theory para coherencia -->
-      <section class="rules-card" id="simplification-rules">
+        <!-- Reglas de Simplificación Asintótica y Simulador de Reducción -->
+        id="simplification-rules">
         <h2><span>📐</span> Reglas Fundamentales de Simplificación y Reducción</h2>
         <p class="rules-intro">
           Al analizar algoritmos reales, rara vez obtenemos un único término puro. Aplicamos estas tres reglas matemáticas para simplificar la expresión a su forma asintótica estándar:
@@ -1570,8 +1431,126 @@
 
       <!-- SECCIÓN: Caso Recursivo Clásico C# -->
       <!-- Pestaña 3: Recursión -->
+      <section
+      </section>
+
+      <!-- PESTAÑA 2: SIMULADOR VISUAL Y CURVAS -->
+      <section id="tab-visualizer" class="content-panel">
+        <section class="lab-layout">
+        <div class="workspace">
+          <div class="control-panel">
+            <label class="input-group">
+              <span>Tamaño (n):</span>
+              <input type="number" id="inputN" min="4" max="32" value="16" />
+            </label>
+
+            <div id="targetParamGroup" class="input-group">
+              <span>Elemento a buscar:</span>
+              <input type="number" id="inputTarget" min="1" max="99" value="28" />
+            </div>
+
+            <button class="btn-action" id="btnRun">Ejecutar Simulación</button>
+            <button class="btn-secondary" id="btnReset">Reiniciar</button>
+          </div>
+
+          <div class="canvas-stage">
+            <div class="stage-header">
+              <h3 class="stage-title" id="stageTitle">Visualización O(1): Acceso Directo por Índice</h3>
+              <span class="stage-status" id="stageStatus">Listo para ejecutar</span>
+            </div>
+
+            <div class="visual-container" id="visualContainer">
+              <!-- Render dinámico según la notación seleccionada -->
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <div class="metric-lbl">Tamaño Entrada (n)</div>
+              <div class="metric-val" id="metricN">16</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-lbl">Operaciones Realizadas</div>
+              <div class="metric-val" id="metricOps">0</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-lbl">Crecimiento Teórico</div>
+              <div class="metric-val" id="metricFormula">1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar con Explicación y Bitácora -->
+        <aside class="sidebar">
+          <article class="card">
+            <h3 style="margin: 0 0 10px; color: var(--cyan); font-size: 1.05rem;">Comportamiento</h3>
+            <p id="explainText" style="margin: 0; color: var(--muted); font: 0.82rem/1.6 Verdana, sans-serif;">
+              En O(1), el tiempo de ejecución no cambia sin importar si la lista tiene 10 o 1,000,000 de elementos. El acceso por índice se calcula en memoria en un solo paso aritmético instantáneo.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 style="margin: 0 0 10px; color: var(--cyan); font-size: 1.05rem;">Paso a Paso</h3>
+            <ul class="log-box" id="logList">
+              <li>Esperando inicio de la simulación...</li>
+            </ul>
+          </article>
+        </aside>
+      </section>
+
+      <!-- Gráfico Comparativo SVG de Funciones de Crecimiento -->
+      <section class="chart-card">
+        <div class="chart-header">
+          <h2><span>📈</span> Curvas Comparativas de Escalamiento</h2>
+          <span style="font-size: 0.8rem; color: var(--muted); font-family: Verdana, sans-serif;">
+            Operaciones vs Tamaño de n
+          </span>
+        </div>
+        <div class="chart-wrapper">
+          <svg class="chart-svg" viewBox="0 0 900 240" preserveAspectRatio="none">
+            <!-- Grid -->
+            <line x1="60" y1="20" x2="60" y2="210" stroke="rgba(0,255,255,0.2)" stroke-width="1.5" />
+            <line x1="60" y1="210" x2="880" y2="210" stroke="rgba(0,255,255,0.2)" stroke-width="1.5" />
+            
+            <line x1="60" y1="160" x2="880" y2="160" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
+            <line x1="60" y1="110" x2="880" y2="110" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
+            <line x1="60" y1="60" x2="880" y2="60" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
+
+            <!-- Ejes Labels -->
+            <text x="65" y="32" fill="#9aa8c2" font-size="11" font-family="Verdana">Operaciones (Tiempo)</text>
+            <text x="810" y="202" fill="#9aa8c2" font-size="11" font-family="Verdana">Tamaño (n) →</text>
+
+            <!-- Curvas -->
+            <!-- O(1) Constante -->
+            <path d="M 60 200 L 880 200" fill="none" stroke="#00ffaa" stroke-width="3" />
+            <!-- O(log n) Logarítmica -->
+            <path d="M 60 205 Q 200 178 880 168" fill="none" stroke="#00ffff" stroke-width="3" />
+            <!-- O(n) Lineal -->
+            <path d="M 60 210 L 880 115" fill="none" stroke="#ffd700" stroke-width="3" />
+            <!-- O(n log n) Linealítmica -->
+            <path d="M 60 210 Q 400 150 880 62" fill="none" stroke="#ff9100" stroke-width="3" />
+            <!-- O(n^2) Cuadrática -->
+            <path d="M 60 210 Q 240 185 410 25" fill="none" stroke="#ff006e" stroke-width="3.5" />
+          </svg>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item"><span class="legend-color" style="background:#00ffaa;"></span> O(1) Constante</div>
+          <div class="legend-item"><span class="legend-color" style="background:#00ffff;"></span> O(log n) Logarítmico</div>
+          <div class="legend-item"><span class="legend-color" style="background:#ffd700;"></span> O(n) Lineal</div>
+          <div class="legend-item"><span class="legend-color" style="background:#ff9100;"></span> O(n log n) Linealítmico</div>
+          <div class="legend-item"><span class="legend-color" style="background:#ff006e;"></span> O(n²) Cuadrático</div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: Reglas de Simplificación Big-O y Variaciones -->
+      </section>
+      <!-- Reglas añadidas en pestaña 1 o visualizer; reubicamos en tab-theory para coherencia -->
+      <section class="rules-card"
+      </section>
+
+      <!-- PESTAÑA 3: CASO RECURSIVO Y ÁRBOL -->
       <section id="tab-recursion" class="content-panel">
-      <section class="recursion-card" id="recursive-case">
+        <section class="recursion-card" id="recursive-case">
         <h2><span>🌲</span> Caso Recursivo Clásico: C# y Ramificación Exponencial</h2>
         <p style="margin: 0 0 14px; color: var(--muted); font: 0.88rem/1.6 Verdana, sans-serif;">
           Analicemos un caso clásico en <strong>C#</strong>: la función de <strong>Fibonacci recursivo sin memorización</strong>. Cada llamada engendra dos sub-llamadas, provocando un árbol de llamadas binario de profundidad <em>n</em> con complejidad <strong>O(2ⁿ)</strong> (Exponencial).
@@ -1627,8 +1606,12 @@
       </section>
 
       <!-- Pestaña 4: Carrera de Algoritmos -->
+      <section
+      </section>
+
+      <!-- PESTAÑA 4: BENCHMARK Y CARRERA DE ALGORITMOS -->
       <section id="tab-benchmark" class="content-panel">
-      <section class="matrix-card" id="benchmark-arena" style="margin-top:28px;">
+        <section class="matrix-card" id="benchmark-arena" style="margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
           <div>
             <span class="badge-tag" style="background:rgba(0,255,255,0.1); color:var(--cyan); border:1px solid var(--cyan); padding:4px 10px; border-radius:4px; font:700 0.72rem 'Courier New', monospace; letter-spacing:0.1em;">⚡ LABORATORIO EMPÍRICO DE RENDIMIENTO</span>
@@ -1751,8 +1734,12 @@
       </section>
 
     <!-- Pestaña: Laboratorio Evaluativo Formativo -->
-    <section id="tab-quiz" class="content-panel" role="tabpanel">
-      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+    <section
+      </section>
+
+      <!-- PESTAÑA 5: LABORATORIO EVALUATIVO FORMATIVO -->
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+        <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
         <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
         <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
           Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.
@@ -1776,15 +1763,19 @@
       </section>
     </section>
 
-    <!-- Barra de Navegación Estandarizada -->
-    <nav class="module-nav-bar"></nav>
 
-    <footer class="global-footer">
-      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
-    </footer>
-  </main>
 
+      <!-- Barra de Navegación Estandarizada -->
+      <nav class="module-nav-bar"></nav>
+
+      <footer class="global-footer">
+        Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+      </footer>
+    </main>
+
+    <!-- Scripts de Lógica Interactiva y Simulación -->
     <script>
+
 
       // Gestor Universal Robusto de Pestañas
       window.switchTab = function (tabId) {
@@ -2785,235 +2776,8 @@
           `;
         }, 60);
       };
-    </script>
-    <!-- Navegación Dinámica Centralizada -->
     
-    <script>
-      // =========================================================================
-      // Motor Canónico de Evaluación Formativa con Haptic Feedback
-      // =========================================================================
-      const quizQuestions = [
-  {
-    "q": "¿Qué cota asintótica formal describe la notación Big-O (O) en el análisis de complejidad de algoritmos?",
-    "options": [
-      "Una cota superior asintótica que delimita el crecimiento del tiempo o espacio en el peor caso posible f(n) <= c * g(n).",
-      "Una cota inferior asintótica estricta que define el tiempo mínimo de ejecución en el mejor escenario posible.",
-      "El tiempo exacto medido en nanosegundos en un procesador y sistema operativo específico bajo pruebas de laboratorio.",
-      "El número total de llamadas recursivas almacenadas en la pila del sistema operativo durante la ejecución."
-    ],
-    "correct": 0,
-    "feedback": "Big-O representa el límite superior asintótico, garantizando que para entradas suficientemente grandes el tiempo o espacio del algoritmo no crecerá más rápido que c * g(n)."
-  },
-  {
-    "q": "¿Cuál es el orden jerárquico correcto de las siguientes clases de complejidad, ordenadas de menor a mayor tasa de crecimiento asintótico?",
-    "options": [
-      "O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n)",
-      "O(1) < O(n) < O(log n) < O(n^2) < O(n log n) < O(2^n)",
-      "O(log n) < O(1) < O(n) < O(n log n) < O(2^n) < O(n^2)",
-      "O(1) < O(n log n) < O(log n) < O(n) < O(n^2) < O(2^n)"
-    ],
-    "correct": 0,
-    "feedback": "La jerarquía canónica de complejidad asintótica sitúa a las constantes O(1) en la base, seguidas por logarítmicas, lineales, cuasi-lineales (n log n), polinómicas cuadráticas (n^2) y exponenciales (2^n)."
-  },
-  {
-    "q": "Al realizar la búsqueda de un elemento en un arreglo ordenado de N posiciones, ¿cuál es la complejidad del algoritmo de Búsqueda Binaria frente a la Búsqueda Secuencial?",
-    "options": [
-      "Búsqueda Binaria opera en O(log n), mientras que la Búsqueda Secuencial opera en O(n).",
-      "Búsqueda Binaria opera en O(n), mientras que la Búsqueda Secuencial opera en O(1).",
-      "Ambos algoritmos operan en O(log n) al encontrarse el arreglo previamente ordenado.",
-      "Búsqueda Binaria opera en O(n log n), mientras que la Búsqueda Secuencial opera en O(n^2)."
-    ],
-    "correct": 0,
-    "feedback": "La Búsqueda Binaria divide el espacio de búsqueda a la mitad en cada paso obteniendo O(log n), mientras que la búsqueda secuencial debe inspeccionar elemento por elemento en O(n)."
-  },
-  {
-    "q": "En el análisis de complejidad espacial de un algoritmo recursivo:",
-    "options": [
-      "Requiere memoria proporcional a la profundidad máxima alcanzada en la pila de llamadas (call stack).",
-      "No requiere memoria proporcional a la profundidad máxima alcanzada en la pila de llamadas (call stack).",
-      "Requiere memoria proporcional al número de ciclos ejecutados en el procesador durante el cálculo.",
-      "No requiere memoria adicional respecto a un bucle iterativo sin importar las llamadas anidadas."
-    ],
-    "correct": 0,
-    "feedback": "Cada llamada recursiva apila un nuevo marco de ejecución (stack frame) con variables locales y dirección de retorno; por tanto, la memoria espacial consumida es O(D), donde D es la profundidad máxima del árbol de recursión."
-  },
-  {
-    "q": "¿Qué significa que un algoritmo tenga una complejidad Theta estricta Θ(g(n))?",
-    "options": [
-      "Que la función g(n) es una cota asintótica ajustada, acotando el crecimiento del algoritmo tanto por arriba (Big-O) como por abajo (Big-Omega).",
-      "Que el algoritmo solo puede ejecutarse en tiempo constante para cualquier tamaño de entrada N.",
-      "Que el algoritmo pertenece a la clase NP-Completo y no puede resolverse en tiempo polinomial.",
-      "Que la complejidad del algoritmo depende exclusivamente de la velocidad de lectura de la memoria secundaria."
-    ],
-    "correct": 0,
-    "feedback": "La notación Big-Theta Θ(g(n)) indica que f(n) está acotada superior e inferiormente por g(n) multiplicada por constantes positivas para n >= n0, siendo una cota exacta y ajustada."
-  }
-];
-
-      let currentQuizIdx = 0;
-      let quizScore = 0;
-      let currentShuffledOptions = [];
-
-      window.renderQuizQuestion = function() {
-        if (!Array.isArray(quizQuestions) || quizQuestions.length === 0) return;
-        const q = quizQuestions[currentQuizIdx];
-        if (!q) return;
-
-        const container = document.getElementById('quiz-container');
-        if (!container) return;
-
-        if (!document.getElementById('quiz-question-text')) {
-          container.innerHTML = `
-            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
-            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
-            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
-            <div style="margin-top:12px; text-align:right;">
-              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
-          `;
-        }
-
-        const qNumEl = document.getElementById('quiz-question-number');
-        const qScoreEl = document.getElementById('quiz-score');
-        const qTextEl = document.getElementById('quiz-question-text');
-        const optsContainer = document.getElementById('quiz-options-container');
-        const feedbackBox = document.getElementById('quiz-feedback');
-        const nextBtn = document.getElementById('btn-next-quiz');
-
-        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
-        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
-
-        if (optsContainer) optsContainer.innerHTML = '';
-        if (feedbackBox) {
-          feedbackBox.style.display = 'none';
-          feedbackBox.innerHTML = '';
-        }
-        if (nextBtn) nextBtn.style.display = 'none';
-
-        currentShuffledOptions = q.options.map((opt, origIdx) => ({
-          text: opt,
-          isCorrect: origIdx === q.correct
-        })).sort(() => Math.random() - 0.5);
-
-        currentShuffledOptions.forEach((item, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'quiz-option-btn';
-          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
-          btn.onclick = () => selectQuizOption(idx);
-          optsContainer.appendChild(btn);
-        });
-      };
-
-      window.selectQuizOption = function(idx) {
-        const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
-        btns.forEach(b => (b.disabled = true));
-
-        const feedbackBox = document.getElementById('quiz-feedback');
-        if (feedbackBox) {
-          feedbackBox.style.display = 'block';
-        }
-
-        const chosen = currentShuffledOptions[idx];
-        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
-
-        // Tactile Haptics en móviles compatibles
-        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-          try {
-            if (chosen && chosen.isCorrect) navigator.vibrate(40);
-            else navigator.vibrate([30, 50, 30]);
-          } catch(e) {}
-        }
-
-        const rawFeedback = (q.feedback || '').trim();
-        let shortFeedback = rawFeedback;
-        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
-        if (firstSentenceMatch) shortFeedback = firstSentenceMatch[1];
-        if (shortFeedback.length > 160) {
-          const cut = shortFeedback.lastIndexOf(' ', 155);
-          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 155)) + '...';
-        }
-
-        if (chosen && chosen.isCorrect) {
-          quizScore++;
-          if (btns[idx]) {
-            btns[idx].classList.add('opt-correct');
-          }
-          if (feedbackBox) {
-            feedbackBox.style.background = 'rgba(0, 255, 170, 0.12)';
-            feedbackBox.style.border = '1px solid var(--green, #00ffaa)';
-            feedbackBox.style.color = '#fff';
-            feedbackBox.innerHTML = `<strong style="color:var(--green, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
-          }
-        } else {
-          if (btns[idx]) {
-            btns[idx].classList.add('opt-wrong');
-          }
-          if (correctIdx !== -1 && btns[correctIdx]) {
-            btns[correctIdx].classList.add('opt-correct');
-          }
-          if (feedbackBox) {
-            feedbackBox.style.background = 'rgba(255, 0, 110, 0.12)';
-            feedbackBox.style.border = '1px solid var(--coral, #ff006e)';
-            feedbackBox.style.color = '#fff';
-            feedbackBox.innerHTML = `<strong style="color:var(--coral, #ff006e); font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
-          }
-        }
-
-        const qScoreEl = document.getElementById('quiz-score');
-        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        const nextBtn = document.getElementById('btn-next-quiz');
-        if (nextBtn) {
-          nextBtn.style.display = 'inline-block';
-          try {
-            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          } catch(e) {}
-        }
-      };
-
-      window.nextQuizQuestion = function() {
-        currentQuizIdx++;
-        if (currentQuizIdx < quizQuestions.length) {
-          renderQuizQuestion();
-        } else {
-          showQuizSummary();
-        }
-      };
-
-      window.showQuizSummary = function() {
-        const container = document.getElementById('quiz-container');
-        if (!container) return;
-        const pct = Math.round((quizScore / quizQuestions.length) * 100);
-        container.innerHTML = `
-          <div style="text-align:center; padding:24px 12px;">
-            <div style="font-size:3rem; margin-bottom:10px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
-            <h3 style="margin:0 0 8px; color:#fff; font-size:1.2rem;">Evaluación Completada</h3>
-            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:16px;">
-              Puntuación final: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'};">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
-            </p>
-            <button class="btn-theme" style="padding:10px 22px; border-radius:6px; font:700 0.86rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
-              🔄 Reintentar Evaluación
-            </button>
-          </div>
-        `;
-      };
-
-      window.restartQuiz = function() {
-        currentQuizIdx = 0;
-        quizScore = 0;
-        renderQuizQuestion();
-      };
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
-      } else {
-        renderQuizQuestion();
-      }
     </script>
-
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
   </body>

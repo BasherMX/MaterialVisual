@@ -680,6 +680,8 @@
   
     </section>
 
+    <nav class="module-nav-bar"></nav>
+
     <footer class="global-footer">
       Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
     </footer>
@@ -696,7 +698,7 @@
       const targetPanel = document.getElementById(tabId);
       if (targetPanel) targetPanel.classList.add('active');
 
-      const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick')?.includes(tabId));
+      const btn = Array.from(document.querySelectorAll('.nav-tabs .tab-btn')).find(b => b.getAttribute('onclick')?.includes(tabId));
       if (btn) btn.classList.add('active');
     }
 

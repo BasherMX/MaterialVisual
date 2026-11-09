@@ -289,19 +289,19 @@
 
       <!-- Pestañas de Navegación -->
       <nav class="nav-tabs" aria-label="Secciones del módulo">
-        <button class="tab-btn active" onclick="switchSparcTab('tab-sparc-theory')">
+        <button class="tab-btn active" onclick="switchTab('tab-sparc-theory')">
           <span>🏛️</span> 1. Los Tres Niveles de Abstracción
         </button>
-        <button class="tab-btn" onclick="switchSparcTab('tab-sparc-sim')">
+        <button class="tab-btn" onclick="switchTab('tab-sparc-sim')">
           <span>🔄</span> 2. Simulador de Mapeos en Tiempo Real
         </button>
-        <button class="tab-btn" onclick="switchSparcTab('tab-independencia')">
+        <button class="tab-btn" onclick="switchTab('tab-independencia')">
           <span>🛡️</span> 3. Independencia Física vs Lógica
         </button>
-        <button class="tab-btn" onclick="switchSparcTab('tab-oppel-discrepancy')">
+        <button class="tab-btn" onclick="switchTab('tab-oppel-discrepancy')">
           <span>⚡</span> 4. Discrepancia Comercial (Punto Clave - Oppel)
         </button>
-        <button class="tab-btn" onclick="switchSparcTab('tab-quiz-sparc')">
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
           <span>🎯</span> 5. Laboratorio de Diagnóstico (Quiz)
         </button>
       </nav>
@@ -590,7 +590,7 @@
       </section>
 
       <!-- SECCIÓN 5: QUIZ INTERACTIVO -->
-      <section id="tab-quiz-sparc" class="content-panel" role="tabpanel">
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
 
       <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
         <div style="margin-bottom:18px;">
@@ -619,7 +619,9 @@
   
     </section>
 
-      <footer class="global-footer">
+      <nav class="module-nav-bar"></nav>
+
+    <footer class="global-footer">
       Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
     </footer>
     </main>
@@ -644,7 +646,7 @@
       // ========================================================
       // 1. Control de Pestañas
       // ========================================================
-      function switchSparcTab(tabId) {
+      function switchTab(tabId) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
 

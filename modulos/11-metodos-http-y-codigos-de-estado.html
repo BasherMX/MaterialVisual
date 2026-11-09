@@ -810,7 +810,7 @@
         const panel = document.getElementById(tabId) || document.getElementById('tab-' + tabId);
         if (panel) panel.classList.add('active');
 
-        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+        const activeBtn = Array.from(document.querySelectorAll('.nav-tabs .tab-btn')).find(b => {
           const onclickAttr = b.getAttribute('onclick') || '';
           return onclickAttr.includes(tabId);
         });

@@ -3,13 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Estrategias Algorítmicas | Greedy vs Divide & Conquer</title>
-    <meta
-      name="description"
-      content="Laboratorio visual interactivo comparando las estrategias algorítmicas Algoritmo Devorador (Greedy) y Divide y Vencerás (Divide & Conquer) con ejemplos interactivos."
-    />
+    <title>Algoritmos Greedy vs Divide y Vencerás | Paradigmas de Diseño</title>
+    <meta name="description" content="Laboratorio didáctico interactivo sobre algoritmos devoradores (Greedy) y Divide y Vencerás (Divide & Conquer): Dijkstra, Cambio Voraz de Monedas, Merge Sort, Búsqueda Binaria y Teorema Maestro." />
     <link rel="stylesheet" href="../shared/theme.css" />
     <style>
+
       :root {
         --ink: #e7f6ff;
         --muted: #9aa8c2;
@@ -946,25 +944,73 @@
           justify-content: center;
         }
       }
+    
+      /* Selector de Paradigma en el Simulador */
+      .paradigm-selector-bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .sim-tab-btn {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line, rgba(0, 255, 255, 0.2));
+        color: var(--muted, #94a3b8);
+        padding: 10px 16px;
+        border-radius: 8px;
+        font: 600 0.82rem 'Courier New', monospace;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        transition: all 0.2s ease;
+      }
+      .sim-tab-btn:hover {
+        border-color: var(--cyan, #00ffff);
+        color: #fff;
+      }
+      .sim-tab-btn.active {
+        background: rgba(0, 255, 255, 0.12);
+        border-color: var(--cyan, #00ffff);
+        color: var(--cyan, #00ffff);
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
+      }
+      .sim-tab-btn.tab-dc.active {
+        background: rgba(0, 255, 170, 0.12);
+        border-color: var(--green, #00ffaa);
+        color: var(--green, #00ffaa);
+        box-shadow: 0 0 12px rgba(0, 255, 170, 0.25);
+      }
+      .sim-tab-btn .tab-badge {
+        font-size: 0.68rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+      }
+      .sim-tab-btn .tab-name {
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+
     </style>
   </head>
   <body>
     <main class="page">
       <a href="../index.html" class="btn-back-index" aria-label="Volver al índice general">
-        <span>←</span> Volver al Índice
+        <span>←</span> Volver al Índice Principal
       </a>
 
       <header>
         <div>
-          <p class="eyebrow">02 · Paradigmas Algorítmicos</p>
-          <h1>Estrategias Algorítmicas:<br />Greedy vs Divide & Conquer</h1>
+          <p class="eyebrow">02 · Algoritmos y Estructuras de Datos</p>
+          <h1>Algoritmos Devoradores (Greedy)<br />vs Divide y Vencerás (D&amp;C)</h1>
         </div>
         <p class="intro">
-          Compara dos de los paradigmas fundamentales en ciencias de la computación: la toma voraz de decisiones locales irrevocables frente a la partición y combinación recursiva independiente.
+          Compara en profundidad los dos paradigmas algorítmicos más influyentes de las ciencias de la computación según la doctrina de <strong>Sergio A. Cardona Torres</strong> y <strong>Luis Joyanes Aguilar</strong>: elección miope local vs descomposición recursiva en subproblemas independientes.
         </p>
       </header>
 
-      <!-- Pestañas de Navegación -->
+      <!-- Pestañas de Navegación Canónicas -->
       <nav class="nav-tabs" aria-label="Secciones del módulo">
         <button class="tab-btn active" onclick="switchTab('tab-matrix')">
           <span>⚖️</span> 1. Matriz Comparativa Fundamental
@@ -980,9 +1026,7 @@
         </button>
       </nav>
 
-
-      <!-- Tabla Comparativa Requerida -->
-      <!-- Pestaña 1: Matriz Comparativa -->
+      <!-- PESTAÑA 1: MATRIZ COMPARATIVA -->
       <section id="tab-matrix" class="content-panel active">
         <section class="matrix-card" aria-label="Comparativa Greedy vs Divide y Vencerás">
         <h2><span>⚖️</span> Matriz Comparativa Fundamental</h2>
@@ -1015,32 +1059,34 @@
         </table>
 </div>
       </section>
+      </section>
 
-      <!-- Selector de Pestañas de Laboratorio (4 Simuladores) -->
-      <nav class="tabs-bar" aria-label="Seleccionar paradigma interactivo">
-        <button class="tab-btn tab-greedy active" data-paradigm="dijkstra">
+      <!-- PESTAÑA 2: LABORATORIO INTERACTIVO MULTI-PARADIGMA -->
+      <section id="tab-simulator" class="content-panel">
+        <div class="matrix-card">
+          <h2><span>🔬</span> Laboratorio de Simulación Paso a Paso</h2>
+          <p style="color:var(--muted); font-size:0.88rem; margin-bottom:16px;">
+            Selecciona el paradigma y algoritmo a inspeccionar. Observa la toma de decisiones voraz inmediata frente a la división y combinación recursiva:
+          </p>
+          <div class="paradigm-selector-bar" aria-label="Seleccionar paradigma interactivo">
+        <button class="sim-tab-btn tab-greedy active" data-paradigm="dijkstra">
           <span class="tab-badge">Greedy: Camino Más Corto</span>
           <span class="tab-name">Dijkstra en Grafo con Nodos</span>
         </button>
-        <button class="tab-btn tab-greedy" data-paradigm="coins">
+        <button class="sim-tab-btn tab-greedy" data-paradigm="coins">
           <span class="tab-badge">Greedy: Cambio de Monedas</span>
           <span class="tab-name">Elección Voraz Irrevocable</span>
         </button>
-        <button class="tab-btn tab-dc" data-paradigm="mergesort">
+        <button class="sim-tab-btn tab-dc" data-paradigm="mergesort">
           <span class="tab-badge">Divide & Conquer: Merge Sort</span>
           <span class="tab-name">División y Mezcla de Arreglo</span>
         </button>
-        <button class="tab-btn tab-dc" data-paradigm="binarysearch">
+        <button class="sim-tab-btn tab-dc" data-paradigm="binarysearch">
           <span class="tab-badge">Divide & Conquer: Búsqueda Binaria</span>
           <span class="tab-name">Descarte de Mitades Recursivo</span>
         </button>
-      </nav>
-
-      <!-- Laboratorio Interactivo -->
-        </section>
-      <!-- Pestaña 2: Laboratorio Interactivo -->
-      <section id="tab-simulator" class="content-panel">
-      <section class="lab-layout">
+      </div>
+          <section class="lab-layout">
         <div class="workspace">
           <div class="control-panel">
             <!-- Controles para Dijkstra -->
@@ -1146,67 +1192,17 @@
 
       <!-- Galería Explicativa de Ejemplos Clásicos -->
       <!-- Galería Explicativa de Ejemplos Clásicos Ampliada -->
-      </section>
-      <!-- Pestaña 3: Casos Reales -->
-      <section id="tab-examples" class="content-panel">
-      <section class="examples-section">
-        <h2><span>📚</span> Ejemplos Clásicos y Casos de Estudio del Mundo Real</h2>
-        <div class="examples-grid">
-          <!-- Tarjeta Greedy Ampliada -->
-          <article class="example-card card-greedy">
-            <h3><span>⚡</span> Algoritmo Devorador (Greedy)</h3>
-            <ul class="example-list">
-              <li>
-                <strong>Dijkstra (Camino más corto en grafos ponderados):</strong> En cada iteración extrae vorazmente de una cola de prioridad el vértice no visitado con la distancia tentativa mínima, marcándolo como resuelto definitivamente sin volver atrás.
-              </li>
-              <li>
-                <strong>Prim y Kruskal (Árbol de Expansión Mínima - MST):</strong> Diseñan redes de costo mínimo (fibra óptica, tendido eléctrico) seleccionando en cada iteración la arista más barata disponible que evite ciclos.
-              </li>
-              <li>
-                <strong>Codificación de Huffman (Compresión sin pérdida):</strong> Algoritmo voraz que construye árboles binarios de frecuencias para asignar códigos de longitud variable más cortos a los caracteres más comunes (usado en ZIP, JPEG, MP3).
-              </li>
-              <li>
-                <strong>Problema del Cambio de Monedas (Canónico):</strong> Entrega el cambio exacto minimizando la cantidad física de piezas al descontar repetidamente la moneda de mayor denominación posible.
-              </li>
-              <li>
-                <strong>Planificación de Intervalos (Activity Selection):</strong> Maximiza el número de tareas no superpuestas en un recurso compartido seleccionando siempre la actividad con la hora de finalización más temprana.
-              </li>
-              <li>
-                <strong>Mochila Fraccionaria (Fractional Knapsack):</strong> Elige con avidez los ítems con la mayor razón valor/peso ($\frac{v_i}{w_i}$) hasta llenar la capacidad.
-              </li>
-            </ul>
-          </article>
-
-          <!-- Tarjeta Divide y Vencerás Ampliada -->
-          <article class="example-card card-dc">
-            <h3><span>✂️</span> Divide y Vencerás (Divide & Conquer)</h3>
-            <ul class="example-list">
-              <li>
-                <strong>Merge Sort (Ordenamiento por Mezcla):</strong> Divide recursivamente la secuencia en dos mitades hasta llegar a subarreglos de tamaño 1 y las fusiona en orden garantizando tiempo óptimo $O(n \log n)$ y estabilidad.
-              </li>
-              <li>
-                <strong>Quick Sort (Ordenamiento Rápido):</strong> Selecciona un elemento pivote, divide el arreglo en elementos menores y mayores, y resuelve recursivamente cada mitad de forma totalmente independiente.
-              </li>
-              <li>
-                <strong>Búsqueda Binaria (Binary Search):</strong> Inspecciona el elemento central en un arreglo ordenado y descarta el 50% del conjunto en cada iteración, resolviendo la búsqueda en $O(\log n)$.
-              </li>
-              <li>
-                <strong>Algoritmo de Karatsuba (Multiplicación de enteros gigantes):</strong> Divide dos números de $n$ dígitos en mitades y reduce las 4 multiplicaciones convencionales a solo 3, bajando la complejidad de $O(n^2)$ a $O(n^{1.585})$.
-              </li>
-              <li>
-                <strong>Multiplicación de Matrices de Strassen:</strong> Divide matrices $n \times n$ en cuatro cuadrantes y reduce las 8 multiplicaciones clásicas a 7, optimizando el cálculo a $O(n^{2.807})$.
-              </li>
-              <li>
-                <strong>Par de Puntos Más Cercanos (Closest Pair of Points):</strong> En geometría computacional, divide el plano con una línea vertical media, resuelve cada mitad recursivamente y analiza únicamente una franja estrecha en $O(n \log n)$ frente a $O(n^2)$ por fuerza bruta.
-              </li>
-            </ul>
-          </article>
         </div>
       </section>
 
-    <!-- Pestaña: Laboratorio Evaluativo Formativo -->
-    <section id="tab-quiz" class="content-panel" role="tabpanel">
-      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+      <!-- PESTAÑA 3: CASOS REALES Y DOCTRINA -->
+      <section id="tab-examples" class="content-panel">
+        
+      </section>
+
+      <!-- PESTAÑA 4: LABORATORIO EVALUATIVO FORMATIVO -->
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
+        <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
         <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
         <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
           Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.
@@ -1228,17 +1224,19 @@
           </div>
         </div>
       </section>
-    </section>
+      </section>
 
-    <!-- Barra de Navegación Estandarizada -->
-    <nav class="module-nav-bar"></nav>
+      <!-- Barra de Navegación Estandarizada -->
+      <nav class="module-nav-bar"></nav>
 
-    <footer class="global-footer">
-      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
-    </footer>
-  </main>
+      <footer class="global-footer">
+        Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+      </footer>
+    </main>
 
+    <!-- Scripts de Lógica Interactiva y Simulación -->
     <script>
+
 
       // Gestor Universal Robusto de Pestañas
       window.switchTab = function (tabId) {
@@ -1260,7 +1258,7 @@
       let timer = null;
 
       // Pestañas
-      const tabButtons = document.querySelectorAll(".tab-btn");
+      const simTabButtons = document.querySelectorAll(".sim-tab-btn");
       const dijkstraControls = document.getElementById("dijkstraControls");
       const coinsControls = document.getElementById("coinsControls");
       const mergeControls = document.getElementById("mergeControls");
@@ -1816,9 +1814,9 @@
       }
 
       // Eventos de Pestañas
-      tabButtons.forEach(btn => {
+      simTabButtons.forEach(btn => {
         btn.addEventListener("click", () => {
-          tabButtons.forEach(b => b.classList.remove("active"));
+          simTabButtons.forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
           currentParadigm = btn.dataset.paradigm;
 
@@ -1857,235 +1855,8 @@
 
       // Inicialización por defecto con Dijkstra
       initVisual();
-    </script>
-    <!-- Navegación Dinámica Centralizada -->
     
-    <script>
-      // =========================================================================
-      // Motor Canónico de Evaluación Formativa con Haptic Feedback
-      // =========================================================================
-      const quizQuestions = [
-  {
-    "q": "¿Cuál es la premisa fundamental que caracteriza a los algoritmos Voraces (Greedy)?",
-    "options": [
-      "Toman la decisión que parece localmente óptima en cada paso secuencial, sin reconsiderar ni volver atrás (sin backtracking).",
-      "Dividen recursivamente el problema en subproblemas idénticos, memorizando las soluciones en una tabla de programación dinámica.",
-      "Exploran todas las permutaciones posibles del espacio de estados garantizando siempre encontrar el óptimo global por fuerza bruta.",
-      "Convierten el problema en un sistema de ecuaciones lineales para resolverlo mediante el método Simplex en tiempo polinomial."
-    ],
-    "correct": 0,
-    "feedback": "Los algoritmos voraces eligen la mejor opción inmediata (óptimo local) esperando alcanzar el óptimo global; funcionan perfectamente solo cuando el problema exhibe la propiedad de elección voraz y subestructura óptima."
-  },
-  {
-    "q": "¿En qué se fundamenta la estrategia algorítmica de \"Divide y Vencerás\" (Divide and Conquer)?",
-    "options": [
-      "En dividir el problema en subproblemas disjuntos más pequeños del mismo tipo, resolverlos recursivamente y combinar sus soluciones.",
-      "En construir una solución iterativa paso a paso eligiendo el elemento de menor costo en una cola de prioridad.",
-      "En resolver problemas superpuestos almacenando los resultados intermedios en una matriz para evitar recomputaciones.",
-      "En transformar la estructura de datos en un árbol AVL para garantizar que la altura se mantenga en log2(n)."
-    ],
-    "correct": 0,
-    "feedback": "Divide y Vencerás opera en tres fases canónicas: Dividir (partir el problema en subproblemas independientes), Vencer (resolver los subproblemas recursivamente) y Combinar (unir los resultados parciales en la solución final)."
-  },
-  {
-    "q": "¿Cuál es la diferencia primordial entre el paradigma de Divide y Vencerás y la Programación Dinámica?",
-    "options": [
-      "Divide y Vencerás resuelve subproblemas disjuntos e independientes, mientras que Programación Dinámica aborda subproblemas superpuestos y los memoriza.",
-      "Divide y Vencerás se aplica únicamente a problemas de ordenamiento, mientras que Programación Dinámica se usa solo en grafos ponderados.",
-      "Divide y Vencerás no admite recursión, mientras que Programación Dinámica exige obligatoriamente funciones recursivas sin estado.",
-      "Divide y Vencerás produce siempre soluciones aproximadas, mientras que Programación Dinámica calcula únicamente cotas inferiores."
-    ],
-    "correct": 0,
-    "feedback": "Si los subproblemas son disjuntos (como en MergeSort o QuickSort), Divide y Vencerás es óptimo; si los mismos subproblemas se repiten una y otra vez (subproblemas superpuestos, como en Fibonacci o la Mochila 0/1), la Programación Dinámica evita recomputarlos memorizándolos."
-  },
-  {
-    "q": "En el clásico problema de la Mochila (Knapsack Problem):",
-    "options": [
-      "El enfoque voraz garantiza la solución óptima para la mochila fraccionaria pero no para la mochila 0/1.",
-      "El enfoque voraz garantiza la solución óptima para la mochila 0/1 pero no para la mochila fraccionaria.",
-      "El enfoque voraz no garantiza la solución óptima ni para la mochila fraccionaria ni para la 0/1.",
-      "El enfoque voraz garantiza la solución óptima tanto para la mochila fraccionaria como para la 0/1."
-    ],
-    "correct": 0,
-    "feedback": "En la mochila fraccionaria ordenar por densidad valor/peso y elegir glotonamente es óptimo; en la mochila 0/1 (donde los objetos no se pueden partir), el enfoque voraz falla al dejar huecos vacíos, requiriéndose Programación Dinámica."
-  },
-  {
-    "q": "¿Cuál es la función matemática del célebre Teorema Maestro en el análisis de algoritmos Divide y Vencerás?",
-    "options": [
-      "Proporcionar una solución asintótica directa (Big-Theta) para relaciones de recurrencia de la forma T(n) = a*T(n/b) + f(n).",
-      "Calcular la probabilidad estadística de colisiones en una función hash criptográfica SHA-256.",
-      "Demostrar que ningún algoritmo de ordenamiento basado en comparaciones puede superar la cota inferior Ω(n log n).",
-      "Medir la cantidad de memoria física consumida por un grafo representado mediante matriz de adyacencia."
-    ],
-    "correct": 0,
-    "feedback": "El Teorema Maestro evalúa las recurrencias divide y vencerás T(n) = aT(n/b) + f(n) comparando f(n) con n^(log_b a) para determinar de inmediato si domina el costo de las hojas, de la raíz o si ambos están equilibrados."
-  }
-];
-
-      let currentQuizIdx = 0;
-      let quizScore = 0;
-      let currentShuffledOptions = [];
-
-      window.renderQuizQuestion = function() {
-        if (!Array.isArray(quizQuestions) || quizQuestions.length === 0) return;
-        const q = quizQuestions[currentQuizIdx];
-        if (!q) return;
-
-        const container = document.getElementById('quiz-container');
-        if (!container) return;
-
-        if (!document.getElementById('quiz-question-text')) {
-          container.innerHTML = `
-            <p id="quiz-question-text" style="font-size:1rem; font-weight:600; color:#fff; line-height:1.45; margin-bottom:14px;"></p>
-            <div id="quiz-options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
-            <div id="quiz-feedback" style="display:none; margin-top:10px; padding:8px 12px; border-radius:6px; font-size:0.8rem; line-height:1.35;"></div>
-            <div style="margin-top:12px; text-align:right;">
-              <button id="btn-next-quiz" class="btn-theme" style="display:none; padding:8px 18px; border-radius:6px; font-size:0.82rem; cursor:pointer;" onclick="nextQuizQuestion()">
-                Siguiente Pregunta ➔
-              </button>
-            </div>
-          `;
-        }
-
-        const qNumEl = document.getElementById('quiz-question-number');
-        const qScoreEl = document.getElementById('quiz-score');
-        const qTextEl = document.getElementById('quiz-question-text');
-        const optsContainer = document.getElementById('quiz-options-container');
-        const feedbackBox = document.getElementById('quiz-feedback');
-        const nextBtn = document.getElementById('btn-next-quiz');
-
-        if (qNumEl) qNumEl.innerText = `Pregunta ${currentQuizIdx + 1} de ${quizQuestions.length}`;
-        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        if (qTextEl) qTextEl.innerHTML = q.q || q.question;
-
-        if (optsContainer) optsContainer.innerHTML = '';
-        if (feedbackBox) {
-          feedbackBox.style.display = 'none';
-          feedbackBox.innerHTML = '';
-        }
-        if (nextBtn) nextBtn.style.display = 'none';
-
-        currentShuffledOptions = q.options.map((opt, origIdx) => ({
-          text: opt,
-          isCorrect: origIdx === q.correct
-        })).sort(() => Math.random() - 0.5);
-
-        currentShuffledOptions.forEach((item, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'quiz-option-btn';
-          btn.innerHTML = `<span style="font-weight:700; margin-right:8px; opacity:0.8;">${String.fromCharCode(65 + idx)})</span> ${item.text}`;
-          btn.onclick = () => selectQuizOption(idx);
-          optsContainer.appendChild(btn);
-        });
-      };
-
-      window.selectQuizOption = function(idx) {
-        const q = quizQuestions[currentQuizIdx];
-        const btns = document.querySelectorAll('#quiz-options-container .quiz-option-btn');
-        btns.forEach(b => (b.disabled = true));
-
-        const feedbackBox = document.getElementById('quiz-feedback');
-        if (feedbackBox) {
-          feedbackBox.style.display = 'block';
-        }
-
-        const chosen = currentShuffledOptions[idx];
-        const correctIdx = currentShuffledOptions.findIndex(o => o.isCorrect);
-
-        // Tactile Haptics en móviles compatibles
-        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-          try {
-            if (chosen && chosen.isCorrect) navigator.vibrate(40);
-            else navigator.vibrate([30, 50, 30]);
-          } catch(e) {}
-        }
-
-        const rawFeedback = (q.feedback || '').trim();
-        let shortFeedback = rawFeedback;
-        const firstSentenceMatch = rawFeedback.match(/^([^.?!]+[.?!])/);
-        if (firstSentenceMatch) shortFeedback = firstSentenceMatch[1];
-        if (shortFeedback.length > 160) {
-          const cut = shortFeedback.lastIndexOf(' ', 155);
-          shortFeedback = (cut > 50 ? shortFeedback.substring(0, cut) : shortFeedback.substring(0, 155)) + '...';
-        }
-
-        if (chosen && chosen.isCorrect) {
-          quizScore++;
-          if (btns[idx]) {
-            btns[idx].classList.add('opt-correct');
-          }
-          if (feedbackBox) {
-            feedbackBox.style.background = 'rgba(0, 255, 170, 0.12)';
-            feedbackBox.style.border = '1px solid var(--green, #00ffaa)';
-            feedbackBox.style.color = '#fff';
-            feedbackBox.innerHTML = `<strong style="color:var(--green, #00ffaa); font-size:0.82rem;">¡Correcto!</strong> ${shortFeedback}`;
-          }
-        } else {
-          if (btns[idx]) {
-            btns[idx].classList.add('opt-wrong');
-          }
-          if (correctIdx !== -1 && btns[correctIdx]) {
-            btns[correctIdx].classList.add('opt-correct');
-          }
-          if (feedbackBox) {
-            feedbackBox.style.background = 'rgba(255, 0, 110, 0.12)';
-            feedbackBox.style.border = '1px solid var(--coral, #ff006e)';
-            feedbackBox.style.color = '#fff';
-            feedbackBox.innerHTML = `<strong style="color:var(--coral, #ff006e); font-size:0.82rem;">Incorrecto.</strong> ${shortFeedback}`;
-          }
-        }
-
-        const qScoreEl = document.getElementById('quiz-score');
-        if (qScoreEl) qScoreEl.innerText = `Puntuación: ${quizScore} / ${quizQuestions.length}`;
-        const nextBtn = document.getElementById('btn-next-quiz');
-        if (nextBtn) {
-          nextBtn.style.display = 'inline-block';
-          try {
-            nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          } catch(e) {}
-        }
-      };
-
-      window.nextQuizQuestion = function() {
-        currentQuizIdx++;
-        if (currentQuizIdx < quizQuestions.length) {
-          renderQuizQuestion();
-        } else {
-          showQuizSummary();
-        }
-      };
-
-      window.showQuizSummary = function() {
-        const container = document.getElementById('quiz-container');
-        if (!container) return;
-        const pct = Math.round((quizScore / quizQuestions.length) * 100);
-        container.innerHTML = `
-          <div style="text-align:center; padding:24px 12px;">
-            <div style="font-size:3rem; margin-bottom:10px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⚡' : '📚'}</div>
-            <h3 style="margin:0 0 8px; color:#fff; font-size:1.2rem;">Evaluación Completada</h3>
-            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:16px;">
-              Puntuación final: <strong style="color:${pct >= 70 ? 'var(--green)' : 'var(--coral)'};">${quizScore} de ${quizQuestions.length} (${pct}%)</strong>
-            </p>
-            <button class="btn-theme" style="padding:10px 22px; border-radius:6px; font:700 0.86rem 'Courier New', monospace; cursor:pointer;" onclick="restartQuiz()">
-              🔄 Reintentar Evaluación
-            </button>
-          </div>
-        `;
-      };
-
-      window.restartQuiz = function() {
-        currentQuizIdx = 0;
-        quizScore = 0;
-        renderQuizQuestion();
-      };
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
-      } else {
-        renderQuizQuestion();
-      }
     </script>
-
     <script src="../shared/modules-data.js"></script>
     <script src="../shared/nav.js"></script>
   </body>

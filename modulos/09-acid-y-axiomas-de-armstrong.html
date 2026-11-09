@@ -322,19 +322,19 @@
 
       <!-- Pestañas de Navegación -->
       <nav class="nav-tabs" aria-label="Secciones del módulo">
-        <button class="tab-btn active" onclick="switchAcidTab('tab-acid-theory')">
+        <button class="tab-btn active" onclick="switchTab('tab-acid-theory')">
           <span>🛡️</span> 1. Doctrina ACID
         </button>
-        <button class="tab-btn" onclick="switchAcidTab('tab-acid-sim')">
+        <button class="tab-btn" onclick="switchTab('tab-acid-sim')">
           <span>⚡</span> 2. Simulador de Fallo & Concurrencia
         </button>
-        <button class="tab-btn" onclick="switchAcidTab('tab-armstrong-axioms')">
+        <button class="tab-btn" onclick="switchTab('tab-armstrong-axioms')">
           <span>📐</span> 3. Axiomas de Armstrong (Primarios & Derivados)
         </button>
-        <button class="tab-btn" onclick="switchAcidTab('tab-closure-calc')">
+        <button class="tab-btn" onclick="switchTab('tab-closure-calc')">
           <span>🧮</span> 4. Calculadora de Clausura de Atributos (X⁺)
         </button>
-        <button class="tab-btn" onclick="switchAcidTab('tab-quiz-armstrong')">
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
           <span>🎯</span> 5. Laboratorio de Evaluación (Quiz)
         </button>
       </nav>
@@ -697,7 +697,7 @@
       </section>
 
       <!-- SECCIÓN 5: QUIZ INTERACTIVO -->
-      <section id="tab-quiz-armstrong" class="content-panel" role="tabpanel">
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
 
       <div class="terminal-card" style="max-width:850px; margin:0 auto; padding:24px; border:1px solid rgba(0,255,255,0.25); border-radius:12px; background:rgba(10,14,26,0.95); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
         <div style="margin-bottom:18px;">
@@ -726,7 +726,8 @@
   
     </section>
 
-      <footer class="global-footer">
+      <nav class="module-nav-bar"></nav>
+    <footer class="global-footer">
       Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
     </footer>
     </main>
@@ -751,7 +752,8 @@
       // ========================================================
       // 1. Control de Pestañas
       // ========================================================
-      function switchAcidTab(tabId) {
+      window.switchAcidTab = function(tabId) { window.switchTab(tabId); };
+      function _unused_switchAcidTab(tabId) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
 
