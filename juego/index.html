@@ -32,12 +32,14 @@
 
     /* TEMA DÍA SUAVE (PASTEL BIOPHILIC) */
     body.theme-day {
-      background: radial-gradient(circle at 50% 30%, #e8f5e9 0%, #c8e6c9 60%, #a5d6a7 100%);
+      background: #c8e6c9;
+      background-image: radial-gradient(circle at 50% 30%, #e8f5e9 0%, #c8e6c9 65%, #a5d6a7 100%);
     }
 
     /* TEMA NOCHE DE CUNA (LULLABY) */
     body.theme-night {
-      background: radial-gradient(circle at 50% 30%, #2a3a5e 0%, #1a2238 60%, #111625 100%);
+      background: #1a2238;
+      background-image: radial-gradient(circle at 50% 30%, #2a3a5e 0%, #1a2238 65%, #111625 100%);
       color: #e2e8f0;
     }
 
@@ -53,6 +55,7 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      transform: translateZ(0);
     }
 
     /* CANVAS DE EFECTOS PARTICULAS Y AGUA */
@@ -64,6 +67,7 @@
       height: 100%;
       z-index: 2;
       pointer-events: none;
+      transform: translateZ(0);
     }
 
     /* CABECERA CALMA Y DEDICADA */
@@ -79,21 +83,20 @@
     }
 
     .title-pill {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.92);
       padding: 8px 18px;
       border-radius: 999px;
-      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.12);
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.12);
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      border: 2px solid rgba(255, 255, 255, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.95);
       transition: all 0.3s ease;
     }
 
     body.theme-night .title-pill {
-      background: rgba(30, 41, 59, 0.75);
-      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(30, 41, 59, 0.92);
+      border-color: rgba(255, 255, 255, 0.2);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
@@ -120,8 +123,8 @@
     }
 
     .icon-btn {
-      background: rgba(255, 255, 255, 0.75);
-      border: 2px solid rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.95);
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -130,13 +133,13 @@
       justify-content: center;
       font-size: 1.2rem;
       cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       transition: transform 0.15s ease, background 0.3s ease;
     }
 
     body.theme-night .icon-btn {
-      background: rgba(30, 41, 59, 0.75);
-      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(30, 41, 59, 0.9);
+      border-color: rgba(255, 255, 255, 0.2);
       color: #fff;
     }
 
@@ -167,7 +170,7 @@
       justify-content: center;
       flex-direction: column;
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.25s ease;
     }
 
     .game-scene.active {
@@ -205,8 +208,8 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 14px 20px rgba(27, 94, 32, 0.15));
-      animation: gentleDrift 6s infinite ease-in-out alternate;
+      will-change: transform;
+      animation: gentleDrift 5s infinite ease-in-out alternate;
     }
 
     /* ILUSTRACIÓN DE LA RANA RENÉ (SVG ANIMADO) */
@@ -217,15 +220,16 @@
       z-index: 6;
       cursor: pointer;
       transform-origin: bottom center;
+      will-change: transform;
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .frog-character.squash {
-      transform: scale(1.15, 0.85);
+      transform: scale3d(1.15, 0.85, 1);
     }
 
     .frog-character.jump {
-      transform: scale(0.9, 1.25) translateY(-60px);
+      transform: scale3d(0.92, 1.25, 1) translate3d(0, -60px, 0);
     }
 
     /* BURBUJA DE MENSAJE AMABLE */
@@ -238,12 +242,12 @@
       font-size: 1.15rem;
       font-weight: 800;
       color: #2e7d32;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
       border: 3px solid #81c784;
       pointer-events: none;
       opacity: 0;
-      transform: translateY(10px) scale(0.85);
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: translate3d(0, 10px, 0) scale(0.85);
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       white-space: nowrap;
       z-index: 10;
     }
@@ -256,7 +260,7 @@
 
     .speech-bubble.visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translate3d(0, 0, 0) scale(1);
     }
 
     .speech-bubble::after {
@@ -306,8 +310,8 @@
       width: 130px;
       height: 110px;
       z-index: 5;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.1));
+      will-change: transform;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .peek-creature {
@@ -316,18 +320,19 @@
       width: 100px;
       height: 100px;
       z-index: 3;
-      transform: translateY(50px) scale(0.6);
+      transform: translate3d(0, 50px, 0) scale(0.6);
       opacity: 0;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform, opacity;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .peek-spot.revealed .peek-creature {
-      transform: translateY(-20px) scale(1.15);
+      transform: translate3d(0, -20px, 0) scale(1.15);
       opacity: 1;
     }
 
     .peek-spot.revealed .peek-hiding-leaf {
-      transform: translateY(20px) scale(0.9);
+      transform: translate3d(0, 20px, 0) scale(0.9);
     }
 
     /* ==========================================================================
@@ -348,7 +353,7 @@
       flex: 1;
       max-width: 140px;
       height: 64px;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
       border: 3px solid rgba(255, 255, 255, 0.95);
       border-radius: 24px;
       display: flex;
@@ -356,27 +361,28 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.12);
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.12);
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, border-color 0.2s ease;
+      will-change: transform;
     }
 
     body.theme-night .mode-tab-btn {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(30, 41, 59, 0.9);
+      border-color: rgba(255, 255, 255, 0.2);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
     .mode-tab-btn.active {
       background: #ffffff;
       border-color: #4caf50;
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 8px 22px rgba(76, 175, 80, 0.28);
+      transform: translate3d(0, -4px, 0) scale(1.05);
+      box-shadow: 0 6px 18px rgba(76, 175, 80, 0.25);
     }
 
     body.theme-night .mode-tab-btn.active {
       background: #1e293b;
       border-color: #34d399;
-      box-shadow: 0 8px 22px rgba(52, 211, 153, 0.3);
+      box-shadow: 0 6px 18px rgba(52, 211, 153, 0.28);
     }
 
     .mode-tab-btn .tab-emoji {
@@ -397,59 +403,60 @@
       color: #a7f3d0;
     }
 
-    /* BURBUJITAS FLOTANTES NATIVAS */
+    /* BURBUJITAS FLOTANTES NATIVAS - HARDWARE ACCELERATED */
     .bubble-item {
       position: absolute;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.85), rgba(165, 214, 167, 0.45) 50%, rgba(76, 175, 80, 0.2) 100%);
-      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.6), 0 4px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.6), 0 3px 10px rgba(0, 0, 0, 0.05);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 6;
-      border: 1px solid rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.75);
       animation: floatUp linear infinite;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
     }
 
-    /* ANIMACIONES SUAVES */
+    /* ANIMACIONES SUAVES - HARDWARE ACCELERATED */
     @keyframes gentleBeat {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+      0%, 100% { transform: scale3d(1, 1, 1); }
+      50% { transform: scale3d(1.15, 1.15, 1); }
     }
 
     @keyframes gentleDrift {
-      0% { transform: rotate(-1.5deg) translateY(-4px); }
-      100% { transform: rotate(1.5deg) translateY(4px); }
+      0% { transform: rotate(-1.5deg) translate3d(0, -3px, 0); }
+      100% { transform: rotate(1.5deg) translate3d(0, 3px, 0); }
     }
 
     @keyframes floatUp {
-      0% { transform: translateY(110vh) scale(0.85); opacity: 0; }
+      0% { transform: translate3d(0, 110vh, 0) scale(0.85); opacity: 0; }
       15% { opacity: 0.95; }
       90% { opacity: 0.95; }
-      100% { transform: translateY(-15vh) scale(1.05); opacity: 0; }
+      100% { transform: translate3d(0, -15vh, 0) scale(1.05); opacity: 0; }
     }
 
-    /* MENSAJE DE AUDIO INICIAL PARA EL PRIMER TOQUE (AMIGABLE) */
+    /* MENSAJE DE AUDIO INICIAL */
     #start-audio-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(232, 245, 233, 0.82);
-      backdrop-filter: blur(8px);
+      background: rgba(232, 245, 233, 0.92);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 100;
       cursor: pointer;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.3s ease;
     }
 
     body.theme-night #start-audio-overlay {
-      background: rgba(26, 34, 56, 0.88);
+      background: rgba(26, 34, 56, 0.94);
     }
 
     .start-card {
@@ -457,10 +464,9 @@
       padding: 30px 36px;
       border-radius: 32px;
       text-align: center;
-      box-shadow: 0 12px 35px rgba(46, 125, 50, 0.2);
+      box-shadow: 0 10px 30px rgba(46, 125, 50, 0.18);
       border: 4px solid #a5d6a7;
       max-width: 320px;
-      animation: gentleBeat 3s infinite ease-in-out;
     }
 
     body.theme-night .start-card {
@@ -473,6 +479,7 @@
       font-size: 4rem;
       margin-bottom: 12px;
       display: inline-block;
+      animation: gentleBeat 2.5s infinite ease-in-out;
     }
 
     .start-card h2 {
@@ -773,7 +780,6 @@
         freq = PENTATONIC_FREQS[idx];
       }
 
-      // Oscilador senoidal puro (el sonido más relajante y seguro para el oído infantil)
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       const filter = audioCtx.createBiquadFilter();
@@ -781,21 +787,28 @@
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, now);
 
-      // Filtro paso-bajas que elimina cualquier aspereza aguda
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(1400, now);
 
-      // Envolvente acústica: ataque rápido y desvanecimiento suave (campanita)
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+      gain.gain.exponentialRampToValueAtTime(0.3, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
 
       osc.connect(filter);
       filter.connect(gain);
       gain.connect(audioCtx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.9);
+      osc.stop(now + 0.75);
+
+      // Limpieza automática de nodos para no saturar memoria
+      osc.onended = () => {
+        try {
+          osc.disconnect();
+          filter.disconnect();
+          gain.disconnect();
+        } catch(e) {}
+      };
     }
 
     // Sonido suave de gota de agua / burbuja ("plop" melódico)
@@ -809,20 +822,26 @@
       const gain = audioCtx.createGain();
 
       osc.type = 'sine';
-      // Descenso rápido de frecuencia característico de una gota
-      const baseFreq = 480 + Math.random() * 160;
+      const baseFreq = 480 + Math.random() * 140;
       osc.frequency.setValueAtTime(baseFreq * 1.5, now);
-      osc.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.12);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.1);
 
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.3, now + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      gain.gain.linearRampToValueAtTime(0.25, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
 
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.28);
+      osc.stop(now + 0.22);
+
+      osc.onended = () => {
+        try {
+          osc.disconnect();
+          gain.disconnect();
+        } catch(e) {}
+      };
     }
 
     // Sonido dulce de ranita (doble toque madera armónico)
@@ -832,7 +851,7 @@
       if (!audioCtx) return;
 
       const now = audioCtx.currentTime;
-      [0, 0.11].forEach((delay, i) => {
+      [0, 0.1].forEach((delay, i) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         const filter = audioCtx.createBiquadFilter();
@@ -842,18 +861,26 @@
 
         filter.type = 'bandpass';
         filter.frequency.setValueAtTime(450, now + delay);
-        filter.Q.setValueAtTime(4, now + delay);
+        filter.Q.setValueAtTime(3, now + delay);
 
         gain.gain.setValueAtTime(0.001, now + delay);
-        gain.gain.linearRampToValueAtTime(0.25, now + delay + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.18);
+        gain.gain.linearRampToValueAtTime(0.22, now + delay + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.15);
 
         osc.connect(filter);
         filter.connect(gain);
         gain.connect(audioCtx.destination);
 
         osc.start(now + delay);
-        osc.stop(now + delay + 0.2);
+        osc.stop(now + delay + 0.18);
+
+        osc.onended = () => {
+          try {
+            osc.disconnect();
+            filter.disconnect();
+            gain.disconnect();
+          } catch(e) {}
+        };
       });
     }
 
@@ -888,66 +915,99 @@
       const overlay = document.getElementById('start-audio-overlay');
       if (overlay) {
         overlay.style.opacity = '0';
-        setTimeout(() => overlay.style.display = 'none', 400);
+        setTimeout(() => overlay.style.display = 'none', 300);
       }
     }
 
     /* =========================================================================
-       2. CANVAS DE EFECTOS: ONDAS DE AGUA, ESTRELLITAS Y MARIPOSAS
+       2. CANVAS DE EFECTOS ULTRA-OPTIMIZADO (60 FPS FLUIDO)
+       El loop de render duerme cuando no hay partículas activas para no consumir GPU.
        ========================================================================= */
     const canvas = document.getElementById('fx-canvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     let width = 0, height = 0;
     const particles = [];
     const ripples = [];
+    let fxLoopRunning = false;
+
+    // Cache de posición de la rana para evitar reflows continuos
+    let frogCenterX = 0;
+    let frogCenterY = 0;
+
+    function updateFrogCenterCache() {
+      const frogHero = document.getElementById('frog-hero');
+      if (frogHero) {
+        const rect = frogHero.getBoundingClientRect();
+        frogCenterX = rect.left + rect.width / 2;
+        frogCenterY = rect.top + rect.height / 2;
+      }
+    }
 
     function resizeCanvas() {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
+      updateFrogCenterCache();
     }
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    setTimeout(resizeCanvas, 100);
+
+    function startFXLoopIfNeeded() {
+      if (!fxLoopRunning) {
+        fxLoopRunning = true;
+        requestAnimationFrame(updateAndRenderFX);
+      }
+    }
 
     function addRipple(x, y) {
+      if (ripples.length >= 8) ripples.shift(); // Limitar máximo simultáneo
       ripples.push({
         x: x,
         y: y,
-        radius: 10,
-        maxRadius: 80 + Math.random() * 40,
-        alpha: 0.65,
-        color: document.body.classList.contains('theme-night') ? 'rgba(167, 243, 208,' : 'rgba(255, 255, 255,'
+        radius: 12,
+        maxRadius: 75 + Math.random() * 30,
+        alpha: 0.6,
+        isNight: document.body.classList.contains('theme-night')
       });
+      startFXLoopIfNeeded();
     }
 
-    function addSparkles(x, y, count = 6, emoji = null) {
+    function addSparkles(x, y, count = 4, emoji = null) {
       const symbols = ['⭐', '🌸', '✨', '💚', '🍃'];
-      for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 1.5 + Math.random() * 3.5;
+      const addCount = Math.min(count, 6);
+      for (let i = 0; i < addCount; i++) {
+        if (particles.length >= 24) particles.shift(); // Limitar número de partículas
+        const angle = (Math.PI * 2 * i) / addCount + (Math.random() - 0.5) * 0.4;
+        const speed = 1.8 + Math.random() * 2.5;
         particles.push({
           x: x,
           y: y,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1.2,
+          vy: Math.sin(angle) * speed - 1.0,
           alpha: 1,
-          size: 20 + Math.random() * 14,
-          symbol: emoji || symbols[Math.floor(Math.random() * symbols.length)],
-          rotation: Math.random() * Math.PI * 2,
-          vRot: (Math.random() - 0.5) * 0.1
+          size: 20,
+          symbol: emoji || symbols[i % symbols.length]
         });
       }
+      startFXLoopIfNeeded();
     }
 
     function updateAndRenderFX() {
+      // Si no hay efectos activos, limpiar y suspender el loop
+      if (ripples.length === 0 && particles.length === 0) {
+        ctx.clearRect(0, 0, width, height);
+        fxLoopRunning = false;
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       // Render ondas de agua
       for (let i = ripples.length - 1; i >= 0; i--) {
         const r = ripples[i];
-        r.radius += 2.2;
-        r.alpha -= 0.016;
+        r.radius += 2.6;
+        r.alpha -= 0.024;
 
         if (r.alpha <= 0 || r.radius >= r.maxRadius) {
           ripples.splice(i, 1);
@@ -956,39 +1016,37 @@
 
         ctx.beginPath();
         ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `${r.color} ${r.alpha})`;
-        ctx.lineWidth = 3.5;
+        ctx.strokeStyle = r.isNight ? `rgba(167, 243, 208, ${r.alpha})` : `rgba(255, 255, 255, ${r.alpha})`;
+        ctx.lineWidth = 3;
         ctx.stroke();
       }
 
-      // Render partículas y estrellitas
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.04; // Gravedad muy suave
-        p.alpha -= 0.018;
-        p.rotation += p.vRot;
-
-        if (p.alpha <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
-
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.alpha);
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.font = `${p.size}px sans-serif`;
+      // Render partículas y estrellitas (Configurar fuente UNA sola vez por frame)
+      if (particles.length > 0) {
+        ctx.font = '22px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(p.symbol, 0, 0);
-        ctx.restore();
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.05;
+          p.alpha -= 0.028;
+
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillText(p.symbol, p.x, p.y);
+        }
+        ctx.globalAlpha = 1;
       }
 
       requestAnimationFrame(updateAndRenderFX);
     }
-    requestAnimationFrame(updateAndRenderFX);
 
     /* =========================================================================
        3. INTERACCIÓN DE LA RANA RENÉ (ESCENA 1)
@@ -1011,12 +1069,9 @@
       playFrogRibbit();
       playGentleBell(Math.floor(Math.random() * 8));
 
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 3;
-
-      addSparkles(x, y, 9, '💚');
-      addRipple(x, rect.bottom - 10);
+      updateFrogCenterCache();
+      addSparkles(frogCenterX, frogCenterY - 30, 6, '💚');
+      addRipple(frogCenterX, frogCenterY + 40);
 
       // Animación de salto amoroso de René
       const frogEl = document.getElementById('frog-hero');
@@ -1029,8 +1084,8 @@
           setTimeout(() => {
             frogEl.classList.remove('jump');
             isJumping = false;
-          }, 350);
-        }, 120);
+          }, 320);
+        }, 100);
       }
 
       // Mostrar frase dulce personalizada
@@ -1053,31 +1108,34 @@
       const x = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : width / 2);
       const y = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : height / 2);
       addRipple(x, y);
-      addSparkles(x, y, 4, '🌸');
+      addSparkles(x, y, 3, '🌸');
     }
 
-    // Los ojitos de la rana siguen suavemente el cursor o los toques
+    // Los ojitos de la rana siguen suavemente el cursor o los toques (SIN reflows continuos)
+    let eyeMoveTicking = false;
     window.addEventListener('pointermove', (e) => {
-      const frogHero = document.getElementById('frog-hero');
-      if (!frogHero) return;
-      const rect = frogHero.getBoundingClientRect();
-      const frogCenterX = rect.left + rect.width / 2;
-      const frogCenterY = rect.top + rect.height / 2;
+      if (eyeMoveTicking) return;
+      eyeMoveTicking = true;
 
-      const deltaX = (e.clientX - frogCenterX) / width;
-      const deltaY = (e.clientY - frogCenterY) / height;
+      requestAnimationFrame(() => {
+        eyeMoveTicking = false;
+        if (!frogCenterX) updateFrogCenterCache();
 
-      const pLeft = document.getElementById('pupil-left');
-      const pRight = document.getElementById('pupil-right');
-      const moveX = Math.max(-5, Math.min(5, deltaX * 18));
-      const moveY = Math.max(-4, Math.min(4, deltaY * 14));
+        const deltaX = (e.clientX - frogCenterX) / (width || 1);
+        const deltaY = (e.clientY - frogCenterY) / (height || 1);
 
-      if (pLeft) pLeft.setAttribute('transform', `translate(${moveX}, ${moveY})`);
-      if (pRight) pRight.setAttribute('transform', `translate(${moveX}, ${moveY})`);
-    });
+        const moveX = Math.max(-5, Math.min(5, deltaX * 16));
+        const moveY = Math.max(-4, Math.min(4, deltaY * 12));
+
+        const pLeft = document.getElementById('pupil-left');
+        const pRight = document.getElementById('pupil-right');
+        if (pLeft) pLeft.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+        if (pRight) pRight.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+      });
+    }, { passive: true });
 
     /* =========================================================================
-       4. ESCENA 2: BURBUJAS MÁGICAS FLOTANTES
+       4. ESCENA 2: BURBUJAS MÁGICAS FLOTANTES (MÁXIMO 6 BURBUJAS SIMULTÁNEAS)
        ========================================================================= */
     const bubbleContainer = document.getElementById('bubble-container');
     const bubbleEmojis = ['🌸', '⭐', '🦋', '🍀', '✨', '🐸', '💖', '🌼'];
@@ -1085,12 +1143,15 @@
 
     function createBubble() {
       if (!bubbleContainer) return;
+      // No saturar el DOM: máximo 6 burbujas activas
+      if (bubbleContainer.children.length >= 6) return;
+
       const b = document.createElement('div');
       b.className = 'bubble-item';
 
-      const size = 65 + Math.random() * 45; // Tamaño amplio ideal para dedos de 2 años
+      const size = 65 + Math.random() * 40;
       const startX = Math.random() * (window.innerWidth - size - 20) + 10;
-      const duration = 7 + Math.random() * 5; // Flotan despacio sin prisas
+      const duration = 6 + Math.random() * 4;
 
       b.style.width = `${size}px`;
       b.style.height = `${size}px`;
@@ -1100,7 +1161,6 @@
       const emojiInside = bubbleEmojis[Math.floor(Math.random() * bubbleEmojis.length)];
       b.innerHTML = `<span style="font-size:${size * 0.42}px; pointer-events:none; opacity:0.85;">${emojiInside}</span>`;
 
-      // Al tocar la burbuja: explota con suavidad y libera una mariposa/flor
       const popHandler = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -1109,7 +1169,7 @@
 
         const rect = b.getBoundingClientRect();
         addRipple(rect.left + rect.width / 2, rect.top + rect.height / 2);
-        addSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 8, emojiInside);
+        addSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 5, emojiInside);
 
         b.remove();
       };
@@ -1117,7 +1177,6 @@
       b.addEventListener('pointerdown', popHandler);
       bubbleContainer.appendChild(b);
 
-      // Auto-eliminar cuando termine de flotar arriba
       setTimeout(() => {
         if (b.parentNode) b.remove();
       }, duration * 1000);
@@ -1126,11 +1185,9 @@
     function startBubbles() {
       if (bubbleSpawnInterval) clearInterval(bubbleSpawnInterval);
       if (bubbleContainer) bubbleContainer.innerHTML = '';
-      // Spawn inicial
-      for (let i = 0; i < 4; i++) {
-        setTimeout(createBubble, i * 600);
-      }
-      bubbleSpawnInterval = setInterval(createBubble, 1800);
+      createBubble();
+      createBubble();
+      bubbleSpawnInterval = setInterval(createBubble, 1600);
     }
 
     function stopBubbles() {
@@ -1138,7 +1195,6 @@
       if (bubbleContainer) bubbleContainer.innerHTML = '';
     }
 
-    // Tocar el fondo del contenedor de burbujas crea una nueva burbuja inmediatamente
     if (bubbleContainer) {
       bubbleContainer.addEventListener('pointerdown', (e) => {
         if (e.target === bubbleContainer) {
@@ -1162,10 +1218,10 @@
         const el = document.getElementById(`peek-c-${i}`);
         if (el) {
           if (i === luckyIndex) {
-            el.innerHTML = '<span style="font-size:4.8rem;">🐸</span>';
+            el.innerHTML = '<span style="font-size:4.5rem;">🐸</span>';
           } else {
             const others = peekEmojis.filter(em => em !== '🐸');
-            el.innerHTML = `<span style="font-size:4.8rem;">${others[Math.floor(Math.random() * others.length)]}</span>`;
+            el.innerHTML = `<span style="font-size:4.5rem;">${others[Math.floor(Math.random() * others.length)]}</span>`;
           }
         }
       }
@@ -1181,53 +1237,55 @@
       spotEl.classList.add('revealed');
 
       if (idx === luckyIndex) {
-        // Encontró a la Ranita René
         playFrogRibbit();
         playGentleBell(5);
-        addSparkles(cx, cy, 12, '💚');
+        addSparkles(cx, cy, 8, '💚');
       } else {
-        // Encontró a otro lindo amiguito (100% positivo, nunca hay error)
         playWaterPlop();
         playGentleBell(2);
-        addSparkles(cx, cy, 8, '🌸');
+        addSparkles(cx, cy, 5, '🌸');
       }
       addRipple(cx, cy);
 
-      // Después de 2.5 segundos, se vuelven a esconder alegremente
       clearTimeout(spotEl._hideTimeout);
       spotEl._hideTimeout = setTimeout(() => {
         spotEl.classList.remove('revealed');
-      }, 2500);
+      }, 2200);
     }
 
     /* =========================================================================
-       6. ESCENA 4: PINTAR CON DEDITO (TRAZOS LIBRES PENTATÓNICOS)
+       6. ESCENA 4: PINTAR CON DEDITO (TRAZOS FLUIDOS CON THROTTLING)
        ========================================================================= */
     let lastDrawTime = 0;
+    let lastX = 0, lastY = 0;
     const sceneDraw = document.getElementById('scene-draw');
 
     function handleDrawingStroke(e) {
       if (!sceneDraw.classList.contains('active')) return;
-      initAudio();
 
       const now = Date.now();
-      const touches = e.touches ? Array.from(e.touches) : [e];
+      // Throttle a 45ms para garantizar 60fps sólidos como roca
+      if (now - lastDrawTime < 45) return;
 
-      touches.forEach(t => {
-        const x = t.clientX;
-        const y = t.clientY;
+      const t = (e.touches && e.touches[0]) ? e.touches[0] : e;
+      const x = t.clientX;
+      const y = t.clientY;
 
-        // Sonido modulado suave según la altura del trazo (arriba más agudo, abajo más grave)
-        if (now - lastDrawTime > 110) {
-          lastDrawTime = now;
-          const heightRatio = 1 - Math.max(0, Math.min(1, y / height));
-          const pentIndex = Math.floor(heightRatio * (PENTATONIC_FREQS.length - 1));
-          playGentleBell(pentIndex);
-        }
+      // Si apenas se movió 8 píxeles, ignorar
+      const dist = Math.hypot(x - lastX, y - lastY);
+      if (dist < 10 && lastDrawTime > 0) return;
 
-        addRipple(x, y);
-        addSparkles(x, y, 2, '✨');
-      });
+      lastDrawTime = now;
+      lastX = x;
+      lastY = y;
+
+      initAudio();
+      const heightRatio = 1 - Math.max(0, Math.min(1, y / height));
+      const pentIndex = Math.floor(heightRatio * (PENTATONIC_FREQS.length - 1));
+      playGentleBell(pentIndex);
+
+      addRipple(x, y);
+      addSparkles(x, y, 2, '✨');
     }
 
     window.addEventListener('pointerdown', (e) => {
@@ -1237,7 +1295,7 @@
       if (sceneDraw.classList.contains('active') && (e.buttons > 0 || e.pointerType === 'touch')) {
         handleDrawingStroke(e);
       }
-    });
+    }, { passive: true });
 
     /* =========================================================================
        7. NAVEGADOR DE ESCENAS
@@ -1266,6 +1324,10 @@
 
       if (sceneId === 'scene-peek') {
         randomizePeekCreatures();
+      }
+
+      if (sceneId === 'scene-frog') {
+        setTimeout(updateFrogCenterCache, 150);
       }
     }
   </script>
