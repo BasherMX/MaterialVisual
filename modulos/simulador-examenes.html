@@ -1575,6 +1575,33 @@
             >
               <span>🚩</span> Marcar
             </button>
+
+            <button
+              class="btn-theme"
+              id="btn-finish-exam-hud"
+              onclick="promptFinishExam()"
+              style="
+                background: linear-gradient(135deg, rgba(255, 0, 110, 0.25), rgba(255, 75, 43, 0.25));
+                border: 1px solid var(--coral);
+                color: #ff5e7e;
+                padding: 8px 14px;
+                border-radius: 6px;
+                cursor: pointer;
+                font:
+                  700 0.82rem &quot;Courier New&quot;,
+                  monospace;
+                min-height: 38px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.2s ease;
+              "
+              onmouseover="this.style.background='var(--coral)'; this.style.color='#ffffff';"
+              onmouseout="this.style.background='linear-gradient(135deg, rgba(255, 0, 110, 0.25), rgba(255, 75, 43, 0.25))'; this.style.color='#ff5e7e';"
+              title="Terminar y calificar el examen ahora"
+            >
+              <span>🏁</span> Terminar Examen
+            </button>
           </div>
         </div>
 
@@ -1714,28 +1741,31 @@
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
           "
         >
-          <div style="display: flex; gap: 10px">
-            <button
-              class="btn-theme"
-              id="btn-prev-question"
-              onclick="navigateQuestion(-1)"
-              style="
-                background: rgba(34, 33, 61, 0.9);
-                border: 1px solid var(--line);
-                color: var(--cyan);
-                padding: 10px 18px;
-                border-radius: 6px;
-                cursor: pointer;
-                font:
-                  700 0.85rem &quot;Courier New&quot;,
-                  monospace;
-                min-height: 44px;
-              "
-            >
-              ← Anterior
-            </button>
+          <button
+            class="btn-theme"
+            id="btn-prev-question"
+            onclick="navigateQuestion(-1)"
+            style="
+              background: rgba(34, 33, 61, 0.9);
+              border: 1px solid var(--line);
+              color: var(--cyan);
+              padding: 10px 18px;
+              border-radius: 6px;
+              cursor: pointer;
+              font:
+                700 0.85rem &quot;Courier New&quot;,
+                monospace;
+              min-height: 44px;
+            "
+          >
+            ← Anterior
+          </button>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <button
               class="btn-theme"
               id="btn-next-question"
@@ -1755,7 +1785,31 @@
             >
               Siguiente / Saltar →
             </button>
+            <button
+              class="btn-theme"
+              id="btn-finish-exam-bottom"
+              onclick="promptFinishExam()"
+              style="
+                background: linear-gradient(135deg, rgba(255, 0, 110, 0.9), rgba(255, 75, 43, 0.9));
+                border: 1px solid #ff4b2b;
+                color: #ffffff;
+                padding: 10px 22px;
+                border-radius: 6px;
+                cursor: pointer;
+                font:
+                  800 0.88rem &quot;Courier New&quot;,
+                  monospace;
+                min-height: 44px;
+                box-shadow: 0 0 16px rgba(255, 0, 110, 0.4);
+                transition: transform 0.15s ease, box-shadow 0.15s ease;
+              "
+              onmouseover="this.style.boxShadow='0 0 24px rgba(255, 0, 110, 0.7)'; this.style.transform='scale(1.03)';"
+              onmouseout="this.style.boxShadow='0 0 16px rgba(255, 0, 110, 0.4)'; this.style.transform='scale(1)';"
+            >
+              🏁 Finalizar Examen
+            </button>
           </div>
+        </div>
       </section>
 
     <!-- TAB 3: DICTAMEN & POST-MORTEM -->
