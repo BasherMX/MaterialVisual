@@ -1325,7 +1325,7 @@
               <label style="font:700 0.76rem 'Courier New', monospace; color:var(--muted); display:block; margin-bottom:10px; text-transform:uppercase;">
                 ⚡ Presets Rápidos de Simulación (1-Clic):
               </label>
-              <div class="gen-presets-row" style="margin-bottom:0;">
+              <div class="gen-presets-row" id="gen-presets-volume-row" style="margin-bottom:0;">
                 <button type="button" class="gen-preset-chip" id="preset-chip-sprint-15" onclick="applyGenPreset('sprint-15')">
                   <span>⚡</span> 15Q · Sprint (22m)
                 </button>
@@ -1391,14 +1391,14 @@
                 </div>
 
                 <!-- Presets de Dificultad -->
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                  <button type="button" class="gen-preset-chip" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(60, 30, 10)">
+                <div class="gen-diff-presets-row" id="gen-diff-presets-row" style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <button type="button" class="gen-preset-chip" id="btn-diff-preset-soft" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(60, 30, 10, 'btn-diff-preset-soft')">
                     Suave (60/30/10)
                   </button>
-                  <button type="button" class="gen-preset-chip active" id="btn-diff-preset-realistic" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(30, 50, 20)">
+                  <button type="button" class="gen-preset-chip active" id="btn-diff-preset-canonical" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(30, 50, 20, 'btn-diff-preset-canonical')">
                     Canónico (30/50/20)
                   </button>
-                  <button type="button" class="gen-preset-chip" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(10, 40, 50)">
+                  <button type="button" class="gen-preset-chip" id="btn-diff-preset-extreme" style="font-size:0.74rem; padding:6px 10px; min-height:38px; flex:1;" onclick="applyDiffPreset(10, 40, 50, 'btn-diff-preset-extreme')">
                     Extremo (10/40/50)
                   </button>
                 </div>
@@ -4180,18 +4180,17 @@ D) Una instrucción de salto condicional con goto.
         currentGenConfig.difficultyRatio = balanced;
         updateDiffSlidersUI();
 
-        // Desactivar chips de presets de dificultad para indicar modo manual
+        // Actualizar chips de dificultad si coincide con algún preset
         document
-          .querySelectorAll("#exam-generator-panel .diff-slider-item button")
+          .querySelectorAll("#gen-diff-presets-row .gen-preset-chip")
           .forEach((b) => b.classList.remove("active"));
-        const realBtn = document.getElementById("btn-diff-preset-realistic");
-        if (
-          realBtn &&
-          (balanced.easy !== 30 ||
-            balanced.medium !== 50 ||
-            balanced.hard !== 20)
-        ) {
-          realBtn.classList.remove("active");
+
+        if (balanced.easy === 60 && balanced.medium === 30 && balanced.hard === 10) {
+          document.getElementById("btn-diff-preset-soft")?.classList.add("active");
+        } else if (balanced.easy === 30 && balanced.medium === 50 && balanced.hard === 20) {
+          (document.getElementById("btn-diff-preset-canonical") || document.getElementById("btn-diff-preset-realistic"))?.classList.add("active");
+        } else if (balanced.easy === 10 && balanced.medium === 40 && balanced.hard === 50) {
+          document.getElementById("btn-diff-preset-extreme")?.classList.add("active");
         }
       }
 
@@ -4206,9 +4205,9 @@ D) Una instrucción de salto condicional con goto.
         const vMed = document.getElementById("diff-val-med");
         const vHard = document.getElementById("diff-val-hard");
 
-        const bEasy = document.getElementById("diff-bar-easy");
-        const bMed = document.getElementById("diff-bar-med");
-        const bHard = document.getElementById("diff-bar-hard");
+        const bEasy = document.getElementById("diff-bar-seg-easy") || document.getElementById("diff-bar-easy");
+        const bMed = document.getElementById("diff-bar-seg-med") || document.getElementById("diff-bar-med");
+        const bHard = document.getElementById("diff-bar-seg-hard") || document.getElementById("diff-bar-hard");
 
         if (sEasy) sEasy.value = easy;
         if (sMed) sMed.value = medium;
@@ -4223,21 +4222,31 @@ D) Una instrucción de salto condicional con goto.
         if (bHard) bHard.style.width = `${hard}%`;
       }
 
-      function applyDiffPreset(easy, med, hard) {
-        currentGenConfig.difficultyRatio = { easy, medium, hard };
+      function applyDiffPreset(easy, med, hard, chipId) {
+        currentGenConfig.difficultyRatio = { easy, medium: med, hard };
         updateDiffSlidersUI();
 
-        const realBtn = document.getElementById("btn-diff-preset-realistic");
-        if (realBtn) {
-          if (easy === 30 && med === 50 && hard === 20)
-            realBtn.classList.add("active");
-          else realBtn.classList.remove("active");
+        document
+          .querySelectorAll("#gen-diff-presets-row .gen-preset-chip")
+          .forEach((b) => b.classList.remove("active"));
+
+        if (chipId) {
+          const chip = document.getElementById(chipId);
+          if (chip) chip.classList.add("active");
+        } else {
+          if (easy === 60 && med === 30 && hard === 10) {
+            document.getElementById("btn-diff-preset-soft")?.classList.add("active");
+          } else if (easy === 30 && med === 50 && hard === 20) {
+            (document.getElementById("btn-diff-preset-canonical") || document.getElementById("btn-diff-preset-realistic"))?.classList.add("active");
+          } else if (easy === 10 && med === 40 && hard === 50) {
+            document.getElementById("btn-diff-preset-extreme")?.classList.add("active");
+          }
         }
       }
 
       function applyGenPreset(presetId) {
         document
-          .querySelectorAll(".gen-preset-chip")
+          .querySelectorAll("#gen-presets-volume-row .gen-preset-chip")
           .forEach((c) => c.classList.remove("active"));
 
         const chipEl = document.getElementById(`preset-chip-${presetId}`);
@@ -4246,22 +4255,22 @@ D) Una instrucción de salto condicional con goto.
         if (presetId === "sprint-15") {
           currentGenConfig.totalQuestions = 15;
           currentGenConfig.timeMode = "auto";
-          currentGenConfig.difficultyRatio = { easy: 40, medium: 40, hard: 20 };
+          applyDiffPreset(40, 40, 20);
           currentGenConfig.blockDistribution = "uniform";
         } else if (presetId === "diag-30") {
           currentGenConfig.totalQuestions = 30;
           currentGenConfig.timeMode = "auto";
-          currentGenConfig.difficultyRatio = { easy: 30, medium: 50, hard: 20 };
+          applyDiffPreset(30, 50, 20, "btn-diff-preset-canonical");
           currentGenConfig.blockDistribution = "uniform";
         } else if (presetId === "sim-50") {
           currentGenConfig.totalQuestions = 50;
           currentGenConfig.timeMode = "auto";
-          currentGenConfig.difficultyRatio = { easy: 30, medium: 50, hard: 20 };
+          applyDiffPreset(30, 50, 20, "btn-diff-preset-canonical");
           currentGenConfig.blockDistribution = "uniform";
         } else if (presetId === "marathon-100") {
           currentGenConfig.totalQuestions = 100;
           currentGenConfig.timeMode = "auto";
-          currentGenConfig.difficultyRatio = { easy: 25, medium: 50, hard: 25 };
+          applyDiffPreset(25, 50, 25);
           currentGenConfig.blockDistribution = "uniform";
         }
 
@@ -4349,17 +4358,67 @@ D) Una instrucción de salto condicional con goto.
             '#gen-blocks-picker-wrap input[type="checkbox"]:checked',
           ),
         );
+        const btnGen = document.getElementById("btn-generate-exam-now");
+        const btnExportMd = document.querySelector('button[onclick="executeExportGeneratedMarkdown()"]');
+        const btnExportJson = document.querySelector('button[onclick="executeExportGeneratedJSON()"]');
+        const pickerWrap = document.getElementById("gen-blocks-picker-wrap");
+
         if (checkedBoxes.length === 0) {
-          alert("Debes seleccionar al menos un bloque temático.");
-          const first = document.querySelector(
-            '#gen-blocks-picker-wrap input[type="checkbox"]',
-          );
-          if (first) first.checked = true;
-          currentGenConfig.selectedBlocks = [first.value];
+          // Desactivar botones de forma no intrusiva sin saltar alert()
+          currentGenConfig.selectedBlocks = [];
+          if (btnGen) {
+            btnGen.disabled = true;
+            btnGen.style.opacity = "0.45";
+            btnGen.style.cursor = "not-allowed";
+            btnGen.style.filter = "grayscale(0.6)";
+            btnGen.innerHTML = '<span>⚠️ Selecciona al menos 1 bloque temático</span>';
+          }
+          if (btnExportMd) {
+            btnExportMd.disabled = true;
+            btnExportMd.style.opacity = "0.45";
+            btnExportMd.style.cursor = "not-allowed";
+          }
+          if (btnExportJson) {
+            btnExportJson.disabled = true;
+            btnExportJson.style.opacity = "0.45";
+            btnExportJson.style.cursor = "not-allowed";
+          }
+          if (pickerWrap) {
+            pickerWrap.style.border = "1px solid rgba(255, 0, 110, 0.6)";
+            pickerWrap.style.boxShadow = "0 0 16px rgba(255, 0, 110, 0.25)";
+          }
           return;
         }
 
+        // Hay al menos un bloque seleccionado: reactivar controles
         currentGenConfig.selectedBlocks = checkedBoxes.map((c) => c.value);
+
+        if (btnGen) {
+          btnGen.disabled = false;
+          btnGen.style.opacity = "1";
+          btnGen.style.cursor = "pointer";
+          btnGen.style.filter = "none";
+          btnGen.innerHTML = '<span>⚡ Generar Examen (Agregar al Listado)</span>';
+        }
+        if (btnExportMd) {
+          btnExportMd.disabled = false;
+          btnExportMd.style.opacity = "1";
+          btnExportMd.style.cursor = "pointer";
+        }
+        if (btnExportJson) {
+          btnExportJson.disabled = false;
+          btnExportJson.style.opacity = "1";
+          btnExportJson.style.cursor = "pointer";
+        }
+        if (pickerWrap) {
+          if (currentGenConfig.blockDistribution === "focus") {
+            pickerWrap.style.border = "1px solid var(--exam-gold)";
+            pickerWrap.style.boxShadow = "none";
+          } else {
+            pickerWrap.style.border = "none";
+            pickerWrap.style.boxShadow = "none";
+          }
+        }
 
         // Si el usuario manipuló manualmente los checkboxes, pasar a 'focus'
         if (currentGenConfig.selectedBlocks.length < 6) {
@@ -4370,6 +4429,11 @@ D) Una instrucción de salto condicional con goto.
       }
 
       function executeExamGeneration() {
+        if (!currentGenConfig.selectedBlocks || currentGenConfig.selectedBlocks.length === 0) {
+          showQuickToast("⚠️ Debes seleccionar al menos un bloque temático.");
+          return;
+        }
+
         if (
           typeof MATERIAL_EXAM_ENGINE === "undefined" ||
           typeof MATERIAL_BANK === "undefined"
@@ -4435,6 +4499,10 @@ D) Una instrucción de salto condicional con goto.
       }
 
       function executeExportGeneratedMarkdown() {
+        if (!currentGenConfig.selectedBlocks || currentGenConfig.selectedBlocks.length === 0) {
+          showQuickToast("⚠️ Debes seleccionar al menos un bloque temático.");
+          return;
+        }
         if (
           typeof MATERIAL_EXAM_ENGINE === "undefined" ||
           typeof MATERIAL_BANK === "undefined"
@@ -4480,6 +4548,11 @@ D) Una instrucción de salto condicional con goto.
       }
 
       function executeExportGeneratedJSON() {
+        if (!currentGenConfig.selectedBlocks || currentGenConfig.selectedBlocks.length === 0) {
+          showQuickToast("⚠️ Debes seleccionar al menos un bloque temático.");
+          return;
+        }
+
         if (
           typeof MATERIAL_EXAM_ENGINE === "undefined" ||
           typeof MATERIAL_BANK === "undefined"
