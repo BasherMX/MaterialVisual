@@ -35,6 +35,14 @@ No todos los reactivos deben tener opciones kilométricas ni todos deben ser ult
 3. **Nivel 3: Opciones Detalladas / Escenarios (~20% del examen):**
    * Opciones elaboradas (2 a 3 líneas por inciso) que presentan compensaciones arquitectónicas completas (*trade-offs*) para resolver un incidente de producción.
 
+4. **Nivel 4: Opciones con trampa (~0-10% del examen):**
+1. **Nivel 1: Opciones Cortas y Directas (~40% del examen):**
+   * Respuestas duplicadas con ligeros cambios 
+   * *Ejemplo de opciones:*
+     - A) Lecturas Sucias (Dirty Reads)
+     - B) Lecturas No Repetibles (Non-Repeatable Reads)
+     - C) Lecturas Fantasma (Phantom Reads)
+     - D) Bloqueos Mutuos (Deadlocks)
 ### C. Planteamiento Técnico Directo vs Referencia Doctrinal
 * **Evitar la sobre-mención de autores:** No iniciar todas las preguntas con "Según el autor X en su libro Y...". Redactar el planteamiento técnico de forma directa, universal y formal:
   - *Evitar:* "En el libro de Federico Toledo, ¿cuál es la distinción causal entre Error, Defecto y Falla?"

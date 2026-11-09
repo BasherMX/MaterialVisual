@@ -114,6 +114,106 @@
         margin-bottom: 24px;
       }
 
+      /* Escenario de Circuito Eléctrico Físico */
+      .circuit-canvas-wrap {
+        background: radial-gradient(circle at 50% 50%, #0d0e24 0%, #050612 100%);
+        border: 1px solid rgba(0, 255, 255, 0.28);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+        box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.75), 0 4px 18px rgba(0, 0, 0, 0.45);
+      }
+
+      .circuit-top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .circuit-meter {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font: 700 0.76rem 'Courier New', monospace;
+      }
+
+      .meter-label {
+        color: var(--muted, #94a3b8);
+      }
+
+      .meter-val {
+        color: #fff;
+        background: rgba(0, 0, 0, 0.45);
+        padding: 2px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .meter-val.text-green {
+        color: var(--srv-green, #00ffaa);
+        border-color: rgba(0, 255, 170, 0.3);
+      }
+
+      .state-pill {
+        border-radius: 4px;
+        padding: 2px 10px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        border: 1px solid;
+      }
+
+      .state-pill.closed {
+        color: var(--srv-green, #00ffaa);
+        background: rgba(0, 255, 170, 0.15);
+        border-color: var(--srv-green, #00ffaa);
+      }
+
+      .state-pill.open {
+        color: var(--srv-coral, #ff3366);
+        background: rgba(255, 51, 102, 0.15);
+        border-color: var(--srv-coral, #ff3366);
+      }
+
+      .state-pill.half {
+        color: var(--srv-gold, #ffd166);
+        background: rgba(255, 209, 102, 0.15);
+        border-color: var(--srv-gold, #ffd166);
+      }
+
+      .circuit-schematic-svg {
+        width: 100%;
+        height: auto;
+        max-height: 230px;
+        display: block;
+        user-select: none;
+      }
+
+      .circuit-wire {
+        fill: none;
+        stroke-linecap: round;
+        transition: stroke 0.35s ease, filter 0.35s ease;
+      }
+
+      .circuit-wire.live-closed {
+        stroke: #00ffaa;
+        filter: drop-shadow(0 0 5px rgba(0, 255, 170, 0.7));
+      }
+
+      .circuit-wire.live-open {
+        stroke: #2b2f4a;
+        filter: none;
+      }
+
+      .circuit-wire.live-half {
+        stroke: #ffd166;
+        filter: drop-shadow(0 0 4px rgba(255, 209, 102, 0.55));
+      }
+
       .circuit-states-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -494,13 +594,194 @@
 
           <!-- 3 Estados del Circuit Breaker -->
           <div class="circuit-box">
+            <!-- 1. ESCENARIO DEL CIRCUITO ELÉCTRICO FÍSICO INTERACTIVO -->
+            <div class="circuit-canvas-wrap">
+              <div class="circuit-top-bar">
+                <div class="circuit-meter">
+                  <span class="meter-label">CORRIENTE NOMINAL:</span>
+                  <span id="meter-current" class="meter-val text-green">100% (FLUJO ACTIVO)</span>
+                </div>
+                <div class="circuit-meter">
+                  <span class="meter-label">SENSOR DE FALLAS:</span>
+                  <span id="meter-thermal" class="meter-val">0 / 3 CONSECUTIVAS</span>
+                </div>
+                <div class="circuit-meter">
+                  <span class="meter-label">DISYUNTOR:</span>
+                  <span id="meter-state" class="meter-val state-pill closed">CERRADO</span>
+                </div>
+              </div>
+
+              <!-- DIAGRAMA ESQUEMÁTICO DEL CIRCUITO CON INTERRUPTOR Y FOCO -->
+              <svg id="circuit-svg" class="circuit-schematic-svg" viewBox="0 0 760 210" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <!-- Halo del Foco cuando está CERRADO (Luz Verde Plena) -->
+                  <radialGradient id="glow-bulb-green" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+                    <stop offset="25%" stop-color="#00ffaa" stop-opacity="0.95" />
+                    <stop offset="65%" stop-color="#00ffaa" stop-opacity="0.35" />
+                    <stop offset="100%" stop-color="#00ffaa" stop-opacity="0" />
+                  </radialGradient>
+                  <!-- Halo del Foco cuando está SEMI-ABIERTO (Luz Ámbar Tenue al 25%) -->
+                  <radialGradient id="glow-bulb-amber" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#fff8db" stop-opacity="0.9" />
+                    <stop offset="30%" stop-color="#ffd166" stop-opacity="0.6" />
+                    <stop offset="70%" stop-color="#ffd166" stop-opacity="0.18" />
+                    <stop offset="100%" stop-color="#ffd166" stop-opacity="0" />
+                  </radialGradient>
+                  <!-- Gradientes para Pulsos de Energía -->
+                  <radialGradient id="pulse-gradient-cyan" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="45%" stop-color="#00ffff" />
+                    <stop offset="100%" stop-color="#00a8ff" stop-opacity="0" />
+                  </radialGradient>
+                  <radialGradient id="pulse-gradient-red" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="45%" stop-color="#ff3366" />
+                    <stop offset="100%" stop-color="#990022" stop-opacity="0" />
+                  </radialGradient>
+                  <!-- Filtro de Resplandor Neón -->
+                  <filter id="neon-glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                  <filter id="intense-glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="7" result="blur1"/>
+                    <feGaussianBlur stdDeviation="15" result="blur2"/>
+                    <feMerge>
+                      <feMergeNode in="blur2"/>
+                      <feMergeNode in="blur1"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                <!-- Cuadrícula Técnica Tenue de Fondo -->
+                <g opacity="0.1" stroke="rgba(0, 255, 255, 0.4)" stroke-width="0.8">
+                  <line x1="20" y1="50" x2="740" y2="50" stroke-dasharray="4 4" />
+                  <line x1="20" y1="100" x2="740" y2="100" stroke-dasharray="4 4" />
+                  <line x1="20" y1="168" x2="740" y2="168" stroke-dasharray="4 4" />
+                  <line x1="95" y1="25" x2="95" y2="185" stroke-dasharray="4 4" />
+                  <line x1="265" y1="25" x2="265" y2="185" stroke-dasharray="4 4" />
+                  <line x1="435" y1="25" x2="435" y2="185" stroke-dasharray="4 4" />
+                  <line x1="645" y1="25" x2="645" y2="185" stroke-dasharray="4 4" />
+                </g>
+
+                <!-- CABLES CONDUCTORES -->
+                <!-- Cable Vivo 1: Generador a Borne Entrada Disyuntor (x: 95 a x: 265) -->
+                <line id="wire-in" x1="95" y1="100" x2="265" y2="100" class="circuit-wire live-closed" stroke-width="4.5" />
+                
+                <!-- Cable Vivo 2: Borne Salida Disyuntor a Base del Foco (x: 435 a x: 610) -->
+                <line id="wire-out" x1="435" y1="100" x2="610" y2="100" class="circuit-wire live-closed" stroke-width="4.5" />
+                
+                <!-- Cable de Retorno (Tierra / Masa): Cierra el lazo desde el casquillo hasta el generador -->
+                <path id="wire-ground" d="M 645 135 L 645 168 L 57 168 L 57 135" fill="none" stroke="rgba(0, 255, 255, 0.4)" stroke-width="2.5" stroke-dasharray="5 3" />
+                
+                <!-- Símbolo Físico de Tierra en el Bus Inferior -->
+                <g transform="translate(350, 168)">
+                  <line x1="0" y1="0" x2="0" y2="11" stroke="rgba(0, 255, 255, 0.75)" stroke-width="2" />
+                  <line x1="-11" y1="11" x2="11" y2="11" stroke="rgba(0, 255, 255, 0.75)" stroke-width="2" />
+                  <line x1="-7" y1="15" x2="7" y2="15" stroke="rgba(0, 255, 255, 0.75)" stroke-width="1.8" />
+                  <line x1="-3" y1="19" x2="3" y2="19" stroke="rgba(0, 255, 255, 0.75)" stroke-width="1.5" />
+                </g>
+
+                <!-- FUENTE / CLIENTE HTTP (Extremo Izquierdo) -->
+                <g id="component-source" transform="translate(20, 60)">
+                  <rect x="0" y="0" width="75" height="75" rx="8" fill="#0d0e21" stroke="#00f0ff" stroke-width="2" filter="url(#neon-glow-filter)" />
+                  <!-- Tornillos esquinas -->
+                  <circle cx="8" cy="8" r="2.5" fill="#475569" />
+                  <circle cx="67" cy="8" r="2.5" fill="#475569" />
+                  <circle cx="8" cy="67" r="2.5" fill="#475569" />
+                  <circle cx="67" cy="67" r="2.5" fill="#475569" />
+                  <!-- Icono Rayo Emisor de Peticiones -->
+                  <path d="M 40 16 L 31 36 L 40 36 L 34 54 L 48 31 L 39 31 Z" fill="#00f0ff" />
+                  <text x="37.5" y="65" fill="#e2e8f0" font-family="'Courier New', monospace" font-size="8.5" font-weight="bold" text-anchor="middle">CLIENTE</text>
+                </g>
+                <!-- Borne metálico de salida del generador -->
+                <circle cx="95" cy="100" r="6" fill="#ffd166" stroke="#060610" stroke-width="2" />
+
+                <!-- DISYUNTOR / INTERRUPTOR (CIRCUIT BREAKER POLLY) (Centro) -->
+                <g id="component-breaker">
+                  <!-- Carcasa de Aislamiento -->
+                  <rect x="235" y="28" width="230" height="110" rx="6" fill="#070815" stroke="rgba(255,255,255,0.18)" stroke-width="1.2" />
+                  <text x="350" y="46" fill="var(--srv-cyan)" font-family="'Courier New', monospace" font-size="9.5" font-weight="700" letter-spacing="0.08em" text-anchor="middle">DISYUNTOR (CIRCUIT BREAKER)</text>
+                  <text id="svg-breaker-label" x="350" y="62" fill="#00ffaa" font-family="'Courier New', monospace" font-size="9.5" font-weight="bold" text-anchor="middle">ESTADO: CERRADO (FLUJO TOTAL)</text>
+
+                  <!-- Borne de Entrada A (Pivote de la cuchilla) -->
+                  <circle cx="265" cy="100" r="10" fill="#1b1c35" stroke="#00f0ff" stroke-width="2" />
+                  <circle cx="265" cy="100" r="5" fill="#ffd166" />
+                  <text x="265" y="125" fill="#94a3b8" font-family="'Courier New', monospace" font-size="8" text-anchor="middle">IN</text>
+
+                  <!-- Borne de Salida B (Receptor de contacto) -->
+                  <circle cx="435" cy="100" r="10" fill="#1b1c35" stroke="#00f0ff" stroke-width="2" />
+                  <circle cx="435" cy="100" r="5" fill="#ffd166" />
+                  <text x="435" y="125" fill="#94a3b8" font-family="'Courier New', monospace" font-size="8" text-anchor="middle">OUT</text>
+
+                  <!-- Sonda de Prueba Auxiliar (Resistencia en Semi-Abierto) -->
+                  <g id="svg-probe-aux" style="display:none;">
+                    <path d="M 265 100 Q 350 70 435 100" fill="none" stroke="#ffd166" stroke-width="2.5" stroke-dasharray="4 3" />
+                    <rect x="325" y="66" width="50" height="15" rx="3" fill="#1b1906" stroke="#ffd166" stroke-width="1.2" />
+                    <text x="350" y="77" fill="#ffd166" font-family="'Courier New', monospace" font-size="7.5" font-weight="bold" text-anchor="middle">SONDA 25%</text>
+                  </g>
+
+                  <!-- Cuchilla Móvil del Interruptor (Pivota sobre 265, 100) -->
+                  <g id="svg-switch-pivot" style="transform-origin: 265px 100px; transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                    <line x1="265" y1="100" x2="435" y2="100" id="svg-switch-line" stroke="#00ffaa" stroke-width="6.5" stroke-linecap="round" />
+                    <circle cx="430" cy="100" r="6" id="svg-switch-tip" fill="#ffffff" />
+                    <rect x="335" y="93" width="30" height="14" rx="2" fill="#0d1124" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+                  </g>
+
+                  <!-- Arco de Chispa Fail-Fast (Aparece en Borne A cuando el disyuntor está Abierto) -->
+                  <g id="svg-fail-fast-spark" style="display:none;">
+                    <path d="M 265 100 L 250 82 L 264 90 L 246 70 L 273 88 L 265 72 L 282 92 Z" fill="#ff3366" filter="url(#intense-glow-filter)" />
+                    <text x="265" y="80" fill="#ff3366" font-family="'Courier New', monospace" font-size="9" font-weight="bold" text-anchor="middle">⚡ CORTE FAIL-FAST (0ms)</text>
+                  </g>
+                </g>
+
+                <!-- RECEPTOR / FOCO INCANDESCENTE (Servicio Downstream) (Extremo Derecho) -->
+                <g id="component-bulb" transform="translate(645, 100)">
+                  <!-- Halo de Radiación Exterior -->
+                  <circle id="svg-bulb-glow" cx="0" cy="0" r="58" fill="url(#glow-bulb-green)" opacity="0.9" style="transition: all 0.4s ease;" />
+                  
+                  <!-- Casquillo Metálico Roscado (Socket) -->
+                  <rect x="-35" y="-12" width="16" height="24" rx="2" fill="#334155" stroke="#64748b" stroke-width="1.5" />
+                  <line x1="-31" y1="-8" x2="-31" y2="8" stroke="#94a3b8" stroke-width="1.5" />
+                  <line x1="-27" y1="-8" x2="-27" y2="8" stroke="#94a3b8" stroke-width="1.5" />
+                  <line x1="-23" y1="-8" x2="-23" y2="8" stroke="#94a3b8" stroke-width="1.5" />
+                  <circle cx="-35" cy="0" r="4.5" fill="#ffd166" />
+
+                  <!-- Ampolla de Vidrio Esférico -->
+                  <circle id="svg-bulb-glass" cx="0" cy="0" r="34" fill="rgba(0, 255, 170, 0.35)" stroke="#00ffaa" stroke-width="2.5" style="transition: all 0.4s ease; transform-origin: 0 0;" />
+
+                  <!-- Reflejo Curvo en el Cristal -->
+                  <path d="M -15 -22 A 28 28 0 0 1 18 -18" fill="none" stroke="rgba(255, 255, 255, 0.55)" stroke-width="2.5" stroke-linecap="round" />
+
+                  <!-- Filamento Incandescente de Tungsteno -->
+                  <path id="svg-bulb-filament" d="M -19 0 L -8 -8 L -2 8 L 4 -8 L 10 8 L 16 -8 L 22 0" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: all 0.4s ease;" />
+
+                  <!-- Etiqueta del Servicio / Foco -->
+                  <text id="svg-bulb-text" x="0" y="48" fill="#00ffaa" font-family="'Courier New', monospace" font-size="8.5" font-weight="bold" text-anchor="middle">API EXTERNA (200 OK)</text>
+                </g>
+
+                <!-- PULSO DE ENERGÍA VIAJERO (Animado con JavaScript) -->
+                <g id="svg-energy-pulse" style="display:none; pointer-events:none;">
+                  <circle id="svg-pulse-outer" cx="0" cy="0" r="15" fill="url(#pulse-gradient-cyan)" />
+                  <circle id="svg-pulse-core" cx="0" cy="0" r="6" fill="#ffffff" filter="url(#neon-glow-filter)" />
+                  <text id="svg-pulse-tag" x="0" y="-17" fill="#ffffff" font-family="'Courier New', monospace" font-size="8.5" font-weight="bold" text-anchor="middle">REQ</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 2. TARJETAS COMPARATIVAS DE LOS 3 ESTADOS -->
             <div class="circuit-states-grid">
               <!-- Cerrado -->
               <div id="cb-card-closed" class="circuit-state-card active-closed">
                 <span style="font:700 0.72rem 'Courier New', monospace; color:var(--srv-green);">ESTADO 1</span>
                 <h3 style="color:var(--srv-green); margin:4px 0 6px; font-size:1.1rem;">CERRADO (Closed)</h3>
                 <p style="font:0.78rem/1.4 Verdana, sans-serif; color:var(--ink); margin:0;">
-                  Operación normal. El tráfico fluye libremente hacia el servicio externo. Las fallas se contabilizan.
+                  Operación normal. El disyuntor hace contacto firme y los pulsos viajan al foco encendiéndolo a máxima potencia.
                 </p>
               </div>
 
@@ -509,7 +790,7 @@
                 <span style="font:700 0.72rem 'Courier New', monospace; color:var(--srv-coral);">ESTADO 2</span>
                 <h3 style="color:var(--srv-coral); margin:4px 0 6px; font-size:1.1rem;">ABIERTO (Open)</h3>
                 <p style="font:0.78rem/1.4 Verdana, sans-serif; color:var(--ink); margin:0;">
-                  El umbral de fallas se superó. Cortacircuito activo: lanza fallo inmediato (<em>fail-fast</em>) sin llamar a la red.
+                  Disyuntor levantado tras 3 fallos. Corta la corriente: el foco se apaga y los pulsos rebotan en seco (<em>fail-fast</em>).
                 </p>
               </div>
 
@@ -518,31 +799,31 @@
                 <span style="font:700 0.72rem 'Courier New', monospace; color:var(--srv-gold);">ESTADO 3</span>
                 <h3 style="color:var(--srv-gold); margin:4px 0 6px; font-size:1.1rem;">SEMI-ABIERTO (Half-Open)</h3>
                 <p style="font:0.78rem/1.4 Verdana, sans-serif; color:var(--ink); margin:0;">
-                  Período de prueba tras el enfriamiento. Deja pasar una única llamada para verificar si el servicio revivió.
+                  Período de prueba prolongado. El foco se enciende levemente al 25% con corriente de sonda mientras espera peticiones.
                 </p>
               </div>
             </div>
 
-            <!-- Consola de Peticiones y Simulación -->
+            <!-- 3. CONSOLA DE TELEMETRÍA Y CONTADORES -->
             <div style="background:#05050f; border:1px solid rgba(255,255,255,0.12); border-radius:6px; padding:14px; margin-bottom:16px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:8px;">
                 <span style="font:700 0.74rem 'Courier New', monospace; color:var(--srv-cyan);">TELEMETRÍA DE LLAMADAS A API EXTERNA:</span>
-                <span id="cb-stats" style="font:700 0.8rem 'Courier New', monospace; color:#ffffff;">Fallos: 0 / 3 consecutivos</span>
+                <span id="cb-stats" style="font:700 0.8rem 'Courier New', monospace; color:#ffffff;">Fallos: 0 / 3 consecutivos | Estado: CERRADO</span>
               </div>
-              <div id="cb-console-log" style="font:0.8rem 'Courier New', monospace; color:var(--ink); height:100px; overflow-y:auto;">
-                [CIRCUITO CERRADO]: Sistema saludable. Listo para despachar peticiones.
+              <div id="cb-console-log" style="font:0.8rem 'Courier New', monospace; color:var(--ink); height:105px; overflow-y:auto;">
+                [CIRCUITO CERRADO]: Sistema saludable. Disyuntor conectado, conduciendo corriente y foco encendido plenamente.
               </div>
             </div>
 
-            <!-- Botones -->
+            <!-- 4. BOTONES DE CONTROL INTERACTIVO -->
             <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-              <button class="btn-theme" style="padding:10px 18px; font-size:0.82rem; cursor:pointer; border-color:var(--srv-green); color:var(--srv-green);" onclick="sendCircuitRequest(true)">
-                ✅ Enviar Petición Exitosa (200 OK)
+              <button class="btn-theme" style="padding:11px 20px; font-size:0.84rem; cursor:pointer; border-color:var(--srv-green); color:var(--srv-green);" onclick="sendCircuitRequest(true)">
+                ⚡ Enviar Pulso Exitoso (200 OK)
               </button>
-              <button class="btn-theme" style="padding:10px 18px; font-size:0.82rem; cursor:pointer; border-color:var(--srv-coral); color:var(--srv-coral);" onclick="sendCircuitRequest(false)">
-                💥 Simular Error de Red (500 Error)
+              <button class="btn-theme" style="padding:11px 20px; font-size:0.84rem; cursor:pointer; border-color:var(--srv-coral); color:var(--srv-coral);" onclick="sendCircuitRequest(false)">
+                💥 Simular Pulso con Error (500 Error)
               </button>
-              <button class="btn-theme" style="padding:10px 18px; font-size:0.82rem; cursor:pointer;" onclick="resetCircuitBreaker()">
+              <button class="btn-theme" style="padding:11px 20px; font-size:0.84rem; cursor:pointer;" onclick="resetCircuitBreaker()">
                 🔄 Reiniciar Circuito
               </button>
             </div>
@@ -698,6 +979,9 @@
           return onclickAttr.includes(tabId);
         });
         if (activeBtn) activeBtn.classList.add('active');
+        if (tabId === 'tab-circuit-breaker' && typeof updateCircuitUI === 'function') {
+          setTimeout(updateCircuitUI, 20);
+        }
       };
 
       // ==========================================
@@ -811,76 +1095,354 @@
       }
 
       // ==========================================
-      // 3. SIMULADOR CIRCUIT BREAKER (POLLY)
+      // 3. SIMULADOR CIRCUIT BREAKER (POLLY) & CIRCUITO ELÉCTRICO LITERAL
       // ==========================================
       let consecutiveFailures = 0;
-      let circuitState = 'closed'; // closed, open, half
+      let circuitState = 'closed'; // 'closed', 'open', 'half'
+      let coolingRemaining = 0;
+      let halfOpenRemaining = 0;
+      let coolingTimer = null;
       let halfOpenTimer = null;
+      let isPulseInFlight = false;
 
       function logCircuit(msg) {
         const log = document.getElementById('cb-console-log');
+        if (!log) return;
         log.innerHTML += `<div>${msg}</div>`;
         log.scrollTop = log.scrollHeight;
       }
 
       function updateCircuitUI() {
-        document.getElementById('cb-card-closed').className = 'circuit-state-card' + (circuitState === 'closed' ? ' active-closed' : '');
-        document.getElementById('cb-card-open').className = 'circuit-state-card' + (circuitState === 'open' ? ' active-open' : '');
-        document.getElementById('cb-card-half').className = 'circuit-state-card' + (circuitState === 'half' ? ' active-half' : '');
-        document.getElementById('cb-stats').innerText = `Fallos: ${consecutiveFailures} / 3 consecutivos | Estado: ${circuitState.toUpperCase()}`;
+        // 1. Tarjetas de Estado
+        const cardClosed = document.getElementById('cb-card-closed');
+        const cardOpen = document.getElementById('cb-card-open');
+        const cardHalf = document.getElementById('cb-card-half');
+        if (cardClosed) cardClosed.className = 'circuit-state-card' + (circuitState === 'closed' ? ' active-closed' : '');
+        if (cardOpen) cardOpen.className = 'circuit-state-card' + (circuitState === 'open' ? ' active-open' : '');
+        if (cardHalf) cardHalf.className = 'circuit-state-card' + (circuitState === 'half' ? ' active-half' : '');
+
+        // 2. Indicadores del Escenario Físico
+        const meterCurrent = document.getElementById('meter-current');
+        const meterThermal = document.getElementById('meter-thermal');
+        const meterState = document.getElementById('meter-state');
+        if (meterThermal) meterThermal.innerText = `${consecutiveFailures} / 3 CONSECUTIVAS`;
+
+        // Elementos SVG
+        const wireIn = document.getElementById('wire-in');
+        const wireOut = document.getElementById('wire-out');
+        const switchPivot = document.getElementById('svg-switch-pivot');
+        const switchLine = document.getElementById('svg-switch-line');
+        const breakerLabel = document.getElementById('svg-breaker-label');
+        const probeAux = document.getElementById('svg-probe-aux');
+        const bulbGlow = document.getElementById('svg-bulb-glow');
+        const bulbGlass = document.getElementById('svg-bulb-glass');
+        const bulbFilament = document.getElementById('svg-bulb-filament');
+        const bulbText = document.getElementById('svg-bulb-text');
+
+        if (circuitState === 'closed') {
+          if (meterCurrent) {
+            meterCurrent.innerText = '100% (FLUJO ACTIVO)';
+            meterCurrent.className = 'meter-val text-green';
+          }
+          if (meterState) {
+            meterState.innerText = 'CERRADO';
+            meterState.className = 'meter-val state-pill closed';
+          }
+          if (wireIn) wireIn.className.baseVal = 'circuit-wire live-closed';
+          if (wireOut) wireOut.className.baseVal = 'circuit-wire live-closed';
+
+          if (switchPivot) switchPivot.style.transform = 'rotate(0deg)';
+          if (switchLine) switchLine.setAttribute('stroke', '#00ffaa');
+          if (breakerLabel) {
+            breakerLabel.textContent = 'ESTADO: CERRADO (FLUJO TOTAL)';
+            breakerLabel.setAttribute('fill', '#00ffaa');
+          }
+          if (probeAux) probeAux.style.display = 'none';
+
+          // Foco Encendido Plenamente
+          if (bulbGlow) {
+            bulbGlow.setAttribute('fill', 'url(#glow-bulb-green)');
+            bulbGlow.setAttribute('opacity', '0.9');
+          }
+          if (bulbGlass) {
+            bulbGlass.setAttribute('fill', 'rgba(0, 255, 170, 0.35)');
+            bulbGlass.setAttribute('stroke', '#00ffaa');
+          }
+          if (bulbFilament) {
+            bulbFilament.setAttribute('stroke', '#ffffff');
+            bulbFilament.style.filter = 'drop-shadow(0 0 6px #00ffaa)';
+          }
+          if (bulbText) {
+            bulbText.textContent = 'API EXTERNA (200 OK)';
+            bulbText.setAttribute('fill', '#00ffaa');
+          }
+        } else if (circuitState === 'open') {
+          if (meterCurrent) {
+            meterCurrent.innerText = '0% (AISLADO / CORTE)';
+            meterCurrent.className = 'meter-val';
+          }
+          if (meterState) {
+            meterState.innerText = coolingRemaining > 0 ? `ABIERTO (${coolingRemaining.toFixed(1)}s)` : 'ABIERTO';
+            meterState.className = 'meter-val state-pill open';
+          }
+          if (wireIn) wireIn.className.baseVal = 'circuit-wire live-open';
+          if (wireOut) wireOut.className.baseVal = 'circuit-wire live-open';
+
+          if (switchPivot) switchPivot.style.transform = 'rotate(-38deg)';
+          if (switchLine) switchLine.setAttribute('stroke', '#ff3366');
+          if (breakerLabel) {
+            breakerLabel.textContent = coolingRemaining > 0 ? `ESTADO: ABIERTO (ENFRIAMIENTO ${coolingRemaining.toFixed(1)}s)` : 'ESTADO: ABIERTO (CORTE PROTECTOR)';
+            breakerLabel.setAttribute('fill', '#ff3366');
+          }
+          if (probeAux) probeAux.style.display = 'none';
+
+          // Foco Totalmente Apagado
+          if (bulbGlow) bulbGlow.setAttribute('opacity', '0');
+          if (bulbGlass) {
+            bulbGlass.setAttribute('fill', '#0c0d1b');
+            bulbGlass.setAttribute('stroke', '#334155');
+          }
+          if (bulbFilament) {
+            bulbFilament.setAttribute('stroke', '#475569');
+            bulbFilament.style.filter = 'none';
+          }
+          if (bulbText) {
+            bulbText.textContent = 'API EXTERNA (DOWN / APAGADA)';
+            bulbText.setAttribute('fill', '#94a3b8');
+          }
+        } else if (circuitState === 'half') {
+          if (meterCurrent) {
+            meterCurrent.innerText = '25% (CORRIENTE DE PRUEBA)';
+            meterCurrent.className = 'meter-val';
+          }
+          if (meterState) {
+            meterState.innerText = halfOpenRemaining > 0 ? `SEMI-ABIERTO (${halfOpenRemaining.toFixed(1)}s)` : 'SEMI-ABIERTO';
+            meterState.className = 'meter-val state-pill half';
+          }
+          if (wireIn) wireIn.className.baseVal = 'circuit-wire live-half';
+          if (wireOut) wireOut.className.baseVal = 'circuit-wire live-half';
+
+          if (switchPivot) switchPivot.style.transform = 'rotate(-13deg)';
+          if (switchLine) switchLine.setAttribute('stroke', '#ffd166');
+          if (breakerLabel) {
+            breakerLabel.textContent = halfOpenRemaining > 0 ? `ESTADO: SEMI-ABIERTO (VENTANA PRUEBA ${halfOpenRemaining.toFixed(1)}s)` : 'ESTADO: SEMI-ABIERTO (MODO SONDA)';
+            breakerLabel.setAttribute('fill', '#ffd166');
+          }
+          if (probeAux) probeAux.style.display = 'block';
+
+          // Foco Encendido Levemente para Probar (Brillo Ámbar Tenue al 25%)
+          if (bulbGlow) {
+            bulbGlow.setAttribute('fill', 'url(#glow-bulb-amber)');
+            bulbGlow.setAttribute('opacity', '0.45');
+          }
+          if (bulbGlass) {
+            bulbGlass.setAttribute('fill', 'rgba(255, 209, 102, 0.18)');
+            bulbGlass.setAttribute('stroke', '#ffd166');
+          }
+          if (bulbFilament) {
+            bulbFilament.setAttribute('stroke', '#ffd166');
+            bulbFilament.style.filter = 'drop-shadow(0 0 4px #ffd166)';
+          }
+          if (bulbText) {
+            bulbText.textContent = '💡 FOCO TENUE (PRUEBA AL 25%)';
+            bulbText.setAttribute('fill', '#ffd166');
+          }
+        }
+
+        // 3. Barra de Estadísticas
+        const cbStats = document.getElementById('cb-stats');
+        if (cbStats) {
+          let timeTag = '';
+          if (circuitState === 'open' && coolingRemaining > 0) {
+            timeTag = ` | Enfriando: ${coolingRemaining.toFixed(1)}s`;
+          } else if (circuitState === 'half' && halfOpenRemaining > 0) {
+            timeTag = ` | Ventana de prueba: ${halfOpenRemaining.toFixed(1)}s`;
+          }
+          cbStats.innerText = `Fallos: ${consecutiveFailures} / 3 consecutivos | Estado: ${circuitState.toUpperCase()}${timeTag}`;
+        }
       }
 
       function sendCircuitRequest(isSuccess) {
-        if (circuitState === 'open') {
-          logCircuit('<span style="color:var(--srv-coral); font-weight:700;">[FAIL-FAST (CIRCUITO ABIERTO)]: La petición fue rechazada de inmediato sin tocar la red. El servicio downstream está protegido.</span>');
+        if (isPulseInFlight) return; // Evitar colisión de animación en vuelo
+        isPulseInFlight = true;
+
+        const pulse = document.getElementById('svg-energy-pulse');
+        const pulseOuter = document.getElementById('svg-pulse-outer');
+        const pulseTag = document.getElementById('svg-pulse-tag');
+        const sparkEl = document.getElementById('svg-fail-fast-spark');
+        const bulbGlass = document.getElementById('svg-bulb-glass');
+
+        if (!pulse || !pulseOuter || !pulseTag) {
+          isPulseInFlight = false;
           return;
         }
 
-        if (circuitState === 'half') {
-          if (isSuccess) {
-            circuitState = 'closed';
-            consecutiveFailures = 0;
-            logCircuit('<span style="color:var(--srv-green); font-weight:700;">[PRUEBA EXITOSA EN SEMI-ABIERTO]: El servicio downstream se ha recuperado. Circuito CERRADO (Tráfico restaurado).</span>');
-          } else {
-            circuitState = 'open';
-            logCircuit('<span style="color:var(--srv-coral); font-weight:700;">[PRUEBA FALLIDA EN SEMI-ABIERTO]: El servicio aún está inestable. Circuito ABIERTO nuevamente por 5 segundos.</span>');
-            scheduleHalfOpen();
-          }
-          updateCircuitUI();
-          return;
-        }
-
-        // Estado Closed
+        // Configurar estilo del pulso de energía
         if (isSuccess) {
-          consecutiveFailures = 0;
-          logCircuit('[200 OK]: Llamada remota exitosa.');
+          pulseOuter.setAttribute('fill', 'url(#pulse-gradient-cyan)');
+          pulseTag.textContent = '200 OK';
+          pulseTag.setAttribute('fill', '#00f0ff');
         } else {
-          consecutiveFailures++;
-          logCircuit(`<span style="color:var(--srv-coral);">[500 ERROR]: Fallo en llamada remota (${consecutiveFailures} / 3 consecutivos).</span>`);
-          if (consecutiveFailures >= 3) {
-            circuitState = 'open';
-            logCircuit('<span style="color:var(--srv-coral); font-weight:700;">🚨 UMBRAL DE 3 FALLAS CONSECUTIVAS SUPERADO: CIRCUITO ABIERTO (Período de enfriamiento iniciado).</span>');
-            scheduleHalfOpen();
+          pulseOuter.setAttribute('fill', 'url(#pulse-gradient-red)');
+          pulseTag.textContent = '500 ERR';
+          pulseTag.setAttribute('fill', '#ff3366');
+        }
+
+        pulse.style.display = 'block';
+
+        const startX = 95;
+        const switchInX = 265;
+        const switchOutX = 435;
+        const bulbX = 645;
+        const wireY = 100;
+
+        let startTime = null;
+        const travelDuration = circuitState === 'open' ? 380 : 750;
+
+        function animate(time) {
+          if (!startTime) startTime = time;
+          const elapsed = time - startTime;
+          const progress = Math.min(elapsed / travelDuration, 1);
+
+          if (circuitState === 'open') {
+            // El pulso viaja desde 95 hasta 265 (Borne de Entrada) y se detiene en seco
+            const currentX = startX + (switchInX - startX) * progress;
+            pulse.setAttribute('transform', `translate(${currentX}, ${wireY})`);
+
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              // CHOCA CONTRA LA BRECHA DE AIRE: FAIL-FAST INMEDIATO
+              pulse.style.display = 'none';
+              if (sparkEl) {
+                sparkEl.style.display = 'block';
+                setTimeout(() => { sparkEl.style.display = 'none'; }, 650);
+              }
+              logCircuit('<span style="color:var(--srv-coral); font-weight:700;">⚡ [FAIL-FAST (CIRCUITO ABIERTO)]: La petición chocó contra el disyuntor abierto. Descartada en 0ms sin tocar la red downstream. Foco 100% protegido.</span>');
+              isPulseInFlight = false;
+            }
+          } else {
+            // Circuito Cerrado o Semi-Abierto: El pulso cruza todo el circuito hasta el foco
+            let currentX;
+            if (progress < 0.3) {
+              // Segmento 1: Generador a Borne IN
+              const p1 = progress / 0.3;
+              currentX = startX + (switchInX - startX) * p1;
+            } else if (progress < 0.6) {
+              // Segmento 2: Cruza el Disyuntor (Borne IN a Borne OUT)
+              const p2 = (progress - 0.3) / 0.3;
+              currentX = switchInX + (switchOutX - switchInX) * p2;
+            } else {
+              // Segmento 3: Borne OUT hacia el Foco
+              const p3 = (progress - 0.6) / 0.4;
+              currentX = switchOutX + (bulbX - switchOutX) * p3;
+            }
+
+            pulse.setAttribute('transform', `translate(${currentX}, ${wireY})`);
+
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              // EL PULSO LLEGÓ AL FOCO (SERVICIO EXTERNO)
+              pulse.style.display = 'none';
+              isPulseInFlight = false;
+
+              if (circuitState === 'closed') {
+                if (isSuccess) {
+                  consecutiveFailures = 0;
+                  logCircuit('[200 OK]: Llamada exitosa. Corriente plena en la carga, foco resplandeciendo intensamente.');
+                  if (bulbGlass) {
+                    bulbGlass.style.transform = 'scale(1.22)';
+                    setTimeout(() => { bulbGlass.style.transform = 'scale(1)'; }, 350);
+                  }
+                } else {
+                  consecutiveFailures++;
+                  logCircuit(`<span style="color:var(--srv-coral);">💥 [500 ERROR]: Fallo en la llamada remota (${consecutiveFailures} / 3 fallos consecutivos).</span>`);
+                  if (bulbGlass) {
+                    bulbGlass.setAttribute('fill', 'rgba(255, 51, 102, 0.5)');
+                    setTimeout(() => updateCircuitUI(), 350);
+                  }
+                  if (consecutiveFailures >= 3) {
+                    triggerTrip('UMBRAL DE 3 FALLAS SUPERADO');
+                  }
+                }
+              } else if (circuitState === 'half') {
+                if (isSuccess) {
+                  // Prueba exitosa: Recuperación total del servicio
+                  clearInterval(halfOpenTimer);
+                  halfOpenRemaining = 0;
+                  circuitState = 'closed';
+                  consecutiveFailures = 0;
+                  logCircuit('<span style="color:var(--srv-green); font-weight:700;">🎉 [PRUEBA EXITOSA EN SEMI-ABIERTO]: El servicio downstream respondió correctamente. Disyuntor CERRADO completamente (Suministro nominal al 100% restaurado).</span>');
+                  if (bulbGlass) {
+                    bulbGlass.style.transform = 'scale(1.3)';
+                    setTimeout(() => { bulbGlass.style.transform = 'scale(1)'; }, 450);
+                  }
+                } else {
+                  // Prueba fallida: Vuelve a disparar
+                  clearInterval(halfOpenTimer);
+                  halfOpenRemaining = 0;
+                  logCircuit('<span style="color:var(--srv-coral); font-weight:700;">💥 [PRUEBA FALLIDA EN SEMI-ABIERTO]: El servicio aún no se recupera. Disyuntor salta de inmediato a ABIERTO y reinicia enfriamiento.</span>');
+                  triggerTrip('FALLA EN LLAMADA DE PRUEBA');
+                }
+              }
+              updateCircuitUI();
+            }
           }
         }
-        updateCircuitUI();
+
+        requestAnimationFrame(animate);
       }
 
-      function scheduleHalfOpen() {
-        clearTimeout(halfOpenTimer);
-        halfOpenTimer = setTimeout(() => {
-          circuitState = 'half';
-          logCircuit('<span style="color:var(--srv-gold); font-weight:700;">[ENFRIAMIENTO COMPLETADO]: Circuito pasa a SEMI-ABIERTO. Se espera una petición de prueba.</span>');
+      function triggerTrip(reason) {
+        clearInterval(coolingTimer);
+        clearInterval(halfOpenTimer);
+        circuitState = 'open';
+        coolingRemaining = 7.0; // 7 segundos de enfriamiento
+
+        logCircuit(`<span style="color:var(--srv-coral); font-weight:700;">🚨 ¡DISYUNTOR DISPARADO (${reason})! Cuchilla elevada por protección térmica. Foco apagado. Enfriamiento de 7 segundos iniciado...</span>`);
+        updateCircuitUI();
+
+        coolingTimer = setInterval(() => {
+          coolingRemaining -= 0.1;
+          if (coolingRemaining <= 0) {
+            clearInterval(coolingTimer);
+            coolingRemaining = 0;
+            enterHalfOpen();
+          } else {
+            updateCircuitUI();
+          }
+        }, 100);
+      }
+
+      function enterHalfOpen() {
+        circuitState = 'half';
+        halfOpenRemaining = 12.0; // Dura varios segundos más (ventana extendida de 12 segundos)
+
+        logCircuit('<span style="color:var(--srv-gold); font-weight:700;">⚡ [ENFRIAMIENTO COMPLETADO]: Circuito pasa a SEMI-ABIERTO. El foco se enciende levemente al 25% para probar la conexión con una petición.</span>');
+        updateCircuitUI();
+
+        halfOpenTimer = setInterval(() => {
+          halfOpenRemaining -= 0.1;
+          if (halfOpenRemaining <= 0) {
+            // Al agotarse la ventana extendida sin peticiones, renueva el modo de espera de prueba
+            halfOpenRemaining = 12.0;
+            logCircuit('<span style="color:var(--srv-gold);">[MODO SONDA ACTIVO]: Foco sigue encendido levemente. Listo para recibir petición de prueba.</span>');
+          }
           updateCircuitUI();
-        }, 5000);
+        }, 100);
       }
 
       function resetCircuitBreaker() {
-        clearTimeout(halfOpenTimer);
+        clearInterval(coolingTimer);
+        clearInterval(halfOpenTimer);
+        coolingRemaining = 0;
+        halfOpenRemaining = 0;
         consecutiveFailures = 0;
         circuitState = 'closed';
+        isPulseInFlight = false;
         updateCircuitUI();
-        document.getElementById('cb-console-log').innerHTML = '[CIRCUITO CERRADO]: Sistema reiniciado y saludable.';
+        document.getElementById('cb-console-log').innerHTML = '[CIRCUITO CERRADO]: Sistema reiniciado. Disyuntor cerrado, corriente 100% nominal y foco encendido plenamente.';
       }
 
       // ==========================================
@@ -1122,10 +1684,15 @@
       };
 
       try { if (typeof updateSerilogPreview === 'function') setTimeout(updateSerilogPreview, 100); } catch(e) {}
+      try { if (typeof updateCircuitUI === 'function') setTimeout(updateCircuitUI, 50); } catch(e) {}
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+          renderQuizQuestion(); 
+          if (typeof updateCircuitUI === 'function') updateCircuitUI();
+        });
       } else {
         renderQuizQuestion();
+        if (typeof updateCircuitUI === 'function') updateCircuitUI();
       }
     
     </script>
