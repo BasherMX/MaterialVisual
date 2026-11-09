@@ -17,10 +17,10 @@ Esta guía define el protocolo estandarizado para diseñar, redactar y calibrar 
 * **Regla:** Dentro de un mismo reactivo, las 4 opciones (A, B, C y D) deben tener **exactamente la misma extensión visual y sintáctica** (mismo número aproximado de palabras y estructura gramatical paralela).
 * **Prohibición:** La respuesta correcta **jamás** debe ser más larga, explicativa o detallada que los distractores. El evaluado no debe poder adivinar la respuesta correcta por ser la opción más elaborada.
 
-### B. Distribución Balanceada de Longitudes (La Regla 40-40-20)
-No todos los reactivos deben tener opciones kilométricas ni todos deben ser ultracortos. Un banco de preguntas debe balancear sus reactivos en 3 niveles de extensión:
+### B. Distribución Balanceada de Longitudes y Complejidad (Taxonomía de 4 Niveles)
+No todos los reactivos deben tener opciones kilométricas ni todos deben ser ultracortos. Un banco de reactivos balanceado debe distribuir su composición en 4 niveles psicométricos:
 
-1. **Nivel 1: Opciones Cortas y Directas (~40% del examen):**
+1. **Nivel 1: Opciones Cortas y Directas (~30% del examen):**
    * Respuestas concisas (1 a 5 palabras por inciso), directas al grano, evaluando terminología, cotas asintóticas, tipos de lecturas anómalas o estados de ciclo de vida.
    * *Ejemplo de opciones:*
      - A) Lecturas Sucias (Dirty Reads)
@@ -28,23 +28,20 @@ No todos los reactivos deben tener opciones kilométricas ni todos deben ser ult
      - C) Lecturas Fantasma (Phantom Reads)
      - D) Bloqueos Mutuos (Deadlocks)
 
-2. **Nivel 2: Opciones Medianas (~40% del examen):**
+2. **Nivel 2: Opciones Medianas (~35% del examen):**
    * Respuestas de 1 a 2 líneas por inciso, describiendo el *cómo* o el *por qué* de un componente o directiva técnica.
    * *Ejemplo:* Explicación de cómo interactúa el Preflight de CORS, por qué `AsSplitQuery()` previene la explosión cartesiana, o el criterio de inmutabilidad de un *Value Object*.
 
-3. **Nivel 3: Opciones Detalladas / Escenarios (~20% del examen):**
+3. **Nivel 3: Opciones Detalladas / Escenarios (~15-20% del examen):**
    * Opciones elaboradas (2 a 3 líneas por inciso) que presentan compensaciones arquitectónicas completas (*trade-offs*) para resolver un incidente de producción.
 
 4. **Nivel 4: Opciones con Trampa por Negación o Detalle Sutil (~15-20% del examen):**
-
-Respuestas que alteran una sola palabra clave o invierten la lógica técnica
-
-Ejemplo de opciones:
-
-A) Requiere confirmación explícita del usuario antes de ejecutar la transacción
-B) No requiere confirmación explícita del usuario antes de ejecutar la transacción
-C) Requiere confirmación implícita del usuario después de ejecutar la transacción
-D) No requiere confirmación implícita del usuario después de ejecutar la transacción
+   * Respuestas de estructura altamente simétrica que alteran una sola palabra clave, invierten la lógica técnica o confrontan modificadores sutiles (ej. *explícita vs implícita*, *antes vs después*, *requiere vs no requiere*). Obligan al evaluado a leer con rigor minucioso.
+   * *Ejemplo de opciones:*
+     - A) Requiere confirmación explícita del usuario antes de ejecutar la transacción
+     - B) No requiere confirmación explícita del usuario antes de ejecutar la transacción
+     - C) Requiere confirmación implícita del usuario después de ejecutar la transacción
+     - D) No requiere confirmación implícita del usuario después de ejecutar la transacción
 
 ### C. Planteamiento Técnico Directo vs Referencia Doctrinal
 * **Evitar la sobre-mención de autores:** No iniciar todas las preguntas con "Según el autor X en su libro Y...". Redactar el planteamiento técnico de forma directa, universal y formal:
