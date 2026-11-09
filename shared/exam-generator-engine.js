@@ -393,7 +393,7 @@
       total: bankQuestions.length,
       byBlock: {},
       byDifficulty: { easy: 0, medium: 0, hard: 0 },
-      byLengthType: { short: 0, medium: 0, scenario: 0 },
+      byLengthType: { short: 0, medium: 0, scenario: 0, trap: 0 },
       restrictedKeywordMatches: 0
     };
 
@@ -426,8 +426,8 @@
       }
 
       // 4. Tipo de longitud
-      if (!['short', 'medium', 'scenario'].includes(q.lengthType)) {
-        errors.push(`[${qRef}] Longitud inválida: '${q.lengthType}'. Debe ser 'short', 'medium' o 'scenario'.`);
+      if (!['short', 'medium', 'scenario', 'trap'].includes(q.lengthType)) {
+        errors.push(`[${qRef}] Longitud inválida: '${q.lengthType}'. Debe ser 'short', 'medium', 'scenario' o 'trap'.`);
       } else {
         stats.byLengthType[q.lengthType] = (stats.byLengthType[q.lengthType] || 0) + 1;
       }
