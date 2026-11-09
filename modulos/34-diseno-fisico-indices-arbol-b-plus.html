@@ -269,6 +269,57 @@
           min-width: 22px;
         }
       }
+    
+      /* Botones y Controles de Simulación */
+      .btn-sim {
+        padding: 9px 15px;
+        border-radius: 6px;
+        font: 700 0.8rem "Courier New", monospace;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        user-select: none;
+      }
+
+      .btn-sim-primary {
+        background: linear-gradient(135deg, var(--cyan, #00ffff), #0080ff);
+        color: #080811;
+        font-weight: 700;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+      }
+      .btn-sim-primary:hover {
+        box-shadow: 0 0 18px rgba(0, 255, 255, 0.55);
+        transform: translateY(-2px);
+      }
+
+      .btn-sim-danger {
+        background: linear-gradient(135deg, var(--coral, #ff006e), #ff4757);
+        color: #fff;
+        font-weight: 700;
+        box-shadow: 0 0 10px rgba(255, 0, 110, 0.25);
+      }
+      .btn-sim-danger:hover {
+        box-shadow: 0 0 18px rgba(255, 0, 110, 0.55);
+        transform: translateY(-2px);
+      }
+
+      .btn-sim-warning {
+        background: rgba(255, 215, 0, 0.15);
+        border: 1px solid var(--gold, #ffd700);
+        color: var(--gold, #ffd700);
+        font-weight: 700;
+      }
+      .btn-sim-warning:hover {
+        background: var(--gold, #ffd700);
+        color: #080811;
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+        transform: translateY(-2px);
+      }
+
     </style>
   </head>
   <body data-module-id="34">
