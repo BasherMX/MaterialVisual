@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#b7e4c7" />
+  <title>El Estanque de Madisson 🐸✨</title>
+  <style>
+    /* RESET & SENSORY SAFETY: Prevenir gestos molestos en niños pequeños */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Comfortaa', 'Quicksand', 'Nunito', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+      background: #c8e6c9;
+      color: #2d5a27;
+      transition: background 0.8s ease;
+    }
+
+    /* TEMA DÍA SUAVE (PASTEL BIOPHILIC) */
+    body.theme-day {
+      background: radial-gradient(circle at 50% 30%, #e8f5e9 0%, #c8e6c9 60%, #a5d6a7 100%);
+    }
+
+    /* TEMA NOCHE DE CUNA (LULLABY) */
+    body.theme-night {
+      background: radial-gradient(circle at 50% 30%, #2a3a5e 0%, #1a2238 60%, #111625 100%);
+      color: #e2e8f0;
+    }
+
+    /* CONTENEDOR PRINCIPAL DEL JUEGO */
+    #game-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* CANVAS DE EFECTOS PARTICULAS Y AGUA */
+    #fx-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* CABECERA CALMA Y DEDICADA */
+    header.calm-header {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 14px 20px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: auto;
+    }
+
+    .title-pill {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 999px;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.12);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
+    }
+
+    body.theme-night .title-pill {
+      background: rgba(30, 41, 59, 0.75);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .title-pill h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #2e7d32;
+    }
+
+    body.theme-night .title-pill h1 {
+      color: #a7f3d0;
+    }
+
+    .title-pill .heart-badge {
+      font-size: 1.25rem;
+      animation: gentleBeat 2.5s infinite ease-in-out;
+    }
+
+    /* CONTROLES PARA PAPÁS / CUIDADOR (DISCRETOS) */
+    .parent-controls {
+      display: inline-flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.75);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      transition: transform 0.15s ease, background 0.3s ease;
+    }
+
+    body.theme-night .icon-btn {
+      background: rgba(30, 41, 59, 0.75);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* ZONA DE JUEGO DINÁMICA (CENTRAL) */
+    #world-container {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    /* MODOS INDIVIDUALES */
+    .game-scene {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .game-scene.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       ESCENA 1: LA RANITA RENÉ (PROTAGONISTA)
+       ========================================================================== */
+    .pond-scene {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* NENÚFAR FLOTANTE */
+    .lilypad-wrapper {
+      position: relative;
+      width: 320px;
+      max-width: 85vw;
+      height: 320px;
+      max-height: 85vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .lilypad-svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 14px 20px rgba(27, 94, 32, 0.15));
+      animation: gentleDrift 6s infinite ease-in-out alternate;
+    }
+
+    /* ILUSTRACIÓN DE LA RANA RENÉ (SVG ANIMADO) */
+    .frog-character {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      z-index: 6;
+      cursor: pointer;
+      transform-origin: bottom center;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .frog-character.squash {
+      transform: scale(1.15, 0.85);
+    }
+
+    .frog-character.jump {
+      transform: scale(0.9, 1.25) translateY(-60px);
+    }
+
+    /* BURBUJA DE MENSAJE AMABLE */
+    .speech-bubble {
+      position: absolute;
+      top: -40px;
+      background: #ffffff;
+      padding: 10px 22px;
+      border-radius: 20px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #2e7d32;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      border: 3px solid #81c784;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(10px) scale(0.85);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    body.theme-night .speech-bubble {
+      background: #1e293b;
+      color: #a7f3d0;
+      border-color: #34d399;
+    }
+
+    .speech-bubble.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 10px 10px 0;
+      border-style: solid;
+      border-color: #81c784 transparent transparent;
+      display: block;
+      width: 0;
+    }
+
+    body.theme-night .speech-bubble::after {
+      border-color: #34d399 transparent transparent;
+    }
+
+    /* ==========================================================================
+       ESCENA 2: CUCÚ / ¿DÓNDE ESTÁ RENÉ? (PEEK-A-BOO)
+       ========================================================================== */
+    .peek-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      width: 95%;
+      max-width: 680px;
+      flex-wrap: wrap;
+    }
+
+    .peek-spot {
+      position: relative;
+      width: 150px;
+      height: 170px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .peek-hiding-leaf {
+      position: absolute;
+      bottom: 0;
+      width: 130px;
+      height: 110px;
+      z-index: 5;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.1));
+    }
+
+    .peek-creature {
+      position: absolute;
+      bottom: 25px;
+      width: 100px;
+      height: 100px;
+      z-index: 3;
+      transform: translateY(50px) scale(0.6);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .peek-spot.revealed .peek-creature {
+      transform: translateY(-20px) scale(1.15);
+      opacity: 1;
+    }
+
+    .peek-spot.revealed .peek-hiding-leaf {
+      transform: translateY(20px) scale(0.9);
+    }
+
+    /* ==========================================================================
+       BARRA INFERIOR DE MODOS (GIGANTE & TÁCTIL PARA BEBÉ)
+       ========================================================================== */
+    nav.toddler-nav {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 14px 16px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .mode-tab-btn {
+      flex: 1;
+      max-width: 140px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.12);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease;
+    }
+
+    body.theme-night .mode-tab-btn {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-tab-btn.active {
+      background: #ffffff;
+      border-color: #4caf50;
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 8px 22px rgba(76, 175, 80, 0.28);
+    }
+
+    body.theme-night .mode-tab-btn.active {
+      background: #1e293b;
+      border-color: #34d399;
+      box-shadow: 0 8px 22px rgba(52, 211, 153, 0.3);
+    }
+
+    .mode-tab-btn .tab-emoji {
+      font-size: 1.7rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .mode-tab-btn .tab-text {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #2e7d32;
+      margin-top: 2px;
+      pointer-events: none;
+    }
+
+    body.theme-night .mode-tab-btn .tab-text {
+      color: #a7f3d0;
+    }
+
+    /* BURBUJITAS FLOTANTES NATIVAS */
+    .bubble-item {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.85), rgba(165, 214, 167, 0.45) 50%, rgba(76, 175, 80, 0.2) 100%);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.6), 0 4px 15px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 6;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      animation: floatUp linear infinite;
+    }
+
+    /* ANIMACIONES SUAVES */
+    @keyframes gentleBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    @keyframes gentleDrift {
+      0% { transform: rotate(-1.5deg) translateY(-4px); }
+      100% { transform: rotate(1.5deg) translateY(4px); }
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(110vh) scale(0.85); opacity: 0; }
+      15% { opacity: 0.95; }
+      90% { opacity: 0.95; }
+      100% { transform: translateY(-15vh) scale(1.05); opacity: 0; }
+    }
+
+    /* MENSAJE DE AUDIO INICIAL PARA EL PRIMER TOQUE (AMIGABLE) */
+    #start-audio-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(232, 245, 233, 0.82);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: pointer;
+      transition: opacity 0.4s ease;
+    }
+
+    body.theme-night #start-audio-overlay {
+      background: rgba(26, 34, 56, 0.88);
+    }
+
+    .start-card {
+      background: #ffffff;
+      padding: 30px 36px;
+      border-radius: 32px;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(46, 125, 50, 0.2);
+      border: 4px solid #a5d6a7;
+      max-width: 320px;
+      animation: gentleBeat 3s infinite ease-in-out;
+    }
+
+    body.theme-night .start-card {
+      background: #1e293b;
+      border-color: #34d399;
+      color: #fff;
+    }
+
+    .start-card .big-frog {
+      font-size: 4rem;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .start-card h2 {
+      font-size: 1.45rem;
+      color: #2e7d32;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+
+    body.theme-night .start-card h2 {
+      color: #a7f3d0;
+    }
+
+    .start-card p {
+      font-size: 0.95rem;
+      color: #4caf50;
+      font-weight: 700;
+    }
+
+    body.theme-night .start-card p {
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body class="theme-day">
+
+  <!-- OVERLAY DE INICIO (Activa AudioContext con 1 toque suave de Madisson) -->
+  <div id="start-audio-overlay" onclick="dismissAudioOverlay()">
+    <div class="start-card">
+      <div class="big-frog">🐸</div>
+      <h2>¡Hola Madisson!</h2>
+      <p>Toca la pantalla para jugar con la Ranita René 🌸</p>
+    </div>
+  </div>
+
+  <div id="game-stage">
+    <!-- CANVAS DE PARTICULAS Y ONDAS -->
+    <canvas id="fx-canvas"></canvas>
+
+    <!-- CABECERA TRANQUILA -->
+    <header class="calm-header">
+      <div class="title-pill">
+        <span class="heart-badge">💚</span>
+        <h1>Para Madisson</h1>
+        <span style="font-size: 1.15rem;">🐸</span>
+      </div>
+
+      <div class="parent-controls">
+        <button class="icon-btn" onclick="toggleTheme()" title="Cambiar a modo noche de cuna" aria-label="Cambiar tema">
+          <span id="theme-icon">🌙</span>
+        </button>
+        <button class="icon-btn" onclick="toggleMute()" title="Silenciar / Activar sonido" aria-label="Sonido">
+          <span id="sound-icon">🔔</span>
+        </button>
+        <button class="icon-btn" onclick="toggleFullscreen()" title="Pantalla Completa" aria-label="Pantalla completa">
+          <span>⛶</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ZONA CENTRAL DE JUEGO -->
+    <main id="world-container">
+
+      <!-- ==============================================================
+           ESCENA 1: LA RANITA RENÉ (PROTAGONISTA INTERACTIVO)
+           ============================================================== -->
+      <section id="scene-frog" class="game-scene active">
+        <div class="pond-scene" id="pond-touch-area" onclick="handlePondTap(event)">
+          
+          <div class="lilypad-wrapper">
+            <!-- Mensaje Flotante de Amor y Saludo -->
+            <div class="speech-bubble" id="frog-speech">¡Hola Madisson! 🐸💚</div>
+
+            <!-- NENÚFAR FLOTANTE (ILUSTRACIÓN SVG) -->
+            <svg class="lilypad-svg" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="padGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4caf50" />
+                  <stop offset="100%" stop-color="#2e7d32" />
+                </linearGradient>
+              </defs>
+              <!-- Hoja con su muesca característica de nenúfar -->
+              <path d="M 160,160 L 290,120 A 135,135 0 1,0 290,200 Z" fill="url(#padGrad)" stroke="#1b5e20" stroke-width="4" stroke-linejoin="round" />
+              <!-- Nervaduras suaves -->
+              <path d="M 160,160 L 70,80 M 160,160 L 40,160 M 160,160 L 70,240 M 160,160 L 160,290 M 160,160 L 240,270 M 160,160 L 250,60" stroke="rgba(255,255,255,0.22)" stroke-width="3" stroke-linecap="round" />
+              <!-- Pequeña flor de loto al lado -->
+              <g transform="translate(240, 95) scale(0.4)">
+                <ellipse cx="0" cy="0" rx="20" ry="35" fill="#f48fb1" transform="rotate(-30)" />
+                <ellipse cx="0" cy="0" rx="20" ry="35" fill="#f48fb1" transform="rotate(30)" />
+                <ellipse cx="0" cy="0" rx="18" ry="40" fill="#f06292" />
+                <circle cx="0" cy="5" r="10" fill="#fff59d" />
+              </g>
+            </svg>
+
+            <!-- RANA RENÉ (ILUSTRACIÓN SVG ULTRA TIERNA Y AMIGABLE) -->
+            <div class="frog-character" id="frog-hero" onclick="handleFrogTap(event)">
+              <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <!-- Degradado verde de la piel suave -->
+                  <linearGradient id="frogSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#8ce02c" />
+                    <stop offset="100%" stop-color="#6bbd1d" />
+                  </linearGradient>
+                  <!-- Collarín verde claro René -->
+                  <linearGradient id="collarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#bbf740" />
+                    <stop offset="100%" stop-color="#91e422" />
+                  </linearGradient>
+                </defs>
+
+                <!-- Patitas traseras sentadas -->
+                <ellipse cx="45" cy="165" rx="30" ry="16" fill="#5ea818" />
+                <ellipse cx="155" cy="165" rx="30" ry="16" fill="#5ea818" />
+
+                <!-- Cuerpo de René -->
+                <ellipse cx="100" cy="145" rx="55" ry="45" fill="url(#frogSkin)" />
+                <!-- Pancita suave -->
+                <ellipse cx="100" cy="150" rx="38" ry="32" fill="#c3f56e" opacity="0.85" />
+
+                <!-- Patitas delanteras apoyadas -->
+                <g id="frog-arms">
+                  <path d="M 68,140 Q 60,175 55,180 Q 65,182 72,175" fill="none" stroke="#6bbd1d" stroke-width="12" stroke-linecap="round" />
+                  <path d="M 132,140 Q 140,175 145,180 Q 135,182 128,175" fill="none" stroke="#6bbd1d" stroke-width="12" stroke-linecap="round" />
+                  <!-- Deditos redondos -->
+                  <circle cx="53" cy="182" r="5" fill="#6bbd1d" />
+                  <circle cx="61" cy="183" r="5" fill="#6bbd1d" />
+                  <circle cx="147" cy="182" r="5" fill="#6bbd1d" />
+                  <circle cx="139" cy="183" r="5" fill="#6bbd1d" />
+                </g>
+
+                <!-- Collarín triangular icónico de la Rana René -->
+                <path d="M 65,115 L 75,135 L 86,118 L 100,140 L 114,118 L 125,135 L 135,115 Q 100,126 65,115 Z" fill="url(#collarGrad)" stroke="#5ea818" stroke-width="2" />
+
+                <!-- Cabeza grande y redondita -->
+                <ellipse cx="100" cy="85" rx="66" ry="48" fill="url(#frogSkin)" />
+
+                <!-- Mejillas rosadas suaves -->
+                <circle cx="58" cy="98" r="11" fill="#ff80ab" opacity="0.45" />
+                <circle cx="142" cy="98" r="11" fill="#ff80ab" opacity="0.45" />
+
+                <!-- Sonrisa tierna de René -->
+                <path id="frog-smile" d="M 60,88 Q 100,125 140,88" fill="#9e2a2b" stroke="#33691e" stroke-width="3" stroke-linecap="round" />
+                <!-- Lengua tierna -->
+                <path d="M 85,99 Q 100,118 115,99 Z" fill="#ff8da1" />
+
+                <!-- Ojos grandes y saltones en la parte superior -->
+                <!-- Ojo izquierdo -->
+                <g id="eye-left" transform-origin="62 48">
+                  <ellipse cx="62" cy="48" rx="24" ry="24" fill="#ffffff" stroke="#5ea818" stroke-width="3" />
+                  <!-- Pupila horizontal con brillo tierno -->
+                  <ellipse id="pupil-left" cx="62" cy="48" rx="9" ry="12" fill="#1b3804" />
+                  <circle cx="59" cy="44" r="4" fill="#ffffff" />
+                </g>
+
+                <!-- Ojo derecho -->
+                <g id="eye-right" transform-origin="138 48">
+                  <ellipse cx="138" cy="48" rx="24" ry="24" fill="#ffffff" stroke="#5ea818" stroke-width="3" />
+                  <!-- Pupila horizontal con brillo tierno -->
+                  <ellipse id="pupil-right" cx="138" cy="48" rx="9" ry="12" fill="#1b3804" />
+                  <circle cx="135" cy="44" r="4" fill="#ffffff" />
+                </g>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           ESCENA 2: BURBUJAS MÁGICAS (POP SENSORIAL TRANQUILIZANTE)
+           ============================================================== -->
+      <section id="scene-bubbles" class="game-scene">
+        <div id="bubble-container" style="position:relative; width:100%; height:100%;">
+          <!-- Burbujas inyectadas y mantenidas por JS -->
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           ESCENA 3: CUCÚ / PEEK-A-BOO (¿DÓNDE ESTÁ LA RANITA?)
+           ============================================================== -->
+      <section id="scene-peek" class="game-scene">
+        <div class="peek-grid">
+          
+          <!-- Hojas de nenúfar donde se asoma René -->
+          <div class="peek-spot" onclick="handlePeekClick(0, this)">
+            <div class="peek-creature" id="peek-c-0">
+              <span style="font-size:4.5rem;">🐸</span>
+            </div>
+            <svg class="peek-hiding-leaf" viewBox="0 0 140 120">
+              <path d="M 20,110 Q 10,40 70,20 Q 130,40 120,110 Z" fill="#66bb6a" stroke="#2e7d32" stroke-width="4" />
+              <circle cx="70" cy="55" r="14" fill="#a5d6a7" />
+              <text x="70" y="60" font-size="16" text-anchor="middle" fill="#1b5e20" font-weight="bold">🌸</text>
+            </svg>
+          </div>
+
+          <div class="peek-spot" onclick="handlePeekClick(1, this)">
+            <div class="peek-creature" id="peek-c-1">
+              <span style="font-size:4.5rem;">🐥</span>
+            </div>
+            <svg class="peek-hiding-leaf" viewBox="0 0 140 120">
+              <path d="M 20,110 Q 10,40 70,20 Q 130,40 120,110 Z" fill="#4caf50" stroke="#1b5e20" stroke-width="4" />
+              <circle cx="70" cy="55" r="14" fill="#81c784" />
+              <text x="70" y="60" font-size="16" text-anchor="middle" fill="#1b5e20" font-weight="bold">⭐</text>
+            </svg>
+          </div>
+
+          <div class="peek-spot" onclick="handlePeekClick(2, this)">
+            <div class="peek-creature" id="peek-c-2">
+              <span style="font-size:4.5rem;">🐰</span>
+            </div>
+            <svg class="peek-hiding-leaf" viewBox="0 0 140 120">
+              <path d="M 20,110 Q 10,40 70,20 Q 130,40 120,110 Z" fill="#81c784" stroke="#2e7d32" stroke-width="4" />
+              <circle cx="70" cy="55" r="14" fill="#a5d6a7" />
+              <text x="70" y="60" font-size="16" text-anchor="middle" fill="#1b5e20" font-weight="bold">💖</text>
+            </svg>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           ESCENA 4: PINTAR CON DEDITO (TRAZOS DE LUZ PENTATÓNICOS)
+           ============================================================== -->
+      <section id="scene-draw" class="game-scene">
+        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+          <div style="background:rgba(255,255,255,0.7); backdrop-filter:blur(6px); padding:12px 24px; border-radius:999px; font-weight:800; font-size:1.05rem; color:#2e7d32; border:2px solid #a5d6a7;">
+            ✨ ¡Pasa tu dedito por la pantalla, Madisson! ✨
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- NAVEGACIÓN INFERIOR GIGANTE PARA BEBÉ -->
+    <nav class="toddler-nav">
+      <button class="mode-tab-btn active" id="tab-btn-frog" onclick="switchScene('scene-frog')">
+        <span class="tab-emoji">🐸</span>
+        <span class="tab-text">Ranita René</span>
+      </button>
+      <button class="mode-tab-btn" id="tab-btn-bubbles" onclick="switchScene('scene-bubbles')">
+        <span class="tab-emoji">🫧</span>
+        <span class="tab-text">Burbujas</span>
+      </button>
+      <button class="mode-tab-btn" id="tab-btn-peek" onclick="switchScene('scene-peek')">
+        <span class="tab-emoji">🙈</span>
+        <span class="tab-text">Cucú</span>
+      </button>
+      <button class="mode-tab-btn" id="tab-btn-draw" onclick="switchScene('scene-draw')">
+        <span class="tab-emoji">✨</span>
+        <span class="tab-text">Estrellitas</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    /* =========================================================================
+       1. MOTOR DE AUDIO SINTÉTICO PROCEDURAL (WEB AUDIO API)
+       Cero archivos MP3 externos. 100% autónomo y afinado en escala pentatónica
+       (Do, Re, Mi, Sol, La) para que jamás suene desafinado o estridente.
+       ========================================================================= */
+    let audioCtx = null;
+    let isMuted = false;
+
+    // Escala pentatónica en frecuencias Hz dulces (Do Mayor cálido)
+    const PENTATONIC_FREQS = [
+      261.63, // Do4
+      293.66, // Re4
+      329.63, // Mi4
+      392.00, // Sol4
+      440.00, // La4
+      523.25, // Do5
+      587.33, // Re5
+      659.25  // Mi5
+    ];
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Tono de campana / marimba suave (Sine + Lowpass filter + Envolvente cálida)
+    function playGentleBell(freqIndex = null, customFreq = null) {
+      if (isMuted) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      let freq = customFreq;
+      if (!freq) {
+        const idx = (freqIndex !== null) ? (freqIndex % PENTATONIC_FREQS.length) : Math.floor(Math.random() * PENTATONIC_FREQS.length);
+        freq = PENTATONIC_FREQS[idx];
+      }
+
+      // Oscilador senoidal puro (el sonido más relajante y seguro para el oído infantil)
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      // Filtro paso-bajas que elimina cualquier aspereza aguda
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, now);
+
+      // Envolvente acústica: ataque rápido y desvanecimiento suave (campanita)
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.9);
+    }
+
+    // Sonido suave de gota de agua / burbuja ("plop" melódico)
+    function playWaterPlop() {
+      if (isMuted) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      // Descenso rápido de frecuencia característico de una gota
+      const baseFreq = 480 + Math.random() * 160;
+      osc.frequency.setValueAtTime(baseFreq * 1.5, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.12);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.3, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.28);
+    }
+
+    // Sonido dulce de ranita (doble toque madera armónico)
+    function playFrogRibbit() {
+      if (isMuted) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      [0, 0.11].forEach((delay, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(i === 0 ? 320 : 380, now + delay);
+
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(450, now + delay);
+        filter.Q.setValueAtTime(4, now + delay);
+
+        gain.gain.setValueAtTime(0.001, now + delay);
+        gain.gain.linearRampToValueAtTime(0.25, now + delay + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.18);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now + delay);
+        osc.stop(now + delay + 0.2);
+      });
+    }
+
+    // Desactivar / activar sonido
+    function toggleMute() {
+      isMuted = !isMuted;
+      const icon = document.getElementById('sound-icon');
+      if (icon) icon.innerText = isMuted ? '🔕' : '🔔';
+    }
+
+    // Cambiar tema Día / Noche
+    function toggleTheme() {
+      const isNight = document.body.classList.toggle('theme-night');
+      document.body.classList.toggle('theme-day', !isNight);
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.innerText = isNight ? '☀️' : '🌙';
+      playGentleBell(isNight ? 0 : 5);
+    }
+
+    // Pantalla completa para que la pequeña no cierre pestañas
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function dismissAudioOverlay() {
+      initAudio();
+      playFrogRibbit();
+      const overlay = document.getElementById('start-audio-overlay');
+      if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.style.display = 'none', 400);
+      }
+    }
+
+    /* =========================================================================
+       2. CANVAS DE EFECTOS: ONDAS DE AGUA, ESTRELLITAS Y MARIPOSAS
+       ========================================================================= */
+    const canvas = document.getElementById('fx-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = 0, height = 0;
+    const particles = [];
+    const ripples = [];
+
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function addRipple(x, y) {
+      ripples.push({
+        x: x,
+        y: y,
+        radius: 10,
+        maxRadius: 80 + Math.random() * 40,
+        alpha: 0.65,
+        color: document.body.classList.contains('theme-night') ? 'rgba(167, 243, 208,' : 'rgba(255, 255, 255,'
+      });
+    }
+
+    function addSparkles(x, y, count = 6, emoji = null) {
+      const symbols = ['⭐', '🌸', '✨', '💚', '🍃'];
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1.5 + Math.random() * 3.5;
+        particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1.2,
+          alpha: 1,
+          size: 20 + Math.random() * 14,
+          symbol: emoji || symbols[Math.floor(Math.random() * symbols.length)],
+          rotation: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.1
+        });
+      }
+    }
+
+    function updateAndRenderFX() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Render ondas de agua
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.radius += 2.2;
+        r.alpha -= 0.016;
+
+        if (r.alpha <= 0 || r.radius >= r.maxRadius) {
+          ripples.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `${r.color} ${r.alpha})`;
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
+      }
+
+      // Render partículas y estrellitas
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.04; // Gravedad muy suave
+        p.alpha -= 0.018;
+        p.rotation += p.vRot;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.font = `${p.size}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.symbol, 0, 0);
+        ctx.restore();
+      }
+
+      requestAnimationFrame(updateAndRenderFX);
+    }
+    requestAnimationFrame(updateAndRenderFX);
+
+    /* =========================================================================
+       3. INTERACCIÓN DE LA RANA RENÉ (ESCENA 1)
+       ========================================================================= */
+    const frogPhrases = [
+      "¡Hola Madisson! 🐸💚",
+      "¡Te quiero, Madisson! ✨",
+      "¡Ribbit! 🌸",
+      "¡Eres la mejor, Madisson! ⭐",
+      "¡Boing! ¡Salto para ti! 🍃",
+      "¡Cucú Madisson! 💖",
+      "¡Qué lindo día contigo! ☀️"
+    ];
+    let phraseIdx = 0;
+    let isJumping = false;
+
+    function handleFrogTap(e) {
+      e.stopPropagation();
+      initAudio();
+      playFrogRibbit();
+      playGentleBell(Math.floor(Math.random() * 8));
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 3;
+
+      addSparkles(x, y, 9, '💚');
+      addRipple(x, rect.bottom - 10);
+
+      // Animación de salto amoroso de René
+      const frogEl = document.getElementById('frog-hero');
+      if (frogEl && !isJumping) {
+        isJumping = true;
+        frogEl.classList.add('squash');
+        setTimeout(() => {
+          frogEl.classList.remove('squash');
+          frogEl.classList.add('jump');
+          setTimeout(() => {
+            frogEl.classList.remove('jump');
+            isJumping = false;
+          }, 350);
+        }, 120);
+      }
+
+      // Mostrar frase dulce personalizada
+      const bubble = document.getElementById('frog-speech');
+      if (bubble) {
+        bubble.innerText = frogPhrases[phraseIdx % frogPhrases.length];
+        phraseIdx++;
+        bubble.classList.add('visible');
+        clearTimeout(bubble._timeout);
+        bubble._timeout = setTimeout(() => {
+          bubble.classList.remove('visible');
+        }, 2200);
+      }
+    }
+
+    function handlePondTap(e) {
+      initAudio();
+      playWaterPlop();
+      playGentleBell();
+      const x = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : width / 2);
+      const y = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : height / 2);
+      addRipple(x, y);
+      addSparkles(x, y, 4, '🌸');
+    }
+
+    // Los ojitos de la rana siguen suavemente el cursor o los toques
+    window.addEventListener('pointermove', (e) => {
+      const frogHero = document.getElementById('frog-hero');
+      if (!frogHero) return;
+      const rect = frogHero.getBoundingClientRect();
+      const frogCenterX = rect.left + rect.width / 2;
+      const frogCenterY = rect.top + rect.height / 2;
+
+      const deltaX = (e.clientX - frogCenterX) / width;
+      const deltaY = (e.clientY - frogCenterY) / height;
+
+      const pLeft = document.getElementById('pupil-left');
+      const pRight = document.getElementById('pupil-right');
+      const moveX = Math.max(-5, Math.min(5, deltaX * 18));
+      const moveY = Math.max(-4, Math.min(4, deltaY * 14));
+
+      if (pLeft) pLeft.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+      if (pRight) pRight.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+    });
+
+    /* =========================================================================
+       4. ESCENA 2: BURBUJAS MÁGICAS FLOTANTES
+       ========================================================================= */
+    const bubbleContainer = document.getElementById('bubble-container');
+    const bubbleEmojis = ['🌸', '⭐', '🦋', '🍀', '✨', '🐸', '💖', '🌼'];
+    let bubbleSpawnInterval = null;
+
+    function createBubble() {
+      if (!bubbleContainer) return;
+      const b = document.createElement('div');
+      b.className = 'bubble-item';
+
+      const size = 65 + Math.random() * 45; // Tamaño amplio ideal para dedos de 2 años
+      const startX = Math.random() * (window.innerWidth - size - 20) + 10;
+      const duration = 7 + Math.random() * 5; // Flotan despacio sin prisas
+
+      b.style.width = `${size}px`;
+      b.style.height = `${size}px`;
+      b.style.left = `${startX}px`;
+      b.style.animationDuration = `${duration}s`;
+
+      const emojiInside = bubbleEmojis[Math.floor(Math.random() * bubbleEmojis.length)];
+      b.innerHTML = `<span style="font-size:${size * 0.42}px; pointer-events:none; opacity:0.85;">${emojiInside}</span>`;
+
+      // Al tocar la burbuja: explota con suavidad y libera una mariposa/flor
+      const popHandler = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        playWaterPlop();
+        playGentleBell(Math.floor(Math.random() * 8));
+
+        const rect = b.getBoundingClientRect();
+        addRipple(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        addSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 8, emojiInside);
+
+        b.remove();
+      };
+
+      b.addEventListener('pointerdown', popHandler);
+      bubbleContainer.appendChild(b);
+
+      // Auto-eliminar cuando termine de flotar arriba
+      setTimeout(() => {
+        if (b.parentNode) b.remove();
+      }, duration * 1000);
+    }
+
+    function startBubbles() {
+      if (bubbleSpawnInterval) clearInterval(bubbleSpawnInterval);
+      if (bubbleContainer) bubbleContainer.innerHTML = '';
+      // Spawn inicial
+      for (let i = 0; i < 4; i++) {
+        setTimeout(createBubble, i * 600);
+      }
+      bubbleSpawnInterval = setInterval(createBubble, 1800);
+    }
+
+    function stopBubbles() {
+      if (bubbleSpawnInterval) clearInterval(bubbleSpawnInterval);
+      if (bubbleContainer) bubbleContainer.innerHTML = '';
+    }
+
+    // Tocar el fondo del contenedor de burbujas crea una nueva burbuja inmediatamente
+    if (bubbleContainer) {
+      bubbleContainer.addEventListener('pointerdown', (e) => {
+        if (e.target === bubbleContainer) {
+          playWaterPlop();
+          playGentleBell();
+          addRipple(e.clientX, e.clientY);
+          addSparkles(e.clientX, e.clientY, 3);
+        }
+      });
+    }
+
+    /* =========================================================================
+       5. ESCENA 3: CUCÚ / PEEK-A-BOO (¿DÓNDE ESTÁ LA RANITA?)
+       ========================================================================= */
+    const peekEmojis = ['🐸', '🐥', '🐰', '🐼', '🐱', '🦄'];
+    let luckyIndex = 0;
+
+    function randomizePeekCreatures() {
+      luckyIndex = Math.floor(Math.random() * 3);
+      for (let i = 0; i < 3; i++) {
+        const el = document.getElementById(`peek-c-${i}`);
+        if (el) {
+          if (i === luckyIndex) {
+            el.innerHTML = '<span style="font-size:4.8rem;">🐸</span>';
+          } else {
+            const others = peekEmojis.filter(em => em !== '🐸');
+            el.innerHTML = `<span style="font-size:4.8rem;">${others[Math.floor(Math.random() * others.length)]}</span>`;
+          }
+        }
+      }
+      document.querySelectorAll('.peek-spot').forEach(s => s.classList.remove('revealed'));
+    }
+
+    function handlePeekClick(idx, spotEl) {
+      initAudio();
+      const rect = spotEl.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      spotEl.classList.add('revealed');
+
+      if (idx === luckyIndex) {
+        // Encontró a la Ranita René
+        playFrogRibbit();
+        playGentleBell(5);
+        addSparkles(cx, cy, 12, '💚');
+      } else {
+        // Encontró a otro lindo amiguito (100% positivo, nunca hay error)
+        playWaterPlop();
+        playGentleBell(2);
+        addSparkles(cx, cy, 8, '🌸');
+      }
+      addRipple(cx, cy);
+
+      // Después de 2.5 segundos, se vuelven a esconder alegremente
+      clearTimeout(spotEl._hideTimeout);
+      spotEl._hideTimeout = setTimeout(() => {
+        spotEl.classList.remove('revealed');
+      }, 2500);
+    }
+
+    /* =========================================================================
+       6. ESCENA 4: PINTAR CON DEDITO (TRAZOS LIBRES PENTATÓNICOS)
+       ========================================================================= */
+    let lastDrawTime = 0;
+    const sceneDraw = document.getElementById('scene-draw');
+
+    function handleDrawingStroke(e) {
+      if (!sceneDraw.classList.contains('active')) return;
+      initAudio();
+
+      const now = Date.now();
+      const touches = e.touches ? Array.from(e.touches) : [e];
+
+      touches.forEach(t => {
+        const x = t.clientX;
+        const y = t.clientY;
+
+        // Sonido modulado suave según la altura del trazo (arriba más agudo, abajo más grave)
+        if (now - lastDrawTime > 110) {
+          lastDrawTime = now;
+          const heightRatio = 1 - Math.max(0, Math.min(1, y / height));
+          const pentIndex = Math.floor(heightRatio * (PENTATONIC_FREQS.length - 1));
+          playGentleBell(pentIndex);
+        }
+
+        addRipple(x, y);
+        addSparkles(x, y, 2, '✨');
+      });
+    }
+
+    window.addEventListener('pointerdown', (e) => {
+      if (sceneDraw.classList.contains('active')) handleDrawingStroke(e);
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (sceneDraw.classList.contains('active') && (e.buttons > 0 || e.pointerType === 'touch')) {
+        handleDrawingStroke(e);
+      }
+    });
+
+    /* =========================================================================
+       7. NAVEGADOR DE ESCENAS
+       ========================================================================= */
+    function switchScene(sceneId) {
+      initAudio();
+      playGentleBell(3);
+
+      document.querySelectorAll('.game-scene').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.mode-tab-btn').forEach(b => b.classList.remove('active'));
+
+      const targetScene = document.getElementById(sceneId);
+      if (targetScene) targetScene.classList.add('active');
+
+      const activeBtn = Array.from(document.querySelectorAll('.mode-tab-btn')).find(b => {
+        const onclickAttr = b.getAttribute('onclick') || '';
+        return onclickAttr.includes(sceneId);
+      });
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (sceneId === 'scene-bubbles') {
+        startBubbles();
+      } else {
+        stopBubbles();
+      }
+
+      if (sceneId === 'scene-peek') {
+        randomizePeekCreatures();
+      }
+    }
+  </script>
+</body>
+</html>
