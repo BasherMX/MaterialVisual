@@ -187,7 +187,7 @@
       <!-- Pestañas de Navegación -->
       <nav class="nav-tabs" role="tablist">
         <button class="tab-btn active" onclick="switchTab('tab-schema')">
-          <span>⭐</span> 1. Esquema Estrella vs Copo de Nieve
+          <span>⭐</span> 1. Esquemas: Estrella vs Copo de Nieve (Teoría &amp; Simulador)
         </button>
         <button class="tab-btn" onclick="switchTab('tab-architectures')">
           <span>🏛️</span> 2. Kimball vs Inmon
@@ -202,6 +202,85 @@
 
       <!-- TAB 1: MODELADO DIMENSIONAL -->
       <section id="tab-schema" class="content-panel active">
+        <!-- TARJETAS DOCTRINALES: QUÉ ES Y CÓMO FUNCIONA CADA ESQUEMA -->
+        <div class="schema-concept-grid">
+          <!-- Esquema en Estrella -->
+          <div class="schema-concept-card star-card">
+            <span class="schema-badge badge-star">⭐ MODELO DIMENSIONAL CLÁSICO</span>
+            <h3 style="margin:0 0 8px; color:var(--fact-gold); font-size:1.15rem;">Esquema en Estrella (Star Schema)</h3>
+            <p style="font-size:0.85rem; color:var(--muted); line-height:1.55; margin:0 0 10px;">
+              <strong>¿Qué es?</strong> Es el patrón arquitectónico por excelencia del Data Warehouse dimensional (Kimball). Se estructura en torno a una <strong>tabla de hechos central (Fact Table)</strong> conectada directamente a múltiples <strong>tablas de dimensiones radiales</strong> no normalizadas (1 nivel de profundidad).
+            </p>
+            <strong style="color:var(--cyan); font-size:0.8rem; text-transform:uppercase; font-family:'Courier New', monospace;">¿Cómo funciona?</strong>
+            <ul class="schema-feature-list">
+              <li><strong>Desnormalización intencional:</strong> Las dimensiones contienen atributos jerárquicos redundantes en la misma fila (ej. <em>Categoría</em> y <em>Subcategoría</em> dentro de <code>Dim_Producto</code>).</li>
+              <li><strong>Rendimiento analítico supremo:</strong> Cualquier métrica se obtiene con <strong>1 solo JOIN</strong> por dimensión, minimizando I/O de disco y acelerando consultas OLAP masivas.</li>
+              <li><strong>Simplicidad de negocio:</strong> Intuitivo para analistas y herramientas de BI (PowerBI, Tableau) al evitar navegaciones relacionales complejas.</li>
+            </ul>
+          </div>
+
+          <!-- Esquema en Copo de Nieve -->
+          <div class="schema-concept-card snow-card">
+            <span class="schema-badge badge-snow">❄️ MODELO DIMENSIONAL NORMALIZADO</span>
+            <h3 style="margin:0 0 8px; color:var(--dim-cyan); font-size:1.15rem;">Esquema en Copo de Nieve (Snowflake Schema)</h3>
+            <p style="font-size:0.85rem; color:var(--muted); line-height:1.55; margin:0 0 10px;">
+              <strong>¿Qué es?</strong> Es una variación refinada del esquema en estrella donde una o más <strong>dimensiones se normalizan en subdimensiones</strong> hasta 2FN o 3FN, dividiendo las jerarquías en múltiples tablas secundarias conectadas en cadena.
+            </p>
+            <strong style="color:var(--cyan); font-size:0.8rem; text-transform:uppercase; font-family:'Courier New', monospace;">¿Cómo funciona?</strong>
+            <ul class="schema-feature-list">
+              <li><strong>Eliminación de redundancias:</strong> Las jerarquías se aíslan en tablas auxiliares (ej. <code>Fact_Ventas → Dim_Producto → Sub_Categoria → Categoria</code>).</li>
+              <li><strong>Ahorro de espacio físico:</strong> Reduce el tamaño de dimensiones con cadenas de texto voluminosas y facilita el mantenimiento centralizado de catálogos.</li>
+              <li><strong>Penalización en consultas:</strong> Requiere múltiples <strong>JOINs en cascada</strong> para recomponer la información, lo que incrementa el consumo de CPU y tiempo de respuesta.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TABLA COMPARATIVA CANÓNICA -->
+        <div class="bi-card" style="padding:16px 20px; margin-bottom:24px;">
+          <h4 style="margin:0 0 12px; color:var(--cyan); font-size:0.95rem; font-family:'Courier New', monospace;">
+            📊 Comparativa Doctrinal: Estrella vs Copo de Nieve (Joyanes Cap. 3)
+          </h4>
+          <div class="data-table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Criterio Técnico</th>
+                  <th>Esquema en Estrella (Star Schema)</th>
+                  <th>Esquema en Copo de Nieve (Snowflake)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Nivel de Normalización</strong></td>
+                  <td>Desnormalizado (dimensiones planas con redundancia controlada).</td>
+                  <td>Normalizado hasta 3FN (dimensiones descompuestas en sub-tablas).</td>
+                </tr>
+                <tr>
+                  <td><strong>Número de JOINs por Consulta</strong></td>
+                  <td>Mínimo (1 JOIN por dimensión consultada contra Fact).</td>
+                  <td>Alto (múltiples JOINs encadenados para resolver jerarquías).</td>
+                </tr>
+                <tr>
+                  <td><strong>Velocidad de Consultas OLAP</strong></td>
+                  <td><strong style="color:var(--green);">Máxima velocidad</strong> y optimización en motores analíticos columnares.</td>
+                  <td>Menor velocidad debido a la sobrecarga de uniones relacionales.</td>
+                </tr>
+                <tr>
+                  <td><strong>Facilidad de Uso en BI</strong></td>
+                  <td>Muy alta (fácil navegación 'Slice &amp; Dice' y 'Drill-Down').</td>
+                  <td>Mayor complejidad (el usuario o ETL debe conocer toda la cadena).</td>
+                </tr>
+                <tr>
+                  <td><strong>Espacio de Almacenamiento</strong></td>
+                  <td>Mayor huella en disco (atributos de texto repetidos).</td>
+                  <td>Menor huella en disco (catálogos de claves compactos).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SIMULADOR VISUAL E INTERACTIVO -->
         <div class="bi-card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
             <div>
@@ -212,10 +291,10 @@
             </div>
             <div style="display:flex; gap:8px;">
               <button class="btn-theme active" id="btn-mode-star" onclick="setSchemaMode('star')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--fact-gold); color:var(--fact-gold);">
-                ⭐ Esquema en Estrella (Star Schema)
+                ⭐ Ver Esquema Estrella
               </button>
               <button class="btn-theme" id="btn-mode-snow" onclick="setSchemaMode('snow')" style="padding:10px 14px; font:700 0.8rem 'Courier New', monospace; border-color:var(--dim-cyan); color:var(--dim-cyan);">
-                ❄️ Esquema en Copo de Nieve (Snowflake)
+                ❄️ Ver Copo de Nieve
               </button>
             </div>
           </div>
