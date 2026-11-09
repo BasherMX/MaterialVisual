@@ -583,7 +583,7 @@
     </style>
   </head>
   <body>
-    <div class="page">
+    <main class="page">
       <a href="../index.html" class="btn-back-index">← Volver al Índice Principal</a>
 
       <header>
@@ -680,6 +680,10 @@
           </div>
         </div>
       </section>
+    </section>
+
+    <!-- Pestaña 2: Inspector de Tráfico HTTP -->
+    <section id="tab-inspector" class="content-panel">
 
       <!-- Playground Comparativo -->
       <div class="layout-grid">
@@ -753,6 +757,10 @@
             
         </section>
       </div>
+    </section>
+
+    <!-- Pestaña 3: Comparativa Maestra de Niveles -->
+    <section id="tab-comparison" class="content-panel">
 
       <!-- Tabla Comparativa de Referencia de Richardson -->
       <section class="matrix-card">
@@ -806,15 +814,7 @@
         </table>
 </div>
       </section>
-
-      
-      <!-- Barra de Navegacion Estandarizada -->
-      <nav class="module-nav-bar"></nav>
-
-      <footer class="global-footer">
-      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
-    </footer>
-    </div>
+    </section>
 
     <script>
       // Base de datos de simulación por Nivel y Escenario
@@ -1157,8 +1157,9 @@
       selectLevel(2);
     </script>
     
-      <!-- Laboratorio de Evaluación Formativa Estandarizado -->
-      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
+      <!-- Pestaña 4: Laboratorio Evaluativo Formativo -->
+    <section id="tab-quiz" class="content-panel" role="tabpanel">
+      <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:0;" aria-label="Laboratorio de Evaluación Formativa">
         <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
         <p style="color:var(--muted); font:0.86rem/1.55 Verdana, sans-serif; margin-bottom:16px;">
           Ponte a prueba con reactivos técnicos de alta fidelidad doctrinal y retroalimentación inmediata sobre este tema.

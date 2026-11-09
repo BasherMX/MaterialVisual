@@ -537,7 +537,7 @@
     </style>
   </head>
   <body>
-    <div class="page">
+    <main class="page">
       <a href="../index.html" class="btn-back-index">← Volver al Índice Principal</a>
 
       <header>
@@ -565,7 +565,70 @@
 
 
       <!-- Pestaña 2: Catálogo & Código -->
-      <section id="tab-catalog" class="content-panel">
+      <!-- Pestaña 1: Matriz Clasificatoria de los 23 Patrones GoF -->
+    <section id="tab-matrix" class="content-panel active">
+      <!-- Tabla Maestra de los 23 Patrones GoF -->
+      <section class="matrix-card">
+        <h2><span>📚</span> Matriz Clasificatoria de los 23 Patrones GoF</h2>
+        <div class="data-table-wrap">
+<table class="compare-table">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Propósito Central</th>
+              <th>Patrones Incluidos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: var(--green); font-weight: bold;">🌱 Creacionales<br><span style="font-size: 0.72rem; color: var(--muted);">(5 patrones)</span></td>
+              <td>Mecanismos de instanciación y creación de objetos que aumentan la flexibilidad y aíslan la lógica del cliente respecto a cómo se crean los objetos.</td>
+              <td>
+                <strong>Factory Method</strong> (herencia para delegar creación), 
+                <strong>Abstract Factory</strong> (familias de objetos conexos), 
+                <strong>Builder</strong> (construcción paso a paso de objetos complejos), 
+                <strong>Prototype</strong> (clonación de instancias existentes), 
+                <strong>Singleton</strong> (instancia única global).
+              </td>
+            </tr>
+            <tr>
+              <td style="color: var(--cyan); font-weight: bold;">🏗️ Estructurales<br><span style="font-size: 0.72rem; color: var(--muted);">(7 patrones)</span></td>
+              <td>Cómo ensamblar clases y objetos en estructuras más grandes manteniendo la flexibilidad, eficiencia y desacoplamiento.</td>
+              <td>
+                <strong>Adapter</strong> (convierte interfaces incompatibles), 
+                <strong>Bridge</strong> (desacopla abstracción de implementación), 
+                <strong>Composite</strong> (árboles parte-todo homogéneos), 
+                <strong>Decorator</strong> (agrega responsabilidades dinámicamente sin subclases), 
+                <strong>Facade</strong> (interfaz simplificada para subsistemas complejos), 
+                <strong>Flyweight</strong> (comparte estado común para optimizar memoria masiva), 
+                <strong>Proxy</strong> (sustituto o placeholder con control de acceso).
+              </td>
+            </tr>
+            <tr>
+              <td style="color: var(--coral); font-weight: bold;">🎭 Comportamiento<br><span style="font-size: 0.72rem; color: var(--muted);">(11 patrones)</span></td>
+              <td>Algoritmos, comunicación e interconexión efectiva entre objetos y asignación de responsabilidades.</td>
+              <td>
+                <strong>Chain of Responsibility</strong> (cadena de manejadores sucesivos), 
+                <strong>Command</strong> (encapsula peticiones como objetos con undo/redo), 
+                <strong>Interpreter</strong> (gramática y evaluación de lenguaje), 
+                <strong>Iterator</strong> (recorrido secuencial sin exponer representación), 
+                <strong>Mediator</strong> (centraliza comunicación entre componentes reduciendo dependencias directas), 
+                <strong>Memento</strong> (captura y restauración de estado sin violar encapsulamiento), 
+                <strong>Observer</strong> (notificación reactiva de cambios uno a muchos), 
+                <strong>State</strong> (cambia comportamiento al mutar su estado interno), 
+                <strong>Strategy</strong> (familia de algoritmos intercambiables en tiempo de ejecución), 
+                <strong>Template Method</strong> (esqueleto algorítmico postergando pasos a subclases), 
+                <strong>Visitor</strong> (agrega operaciones a estructuras complejas sin modificarlas).
+              </td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+      </section>
+    </section>
+
+    <!-- Pestaña 2: Catálogo y Simulador Interactivo -->
+    <section id="tab-catalog" class="content-panel">
       <!-- Selector de Categoría GoF -->
       <div class="gof-tabs">
         <button class="gof-tab-btn active tab-all" onclick="filterCategory('all')">
@@ -642,75 +705,8 @@
         </div>
       </div>
 
-      <!-- Tabla Maestra de los 23 Patrones GoF -->
-      <section class="matrix-card">
-        <h2><span>📚</span> Matriz Clasificatoria de los 23 Patrones GoF</h2>
-        <div class="data-table-wrap">
-<table class="compare-table">
-          <thead>
-            <tr>
-              <th>Categoría</th>
-              <th>Propósito Central</th>
-              <th>Patrones Incluidos</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="color: var(--green); font-weight: bold;">🌱 Creacionales<br><span style="font-size: 0.72rem; color: var(--muted);">(5 patrones)</span></td>
-              <td>Mecanismos de instanciación y creación de objetos que aumentan la flexibilidad y aíslan la lógica del cliente respecto a cómo se crean los objetos.</td>
-              <td>
-                <strong>Factory Method</strong> (herencia para delegar creación), 
-                <strong>Abstract Factory</strong> (familias de objetos conexos), 
-                <strong>Builder</strong> (construcción paso a paso de objetos complejos), 
-                <strong>Prototype</strong> (clonación de instancias existentes), 
-                <strong>Singleton</strong> (instancia única global).
-              </td>
-            </tr>
-            <tr>
-              <td style="color: var(--cyan); font-weight: bold;">🏗️ Estructurales<br><span style="font-size: 0.72rem; color: var(--muted);">(7 patrones)</span></td>
-              <td>Cómo ensamblar clases y objetos en estructuras más grandes manteniendo la flexibilidad, eficiencia y desacoplamiento.</td>
-              <td>
-                <strong>Adapter</strong> (convierte interfaces incompatibles), 
-                <strong>Bridge</strong> (desacopla abstracción de implementación), 
-                <strong>Composite</strong> (árboles parte-todo homogéneos), 
-                <strong>Decorator</strong> (agrega responsabilidades dinámicamente sin subclases), 
-                <strong>Facade</strong> (interfaz simplificada para subsistemas complejos), 
-                <strong>Flyweight</strong> (comparte estado común para optimizar memoria masiva), 
-                <strong>Proxy</strong> (sustituto o placeholder con control de acceso).
-              </td>
-            </tr>
-            <tr>
-              <td style="color: var(--coral); font-weight: bold;">🎭 Comportamiento<br><span style="font-size: 0.72rem; color: var(--muted);">(11 patrones)</span></td>
-              <td>Algoritmos, comunicación e interconexión efectiva entre objetos y asignación de responsabilidades.</td>
-              <td>
-                <strong>Chain of Responsibility</strong> (cadena de manejadores sucesivos), 
-                <strong>Command</strong> (encapsula peticiones como objetos con undo/redo), 
-                <strong>Interpreter</strong> (gramática y evaluación de lenguaje), 
-                <strong>Iterator</strong> (recorrido secuencial sin exponer representación), 
-                <strong>Mediator</strong> (centraliza comunicación entre componentes reduciendo dependencias directas), 
-                <strong>Memento</strong> (captura y restauración de estado sin violar encapsulamiento), 
-                <strong>Observer</strong> (notificación reactiva de cambios uno a muchos), 
-                <strong>State</strong> (cambia comportamiento al mutar su estado interno), 
-                <strong>Strategy</strong> (familia de algoritmos intercambiables en tiempo de ejecución), 
-                <strong>Template Method</strong> (esqueleto algorítmico postergando pasos a subclases), 
-                <strong>Visitor</strong> (agrega operaciones a estructuras complejas sin modificarlas).
-              </td>
-            </tr>
-          </tbody>
-        </table>
-</div>
       </section>
-
-      
-      <!-- Barra de Navegacion Estandarizada -->
-      <nav class="module-nav-bar"></nav>
-
-      <footer class="global-footer">
-      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
-    </footer>
-    </div>
-
-    <script>
+<script>
 
       // Gestor Universal Robusto de Pestañas
       window.switchTab = function (tabId) {
@@ -1375,6 +1371,7 @@ class InsertTextCommand implements Command {
     
       </section>
 
+      <section id="tab-quiz" class="content-panel" role="tabpanel">
       <!-- Pestaña 3: Laboratorio Evaluativo -->
       <section id="tab-quiz" class="content-panel">
       <!-- Laboratorio de Evaluación Formativa Estandarizado -->
@@ -1400,8 +1397,17 @@ class InsertTextCommand implements Command {
           </div>
         </div>
       </section>
+    </section>
 
-    <!-- Navegación Dinámica Centralizada -->
+    <!-- Barra de Navegación Estandarizada -->
+    <nav class="module-nav-bar"></nav>
+
+    <footer class="global-footer">
+      Material Didáctico e Interactivo · Vistos: <strong style="color:var(--green, #00ffaa); font-family:'Courier New', monospace;">0 / 36 (0%)</strong>
+    </footer>
+  </main>
+
+  <!-- Navegación Dinámica Centralizada -->
     
     <script>
       // =========================================================================

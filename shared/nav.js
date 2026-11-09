@@ -51,12 +51,17 @@
   };
 
   function updateGlobalFooterProgress() {
+    const mainEl = document.querySelector('main.page, main, .page') || document.body;
     let footer = document.querySelector('footer.global-footer, footer.module-footer, footer');
     if (!footer) {
-      const mainEl = document.querySelector('main.page, main, .page') || document.body;
       footer = document.createElement('footer');
       footer.className = 'global-footer';
       mainEl.appendChild(footer);
+    } else {
+      // Garantizar que el footer siempre resida al fondo de main, fuera de content-panel
+      if (footer.closest('.content-panel, .tab-content') || footer.parentNode !== mainEl) {
+        mainEl.appendChild(footer);
+      }
     }
 
     const completed = getCompleted();
@@ -186,18 +191,24 @@
     }
 
     // 2. Buscar o crear la barra de navegación inferior
+    const mainEl = document.querySelector('main.page, main, .page') || document.body;
     let navBar = document.querySelector('.module-nav-bar');
     if (!navBar) {
       navBar = document.createElement('nav');
       navBar.className = 'module-nav-bar';
       navBar.setAttribute('aria-label', 'Navegación entre módulos');
-      
-      const footer = document.querySelector('footer');
-      if (footer && footer.parentNode) {
-        footer.parentNode.insertBefore(navBar, footer);
-      } else {
-        document.body.appendChild(navBar);
+      mainEl.appendChild(navBar);
+    } else {
+      // Reubicar fuera de cualquier pestaña hacia el fondo de main
+      if (navBar.closest('.content-panel, .tab-content') || navBar.parentNode !== mainEl) {
+        mainEl.appendChild(navBar);
       }
+    }
+
+    // Asegurar que el footer esté después del navBar
+    const footer = document.querySelector('footer.global-footer, footer.module-footer, footer');
+    if (footer && footer.parentNode === mainEl) {
+      mainEl.appendChild(footer);
     }
 
     function getCleanTopic(mod, maxLen = 28) {
@@ -273,12 +284,26 @@ if (typeof window !== 'undefined') {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.content-panel, .tab-content').forEach(p => p.classList.remove('active'));
     
-    const panel = document.getElementById(tabId) || document.getElementById('tab-' + tabId);
-    if (panel) panel.classList.add('active');
+    let panel = document.getElementById(tabId) || 
+                document.getElementById('tab-' + tabId) ||
+                (tabId.startsWith('tab-') ? document.getElementById(tabId.replace(/^tab-/, '')) : null);
+
+    // Respaldo resiliente para laboratorios evaluativos
+    if (!panel && (tabId === 'quiz' || tabId === 'tab-quiz' || tabId.includes('quiz'))) {
+      panel = document.querySelector('#tab-quiz, [id*="quiz"], #laboratorio-evaluativo');
+      if (panel && !panel.classList.contains('content-panel')) {
+        const parentPanel = panel.closest('.content-panel');
+        if (parentPanel) panel = parentPanel;
+      }
+    }
+
+    if (panel) {
+      panel.classList.add('active');
+    }
     
     const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
       const onclickAttr = b.getAttribute('onclick') || '';
-      return onclickAttr.includes(tabId);
+      return onclickAttr.includes(`'${tabId}'`) || onclickAttr.includes(`"${tabId}"`);
     });
     if (activeBtn) activeBtn.classList.add('active');
   };
