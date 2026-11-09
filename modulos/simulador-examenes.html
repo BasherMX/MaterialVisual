@@ -1472,8 +1472,8 @@
 
             <!-- Barra Heroica de Acciones -->
             <div class="gen-actions-bar">
-              <button type="button" class="btn-gen-primary" id="btn-generate-exam-now" onclick="executeExamGenerationAndStart()">
-                <span>⚡ GENERAR &amp; COMENZAR EXAMEN AHORA</span>
+              <button type="button" class="btn-gen-primary" id="btn-generate-exam-now" onclick="executeExamGeneration()" title="Genera el examen personalizado y lo agrega al listado de evaluaciones disponibles">
+                <span>⚡ Generar Examen (Agregar al Listado)</span>
               </button>
               <button type="button" class="btn-gen-secondary" onclick="executeExportGeneratedMarkdown()" title="Exportar examen en Markdown optimizado para NotebookLM y estudio offline">
                 <span>📋 Exportar Markdown (NotebookLM)</span>
@@ -2646,6 +2646,8 @@ D) Requiere Task.Run obligatoriamente.
           const sc = scores[ex.id];
           const card = document.createElement("div");
           card.className = "exam-hub-card";
+          card.id = `exam-card-${ex.id}`;
+          card.style.transition = "outline 0.3s ease, box-shadow 0.3s ease";
 
           const highBadge = sc
             ? `<span class="exam-meta-pill" style="color:var(--green); border-color:var(--green);">🏆 Récord: ${sc.highScore}/100</span>`
@@ -4367,7 +4369,7 @@ D) Una instrucción de salto condicional con goto.
         }
       }
 
-      function executeExamGenerationAndStart() {
+      function executeExamGeneration() {
         if (
           typeof MATERIAL_EXAM_ENGINE === "undefined" ||
           typeof MATERIAL_BANK === "undefined"
@@ -4388,28 +4390,48 @@ D) Una instrucción de salto condicional con goto.
             allBankQ,
           );
 
-        // Cerrar modal móvil si estuviese abierto
-        closeGenMobileModal();
+          // Cerrar modal móvil si estuviese abierto
+          closeGenMobileModal();
 
-          // Registrar examen en allExams
-          allExams = allExams.filter((e) => e.id !== generatedExam.id);
-          allExams.unshift(generatedExam);
+          // Guardar en almacenamiento persistente de cuestionarios personalizados
+          let customList = [];
+          try {
+            const raw = localStorage.getItem(CUSTOM_EXAMS_KEY);
+            if (raw) customList = JSON.parse(raw);
+          } catch (e) {
+            console.error("Error al leer custom exams:", e);
+          }
+          customList = customList.filter((e) => e.id !== generatedExam.id);
+          customList.unshift(generatedExam);
+          saveCustomExams(customList);
+
+          // Volver a la vista del listado de evaluaciones (Simulacros / Hub)
+          setHubMode("canonical");
+
+          // Resaltar visualmente la tarjeta del nuevo examen en el listado
+          setTimeout(() => {
+            const newCard = document.getElementById(`exam-card-${generatedExam.id}`);
+            if (newCard) {
+              newCard.scrollIntoView({ behavior: "smooth", block: "center" });
+              newCard.style.outline = "2px solid var(--gold)";
+              newCard.style.boxShadow = "0 0 24px rgba(255, 215, 0, 0.6)";
+              setTimeout(() => {
+                newCard.style.outline = "";
+                newCard.style.boxShadow = "";
+              }, 3500);
+            }
+          }, 180);
 
           showQuickToast(
-            `⚡ Examen compilado con éxito (${generatedExam.questions.length} reactivos).`,
-          );
-
-          // Lanzar sesión de examen inmediatamente
-          // shouldShuffleQuestions=false y shouldShuffleOptions=false porque el engine ya permutó C(2,1)xC(5,3)
-          startExamSession(
-            generatedExam.id,
-            String(generatedExam.timeLimitMinutes),
-            false,
-            false,
+            `✅ Examen generado y agregado al listado (${generatedExam.questions.length} reactivos). ¡Listo para iniciar cuando decidas!`,
           );
         } catch (err) {
           alert("Error al generar el examen: " + err.message);
         }
+      }
+
+      function executeExamGenerationAndStart() {
+        executeExamGeneration();
       }
 
       function executeExportGeneratedMarkdown() {
