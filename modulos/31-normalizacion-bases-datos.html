@@ -508,6 +508,250 @@
           justify-content: center;
         }
       }
+    
+    /* === 2DO SIMULADOR INTERACTIVO: DRAG & DROP NORMALIZACIÓN === */
+    .drag-lab-container {
+      background: rgba(18, 17, 34, 0.95);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .drag-stage-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.18);
+    }
+    .drag-stage-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .drag-stage-btn {
+      background: rgba(34, 33, 61, 0.85);
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font: 700 0.78rem "Courier New", monospace;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .drag-stage-btn:hover {
+      border-color: var(--cyan);
+      color: #fff;
+    }
+    .drag-stage-btn.active {
+      background: rgba(0, 255, 255, 0.16);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.35);
+    }
+    .drag-stage-btn.completed {
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .drag-mission-box {
+      background: rgba(0, 255, 255, 0.05);
+      border-left: 3px solid var(--cyan);
+      padding: 14px 16px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 20px;
+    }
+    .drag-mission-box h4 {
+      margin: 0 0 6px;
+      color: var(--cyan);
+      font-size: 0.95rem;
+      font-family: "Courier New", monospace;
+    }
+    .drag-mission-box p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .drag-workbench {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .drag-workbench {
+        grid-template-columns: 1fr;
+      }
+    }
+    .drag-pool-panel {
+      background: rgba(10, 9, 20, 0.85);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 16px;
+    }
+    .drag-pool-panel h5 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .attribute-pool {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 120px;
+    }
+    .attr-chip {
+      background: rgba(34, 33, 61, 0.9);
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 5px;
+      font: 600 0.82rem "Courier New", monospace;
+      cursor: grab;
+      user-select: none;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .attr-chip:active {
+      cursor: grabbing;
+    }
+    .attr-chip:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 255, 255, 0.25);
+    }
+    .attr-chip.is-dragging {
+      opacity: 0.45;
+      border-style: dashed;
+    }
+    .attr-chip.selected-mobile {
+      outline: 2px solid var(--green);
+      background: rgba(0, 255, 170, 0.22);
+      box-shadow: 0 0 14px rgba(0, 255, 170, 0.5);
+    }
+    .attr-chip .chip-type {
+      font-size: 0.68rem;
+      padding: 2px 5px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .attr-chip .chip-type.pk { color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.4); }
+    .attr-chip .chip-type.fk { color: var(--cyan); border: 1px solid rgba(0, 255, 255, 0.4); }
+    .attr-chip .chip-type.std { color: var(--muted); }
+
+    .drop-targets-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .drop-table-target {
+      background: rgba(10, 9, 20, 0.88);
+      border: 2px dashed rgba(0, 255, 255, 0.35);
+      border-radius: 6px;
+      padding: 14px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+    .drop-table-target.drag-over {
+      border-color: var(--green);
+      background: rgba(0, 255, 170, 0.08);
+      box-shadow: 0 0 18px rgba(0, 255, 170, 0.3);
+    }
+    .drop-table-target.table-correct {
+      border: 2px solid var(--green);
+      background: rgba(0, 255, 170, 0.04);
+    }
+    .drop-table-target.table-error {
+      border: 2px solid var(--coral);
+      background: rgba(255, 0, 110, 0.05);
+    }
+    .drop-target-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .drop-target-title {
+      font: 700 0.88rem "Courier New", monospace;
+      color: var(--cyan);
+      margin: 0;
+    }
+    .drop-target-key {
+      font-size: 0.72rem;
+      color: var(--gold);
+      font-family: "Courier New", monospace;
+    }
+    .target-slots {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 90px;
+      padding: 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .target-slots:empty::before {
+      content: "Arrastra o toca atributos aquí...";
+      display: block;
+      color: rgba(154, 168, 194, 0.45);
+      font: italic 0.78rem Verdana, sans-serif;
+      text-align: center;
+      padding: 24px 8px;
+    }
+    .mobile-tap-hint {
+      display: none;
+      background: rgba(0, 255, 170, 0.1);
+      border: 1px solid var(--green);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      .mobile-tap-hint { display: block; }
+    }
+    .drag-action-bar {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .drag-feedback-msg {
+      font-size: 0.86rem;
+      font-family: Verdana, sans-serif;
+      line-height: 1.4;
+      flex: 1;
+      min-width: 240px;
+    }
+
     </style>
   </head>
   <body data-module-id="31">
@@ -532,10 +776,13 @@
           <span>⚡</span> 1. Formas Normales &amp; Anomalías
         </button>
         <button class="tab-btn" onclick="switchTab('tab-decomposition-sim')">
-          <span>📝</span> 2. Simulador de Descomposición
+          <span>📝</span> 2. Simulador Guiado (Codd)
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-interactive-lab')">
+          <span>🧩</span> 3. Laboratorio Interactivo: Normaliza Arrastrando
         </button>
         <button class="tab-btn" onclick="switchTab('tab-quiz')">
-          <span>🎯</span> 3. Laboratorio Evaluativo
+          <span>🎯</span> 4. Laboratorio Evaluativo
         </button>
       </nav>
 
@@ -658,7 +905,81 @@
       </div>
     </section>
 
-    <!-- Pestaña: Laboratorio Evaluativo Formativo -->
+    
+      <!-- Pestaña 3: Laboratorio Interactivo: Normaliza Arrastrando -->
+      <section id="tab-interactive-lab" class="content-panel" role="tabpanel">
+        <div class="drag-lab-container">
+          <div class="drag-stage-header">
+            <div>
+              <h2 style="margin:0 0 4px; color:var(--cyan); font-size:1.25rem; font-family:'Courier New', monospace; display:flex; align-items:center; gap:8px;">
+                <span>🧩</span> Taller Práctico de Descomposición Relacional
+              </h2>
+              <span style="font-size:0.8rem; color:var(--muted); font-family:Verdana, sans-serif;">
+                Diseña las tablas exactas arrastrando atributos (o tocándolos en móvil) para purgar anomalías.
+              </span>
+            </div>
+            <div class="drag-stage-pills">
+              <button class="drag-stage-btn active" id="btn-stage-1" onclick="loadDragStage(1)">
+                <span>1️⃣</span> Fase 1: Pasar a 1FN
+              </button>
+              <button class="drag-stage-btn" id="btn-stage-2" onclick="loadDragStage(2)">
+                <span>2️⃣</span> Fase 2: Pasar a 2FN
+              </button>
+              <button class="drag-stage-btn" id="btn-stage-3" onclick="loadDragStage(3)">
+                <span>3️⃣</span> Fase 3: Pasar a 3FN
+              </button>
+            </div>
+          </div>
+
+          <div class="mobile-tap-hint">
+            📱 <strong>Modo Táctil / Móvil:</strong> Toca un atributo para seleccionarlo y luego toca la tabla destino para moverlo. ¡También puedes arrastrarlo!
+          </div>
+
+          <div class="drag-mission-box" id="drag-mission-box">
+            <!-- Dynamic mission text -->
+          </div>
+
+          <div class="drag-workbench">
+            <!-- Pool de atributos disponibles -->
+            <div class="drag-pool-panel">
+              <h5>
+                <span>Atributos Disponibles</span>
+                <span id="pool-count" style="color:var(--cyan); font-size:0.75rem;">0</span>
+              </h5>
+              <div class="attribute-pool" id="attribute-pool" ondragover="handleDragOver(event)" ondrop="handleDropToPool(event)">
+                <!-- Dynamic attribute chips -->
+              </div>
+            </div>
+
+            <!-- Tablas destino relacionales -->
+            <div>
+              <div class="drop-targets-container" id="drop-targets-container">
+                <!-- Dynamic tables -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra de Acciones y Validación -->
+          <div class="drag-action-bar">
+            <div class="drag-feedback-msg" id="drag-feedback-msg">
+              <span style="color:var(--muted);">Distribuye los atributos en las tablas correspondientes y pulsa <strong>Verificar Normalización</strong>.</span>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn-action btn-outline" onclick="resetCurrentDragStage()" style="padding:10px 16px;">
+                ↺ Reiniciar Fase
+              </button>
+              <button class="btn-action btn-green" id="btn-verify-stage" onclick="verifyCurrentDragStage()" style="padding:10px 20px;">
+                ✓ Verificar Normalización
+              </button>
+              <button class="btn-action btn-blue" id="btn-next-stage" onclick="advanceDragStage()" style="display:none; padding:10px 20px;">
+                Avanzar a Siguiente Forma Normal ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pestaña: Laboratorio Evaluativo Formativo -->
     <section id="tab-quiz" class="content-panel" role="tabpanel">
       <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
         <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>
@@ -1160,6 +1481,403 @@
     </script>
 
     <script src="../shared/modules-data.js"></script>
-    <script src="../shared/nav.js"></script>
+    <script src="../shared/nav.js">
+
+      // ========================================================
+      // 🧩 2DO SIMULADOR INTERACTIVO: DRAG & DROP NORMALIZACIÓN
+      // Compatible con Mouse (Desktop Drag&Drop) y Touch (Tap to Select & Move)
+      // ========================================================
+      
+      const dragStages = [
+        {
+          stageNum: 1,
+          name: "Fase 1: Transición hacia 1FN (Primera Forma Normal)",
+          rule: "Elimina los grupos repetitivos multidimensionales. Crea relaciones separadas para los datos generales de la Factura y para las Líneas de Detalle de Artículos.",
+          keyConcept: "Doctrina Codd 1FN: Todos los atributos deben contener valores atómicos (indivisibles) y cada fila debe ser identificable unívocamente.",
+          poolAttrs: [
+            { id: "num_fac", label: "Nº Factura", type: "pk", keyInfo: "PK Factura" },
+            { id: "fecha_fac", label: "Fecha Factura", type: "std" },
+            { id: "num_cli", label: "Nº Cliente", type: "std" },
+            { id: "nom_cli", label: "Nombre Cliente", type: "std" },
+            { id: "art_id", label: "Código Artículo", type: "pk", keyInfo: "PK Línea" },
+            { id: "art_desc", label: "Descripción Artículo", type: "std" },
+            { id: "art_precio", label: "Precio Unitario", type: "std" },
+            { id: "cant_pedida", label: "Cantidad Comprada", type: "std" }
+          ],
+          tables: [
+            {
+              id: "tab_factura",
+              title: "FACTURA (Encabezado)",
+              keyDef: "Clave Primaria: Nº Factura",
+              expectedAttrs: ["num_fac", "fecha_fac", "num_cli", "nom_cli"]
+            },
+            {
+              id: "tab_linea",
+              title: "LÍNEA_FACTURA (Detalle)",
+              keyDef: "Clave Compuesta: (Nº Factura + Cód Artículo)",
+              expectedAttrs: ["art_id", "art_desc", "art_precio", "cant_pedida"]
+            }
+          ]
+        },
+        {
+          stageNum: 2,
+          name: "Fase 2: Transición hacia 2FN (Segunda Forma Normal)",
+          rule: "Elimina las dependencias funcionales parciales. En LÍNEA_FACTURA con clave compuesta (Nº Factura + Cód Artículo), la Descripción y Precio dependen ÚNICAMENTE del Artículo, no de la Factura.",
+          keyConcept: "Doctrina Codd 2FN: Debe estar en 1FN y ningún atributo no clave debe depender parcialmente de una parte de la clave candidata compuesta.",
+          poolAttrs: [
+            { id: "num_fac", label: "Nº Factura", type: "pk" },
+            { id: "fecha_fac", label: "Fecha Factura", type: "std" },
+            { id: "num_cli", label: "Nº Cliente", type: "fk" },
+            { id: "nom_cli", label: "Nombre Cliente", type: "std" },
+            { id: "art_id", label: "Código Artículo", type: "pk" },
+            { id: "art_desc", label: "Descripción Artículo", type: "std" },
+            { id: "art_precio", label: "Precio Unitario", type: "std" },
+            { id: "cant_pedida", label: "Cantidad Comprada", type: "std" }
+          ],
+          tables: [
+            {
+              id: "tab_factura",
+              title: "FACTURA",
+              keyDef: "PK: Nº Factura",
+              expectedAttrs: ["num_fac", "fecha_fac", "num_cli", "nom_cli"]
+            },
+            {
+              id: "tab_linea_2fn",
+              title: "LÍNEA_FACTURA",
+              keyDef: "PK Compuesta: (Nº Factura + Cód Artículo)",
+              expectedAttrs: ["cant_pedida"]
+            },
+            {
+              id: "tab_articulo",
+              title: "ARTÍCULO (Entidad Pura)",
+              keyDef: "PK: Código Artículo",
+              expectedAttrs: ["art_id", "art_desc", "art_precio"]
+            }
+          ]
+        },
+        {
+          stageNum: 3,
+          name: "Fase 3: Transición hacia 3FN (Tercera Forma Normal)",
+          rule: "Elimina las dependencias transitivas. En FACTURA, el Nombre del Cliente depende del Nº de Cliente (Nº Factura -> Nº Cliente -> Nombre Cliente). El cliente debe residir en su propia tabla.",
+          keyConcept: "Doctrina Codd 3FN: Debe estar en 2FN y ningún atributo no clave puede depender transitivamente de la clave primaria (X -> Y -> Z).",
+          poolAttrs: [
+            { id: "num_fac", label: "Nº Factura", type: "pk" },
+            { id: "fecha_fac", label: "Fecha Factura", type: "std" },
+            { id: "num_cli", label: "Nº Cliente", type: "pk" },
+            { id: "nom_cli", label: "Nombre Cliente", type: "std" },
+            { id: "art_id", label: "Código Artículo", type: "pk" },
+            { id: "art_desc", label: "Descripción Artículo", type: "std" },
+            { id: "art_precio", label: "Precio Unitario", type: "std" },
+            { id: "cant_pedida", label: "Cantidad Comprada", type: "std" }
+          ],
+          tables: [
+            {
+              id: "tab_factura_3fn",
+              title: "FACTURA",
+              keyDef: "PK: Nº Factura | FK: Nº Cliente",
+              expectedAttrs: ["num_fac", "fecha_fac"]
+            },
+            {
+              id: "tab_cliente",
+              title: "CLIENTE (Sin Transitividad)",
+              keyDef: "PK: Nº Cliente",
+              expectedAttrs: ["num_cli", "nom_cli"]
+            },
+            {
+              id: "tab_linea_3fn",
+              title: "LÍNEA_FACTURA",
+              keyDef: "PK: (Nº Fac + Cód Art)",
+              expectedAttrs: ["cant_pedida"]
+            },
+            {
+              id: "tab_articulo_3fn",
+              title: "ARTÍCULO",
+              keyDef: "PK: Código Artículo",
+              expectedAttrs: ["art_id", "art_desc", "art_precio"]
+            }
+          ]
+        }
+      ];
+
+      let currentDragStageIdx = 0;
+      let activeMobileChip = null;
+
+      window.loadDragStage = function(stageNumber) {
+        currentDragStageIdx = stageNumber - 1;
+        const stage = dragStages[currentDragStageIdx];
+        if (!stage) return;
+
+        // Reset state
+        activeMobileChip = null;
+
+        // Update pills
+        document.querySelectorAll('.drag-stage-btn').forEach((btn, idx) => {
+          btn.classList.toggle('active', idx === currentDragStageIdx);
+        });
+
+        // Update mission box
+        const missionBox = document.getElementById('drag-mission-box');
+        if (missionBox) {
+          missionBox.innerHTML = `
+            <h4>${stage.name}</h4>
+            <p><strong>Misión:</strong> ${stage.rule}</p>
+            <p style="margin-top:6px; color:var(--green); font-size:0.8rem;">💡 ${stage.keyConcept}</p>
+          `;
+        }
+
+        // Render Attribute Pool
+        const poolEl = document.getElementById('attribute-pool');
+        if (poolEl) {
+          poolEl.innerHTML = '';
+          stage.poolAttrs.forEach(attr => {
+            const chip = document.createElement('div');
+            chip.className = 'attr-chip';
+            chip.id = 'chip-' + attr.id;
+            chip.setAttribute('draggable', 'true');
+            chip.setAttribute('data-attr-id', attr.id);
+            
+            let badgeType = attr.type === 'pk' ? 'PK' : (attr.type === 'fk' ? 'FK' : 'DAT');
+            chip.innerHTML = `
+              <span>${attr.label}</span>
+              <span class="chip-type ${attr.type}">${badgeType}</span>
+            `;
+
+            // Drag events
+            chip.addEventListener('dragstart', handleDragStart);
+            chip.addEventListener('dragend', handleDragEnd);
+
+            // Click / Touch selection for mobile
+            chip.addEventListener('click', (e) => handleChipMobileSelect(e, chip));
+
+            poolEl.appendChild(chip);
+          });
+        }
+
+        // Render Target Tables
+        const targetsContainer = document.getElementById('drop-targets-container');
+        if (targetsContainer) {
+          targetsContainer.innerHTML = '';
+          stage.tables.forEach(table => {
+            const tableDiv = document.createElement('div');
+            tableDiv.className = 'drop-table-target';
+            tableDiv.id = 'target-' + table.id;
+            tableDiv.setAttribute('data-table-id', table.id);
+
+            tableDiv.innerHTML = `
+              <div class="drop-target-header">
+                <h4 class="drop-target-title">${table.title}</h4>
+                <span class="drop-target-key">${table.keyDef}</span>
+              </div>
+              <div class="target-slots" id="slot-${table.id}" 
+                   ondragover="handleDragOver(event)" 
+                   ondragleave="handleDragLeave(event)" 
+                   ondrop="handleDropToTable(event, '${table.id}')">
+              </div>
+            `;
+
+            // Mobile click to drop
+            tableDiv.addEventListener('click', (e) => {
+              if (activeMobileChip && !e.target.closest('.attr-chip')) {
+                const slot = tableDiv.querySelector('.target-slots');
+                if (slot) {
+                  slot.appendChild(activeMobileChip);
+                  activeMobileChip.classList.remove('selected-mobile');
+                  activeMobileChip = null;
+                  updatePoolCount();
+                }
+              }
+            });
+
+            targetsContainer.appendChild(tableDiv);
+          });
+        }
+
+        updatePoolCount();
+
+        // Reset feedback & buttons
+        const fb = document.getElementById('drag-feedback-msg');
+        if (fb) fb.innerHTML = '<span style="color:var(--muted);">Coloca los atributos en sus tablas correspondientes para cumplir la regla de normalización.</span>';
+
+        const btnVerify = document.getElementById('btn-verify-stage');
+        if (btnVerify) btnVerify.style.display = 'inline-block';
+
+        const btnNext = document.getElementById('btn-next-stage');
+        if (btnNext) btnNext.style.display = 'none';
+      };
+
+      function updatePoolCount() {
+        const poolEl = document.getElementById('attribute-pool');
+        const countEl = document.getElementById('pool-count');
+        if (poolEl && countEl) {
+          const count = poolEl.querySelectorAll('.attr-chip').length;
+          countEl.textContent = count + ' restantes';
+        }
+      }
+
+      // Drag and drop handlers
+      let draggedChip = null;
+
+      window.handleDragStart = function(e) {
+        draggedChip = this;
+        this.classList.add('is-dragging');
+        e.dataTransfer.setData('text/plain', this.getAttribute('data-attr-id'));
+        e.dataTransfer.effectAllowed = 'move';
+      };
+
+      window.handleDragEnd = function(e) {
+        this.classList.remove('is-dragging');
+        draggedChip = null;
+        document.querySelectorAll('.drop-table-target').forEach(t => t.classList.remove('drag-over'));
+      };
+
+      window.handleDragOver = function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const targetCard = e.currentTarget.closest('.drop-table-target');
+        if (targetCard) targetCard.classList.add('drag-over');
+      };
+
+      window.handleDragLeave = function(e) {
+        const targetCard = e.currentTarget.closest('.drop-table-target');
+        if (targetCard) targetCard.classList.remove('drag-over');
+      };
+
+      window.handleDropToTable = function(e, tableId) {
+        e.preventDefault();
+        const targetCard = e.currentTarget.closest('.drop-table-target');
+        if (targetCard) targetCard.classList.remove('drag-over');
+
+        const attrId = e.dataTransfer.getData('text/plain');
+        const chip = document.getElementById('chip-' + attrId) || draggedChip;
+        if (chip) {
+          e.currentTarget.appendChild(chip);
+          updatePoolCount();
+        }
+      };
+
+      window.handleDropToPool = function(e) {
+        e.preventDefault();
+        const attrId = e.dataTransfer.getData('text/plain');
+        const chip = document.getElementById('chip-' + attrId) || draggedChip;
+        if (chip) {
+          document.getElementById('attribute-pool').appendChild(chip);
+          updatePoolCount();
+        }
+      };
+
+      // Mobile Touch & Tap Handler
+      function handleChipMobileSelect(e, chip) {
+        e.stopPropagation();
+        if (activeMobileChip === chip) {
+          chip.classList.remove('selected-mobile');
+          activeMobileChip = null;
+        } else {
+          if (activeMobileChip) activeMobileChip.classList.remove('selected-mobile');
+          activeMobileChip = chip;
+          chip.classList.add('selected-mobile');
+        }
+      }
+
+      // Pool touch to return
+      document.addEventListener('DOMContentLoaded', () => {
+        const poolEl = document.getElementById('attribute-pool');
+        if (poolEl) {
+          poolEl.addEventListener('click', (e) => {
+            if (activeMobileChip && !e.target.closest('.attr-chip')) {
+              poolEl.appendChild(activeMobileChip);
+              activeMobileChip.classList.remove('selected-mobile');
+              activeMobileChip = null;
+              updatePoolCount();
+            }
+          });
+        }
+      });
+
+      // Verification Logic
+      window.verifyCurrentDragStage = function() {
+        const stage = dragStages[currentDragStageIdx];
+        if (!stage) return;
+
+        let allCorrect = true;
+        let errors = [];
+
+        stage.tables.forEach(table => {
+          const targetCard = document.getElementById('target-' + table.id);
+          const slot = document.getElementById('slot-' + table.id);
+          if (!slot || !targetCard) return;
+
+          const placedChips = Array.from(slot.querySelectorAll('.attr-chip')).map(c => c.getAttribute('data-attr-id'));
+          
+          // Check if expected attributes match placed attributes
+          const missing = table.expectedAttrs.filter(a => !placedChips.includes(a));
+          const extra = placedChips.filter(a => !table.expectedAttrs.includes(a));
+
+          if (missing.length === 0 && extra.length === 0) {
+            targetCard.classList.remove('table-error');
+            targetCard.classList.add('table-correct');
+          } else {
+            allCorrect = false;
+            targetCard.classList.remove('table-correct');
+            targetCard.classList.add('table-error');
+            if (missing.length > 0) {
+              errors.push(`En <strong>${table.title}</strong> faltan ${missing.length} atributos.`);
+            }
+            if (extra.length > 0) {
+              errors.push(`En <strong>${table.title}</strong> sobran ${extra.length} atributos que no corresponden a esta tabla.`);
+            }
+          }
+        });
+
+        // Also check if any chips remain in pool
+        const remainingInPool = document.getElementById('attribute-pool').querySelectorAll('.attr-chip').length;
+        if (remainingInPool > 0) {
+          allCorrect = false;
+          errors.push(`Aún quedan ${remainingInPool} atributo(s) sin asignar en el almacén.`);
+        }
+
+        const feedbackMsg = document.getElementById('drag-feedback-msg');
+        const btnNext = document.getElementById('btn-next-stage');
+        const currentStageBtn = document.getElementById('btn-stage-' + (currentDragStageIdx + 1));
+
+        if (allCorrect) {
+          feedbackMsg.innerHTML = `<strong style="color:var(--green);">🎉 ¡Excelente! Normalización Exacta:</strong> Cumpliste a la perfección la regla de Codd para esta fase. Las anomalías de redundancia han sido eliminadas.`;
+          if (currentStageBtn) currentStageBtn.classList.add('completed');
+          if (btnNext) {
+            if (currentDragStageIdx < dragStages.length - 1) {
+              btnNext.style.display = 'inline-block';
+              btnNext.innerText = 'Avanzar a la Siguiente Fase (' + dragStages[currentDragStageIdx + 1].stageNum + 'FN) ➔';
+            } else {
+              btnNext.style.display = 'inline-block';
+              btnNext.innerText = '🏆 ¡Has completado 3FN! Ir al Quiz Evaluativo ➔';
+            }
+          }
+        } else {
+          feedbackMsg.innerHTML = `<strong style="color:var(--coral);">⚠️ Revisión Necesaria:</strong> ${errors.slice(0, 2).join(' ')}`;
+          if (btnNext) btnNext.style.display = 'none';
+        }
+      };
+
+      window.resetCurrentDragStage = function() {
+        loadDragStage(currentDragStageIdx + 1);
+      };
+
+      window.advanceDragStage = function() {
+        if (currentDragStageIdx < dragStages.length - 1) {
+          loadDragStage(currentDragStageIdx + 2);
+        } else {
+          switchTab('tab-quiz');
+          const quizEl = document.getElementById('laboratorio-evaluativo');
+          if (quizEl) quizEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+
+      // Initialize Drag Simulator on load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { loadDragStage(1); });
+      } else {
+        loadDragStage(1);
+      }
+
+    </script>
   </body>
 </html>
