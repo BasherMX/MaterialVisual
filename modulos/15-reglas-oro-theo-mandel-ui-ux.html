@@ -866,8 +866,24 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-doctrine')">
+          <span>🏆</span> 1. Doctrina de Theo Mandel
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-interactive-lab')">
+          <span>🕹️</span> 2. Laboratorio de las 3 Reglas de Oro
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 3. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Tabla Comparativa de las 3 Reglas -->
-      <section class="matrix-card" aria-label="Resumen de las 3 Reglas de Oro de Theo Mandel">
+      <!-- Pestaña 1: Doctrina -->
+      <section id="tab-doctrine" class="content-panel active">
+        <section class="matrix-card" aria-label="Resumen de las 3 Reglas de Oro de Theo Mandel">
         <h2><span>🏆</span> Doctrina de Theo Mandel y Roger Pressman</h2>
         <div class="data-table-wrap">
 <table class="compare-table">
@@ -934,6 +950,9 @@
         </button>
       </nav>
 
+        </section>
+      <!-- Pestaña 2: Laboratorio Interactivo -->
+      <section id="tab-interactive-lab" class="content-panel">
       <div class="lab-layout">
         <!-- ÁREA INTERACTIVA PRINCIPAL -->
         <section aria-label="Espacio de Laboratorio Interactivo">

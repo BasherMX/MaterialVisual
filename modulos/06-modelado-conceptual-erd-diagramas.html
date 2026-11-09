@@ -509,8 +509,24 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-matrix')">
+          <span>📊</span> 1. Cuadro Sinóptico de Notaciones
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-diagram-lab')">
+          <span>📐</span> 2. Visualizador Dinámico Multi-Notación
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 3. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Tabla Comparativa de Notaciones de Diagramas -->
-      <section class="matrix-card" aria-label="Comparativa de Notaciones ERD">
+      <!-- Pestaña 1: Cuadro Sinóptico -->
+      <section id="tab-matrix" class="content-panel active">
+        <section class="matrix-card" aria-label="Comparativa de Notaciones ERD">
         <h2><span>📊</span> Cuadro Sinóptico de Notaciones para Diagramas ERD</h2>
         <div class="data-table-wrap">
 <table class="compare-table">
@@ -595,6 +611,9 @@
         </button>
       </nav>
 
+        </section>
+      <!-- Pestaña 2: Visualizador Multi-Notación -->
+      <section id="tab-diagram-lab" class="content-panel">
       <div class="lab-layout">
         <!-- ÁREA DEL DIAGRAMA SVG -->
         <section class="sim-card" aria-label="Visualizador Dinámico de Diagrama">

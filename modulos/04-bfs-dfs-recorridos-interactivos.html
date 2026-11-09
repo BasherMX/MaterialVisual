@@ -692,7 +692,26 @@
         </p>
       </header>
 
-      <section class="layout">
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-simulator')">
+          <span>🌐</span> 1. Simulador de Recorridos en Grafo
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-theory')">
+          <span>⚖️</span> 2. BFS vs DFS: Diferencia Esencial
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-log')">
+          <span>📝</span> 3. Registro de Pasos del Algoritmo
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 4. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
+      <!-- Pestaña 1: Simulador -->
+      <section id="tab-simulator" class="content-panel active">
+        <section class="layout">
         <section
           class="workspace"
           aria-label="Explorador interactivo de grafos"
@@ -780,8 +799,13 @@
         </section>
 
         <aside class="sidebar">
-          <section class="card">
-            <h2>La diferencia esencial</h2>
+        </section>
+      </section>
+
+      <!-- Pestaña 2: BFS vs DFS -->
+      <section id="tab-theory" class="content-panel">
+        <section class="card">
+          <h2>La diferencia esencial</h2>
             <div class="algorithm-card">
               <div class="algorithm">
                 <strong>BFS</strong
@@ -818,8 +842,12 @@
               </div>
             </div>
           </section>
-          <section class="card">
-            <h2>Registro del algoritmo</h2>
+      </section>
+
+      <!-- Pestaña 3: Registro de Pasos -->
+      <section id="tab-log" class="content-panel">
+        <section class="card">
+          <h2>Registro del algoritmo</h2>
             <ul class="step-log" id="stepLog">
               <li>Los pasos aparecerán aquí.</li>
             </ul>

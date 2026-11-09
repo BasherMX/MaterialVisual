@@ -728,8 +728,24 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-pillars')">
+          <span>📦</span> 1. Los 4 Pilares de la POO
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-simulator')">
+          <span>🔬</span> 2. Laboratorio Interactivo de Objetos
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 3. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Tabla Comparativa y de Conceptos Esenciales -->
-      <section class="matrix-card" aria-label="Fundamentos de la Programación Orientada a Objetos">
+      <!-- Pestaña 1: Los 4 Pilares -->
+      <section id="tab-pillars" class="content-panel active">
+        <section class="matrix-card" aria-label="Fundamentos de la Programación Orientada a Objetos">
         <h2><span>📦</span> Fundamentos y Pilares de la POO</h2>
         <div class="data-table-wrap">
 <table class="compare-table">
@@ -796,6 +812,9 @@
       </nav>
 
       <!-- Laboratorio Interactivo -->
+        </section>
+      <!-- Pestaña 2: Laboratorio Interactivo -->
+      <section id="tab-simulator" class="content-panel">
       <section class="lab-layout">
         <div class="workspace">
           <!-- Controles Dinámicos según Pilar -->

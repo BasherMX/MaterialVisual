@@ -596,8 +596,27 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-levels')">
+          <span>🏛️</span> 1. Los 4 Niveles de Richardson
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-inspector')">
+          <span>🛰️</span> 2. Inspector de Tráfico HTTP
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-comparison')">
+          <span>📊</span> 3. Diagnóstico &amp; Matriz Comparativa
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 4. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Pirámide de Niveles -->
-      <section class="pyramid-section">
+      <!-- Pestaña 1: Niveles -->
+      <section id="tab-levels" class="content-panel active">
+        <section class="pyramid-section">
         <div class="pyramid-header">
           <h2><span>🏛️</span> Los 4 Niveles de Madurez hacia la "Gloria de REST"</h2>
           <span style="color: var(--muted); font-size: 0.85rem; font-family: Verdana;">Haz clic en cada nivel para inspeccionar su comportamiento</span>

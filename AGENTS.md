@@ -39,4 +39,13 @@ Este repositorio contiene visualizadores interactivos para Ciencias de la Comput
      - Primera columna destacada (`font-weight: 600; color: #fff;`).
      - Contenedor `.data-table-wrap` con bordes redondeados (`8px`), borde neón cian (`1px solid var(--line)`), sombra profunda (`box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45)`) y scroll horizontal táctil móvil (`-webkit-overflow-scrolling: touch;`).
    - **Formato Semántico de Contenido en Celdas:** Nunca dejar texto markdown crudo (`*Thread Ownership*`, `$N$`, `\(...\)`) en celdas de tabla. Usar etiquetas semánticas HTML: `<code>...</code>`, `<strong>...</strong>`, `<em>...</em>` o `<span class="math-expr"><em>N</em></span>`.
+9. **Arquitectura Canónica Obligatoria de Pestañas (`.nav-tabs` y `.content-panel`):**
+   - **Prohibición Estricta de Diseños Planos:** Queda terminantemente prohibido crear o mantener módulos con secciones apiladas verticalmente en scroll continuo sin pestañas ("diseño anterior plano").
+   - **Referencia Canónica Obligatoria (Módulo 23):** Todo módulo didáctico DEBE implementar la arquitectura de pestañas interactiva basada en el patrón de [`23-ingenieria-software-error-defecto-falla-verificacion-validacion.html`](file:///c:/Users/Ulises/Documents/INEGI/SPC/010_2026/Material_Visual/modulos/23-ingenieria-software-error-defecto-falla-verificacion-validacion.html):
+     - `<nav class="nav-tabs" aria-label="Secciones del módulo">` conteniendo botones `<button class="tab-btn active" onclick="switchTab('tab-...')"><span>[Icono]</span> N. [Nombre de Pestaña]</button>`.
+     - Paneles de contenido encapsulados como `<section id="tab-..." class="content-panel active">` (para la pestaña inicial) y `<section id="tab-..." class="content-panel">` para las subsecuentes.
+     - La última pestaña siempre debe corresponder al Laboratorio Evaluativo Formativo (`id="tab-quiz"` / `#laboratorio-evaluativo`).
+     - Los estilos `.content-panel`, `.content-panel.active` y `animation: tabFadeIn` se heredan de manera centralizada desde `shared/theme.css`.
+     - El cambio de pestañas se gestiona mediante la función canónica `switchTab(tabId)` (con respaldo universal en `shared/nav.js`).
+
 

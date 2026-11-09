@@ -508,14 +508,15 @@
       </header>
 
       <!-- Pestañas de Navegación -->
-      <div class="nav-tabs">
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
         <button class="tab-btn active" onclick="switchTab('metodos')">1. Métodos HTTP y Semántica</button>
         <button class="tab-btn" onclick="switchTab('codigos')">2. Catálogo de Códigos de Estado</button>
         <button class="tab-btn" onclick="switchTab('simulador')">3. Laboratorio: Idempotencia en Acción</button>
-      </div>
+        <button class="tab-btn" onclick="switchTab('quiz')">🎯 4. Laboratorio Evaluativo</button>
+      </nav>
 
       <!-- PESTAÑA 1: MÉTODOS HTTP -->
-      <div id="tab-metodos" class="tab-content active">
+      <div id="tab-metodos" class="content-panel active">
         <!-- Rejilla de Métodos -->
         <div class="methods-grid">
           <!-- GET -->
@@ -619,7 +620,7 @@
       </div>
 
       <!-- PESTAÑA 2: CÓDIGOS DE ESTADO -->
-      <div id="tab-codigos" class="tab-content">
+      <div id="tab-codigos" class="content-panel">
         <div class="panel-card" style="margin-bottom: 24px;">
           <h2><span>🚦</span> Los 5 Grandes Bloques de Respuestas HTTP</h2>
           <p style="font-family: Verdana; font-size: 0.9rem; color: var(--muted); margin: 0 0 16px;">
@@ -738,7 +739,7 @@
       </div>
 
       <!-- PESTAÑA 3: LABORATORIO DE IDEMPOTENCIA Y PUT VS PATCH -->
-      <div id="tab-simulador" class="tab-content">
+      <div id="tab-simulador" class="content-panel">
         <div class="layout-grid">
           <!-- Comparador PUT vs PATCH -->
           <div class="panel-card">
@@ -1083,6 +1084,8 @@
       inspectMethod('GET');
     </script>
     
+      <!-- Pestaña 4: Laboratorio Evaluativo -->
+      <div id="tab-quiz" class="content-panel">
       <!-- Laboratorio de Evaluación Formativa Estandarizado -->
       <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
         <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>

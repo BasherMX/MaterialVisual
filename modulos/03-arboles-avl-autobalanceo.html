@@ -673,7 +673,27 @@
         </p>
       </header>
 
-      <section class="layout">
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-simulator')">
+          <span>🌳</span> 1. Simulador Visual de Árbol AVL
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-theory')">
+          <span>📖</span> 2. Doctrina, Rotaciones &amp; Casos de Uso
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-log')">
+          <span>📝</span> 3. Registro de Pasos &amp; Trazas
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 4. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
+      <!-- Pestaña 1: Simulador -->
+      <section id="tab-simulator" class="content-panel active">
+        <section class="layout">
+          <!-- Simulador -->
         <section class="workspace" aria-label="Simulador de árbol AVL">
           <div class="toolbar">
             <label class="input-wrap"
@@ -722,8 +742,13 @@
         </section>
 
         <aside class="sidebar">
-          <section class="card">
-            <h2>La idea clave</h2>
+        </section>
+      </section>
+
+      <!-- Pestaña 2: Doctrina & Rotaciones -->
+      <section id="tab-theory" class="content-panel">
+        <section class="card">
+          <h2>La idea clave</h2>
             <p>
               Un AVL es un árbol binario de búsqueda que vigila la diferencia de
               altura en cada nodo.
@@ -772,8 +797,12 @@
               </button>
             </div>
           </section>
-          <section class="card">
-            <h2>Registro de pasos</h2>
+      </section>
+
+      <!-- Pestaña 3: Registro de Pasos -->
+      <section id="tab-log" class="content-panel">
+        <section class="card">
+          <h2>Registro de pasos</h2>
             <ul class="log" id="log">
               <li>Aún no hay inserciones.</li>
             </ul>

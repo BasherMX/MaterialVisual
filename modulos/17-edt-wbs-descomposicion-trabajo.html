@@ -518,8 +518,24 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-principles')">
+          <span>🏗️</span> 1. Principios &amp; Reglas Haynes
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-tree')">
+          <span>🌳</span> 2. Desglose Jerárquico &amp; Diccionario
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 3. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Tabla Doctrinal de Haynes -->
-      <section class="matrix-card" aria-label="Principios de la EDT según Marion E. Haynes">
+      <!-- Pestaña 1: Principios & Reglas -->
+      <section id="tab-principles" class="content-panel active">
+        <section class="matrix-card" aria-label="Principios de la EDT según Marion E. Haynes">
         <h2><span>🏗️</span> Fundamentos y Propósito de la EDT/WBS (Marion E. Haynes)</h2>
         <div class="data-table-wrap">
 <table class="compare-table">
@@ -577,6 +593,9 @@
         </button>
       </nav>
 
+        </section>
+      <!-- Pestaña 2: Desglose Jerárquico -->
+      <section id="tab-tree" class="content-panel">
       <div class="lab-layout">
         <!-- ÁREA INTERACTIVA PRINCIPAL: ÁRBOL JERÁRQUICO -->
         <section class="sim-card" aria-label="Árbol Jerárquico Interactivo">

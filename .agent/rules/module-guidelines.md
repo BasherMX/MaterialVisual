@@ -47,7 +47,13 @@ Todo el contenido y las herramientas interactivas DEBEN concebirse prioritariame
 
 ---
 
-## 4. Estructura Requerida de un Módulo (5 Pestañas Didácticas)
+## 4. Estructura Requerida de un Módulo (Arquitectura Canónica de Pestañas · Referencia Módulo 23)
+Queda estrictamente prohibido utilizar el diseño anterior plano con secciones apiladas verticalmente en scroll continuo. Todos los módulos DEBEN estructurarse mediante pestañas dinámicas siguiendo el patrón arquitectónico del **Módulo 23** (`23-ingenieria-software-error-defecto-falla-verificacion-validacion.html`):
+- **Barra de Pestañas:** `<nav class="nav-tabs" aria-label="Secciones del módulo">` con botones táctiles `<button class="tab-btn active" onclick="switchTab('tab-...')"><span>[Icono]</span> N. [Nombre de Pestaña]</button>`.
+- **Paneles de Contenido:** Encapsulados como `<section id="tab-..." class="content-panel active">` (primer tab visible) y `<section id="tab-..." class="content-panel">` (restantes).
+- **Estilos Centralizados:** Los estilos `.content-panel`, `.content-panel.active` y `animation: tabFadeIn` se heredan de `shared/theme.css`.
+- **Navegación Dinámica:** `window.switchTab(tabId)` provisto automáticamente por `shared/nav.js`.
+
 Cada módulo `.html` en `modulos/` debe componerse de las siguientes secciones estructuradas por pestañas:
 1. **Pestaña 1: Marco Teórico y Taxonomía Conceptual:**
    - Fundamento académico riguroso con autores canónicos (Codd, Oppel, Pressman, Sommerville, Gamma, Richardson, etc.).

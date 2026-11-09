@@ -550,6 +550,22 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-matrix')">
+          <span>📚</span> 1. Matriz de los 23 Patrones GoF
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-catalog')">
+          <span>🏛️</span> 2. Catálogo Interactivo &amp; Código
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 3. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
+      <!-- Pestaña 2: Catálogo & Código -->
+      <section id="tab-catalog" class="content-panel">
       <!-- Selector de Categoría GoF -->
       <div class="gof-tabs">
         <button class="gof-tab-btn active tab-all" onclick="filterCategory('all')">
@@ -1357,6 +1373,10 @@ class InsertTextCommand implements Command {
       renderActivePattern();
     </script>
     
+      </section>
+
+      <!-- Pestaña 3: Laboratorio Evaluativo -->
+      <section id="tab-quiz" class="content-panel">
       <!-- Laboratorio de Evaluación Formativa Estandarizado -->
       <section class="matrix-card" id="laboratorio-evaluativo" style="margin-top:40px;" aria-label="Laboratorio de Evaluación Formativa">
         <h2 style="display:flex; align-items:center; gap:8px;"><span>🎯</span> Laboratorio de Evaluación Formativa</h2>

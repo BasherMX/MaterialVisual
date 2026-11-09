@@ -526,8 +526,24 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-normal-forms')">
+          <span>⚡</span> 1. Formas Normales &amp; Anomalías
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-decomposition-sim')">
+          <span>📝</span> 2. Simulador de Descomposición
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 3. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Tabla Comparativa de Formas Normales -->
-      <section class="matrix-card" aria-label="Matriz de Formas Normales">
+      <!-- Pestaña 1: Formas Normales & Anomalías -->
+      <section id="tab-normal-forms" class="content-panel active">
+        <section class="matrix-card" aria-label="Matriz de Formas Normales">
         <h2><span>⚡</span> Las Formas Normales Esenciales y las Anomalías que Eliminan</h2>
         <div class="data-table-wrap">
 <table class="compare-table">
@@ -593,6 +609,9 @@
         </button>
       </nav>
 
+        </section>
+      <!-- Pestaña 2: Simulador de Descomposición -->
+      <section id="tab-decomposition-sim" class="content-panel">
       <div class="lab-layout">
         <!-- ÁREA INTERACTIVA PRINCIPAL -->
         <section class="sim-card" aria-label="Simulador de Descomposición">

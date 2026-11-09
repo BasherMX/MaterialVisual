@@ -486,8 +486,24 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-dimensions')">
+          <span>⚖️</span> 1. Dimensiones &amp; Comparativa
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-simulator')">
+          <span>🕹️</span> 2. Simulador Interactivo
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 3. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Tabla Comparativa de las Restricciones -->
-      <section class="matrix-card" aria-label="Dimensiones de la Triple Restricción">
+      <!-- Pestaña 1: Dimensiones & Comparativa -->
+      <section id="tab-dimensions" class="content-panel active">
+        <section class="matrix-card" aria-label="Dimensiones de la Triple Restricción">
         <h2><span>⚖️</span> Dimensiones Fundamentales del Proyecto de Software</h2>
         <div class="data-table-wrap">
 <table class="compare-table">
@@ -529,7 +545,10 @@
 </div>
       </section>
 
+        </section>
       <!-- CASOS PREESTABLECIDOS -->
+      <!-- Pestaña 2: Simulador Interactivo -->
+      <section id="tab-simulator" class="content-panel">
       <div class="preset-bar" aria-label="Casos típicos de gestión">
         <button class="btn-preset active" data-preset="balanced">⚖️ 1. Proyecto Equilibrado</button>
         <button class="btn-preset" data-preset="crash">⚡ 2. Reducción Urgente de Plazo (Crash)</button>

@@ -964,8 +964,27 @@
         </p>
       </header>
 
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Secciones del módulo">
+        <button class="tab-btn active" onclick="switchTab('tab-matrix')">
+          <span>⚖️</span> 1. Matriz Comparativa Fundamental
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-simulator')">
+          <span>🔬</span> 2. Laboratorio Interactivo
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-examples')">
+          <span>📚</span> 3. Casos Reales &amp; Estudio Doctrinal
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz')">
+          <span>🎯</span> 4. Laboratorio Evaluativo
+        </button>
+      </nav>
+
+
       <!-- Tabla Comparativa Requerida -->
-      <section class="matrix-card" aria-label="Comparativa Greedy vs Divide y Vencerás">
+      <!-- Pestaña 1: Matriz Comparativa -->
+      <section id="tab-matrix" class="content-panel active">
+        <section class="matrix-card" aria-label="Comparativa Greedy vs Divide y Vencerás">
         <h2><span>⚖️</span> Matriz Comparativa Fundamental</h2>
         <div class="data-table-wrap">
 <table class="compare-table">
@@ -1018,6 +1037,9 @@
       </nav>
 
       <!-- Laboratorio Interactivo -->
+        </section>
+      <!-- Pestaña 2: Laboratorio Interactivo -->
+      <section id="tab-simulator" class="content-panel">
       <section class="lab-layout">
         <div class="workspace">
           <div class="control-panel">
@@ -1124,6 +1146,9 @@
 
       <!-- Galería Explicativa de Ejemplos Clásicos -->
       <!-- Galería Explicativa de Ejemplos Clásicos Ampliada -->
+      </section>
+      <!-- Pestaña 3: Casos Reales -->
+      <section id="tab-examples" class="content-panel">
       <section class="examples-section">
         <h2><span>📚</span> Ejemplos Clásicos y Casos de Estudio del Mundo Real</h2>
         <div class="examples-grid">
