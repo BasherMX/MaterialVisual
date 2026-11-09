@@ -530,7 +530,7 @@
         <div class="matrix-card">
           <h2><span>📐</span> Los Axiomas de Armstrong para Dependencias Funcionales</h2>
           <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 22px;">
-            Propuestos por William W. Armstrong en 1974, constituyen un sistema lógico axiomático formal para razonar sobre <strong>Dependencias Funcionales (DF)</strong> en el modelo relacional. Son <strong>sonoros (sound)</strong> —nunca generan dependencias falsas— y <strong>completos (complete)</strong> —pueden derivar todas las dependencias válidas posibles $F^+$.
+            Propuestos por William W. Armstrong en 1974, constituyen un sistema lógico axiomático formal para razonar sobre <strong>Dependencias Funcionales (DF)</strong> en el modelo relacional. Son <strong>sonoros (sound)</strong> —nunca generan dependencias falsas— y <strong>completos (complete)</strong> —pueden derivar todas las dependencias válidas posibles <code>F⁺</code>.
           </p>
 
           <h3 style="color:var(--gold); margin-bottom:12px;">🌟 Los 3 Axiomas Primarios (Canónicos)</h3>
@@ -539,11 +539,11 @@
               <span class="badge-acid badge-a">AXIOMA 1</span>
               <h4 style="color:#fff; margin:0 0 6px;">Reflexividad</h4>
               <p style="font:0.82rem/1.5 Verdana, sans-serif; color:var(--ink); margin:0 0 8px;">
-                Si $Y \subseteq X$, entonces $X \to Y$.
+                Si <code>Y ⊆ X</code>, entonces <code>X → Y</code>.
               </p>
               <div style="font-size:0.75rem; color:var(--muted); background:#080811; padding:8px; border-radius:4px;">
                 <strong>Ejemplo:</strong><br>
-                $\{DNI, Nombre\} \to DNI$<br>
+                <code>{DNI, Nombre} → DNI</code><br>
                 <em>Todo subconjunto de atributos es funcionalmente dependiente del conjunto mayor. (Dependencia trivial).</em>
               </div>
             </div>
@@ -552,11 +552,11 @@
               <span class="badge-acid badge-c">AXIOMA 2</span>
               <h4 style="color:#fff; margin:0 0 6px;">Aumento (Augmentation)</h4>
               <p style="font:0.82rem/1.5 Verdana, sans-serif; color:var(--ink); margin:0 0 8px;">
-                Si $X \to Y$, entonces $XZ \to YZ$ para cualquier conjunto de atributos $Z$.
+                Si <code>X → Y</code>, entonces <code>XZ → YZ</code> para cualquier conjunto de atributos <code>Z</code>.
               </p>
               <div style="font-size:0.75rem; color:var(--muted); background:#080811; padding:8px; border-radius:4px;">
                 <strong>Ejemplo:</strong><br>
-                Si $DNI \to Nombre$, entonces $\{DNI, Ciudad\} \to \{Nombre, Ciudad\}$.
+                Si <code>DNI → Nombre</code>, entonces <code>{DNI, Ciudad} → {Nombre, Ciudad}</code>.
               </div>
             </div>
 
@@ -564,7 +564,7 @@
               <span class="badge-acid badge-i">AXIOMA 3</span>
               <h4 style="color:#fff; margin:0 0 6px;">Transitividad</h4>
               <p style="font:0.82rem/1.5 Verdana, sans-serif; color:var(--ink); margin:0 0 8px;">
-                Si $X \to Y$ y $Y \to Z$, entonces $X \to Z$.
+                Si <code>X → Y</code> y <code>Y → Z</code>, entonces <code>X → Z</code>.
               </p>
               <div style="font-size:0.75rem; color:var(--muted); background:#080811; padding:8px; border-radius:4px;">
                 <strong>Ejemplo:</strong><br>
@@ -634,9 +634,9 @@
       <!-- SECCIÓN 4: CALCULADORA DE CLAUSURA DE ATRIBUTOS (X+) -->
       <section id="tab-closure-calc" class="content-panel">
         <div class="matrix-card">
-          <h2><span>🧮</span> Calculadora Interactiva de Clausura de Atributos ($X^+$)</h2>
+          <h2><span>🧮</span> Calculadora Interactiva de Clausura de Atributos (X⁺)</h2>
           <p style="font: 0.9rem/1.6 Verdana, sans-serif; color: var(--muted); margin-bottom: 20px;">
-            La clausura de un conjunto de atributos <code>X</code> con respecto a un conjunto de dependencias <code>F</code>, denotada como <strong><code>X⁺</code></strong>, es el conjunto de todos los atributos que son funcionalmente determinados por $X$. Es el algoritmo central para encontrar <strong>claves candidatas</strong> y verificar formas normales.
+            La clausura de un conjunto de atributos <code>X</code> con respecto a un conjunto de dependencias <code>F</code>, denotada como <strong><code>X⁺</code></strong>, es el conjunto de todos los atributos que son funcionalmente determinados por <code>X</code>. Es el algoritmo central para encontrar <strong>claves candidatas</strong> y verificar formas normales.
           </p>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
@@ -1049,15 +1049,15 @@
     "feedback": "La Durabilidad (D de ACID) garantiza que una vez que una transacción ha emitido COMMIT, sus efectos persisten en medios de almacenamiento no volátil incluso si el sistema colapsa o se desconecta inmediatamente después."
   },
   {
-    "q": "Si en un esquema relacional se cumple la dependencia funcional $X \\rightarrow Y$, ¿cuál de los axiomas primarios de Armstrong permite deducir formalmente que $XZ \\rightarrow YZ$?",
+    "q": "Si en un esquema relacional se cumple la dependencia funcional X → Y, ¿cuál de los axiomas primarios de Armstrong permite deducir formalmente que XZ → YZ?",
     "options": [
       "Axioma de Reflexividad, al deducir que cualquier conjunto de atributos es subconjunto de sí mismo.",
-      "Axioma de Aumento (Augmentation), al agregar el mismo conjunto de atributos $Z$ a ambos lados de la regla.",
+      "Axioma de Aumento (Augmentation), al agregar el mismo conjunto de atributos Z a ambos lados de la regla.",
       "Axioma de Transitividad, al encadenar la implicación lógica entre tres conjuntos de atributos distintos.",
       "Regla de Pseudotransitividad, al sustituir un subconjunto de atributos dependientes en el antecedente."
     ],
     "correct": 1,
-    "feedback": "El Axioma de Aumento establece que si $X \\rightarrow Y$, entonces $XZ \\rightarrow YZ$ (o $X \\cup Z \\rightarrow Y \\cup Z$) para cualquier conjunto de atributos $Z$ del mismo esquema relacional."
+    "feedback": "El Axioma de Aumento establece que si X → Y, entonces XZ → YZ (o X ∪ Z → Y ∪ Z) para cualquier conjunto de atributos Z del mismo esquema relacional."
   },
   {
     "q": "¿Qué anomalía de concurrencia ocurre cuando la Transacción 1 lee datos no confirmados que la Transacción 2 revierte posteriormente con ROLLBACK?",
@@ -1071,15 +1071,15 @@
     "feedback": "Una Lectura Sucia (Dirty Read) ocurre cuando una transacción lee datos modificados por otra transacción concurrente que aún no ha confirmado (no-committed). Si la segunda transacción realiza ROLLBACK, los datos leídos eran inválidos y ficticios."
   },
   {
-    "q": "La regla de derivación secundaria de 'Unión' (si $X \\rightarrow Y$ y $X \\rightarrow Z$ entonces $X \\rightarrow YZ$) se demuestra combinando formalmente:",
+    "q": "La regla de derivación secundaria de 'Unión' (si X → Y y X → Z entonces X → YZ) se demuestra combinando formalmente:",
     "options": [
       "Únicamente el axioma de Reflexividad dos veces consecutivas sobre los atributos del esquema.",
-      "El axioma de Aumento (generando $X \\rightarrow XY$ y $XY \\rightarrow YZ$) y el axioma de Transitividad.",
+      "El axioma de Aumento (generando X → XY y XY → YZ) y el axioma de Transitividad.",
       "La regla de Pseudotransitividad combinada con el axioma de Descomposición de dependencias triviales.",
       "Ninguna combinación, pues la regla de Unión constituye un axioma primario irreductible de Armstrong."
     ],
     "correct": 1,
-    "feedback": "Demostración canónica: Si $X \\rightarrow Y$, por Aumento con $X$ tenemos $X \\rightarrow XY$. Si $X \\rightarrow Z$, por Aumento con $Y$ tenemos $XY \\rightarrow YZ$. Aplicando Transitividad entre $X \\rightarrow XY$ y $XY \\rightarrow YZ$, se concluye que $X \\rightarrow YZ$."
+    "feedback": "Demostración canónica: Si X → Y, por Aumento con X tenemos X → XY. Si X → Z, por Aumento con Y tenemos XY → YZ. Aplicando Transitividad entre X → XY y XY → YZ, se concluye que X → YZ."
   },
   {
     "q": "¿Qué nivel de aislamiento previene tanto las Lecturas Sucias como las Lecturas No Repetibles, pero puede permitir Lecturas Fantasma?",
@@ -1093,15 +1093,15 @@
     "feedback": "Repeatable Read retiene cerrojos compartidos sobre las filas leídas hasta el final de la transacción, evitando que otras sesiones las modifiquen (previene Non-Repeatable Reads). Sin embargo, al no bloquear rangos completos, permite que otra sesión inserte nuevas tuplas que cumplan el predicado WHERE (Lecturas Fantasma)."
   },
   {
-    "q": "Dado el esquema relacional $R(A, B, C)$ con dependencias funcionales $\\{A \\rightarrow B, B \\rightarrow C\\}$, ¿cuál es la clausura formal de atributos $\\{A\\}^+$?",
+    "q": "Dado el esquema relacional R(A, B, C) con dependencias funcionales {A → B, B → C}, ¿cuál es la clausura formal de atributos {A}⁺?",
     "options": [
-      "$\\{A\\}$, conteniendo exclusivamente el atributo inicial sin deducir implicaciones transitivas.",
-      "$\\{A, B\\}$, conteniendo los atributos derivados directamente sin alcanzar el cierre completo del conjunto.",
-      "$\\{A, B, C\\}$, deduciendo $B$ por implicación directa y $C$ por la transitividad de Armstrong.",
-      "$\\{B, C\\}$, excluyendo la clave determinante inicial al aplicar la descomposición relacional."
+      "{A}, conteniendo exclusivamente el atributo inicial sin deducir implicaciones transitivas.",
+      "{A, B}, conteniendo los atributos derivados directamente sin alcanzar el cierre completo del conjunto.",
+      "{A, B, C}, deduciendo B por implicación directa y C por la transitividad de Armstrong.",
+      "{B, C}, excluyendo la clave determinante inicial al aplicar la descomposición relacional."
     ],
     "correct": 2,
-    "feedback": "Iniciando con $\\{A\\}^+ = \\{A\\}$. Con $A \\rightarrow B$, agregamos $B$: $\\{A, B\\}$. Con $B \\rightarrow C$, como $B \\in \\{A, B\\}$, agregamos $C$: $\\{A, B, C\\}$. Por ende, $\\{A\\}^+ = \\{A, B, C\\}$ y $A$ es una superclave de $R$."
+    "feedback": "Iniciando con {A}⁺ = {A}. Con A → B, agregamos B: {A, B}. Con B → C, como B ∈ {A, B}, agregamos C: {A, B, C}. Por ende, {A}⁺ = {A, B, C} y A es una superclave de R."
   }
 ];
 
