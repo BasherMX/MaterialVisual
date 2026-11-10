@@ -299,7 +299,7 @@
         "Dependencias transitivas entre columnas que no son clave (X → Y → Z)",
         "Grupos repetitivos y atributos multivaluados en una misma celda",
         "Claves foráneas que apunten a tablas de otros esquemas",
-        "Dependencias multivaluadas no triviales (4FN)"
+        "Dependencias funcionales no triviales con determinante superclave (BCNF)"
       ],
       correctOption: 0
     },

@@ -56,7 +56,7 @@
       "No deben existir dependencias transitivas entre atributos que no formen parte de ninguna clave candidata.",
       "Todos los atributos de la relación deben tener nombres únicos y ordenarse alfabéticamente en el catálogo físico.",
       "La tabla debe disponer de un índice agrupado basado en un árbol B+ para agilizar las búsquedas por rango.",
-      "Las dependencias multivaluadas deben descomponerse en esquemas independientes que preserven las proyecciones.",
+      "Todos los atributos deben contener dominios atómicos eliminando grupos repetitivos de tuplas.",
       "Los valores nulos deben reemplazarse obligatoriamente por cadenas de texto vacías en todas las tuplas."
     ],
     "feedback": "2NF exige que la relación esté en 1NF y que ningún atributo no primo dependa parcialmente de ninguna clave candidata (dependencia funcional completa). Si un atributo depende solo de CursoID o solo de EstudianteID, debe extraerse a otra tabla.",
@@ -632,23 +632,23 @@
   {
     "id": "q-b5-030",
     "blockId": "bloque-5",
-    "topic": "Normalización · Quinta Forma Normal (5NF) Ricardo",
-    "difficulty": "hard",
+    "topic": "Normalización · Primera Forma Normal (1NF) Codd / Ricardo",
+    "difficulty": "medium",
     "lengthType": "medium",
-    "text": "¿Qué condición teórica aborda la Quinta Forma Normal (5NF o Forma Normal de Proyección-Unión / PJNF)?",
+    "text": "En la teoría formal del diseño relacional de Edgar F. Codd y Catherine Ricardo, ¿cuál es el requisito formal indispensable para que una relación cumpla con la Primera Forma Normal (1NF)?",
     "correctPool": [
-      "Garantiza que una relación no pueda descomponerse sin que al reunirlas mediante JOIN se generen tuplas espurias por dependencia de unión.",
-      "Aborda las dependencias de reunión (Join Dependencies / JD), garantizando descomposición sin pérdida mediante sus claves candidatas."
+      "Todos los atributos deben contener exclusivamente valores atómicos indivisibles, eliminando grupos repetitivos, listas y columnas compuestas.",
+      "Cada campo de la relación debe almacenar un único valor escalar dentro de su dominio subyacente, sin atributos multivaluados ni subtablas anidadas."
     ],
     "distractorPool": [
-      "Elimina las dependencias funcionales transitivas asegurando que cada atributo no clave dependa directamente de la clave primaria.",
-      "Resuelve las dependencias multivaluadas (MVD) aislando los atributos independientes en relaciones separadas normalizadas en 4NF.",
-      "Garantiza que no existan dependencias funcionales parciales respecto a claves compuestas en esquemas relacionales normalizados.",
-      "Impide que los campos numéricos almacenen valores atómicos fuera del dominio definido en las restricciones de integridad física.",
-      "Obliga a que cada tabla posea una clave subrogada generada automáticamente mediante secuencias numéricas no correlacionadas."
+      "Todos los atributos que no formen parte de la clave primaria deben depender funcionalmente de manera completa de la clave candidata.",
+      "No deben existir dependencias funcionales transitivas entre atributos no clave respecto a la superclave principal del esquema.",
+      "Cada determinante de una dependencia funcional no trivial debe constituir obligatoriamente una superclave dentro de la relación.",
+      "Cada tabla relacional debe poseer al menos una clave foránea que apunte a un catálogo indexado mediante árboles B+.",
+      "Los registros deben ordenarse físicamente de forma ascendente en las páginas de almacenamiento según el identificador numérico."
     ],
-    "feedback": "5NF (PJNF) se ocupa de las Dependencias de Unión (Join Dependencies). Una relación está en 5NF si toda dependencia de unión en ella es consecuencia lógica de sus claves candidatas, lo que garantiza que no existan descomposiciones en 3 o más tablas que produzcan tuplas espurias al hacerles JOIN.",
-    "reference": "Catherine M. Ricardo · Bases de Datos (Cap. 6: Normalización Avanzada y 5NF)"
+    "feedback": "La Primera Forma Normal (1NF) exige que los dominios de los atributos sean atómicos: cada atributo de cada tupla debe contener un único valor indivisible del dominio (sin arreglos, listas separadas por comas ni grupos repetitivos) y cada fila debe ser identificable de forma unívoca mediante una clave primaria.",
+    "reference": "Catherine M. Ricardo · Bases de Datos (Cap. 6: Normalización y Primera Forma Normal)"
   }
 ];
 });

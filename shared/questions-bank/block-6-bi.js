@@ -34,7 +34,7 @@
     "distractorPool": [
       "Kimball propone un enfoque Top-Down centrado en un Data Warehouse corporativo en 3NF; Inmon propone un enfoque Bottom-Up centrado en Data Marts dimensionales.",
       "Kimball no utiliza tablas de hechos ni dimensiones en sus diseños; Inmon prohíbe el uso de bases de datos relacionales en la arquitectura empresarial.",
-      "Kimball exige normalizar todos los datos hasta Quinta Forma Normal; Inmon promueve la desnormalización masiva en una única tabla plana en disco.",
+      "Kimball exige normalizar todos los datos relacionales en Boyce-Codd (BCNF); Inmon promueve la desnormalización masiva en una única tabla plana en disco.",
       "Kimball opera exclusivamente con almacenamiento de archivos sin estructura; Inmon no admite la extracción de datos desde sistemas transaccionales OLTP.",
       "Kimball prohíbe el uso de dimensiones conformadas entre data marts; Inmon exige que los reportes de usuario se ejecuten directamente sobre el ERP transaccional."
     ],
@@ -327,7 +327,7 @@
     ],
     "distractorPool": [
       "Generar claves foráneas compuestas automáticamente en las tablas de hechos transaccionales.",
-      "Normalizar todas las bases de datos operacionales de la empresa en quinta forma normal (5NF).",
+      "Normalizar todas las bases de datos operacionales de la empresa en Forma Normal de Boyce-Codd (BCNF).",
       "Crear copias de seguridad incrementales nocturnas de los logs de transacciones operativas.",
       "Definir índices no agrupados sobre todas las columnas de texto de los sistemas transaccionales.",
       "Establecer particiones horizontales obligatorias en todas las relaciones de staging."

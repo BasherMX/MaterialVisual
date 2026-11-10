@@ -739,7 +739,7 @@
           "Kimball propone un enfoque Bottom-Up centrado en Data Marts con modelado dimensional; Inmon propone un enfoque Top-Down centrado en un Data Warehouse corporativo en 3NF.",
           "Kimball propone un enfoque Top-Down centrado en un Data Warehouse corporativo en 3NF; Inmon propone un enfoque Bottom-Up centrado en Data Marts dimensionales.",
           "Kimball no utiliza tablas de hechos ni dimensiones en sus diseños; Inmon prohíbe el uso de bases de datos relacionales en la arquitectura empresarial.",
-          "Kimball exige normalizar todos los datos hasta Quinta Forma Normal; Inmon promueve la desnormalización masiva en una única tabla plana en disco."
+          "Kimball exige normalizar todos los datos relacionales en Boyce-Codd (BCNF); Inmon promueve la desnormalización masiva en una única tabla plana en disco."
         ],
         "correct": 0,
         "feedback": "Joyanes expone que Inmon aboga por un enfoque Top-Down normalizado en 3NF corporativo global, mientras que Kimball defiende un enfoque Bottom-Up pragmático integrando Data Marts dimensionales con dimensiones conformadas.",
