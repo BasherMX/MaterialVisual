@@ -337,23 +337,23 @@
   {
     "id": "q-b1-016",
     "blockId": "bloque-1",
-    "topic": "Gestión de Proyectos · Haynes Cap. 3",
-    "difficulty": "hard",
+    "topic": "Gestión de Proyectos · Haynes Cap. 2",
+    "difficulty": "medium",
     "lengthType": "scenario",
-    "text": "En el seguimiento del valor ganado (EVM) de un sistema, se obtienen los siguientes valores: Valor Planificado (PV) = $100,000, Valor Ganado (EV) = $80,000 y Costo Real (AC) = $90,000. ¿Cuál es el diagnóstico objetivo sobre el estado del proyecto?",
+    "text": "Durante la fase de planificación de un proyecto, el equipo identifica que los requerimientos de fases posteriores son preliminares y se requiere una técnica de desglose progresivo a medida que se esclarece el alcance. Según Marion E. Haynes, ¿qué técnica formal describe esta práctica?",
     "correctPool": [
-      "El proyecto presenta retraso en el cronograma (SV = -$20,000) y sobrecosto financiero (CV = -$10,000).",
-      "El proyecto está atrasado respecto al plan (SPI = 0.80) y gastando más de lo producido (CPI = 0.88)."
+      "Planificación por ondas sucesivas (Rolling Wave Planning), detallando a corto plazo y manteniendo en alto nivel el trabajo futuro.",
+      "Planificación gradual en ondas sucesivas, descomponiendo con granularidad fina las tareas inmediatas y postergando el desglose de fases lejanas."
     ],
     "distractorPool": [
-      "El proyecto marcha adelantado en tiempo (SV = +$10,000) pero con una alerta de sobrecosto marginal.",
-      "El proyecto opera bajo condiciones de eficiencia presupuestal óptima al haber invertido menos que el valor planificado.",
-      "El proyecto se encuentra en ruta crítica perfecta debido a que el costo real supera el valor ganado.",
-      "El proyecto debe cancelarse de inmediato porque el índice de desempeño del costo superó el umbral de 1.50.",
-      "El proyecto dispone de una holgura libre positiva de $10,000 que absorbe las desviaciones de calendario."
+      "Estimación ascendente forzada (Bottom-Up), obligando al equipo a cotizar al nivel de horas cada entregable futuro del proyecto.",
+      "Nivelación de recursos por heurística, recalculando los plazos exclusivamente cuando la asignación de personal sobrepasa el límite.",
+      "Compresión acelerada (Fast-Tracking), iniciando todas las fases de desarrollo simultáneamente sin importar la falta de especificación.",
+      "Estimación paramétrica estadística, derivando la totalidad de los costos a partir de proyectos históricos de bases de datos relacionales.",
+      "Asignación de holgura total cero, forzando a que todas las actividades del cronograma pertenezcan formalmente a la ruta crítica."
     ],
-    "feedback": "SV = EV - PV = 80,000 - 100,000 = -20,000 (< 0: Atrasado en cronograma). CV = EV - AC = 80,000 - 90,000 = -10,000 (< 0: Sobrecosto presupuestal).",
-    "reference": "Marion E. Haynes · Administración de Proyectos (Cap. 3, pp. 60-66)"
+    "feedback": "La Planificación por Ondas Sucesivas (Rolling Wave Planning) es una técnica de elaboración progresiva donde el trabajo que debe realizarse a corto plazo se planifica en detalle en los niveles inferiores de la WBS, mientras que el trabajo a más largo plazo se mantiene a un nivel más general hasta disponer de mayor información.",
+    "reference": "Marion E. Haynes · Administración de Proyectos (Cap. 2: Planificación del Alcance y WBS)"
   },
   {
     "id": "q-b1-017",
@@ -455,7 +455,7 @@
       "La paramétrica requiere descomponer el trabajo hasta el nivel de actividades; la análoga calcula el costo basándose en una regresión lineal multivariable.",
       "La paramétrica se limita a estimaciones preliminares de orden de magnitud; la análoga proporciona el presupuesto definitivo con margen de error mínimo.",
       "La paramétrica es cualitativa y la define el patrocinador; la análoga es cuantitativa y la audita un comité de control de cambios externo.",
-      "La paramétrica calcula el costo exclusivamente con base en cotizaciones de proveedores; la análoga utiliza el índice de rendimiento del trabajo por completar (TCPI)."
+      "La paramétrica calcula el costo exclusivamente con base en cotizaciones de proveedores; la análoga utiliza la suma de todas las horas hombre registradas en la WBS."
     ],
     "feedback": "La estimación análoga utiliza valores de proyectos anteriores similares (juicio de expertos, rápida pero menos precisa). La estimación paramétrica utiliza relaciones estadísticas entre datos históricos y variables del proyecto (ej. costo por metro cuadrado, horas por punto de función) para calcular costos o duraciones.",
     "reference": "Marion E. Haynes · Administración de Proyectos (Cap. 2: Estimación de Costos)"
@@ -496,7 +496,7 @@
       "La Nivelación aplica compresión (crashing) agregando personal; el Suavizado aplica ejecución rápida (fast-tracking) paralelizando actividades que eran originalmente secuenciales.",
       "La Nivelación elimina la holgura libre de todas las tareas; el Suavizado transfiere los riesgos técnicos a proveedores externos mediante la suscripción de contratos de precio fijo.",
       "La Nivelación se aplica exclusivamente a entregables de la ruta crítica; el Suavizado se ejecuta únicamente en actividades que presentan márgenes de holgura negativa extrema.",
-      "La Nivelación ajusta estimaciones mediante la distribución Beta; el Suavizado recalcula el presupuesto basándose en el índice de desempeño del costo de la línea base (CPI).",
+      "La Nivelación ajusta estimaciones mediante la distribución Beta; el Suavizado recalcula el presupuesto agregando márgenes fijos del diez por ciento en cada tarea.",
       "La Nivelación incrementa los recursos en la línea base de costos; el Suavizado reduce el alcance funcional prescindiendo formalmente de las pruebas de integración del sistema."
     ],
     "feedback": "Resource Leveling ajusta fechas de inicio y fin ante recursos limitados, lo que a menudo alarga la ruta crítica y extiende la fecha final del proyecto. Resource Smoothing redistribuye actividades únicamente dentro de sus márgenes de holgura libre y total, sin alterar la ruta crítica ni posponer la fecha de culminación.",
@@ -568,23 +568,23 @@
   {
     "id": "q-b1-027",
     "blockId": "bloque-1",
-    "topic": "Gestión de Proyectos · Haynes Cap. 3",
-    "difficulty": "hard",
+    "topic": "Gestión de Proyectos · Haynes Cap. 1 & 2",
+    "difficulty": "medium",
     "lengthType": "short",
-    "text": "En el análisis de Valor Ganado (EVM), ¿qué fórmula define el Índice de Desempeño del Trabajo por Completar (TCPI) cuando el objetivo es cumplir con el Presupuesto Hasta la Conclusión (BAC)?",
+    "text": "En la gestión de las comunicaciones y el control de interesados de un proyecto según Marion E. Haynes, ¿cuál es la fórmula matemática que determina el número total de canales de comunicación posibles entre N miembros del equipo?",
     "correctPool": [
-      "TCPI = (BAC - EV) / (BAC - AC).",
-      "TCPI = (BAC - EV) / (BAC - AC)."
+      "Canales = N * (N - 1) / 2.",
+      "C = [N(N - 1)] / 2."
     ],
     "distractorPool": [
-      "TCPI = (EV - PV) / (AC - EV).",
-      "TCPI = (BAC - AC) / (PV - EV).",
-      "TCPI = (CPI * SPI) / BAC.",
-      "TCPI = (BAC - EV) / (EAC - AC).",
-      "TCPI = (EV - AC) / (BAC - EV)."
+      "Canales = N * (N + 1) / 2.",
+      "Canales = N^2 - N + 1.",
+      "Canales = (N - 1)! / 2.",
+      "Canales = 2^N - N.",
+      "Canales = N * (N - 2) / 3."
     ],
-    "feedback": "El TCPI representa la eficiencia de costos que el equipo debe lograr en el trabajo restante para finalizar dentro del presupuesto original (BAC): TCPI = (BAC - EV) / (BAC - AC). Si TCPI > 1.0, el rendimiento futuro debe ser superior al plan.",
-    "reference": "Marion E. Haynes · Administración de Proyectos (Cap. 3: Control Presupuestal)"
+    "feedback": "La fórmula clásica de canales de comunicación es C = N(N - 1) / 2, donde N representa el número de partes interesadas o integrantes del equipo. Esta relación demuestra cómo la complejidad de la comunicación crece de forma cuadrática conforme se incrementa el tamaño del equipo de proyecto.",
+    "reference": "Marion E. Haynes · Administración de Proyectos (Cap. 1: Organización y Comunicación del Equipo)"
   },
   {
     "id": "q-b1-028",
