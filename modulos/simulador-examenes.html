@@ -1178,6 +1178,18 @@
           font-size: 0.78rem;
         }
       }
+
+      /* Botones de navegación inferior del examen cuando están desactivados */
+      #btn-prev-question:disabled,
+      #btn-next-question:disabled {
+        opacity: 0.35 !important;
+        cursor: not-allowed !important;
+        pointer-events: auto !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        color: var(--muted) !important;
+        transform: none !important;
+        box-shadow: none !important;
+      }
     </style>
   </head>
   <body>
@@ -1735,6 +1747,7 @@
 
         <!-- Barra de Navegación Inferior -->
         <div
+          id="exam-bottom-nav-controls"
           style="
             display: flex;
             justify-content: space-between;
@@ -1746,26 +1759,30 @@
             border-top: 1px solid rgba(255, 255, 255, 0.08);
           "
         >
-          <button
-            class="btn-theme"
-            id="btn-prev-question"
-            onclick="navigateQuestion(-1)"
-            style="
-              background: rgba(34, 33, 61, 0.9);
-              border: 1px solid var(--line);
-              color: var(--cyan);
-              padding: 10px 18px;
-              border-radius: 6px;
-              cursor: pointer;
-              font:
-                700 0.85rem &quot;Courier New&quot;,
-                monospace;
-              min-height: 44px;
-            "
-          >
-            ← Anterior
-          </button>
+          <!-- Contenedor izquierdo: Anterior y Siguiente juntos -->
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button
+              class="btn-theme"
+              id="btn-prev-question"
+              onclick="navigateQuestion(-1)"
+              style="
+                background: rgba(34, 33, 61, 0.9);
+                border: 1px solid var(--line);
+                color: var(--cyan);
+                padding: 10px 18px;
+                border-radius: 6px;
+                font:
+                  700 0.85rem &quot;Courier New&quot;,
+                  monospace;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+              "
+            >
+              ← Anterior
+            </button>
             <button
               class="btn-theme"
               id="btn-next-question"
@@ -1776,20 +1793,28 @@
                 color: var(--cyan);
                 padding: 10px 18px;
                 border-radius: 6px;
-                cursor: pointer;
                 font:
                   700 0.85rem &quot;Courier New&quot;,
                   monospace;
                 min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
               "
             >
               Siguiente / Saltar →
             </button>
+          </div>
+
+          <!-- Contenedor derecho: Finalizar Examen (solo en la última pregunta) -->
+          <div style="display: flex; align-items: center; margin-left: auto;">
             <button
               class="btn-theme"
               id="btn-finish-exam-bottom"
               onclick="promptFinishExam()"
               style="
+                display: none;
                 background: linear-gradient(135deg, rgba(255, 0, 110, 0.9), rgba(255, 75, 43, 0.9));
                 border: 1px solid #ff4b2b;
                 color: #ffffff;
@@ -1802,6 +1827,8 @@
                 min-height: 44px;
                 box-shadow: 0 0 16px rgba(255, 0, 110, 0.4);
                 transition: transform 0.15s ease, box-shadow 0.15s ease;
+                align-items: center;
+                justify-content: center;
               "
               onmouseover="this.style.boxShadow='0 0 24px rgba(255, 0, 110, 0.7)'; this.style.transform='scale(1.03)';"
               onmouseout="this.style.boxShadow='0 0 16px rgba(255, 0, 110, 0.4)'; this.style.transform='scale(1)';"
@@ -3158,27 +3185,53 @@ D) Requiere Task.Run obligatoriamente.
           flagBtn.style.borderColor = "var(--line)";
         }
 
-      // Prev / Next button states (Se desactiva/quita anterior en primera y siguiente en última)
+      // Prev / Next button states (Se mantienen visibles pero desactivados si no aplican)
       const btnPrev = document.getElementById('btn-prev-question');
       const btnNext = document.getElementById('btn-next-question');
+      const btnFinishBottom = document.getElementById('btn-finish-exam-bottom');
 
       if (btnPrev) {
+        btnPrev.style.display = 'inline-flex';
         if (currentQIdx === 0) {
           btnPrev.disabled = true;
-          btnPrev.style.display = 'none';
+          btnPrev.style.opacity = '0.35';
+          btnPrev.style.cursor = 'not-allowed';
+          btnPrev.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+          btnPrev.style.color = 'var(--muted)';
         } else {
           btnPrev.disabled = false;
-          btnPrev.style.display = 'inline-flex';
+          btnPrev.style.opacity = '1';
+          btnPrev.style.cursor = 'pointer';
+          btnPrev.style.borderColor = 'var(--line)';
+          btnPrev.style.color = 'var(--cyan)';
         }
       }
 
+      const isLastQuestion = currentQIdx >= currentQuestions.length - 1;
+
       if (btnNext) {
-        if (currentQIdx >= currentQuestions.length - 1) {
+        btnNext.style.display = 'inline-flex';
+        if (isLastQuestion) {
           btnNext.disabled = true;
-          btnNext.style.display = 'none';
+          btnNext.style.opacity = '0.35';
+          btnNext.style.cursor = 'not-allowed';
+          btnNext.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+          btnNext.style.color = 'var(--muted)';
         } else {
           btnNext.disabled = false;
-          btnNext.style.display = 'inline-flex';
+          btnNext.style.opacity = '1';
+          btnNext.style.cursor = 'pointer';
+          btnNext.style.borderColor = 'var(--line)';
+          btnNext.style.color = 'var(--cyan)';
+        }
+      }
+
+      // Botón Finalizar Examen inferior: solo visible en la última pregunta del lado derecho
+      if (btnFinishBottom) {
+        if (isLastQuestion) {
+          btnFinishBottom.style.display = 'inline-flex';
+        } else {
+          btnFinishBottom.style.display = 'none';
         }
       }
 
